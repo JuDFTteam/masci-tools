@@ -81,7 +81,7 @@ jobs:
 
     - name: Run pre-commit
       run: |
-        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files --config=.pre-commit-config-ci.yaml || (git status --short; git diff ; exit 1)
+        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files || (git status --short; git diff ; exit 1)
 
 
   tests:
@@ -91,11 +91,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.9', '3.8', '3.7', '3.6']
+        python-version: ['3.10','3.9', '3.8', '3.7']
         experimental: [false]
-#         include:
-#            - python-version: 3.10.0-rc.1
-#              experimental: true
     
     name: tests-python-${{ matrix.python-version }}
     continue-on-error: ${{ matrix.experimental }}
@@ -120,11 +117,10 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install .[testing,bokeh-plots]
+        pip install -e .[testing,bokeh-plots]
 
     - name: Run pytest
-      run: |
-        cd tests/ && ./run_all_cov.sh
+      run: pytest
 
     - name: Upload code coverage report
       run: |
@@ -134,5 +130,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Matplotlib comparison
-        path: tests/mpl-results/fig_comparison.html
+        path: mpl-results/fig_comparison.html
         if-no-files-found: ignore

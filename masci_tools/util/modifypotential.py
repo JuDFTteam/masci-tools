@@ -152,8 +152,8 @@ def calc_coulomb_spin_pot(pot1, pot2):
         tmpvc, tmpvs = [], []
         if len(tmp1[0]) >= 20:
             for ii in range(len(tmp1)):
-                tmpvc.append('%20.13e' % ((float(tmp1[ii]) + float(tmp2[ii])) / 2.))
-                tmpvs.append('%20.13e' % ((float(tmp1[ii]) - float(tmp2[ii])) / 2.))
+                tmpvc.append(f'{(float(tmp1[ii]) + float(tmp2[ii])) / 2.0:20.13e}')
+                tmpvs.append(f'{(float(tmp1[ii]) - float(tmp2[ii])) / 2.0:20.13e}')
         else:
             tmpvc.append(tmp1[0])
             tmpvs.append(tmp1[0])
@@ -177,7 +177,7 @@ def combine_potentials(pot1, pot2, alpha):
         tmppot = []
         if len(tmp1[0]) >= 20:
             for ii in range(len(tmp1)):
-                tmppot.append('%20.13e' % (float(tmp1[ii]) + alpha * float(tmp2[ii])))
+                tmppot.append(f'{float(tmp1[ii]) + alpha * float(tmp2[ii]):20.13e}')
         else:
             tmppot.append(tmp1[0])
         potout.append(tmppot)

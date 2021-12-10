@@ -11,9 +11,9 @@ output_dict:
   end_date:
     date: 2021/01/22
     time: '12:05:24'
-  energy: -69269.47887586526
+  energy: -69269.485168433
   energy_core_electrons: -1476.8200550749
-  energy_hartree: -2545.6063961489
+  energy_hartree: -2545.6066273965
   energy_hartree_units: Htr
   energy_units: eV
   energy_valence_electrons: 3.7137334341
@@ -89,7 +89,7 @@ output_dict:
 warnings:
   parser_errors: []
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - Masci-Tools Fleur out.xml Parser v0.6.0
   - 'Creating OutputSchemaDict object for differing versions (out: 0.34; inp: 0.33)'
   - 'Found fleur out file with the versions out: 0.34; inp: 0.33'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':

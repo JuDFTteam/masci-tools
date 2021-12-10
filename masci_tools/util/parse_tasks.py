@@ -20,12 +20,27 @@ import importlib.util
 from importlib import import_module
 import copy
 import os
+from pathlib import Path
+from typing import Callable, Dict, Iterable, List, Set, Any, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
+import warnings
+from lxml import etree
+from logging import Logger, LoggerAdapter
+from masci_tools.io.parsers import fleur_schema
 
-PACKAGE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_TASK_FILE = os.path.abspath(os.path.join(PACKAGE_DIRECTORY, '../io/parsers/fleur/default_parse_tasks.py'))
+from masci_tools.util.xml.converters import convert_str_version_number
+import masci_tools
+
+PACKAGE_DIRECTORY = Path(masci_tools.__file__).parent.resolve()
+DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('io/parsers/fleur/default_parse_tasks.py')
+
+MIGRATION_DICT = Dict[str, Dict[str, Union[Literal['compatible'], Callable]]]
 
 
-def find_migration(start, target, migrations):
+def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union[List[Callable], None]:
     """
     Tries to find a migration path from the start to the target version
     via the defined migration functions
@@ -48,8 +63,7 @@ def find_migration(start, target, migrations):
             if migrations[start][target] == 'compatible':
                 return []
             return None
-        else:
-            return [migrations[start][target]]
+        return [migrations[start][target]]  #type:ignore
 
     for possible_stop in migrations[start].keys():
         new_call_list = find_migration(possible_stop, target, migrations)
@@ -63,10 +77,11 @@ def find_migration(start, target, migrations):
         else:
             call_list = [migrations[start][possible_stop]]
         call_list += new_call_list
-        return call_list
+        return call_list  #type:ignore
+    return None
 
 
-class ParseTasks(object):
+class ParseTasks:
     """
     Representation of all known parsing tasks for the out.xml file
 
@@ -83,7 +98,7 @@ class ParseTasks(object):
         totE_definition = p.tasks['total_energy']
     """
 
-    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions'}
+    CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions', '_optional', '_minimum_version'}
     REQUIRED_KEYS = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
     ALLOWED_KEYS_ALLATTRIBS = {
@@ -92,8 +107,12 @@ class ParseTasks(object):
     }
 
     _version = '0.2.0'
+    _migrations: MIGRATION_DICT = {}
+    _all_attribs_function: Set[str] = set()
+    _conversion_functions: Dict[str, Callable] = {}
+    _parse_functions: Dict[str, Callable] = {}
 
-    def __init__(self, version, task_file=None, validate_defaults=False):
+    def __init__(self, version: str, task_file: os.PathLike = None, validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
@@ -110,13 +129,16 @@ class ParseTasks(object):
 
         #import task definitions
         spec = importlib.util.spec_from_file_location('tasks', task_file)
+        if spec is None:
+            raise ValueError(f'Module not found {task_file}')
         tasks = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(tasks)
+        spec.loader.exec_module(tasks)  #type:ignore
 
-        self._iteration_tasks = []
-        self._general_tasks = []
+        self._iteration_tasks: List[str] = []
+        self._general_tasks: List[str] = []
+        self.version = convert_str_version_number(version)
 
-        tasks_dict = copy.deepcopy(tasks.TASKS_DEFINITION)
+        tasks_dict: Dict[str, Dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)  #type:ignore
         if validate_defaults:
             #Manually add each task to make sure that there are no typos/inconsitencies in the keys
             self.tasks = {}
@@ -125,47 +147,59 @@ class ParseTasks(object):
         else:
             self.tasks = tasks_dict
 
+        working: Set[str] = tasks.__working_out_versions__  #type:ignore
         #Look if the base version is compatible if not look for a migration
-        if version not in tasks.__working_out_versions__:
+        if version not in working:
 
-            migration_list = find_migration(tasks.__base_version__, version, self.migrations)
+            working_version_tuples = {convert_str_version_number(v) for v in working}
+            version_tuple = convert_str_version_number(version)
 
-            if migration_list is None:
-                raise ValueError(f'Unsupported output version: {version}')
+            if all(working_version < version_tuple for working_version in working_version_tuples):
+                warnings.warn(
+                    f"Output version '{version}' is not explicitely stated as 'working'\n"
+                    'with the current version of the outxml_parser.\n'
+                    'Since the given version is newer than the latest working version\n'
+                    'I will continue. Errors and warnings can occur!', UserWarning)
+            else:
+                base: str = tasks.__base_version__  #type:ignore
+                migration_list = find_migration(base, version, self.migrations)
 
-            for migration in migration_list:
-                self.tasks = migration(self.tasks)
+                if migration_list is None:
+                    raise ValueError(f'Unsupported output version: {version}')
+
+                for migration in migration_list:
+                    self.tasks = migration(self.tasks)
 
     @property
-    def iteration_tasks(self):
+    def iteration_tasks(self) -> List[str]:
         """
         Tasks to perform for each iteration
         """
         return self._iteration_tasks
 
+    @iteration_tasks.setter
+    def iteration_tasks(self, val: List[str]) -> None:
+        """
+        Setter for iteration_tasks
+        """
+        self._iteration_tasks = val
+
     @property
-    def general_tasks(self):
+    def general_tasks(self) -> List[str]:
         """
         Tasks to perform for the root node
         """
         return self._general_tasks
 
-    @iteration_tasks.setter
-    def iteration_tasks(self, task_list):
-        """
-        Setter for iteration_tasks
-        """
-        self._iteration_tasks = task_list
-
     @general_tasks.setter
-    def general_tasks(self, task_list):
+    def general_tasks(self, val: List[str]) -> None:
         """
         Setter for general_tasks
         """
-        self._general_tasks = task_list
+        self._general_tasks = val
 
     @property
-    def migrations(self):
+    def migrations(self) -> MIGRATION_DICT:
         """
         Return the registered migrations
         """
@@ -174,7 +208,7 @@ class ParseTasks(object):
         return self._migrations
 
     @property
-    def conversion_functions(self):
+    def conversion_functions(self) -> Dict[str, Callable]:
         """
         Return the registered conversion functions
         """
@@ -183,7 +217,7 @@ class ParseTasks(object):
         return self._conversion_functions
 
     @property
-    def parse_functions(self):
+    def parse_functions(self) -> Dict[str, Callable]:
         """
         Return the registered parse functions
         """
@@ -192,7 +226,7 @@ class ParseTasks(object):
         return self._parse_functions
 
     @property
-    def all_attribs_function(self):
+    def all_attribs_function(self) -> Set[str]:
         """
         Return the registered parse functions for parsing multipl attributes
         """
@@ -200,7 +234,18 @@ class ParseTasks(object):
             import_module('masci_tools.util.schema_dict_util')
         return self._all_attribs_function
 
-    def add_task(self, task_name, task_definition, **kwargs):
+    @property
+    def optional_tasks(self) -> Set[str]:
+        """
+        Return a set of the available optional defined tasks
+        """
+        return {key for key, val in self.tasks.items() if val.get('_optional', False)}
+
+    def add_task(self,
+                 task_name: str,
+                 task_definition: Dict[str, Any],
+                 append: bool = False,
+                 overwrite: bool = False) -> None:
         """
         Add a new task definition to the tasks dictionary
 
@@ -216,8 +261,8 @@ class ParseTasks(object):
 
         The following keys are expected in each entry of the task_definition dictionary:
             :param parse_type: str, defines which methods to use when extracting the information
-            :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
-                              or get_attrib_xpath to get the correct path
+            :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                              or attrib_xpath to get the correct path
             :param subdict: str, if present the parsed values are put into this key in the output dictionary
             :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
 
@@ -233,9 +278,6 @@ class ParseTasks(object):
                                format {task_key}_{attribute_name}
 
         """
-
-        append = kwargs.get('append', False)
-        overwrite = kwargs.get('overwrite', False)
 
         if task_name in self.tasks and not (append or overwrite):
             raise ValueError(f"Task '{task_name}' is already defined."
@@ -258,7 +300,7 @@ class ParseTasks(object):
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self.parse_functions.keys():
+            if not definition['parse_type'] in self.parse_functions:
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
             if definition['parse_type'] in self.all_attribs_function:
@@ -280,7 +322,10 @@ class ParseTasks(object):
         else:
             self.tasks[task_name] = task_definition
 
-    def determine_tasks(self, fleurmodes, minimal=False):
+    def determine_tasks(self,
+                        fleurmodes: Dict[str, Any],
+                        optional_tasks: Iterable[str] = None,
+                        minimal: bool = False) -> None:
         """
         Determine, which tasks to perform based on the fleur_modes
 
@@ -288,7 +333,24 @@ class ParseTasks(object):
         :param minimal: bool, whether to only perform minimal tasks
         """
 
+        if optional_tasks is None:
+            optional_tasks = set()
+
+        unknown = {name for name in optional_tasks if name not in self.optional_tasks}
+        if unknown:
+            raise ValueError(f"Unknown optional task(s): '{unknown}'\n"
+                             f'The following are available: {self.optional_tasks}')
+
         for task_name, definition in self.tasks.items():
+
+            if '_minimum_version' in definition:
+                min_version = convert_str_version_number(definition['_minimum_version'])
+                if self.version < min_version:
+                    continue
+
+            optional = definition.get('_optional', False)
+            if optional and task_name not in optional_tasks:
+                continue
 
             if minimal:
                 task_minimal = definition.get('_minimal', False)
@@ -314,7 +376,14 @@ class ParseTasks(object):
             else:
                 self._iteration_tasks.append(task_name)
 
-    def perform_task(self, task_name, node, out_dict, schema_dict, constants, logger=None, use_lists=True):
+    def perform_task(self,
+                     task_name: str,
+                     node: Union[etree._Element, etree._ElementTree],
+                     out_dict: Dict,
+                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+                     constants: Dict[str, float],
+                     logger: Union[Logger, LoggerAdapter] = None,
+                     use_lists: bool = True) -> Dict:
         """
         Evaluates the task given in the tasks_definition dict
 
@@ -350,6 +419,9 @@ class ParseTasks(object):
 
             if 'only_required' in spec:
                 args['only_required'] = spec['only_required']
+
+            if 'subtags' in spec:
+                args['subtags'] = spec['subtags']
 
             if spec['parse_type'] == 'singleValue':
                 args['ignore'] = ['comment']
@@ -422,7 +494,7 @@ class ParseTasks(object):
 
         return out_dict
 
-    def show_available_tasks(self, show_definitions=False):
+    def show_available_tasks(self, show_definitions: bool = False) -> None:
         """
         Print all currently available task keys.
         If show_definitions is True also the corresponding defintions will be printed

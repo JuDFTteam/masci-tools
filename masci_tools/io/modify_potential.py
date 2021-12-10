@@ -20,13 +20,13 @@ if version_info[0] >= 3:
         return eval(eval(input(msg)))
 
 
-__copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __version__ = '0.3'
-__contributors__ = u'Philipp Rüßmann'
+__contributors__ = 'Philipp Rüßmann'
 
 
-class modify_potential(object):
+class modify_potential:
     """
     Class for old modify potential script, ported from modify_potential script, initially by D. Bauer
     """

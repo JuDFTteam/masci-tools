@@ -66,7 +66,7 @@ warnings:
   parser_errors:
   - Failed to parse output file with recover=False
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - Masci-Tools Fleur out.xml Parser v0.6.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
@@ -83,12 +83,8 @@ warnings:
   - No values found for attribute time at tag endDateAndTime
   - Endtime was unparsed, inp.xml prob not complete, do not believe the walltime!
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
-  - '[Iteration 1] No values found for attribute units at tag totalEnergy'
-  - '[Iteration 1] No values found for attribute value at tag totalEnergy'
-  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''value''
-    attribute'
-  - '[Iteration 1] Failed to evaluate singleValue from tag totalEnergy: Has no ''units''
-    attribute'
+  - '[Iteration 1] No values found for attribute value'
+  - '[Iteration 1] No values found for attribute units'
   - '[Iteration 1] convert_total_energy cannot convert None to eV'
   - '[Iteration 1] No values found for attribute distance'
   - '[Iteration 1] No values found for attribute units'

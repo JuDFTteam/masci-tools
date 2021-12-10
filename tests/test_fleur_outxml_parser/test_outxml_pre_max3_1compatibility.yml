@@ -26,20 +26,20 @@ output_dict:
     date: 2021/01/28
     time: '14:48:58'
   energy:
-  - -69269.28825182961
-  - -69269.21715289376
-  - -69269.16088131983
-  - -69269.21523828703
+  - -69269.30526484273
+  - -69269.23444830664
+  - -69269.17903950508
+  - -69269.22835115473
   energy_core_electrons:
   - -1455.043280865
   - -1455.3423821959
   - -1456.6846836158
   - -1456.7402935195
   energy_hartree:
-  - -2545.5993908448
-  - -2545.5967780071
-  - -2545.5947100649
-  - -2545.5967076466
+  - -2545.6000160615
+  - -2545.5974136018
+  - -2545.5953773659
+  - -2545.5971895356
   energy_hartree_units: Htr
   energy_units: eV
   energy_valence_electrons:
@@ -153,7 +153,7 @@ output_dict:
 warnings:
   parser_errors: []
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.5.0
+  - Masci-Tools Fleur out.xml Parser v0.6.0
   - 'Found fleur out file with the versions out: 0.29; inp: 0.29'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':

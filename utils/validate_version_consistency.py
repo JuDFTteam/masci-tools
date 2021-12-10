@@ -13,22 +13,22 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.join(SCRIPT_DIR, os.path.pardir)
 
 # Get the __init__.py version number
-with open(os.path.join(ROOT_DIR, 'masci_tools/__init__.py')) as f:
+with open(os.path.join(ROOT_DIR, 'masci_tools/__init__.py'), encoding='utf-8') as f:
     MATCH_EXPR = "__version__[^'\"]+(['\"])([^'\"]+)"
     VERSION_INIT = re.search(MATCH_EXPR, f.read()).group(2).strip()  # type: ignore
 
 # Get the setup.py version number
-with open(os.path.join(ROOT_DIR, 'setup.py')) as f:
+with open(os.path.join(ROOT_DIR, 'setup.py'), encoding='utf-8') as f:
     MATCH_EXPR = "version[^'\"]+(['\"])([^'\"]+)"
     VERSION_SETUP = re.search(MATCH_EXPR, f.read()).group(2).strip()  # type: ignore
 
 # Get the pyproject.toml version number
-with open(os.path.join(ROOT_DIR, 'pyproject.toml')) as f:
+with open(os.path.join(ROOT_DIR, 'pyproject.toml'), encoding='utf-8') as f:
     MATCH_EXPR = "version[^'\"]+(['\"])([^'\"]+)"
     VERSION_PYPROJECT = re.search(MATCH_EXPR, f.read()).group(2).strip()  # type: ignore
 
 # Get the .bumpversion.cfg current_version number
-with open(os.path.join(ROOT_DIR, '.bumpversion.cfg')) as f:
+with open(os.path.join(ROOT_DIR, '.bumpversion.cfg'), encoding='utf-8') as f:
     MATCH_EXPR = r'current_version\s*=\s*([^\\S\r\n]+)'
     VERSION_BUMPVERSION = re.search(MATCH_EXPR, f.read()).group(1).strip()  # type: ignore
 

@@ -284,7 +284,7 @@ class TestBokehLine:  #pylint: disable=missing-class-docstring
         check_bokeh_plot(p)
 
 
-class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstring
+class TestPlotConvergenceResults:  #pylint: disable=missing-class-docstring
 
     energies = [
         -69269.46134019217, -69269.42108466873, -69269.35509388152, -69269.62486438647, -69269.51102655893,
@@ -332,7 +332,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         check_bokeh_plot(p)
 
 
-class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstring
+class TestPlotConvergenceMulti:  #pylint: disable=missing-class-docstring
 
     def test_convergence_multi_defaults(self, check_bokeh_plot):
         """

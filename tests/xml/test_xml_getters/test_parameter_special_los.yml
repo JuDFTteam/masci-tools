@@ -1,0 +1,29 @@
+atom0:
+  dx: 0.017
+  element: Ga
+  id: '31.1'
+  jri: 731
+  lmax: 8
+  lnonsph: 6
+  lo: 3d
+  rmt: 2.21
+atom1:
+  dx: 0.017
+  element: As
+  id: '33.2'
+  jri: 731
+  lmax: 8
+  lnonsph: 6
+  lo: 3d
+  rmt: 2.21
+comp:
+  ctail: true
+  frcor: false
+  gmax: 10.8
+  gmaxxc: 9.0
+  jspins: 1
+  kcrel: 0
+  kmax: 3.6
+exco:
+  xctyp: pbe
+title: GaAs bulk zinc-blende structure

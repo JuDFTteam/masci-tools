@@ -88,6 +88,8 @@ General Transformations:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.tile_array()`: Use np.tile to repeat dataset a given amount of times
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.repeat_array()`: Use np.repeat to repeat each element in the dataset a given amount of times
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.get_all_child_datasets()`: extract all datasets contained in the current hdf group and enter them into a dict
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.merge_subgroup_datasets()`: extract all datasets contained in the subgroups of the current hdf group and enter them into a dict in a list (or one numpy array)
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.stack_datasets()`: Stack the given datasets in the dictionary along a given axis
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.shift_dataset()`: Shift the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_scalar()`: Multiply the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_array()`: Mutiply the given dataset with a given array

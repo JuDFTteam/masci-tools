@@ -358,10 +358,6 @@ def multiple_scatterplots(xdata,
 
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        if plot_params['repeat_colors_after'] is not None:
-            if indx >= plot_params['repeat_colors_after']:
-                params['color'] = colors[indx % plot_params['repeat_colors_after']]
-
         if plot_params[('area_plot', indx)]:
             linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
@@ -908,8 +904,7 @@ def histogram(xdata,
 
     if return_hist_output:
         return ax, n, bins, patches
-    else:
-        return ax
+    return ax
 
 
 # todo remove default histogramm, replace it in all code by histogramm
@@ -1348,8 +1343,7 @@ def plot_residuen(xdata,
 
     if return_residuen_data:
         return axes, ydata
-    else:
-        return axes
+    return axes
 
 
 @ensure_plotter_consistency(plot_params)
@@ -1838,13 +1832,14 @@ def plot_spinpol_dos(energy_grid,
         plot_data.apply('spin_dn', lambda x: -x)
 
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
+    color_cycle = color_cycle[:len(plot_data)]
     plot_params.set_defaults(default_type='function',
                              marker=None,
                              legend=True,
                              legend_remove_duplicates=True,
                              lines=lines,
                              limits=limits,
-                             repeat_colors_after=len(plot_data),
+                             repeat_parameters=len(plot_data),
                              color_cycle=color_cycle)
 
     if xyswitch:
@@ -1926,6 +1921,7 @@ def plot_bands(kpath,
     :param bands: arraylike data for the eigenvalues
     :param size_data: arraylike data the weights to emphasize (optional)
     :param color_data: str or arraylike, data for the color values with a colormap (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -2081,6 +2077,7 @@ def plot_spinpol_bands(kpath,
     :param bands_up: arraylike data for the eigenvalues (spin-up)
     :param bands_dn: arraylike data for the eigenvalues (spin-dn)
     :param size_data: arraylike data the weights to emphasize BOTH SPINS (optional)
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
     :param title: str, Title of the plot
     :param xlabel: str, label for the x-axis
     :param ylabel: str, label for the y-axis
@@ -2230,6 +2227,86 @@ def plot_spinpol_bands(kpath,
     return ax
 
 
+@ensure_plotter_consistency(plot_params)
+def plot_spectral_function(kpath,
+                           energy_grid,
+                           spectral_function,
+                           *,
+                           data=None,
+                           special_kpoints=None,
+                           e_fermi=0,
+                           xlabel='',
+                           ylabel=r'$E-E_F$ [eV]',
+                           title='',
+                           saveas='spectral_function',
+                           copy_data=False,
+                           **kwargs):
+    """
+    Create a colormesh plot of a spectral function
+
+    :param kpath: data for the kpoint coordinates
+    :param energy_grid: data for the energy grid
+    :param spectral_function: 2D data for the spectral function
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param xlabel: str, label for the x-axis
+    :param ylabel: str, label for the y-axis
+    :param saveas: str, filename for the saved plot
+    :param e_fermi: float (default 0), place the line for the fermi energy at this value
+    :param special_kpoints: list of tuples (str, float), place vertical lines at the given values
+                            and mark them on the x-axis with the given label
+    :param copy_data: bool, if True the data argument will be copied
+
+    All other Kwargs are passed on to the :py:func:`colormesh_plot()` call
+    """
+
+    plot_data = process_data_arguments(single_plot=True,
+                                       data=data,
+                                       kpath=kpath,
+                                       energy=energy_grid,
+                                       spectral_function=spectral_function,
+                                       forbid_split_up={
+                                           'spectral_function',
+                                       },
+                                       copy_data=copy_data)
+
+    if special_kpoints is None:
+        special_kpoints = []
+
+    xticks = []
+    xticklabels = []
+    for label, pos in special_kpoints:
+        if label in ('Gamma', 'g'):
+            label = r'$\Gamma$'
+        xticklabels.append(label)
+        xticks.append(pos)
+
+    lines = {'vertical': xticks, 'horizontal': e_fermi}
+
+    limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
+    plot_params.set_defaults(default_type='function',
+                             lines=lines,
+                             limits=limits,
+                             xticks=xticks,
+                             xticklabels=xticklabels,
+                             cmap='inferno',
+                             plot_label='Spectral function',
+                             line_options={'color': 'white'},
+                             colorbar=True)
+    entry, source = plot_data.items(first=True)
+    ax = colormesh_plot(entry.kpath,
+                        entry.energy,
+                        entry.spectral_function,
+                        xlabel=xlabel,
+                        ylabel=ylabel,
+                        title=title,
+                        data=source,
+                        saveas=saveas,
+                        **kwargs)
+
+    return ax
+
+
 def plot_certain_bands():
     """
     Plot only certain bands from a bands.1 file from FLEUR
@@ -2316,8 +2393,7 @@ def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, sav
                        xmax=xmaxline,
                        linewidth=plot_params['linewidth'],
                        color=plot_params['color'])
-            text = r'{}'.format(y)
-            ax.text(x - 0.25, y + 0.3, text, fontdict=plot_params['font_options'])
+            ax.text(x - 0.25, y + 0.3, str(y), fontdict=plot_params['font_options'])
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -3042,7 +3118,7 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
     return mix * gaus + (1 - mix) * lorentz
 
 
-class PDF(object):
+class PDF:
     """Display a PDF file inside a Jupyter notebook."""
 
     def __init__(self, pdf: str, size: tuple = (200, 200)):
@@ -3066,10 +3142,10 @@ class PDF(object):
         self.size = size
 
     def _repr_html_(self):
-        return '<iframe src={0} width={1[0]} height={1[1]}></iframe>'.format(self.pdf, self.size)
+        return f'<iframe src={self.pdf} width={self.size[0]} height={self.size[1]}></iframe>'
 
     def _repr_latex_(self):
-        return r'\includegraphics[width=1.0\textwidth]{{{0}}}'.format(self.pdf)
+        return rf'\includegraphics[width=1.0\textwidth]{{{self.pdf}}}'
 
 
 def plot_colortable(colors: typing.Dict, title: str, sort_colors: bool = False, emptycols: int = 0):

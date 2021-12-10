@@ -1,5 +1,46 @@
 # Changelog
 
+## v.0.7.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.6.2)
+
+Commandline interface, refactoring of SchemaDict/XML functions and major improvements for package configuration/tooling for developers. Added support for python ``3.10``. Dropped testing for python ``3.6``.
+### Added
+- Added click command line interface (available as ``masci-tools``). Can add Fleur XML Schema files with validation (Also directly pulled from the Fleur git), use the XML parsing functions and interface to the fleur visualization routines [[#49]](https://github.com/JuDFTteam/masci-tools/pull/49)
+- Added ``Tabulator`` for use of creating ``pandas.Dataframes`` from attributes of python objects. Used in ``aiida-jutools`` to tabulate attributes of aiida nodes
+- Added ``optional_tasks`` argument to ``outxml_parser``. Adds tasks marked with ``'_optional': True`` to the performed tasks [[#81]](https://github.com/JuDFTteam/masci-tools/pull/81)
+- Added visualization routine for spectral functions (colormesh plot with path though Brillouin zone)
+- Added tool for converting ``inp.xml`` files between different file versions (Available through the click CLI ``masci-tools inpxml``) [[#88]](https://github.com/JuDFTteam/masci-tools/pull/88)
+- Added three new XML setters: ``clone_species`` (Create and modify a species starting from an existing one), ``switch_species``/``switch_species_label`` for switching the species attribute of atom groups with additional checks
+- ``outxml_parser``: Total Energy is now taken from the output ``freeEnergy`` in the ``out.xml``
+### Improvements
+- Refactored SchemaDict code. Moved routines ``get_tag_xpath`` and similar to methods on the SchemaDict. If the path cannot be determined custom exceptions ``NoPathFound`` and ``NoUniquePathFound`` are now raised [[#84]](https://github.com/JuDFTteam/masci-tools/pull/84)
+- Added utility to ``OutputSchemaDict`` to create absolute paths into ``iteration`` elements in ``out.xml``. Added support for this option in ``schema_dict_util`` functions with ``iteration_path=True``
+- All basic XML modification functions now accept either a ``ElementTree`` or ``Element``. and warn they find no nodes to operate on
+- Improved capabilities of green's function tool, can now be used with radially resolved/k-resolved Green's functions
+- Improved performance of Fleur XML Schema parsing by switching from the ``xpath`` method on the ``ElementTree`` to constructing a ``XPathEvaluator`` object [[#89]](https://github.com/JuDFTteam/masci-tools/pull/89)
+- All ``xml_getters`` functions can now also be used with ``out.xml`` files
+- ``set_atomgroup``/``set_atomgroup_label`` now use ``switch_species`` if the species attribute is changed
+- ``set_atomgroup`` now supports the ``all-<search string>`` syntax for species argument, equivalent to ``set_species``
+- Improved behaviour of spin-polarized DOS plots for duplicating all plot parameters for spin-down components (previously only color was repeated)
+### Bugfixes
+- Fixed several issues in version handling of Schema dictionaries. It is now possible to add a new schema and have it work (with warnings) without needing to change any code (``masci-tools fleur-schema add <path/to/schema>``)
+- Bugfix in ``evaluate_tag`` not handling the combination of options ``subtags=True`` and ``text=True`` correctly. Previously some results were overwritten.
+- Fixed accidental change in ``write_inpgen_file`` in comparison to old ``aiida-fleur`` implementation. Now the species name is always appended to the position in the inpgen file if it is not equal to the atom symbol
+- Fixed behaviour of ``get_parameter_data`` for inputs with local orbitals with higher energy derivatives. These cannot be created by the inpgen and so are dropped
+- Fixes in ``xml_setters`` to allow consistent creation of multiple tags for setting text or attributes
+### Deprecated
+- The ``fleur_schema`` subpackage was moved from ``masci_tools.io.parsers.fleur`` to ``masci_tools.io.parsers`` to avoid circular import issues [[#87]](https://github.com/JuDFTteam/masci-tools/pull/87)
+### Removed
+- ``get_structure_data`` now returns ``AtomSiteProperties`` for the atom information by default. The default value of ``site_namedtuple`` is now ``True``
+### For developers
+- Moved configuration of ``yapf``, ``pylint`` and ``pytest`` into ``pyproject.toml``
+- Made test suite executable from the root-folder (Some file paths were not transferrable when changing the execution directory)
+- Added ``test_file`` fixture, which constructs the absolute filepath to files in the ``tests/files`` folder to reduce the difficulty of moving test files around and reorganizing the pytest suite
+- Updated pylint (``2.11``), pytest (``6.0``) in ``setup.py``
+- Added ``mypy`` pre-commit hook. Checked files are specified explicitely [[#86]](https://github.com/JuDFTteam/masci-tools/pull/86).
+- Added typing to majority of XML functions (with stubs package ``lxml-stubs``) and large parts of the ``io`` and ``util`` subpackages
+- Dropped testing for python ``3.6`` in CI
+
 ## v.0.6.2
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.6.1)
 

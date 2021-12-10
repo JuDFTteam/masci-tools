@@ -4,24 +4,12 @@ Updating or adapting the Fleur Parsers
 Each input and output file for Fleur has a correspong XML-Schema, where the structure
 of these files are defined.
 
-To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in the modules under :py:mod:`~masci_tools.io.parsers.fleur.fleur_schema`. The resulting python dictionaries can be accessed via the classes :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict` and :py:class:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict`. The easiest way to instantiate one of these objects is to use the :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.InputSchemaDict.fromVersion()` or :py:meth:`~masci_tools.io.parsers.fleur.fleur_schema.OutputSchemaDict.fromVersion()` methods by providing the desired version string.
+To be able to parse such files efficiently and without hardcoding their structure we extract all necessary information about the schemas in the modules under :py:mod:`~masci_tools.io.parsers.fleur_schema`. The resulting python dictionaries can be accessed via the classes :py:class:`~masci_tools.io.parsers.fleur_schema.InputSchemaDict` and :py:class:`~masci_tools.io.parsers.fleur_schema.OutputSchemaDict`. The easiest way to instantiate one of these objects is to use the :py:meth:`~masci_tools.io.parsers.fleur_schema.InputSchemaDict.fromVersion()` or :py:meth:`~masci_tools.io.parsers.fleur_schema.OutputSchemaDict.fromVersion()` methods by providing the desired version string.
 
 Adding/modifying a Fleur Schema:
 ---------------------------------
 
-The :py:func:`~masci_tools.io.parsers.fleur.fleur_schema.add_fleur_schema()` function can be used if a new ```FleurInputSchema.xsd``` or ```FleurOutputSchema.xsd``` are to be added to the available versions:
-
-.. code-block:: python
-
-  from masci_tools.io.parsers.fleur.fleur_schema import add_fleur_schema
-
-  #This function adds the Schemas to the folder with the corresponding version
-  #and creates the parsed dicitionaries
-  add_fleur_schema('/path/to/folder/with/schema/')
-
-  #If the schema with the found version is found the above call will raise an exception
-  #use overwrite=True to replace the schemas
-  add_fleur_schema('/path/to/folder/with/schema/', overwrite=True)
+The command ``masci-tools fleur-schema add <path-to-schema-file>`` can be used to add the schema to the repository. If the schema for the specified version already exists an error is raised. To ignore this error the option ``--overwrite`` can be used.
 
 Adapting the outxml_parser:
 ----------------------------

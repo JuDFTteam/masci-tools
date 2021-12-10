@@ -23,9 +23,9 @@ from masci_tools.io.common_functions import (search_string, get_version_info, an
 from masci_tools.io.common_functions import get_Ry2eV
 import traceback
 
-__copyright__ = (u'Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__contributors__ = u'Philipp Rüßmann'
+__contributors__ = 'Philipp Rüßmann'
 __version__ = '1.8.1'
 
 ####################################################################################
@@ -48,9 +48,8 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=
     Returns: array of results
 
     """
-    f = open_general(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     itmp = 0
     res = []
     while itmp >= 0:
@@ -144,10 +143,9 @@ def get_Etot(outfile):
 
 
 def find_warnings(outfile):
-    f = open_general(outfile)
-    tmptxt = f.readlines()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     tmptxt_caps = [txt.upper() for txt in tmptxt]
-    f.close()
     itmp = 0
     res = []
     while itmp >= 0:
@@ -160,9 +158,8 @@ def find_warnings(outfile):
 
 
 def extract_timings(outfile):
-    f = open_general(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     itmp = 0
     res = []
     search_keys = [
@@ -205,9 +202,8 @@ def get_single_particle_energies(outfile_000):
     extracts single particle energies from outfile_000 (output.000.txt)
     returns the valence contribution of the single particle energies
     """
-    f = open_general(outfile_000)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_000) as f:
+        tmptxt = f.readlines()
     itmp = 0
     res = []
     while itmp >= 0:
@@ -219,9 +215,8 @@ def get_single_particle_energies(outfile_000):
 
 
 def get_econt_info(outfile_0init):
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
 
     itmp = search_string('E min', tmptxt)
     emin = float(tmptxt[itmp].split('min')[1].split('=')[1].split()[0])
@@ -279,9 +274,8 @@ def get_core_states(potfile):
 
 
 def get_alatinfo(outfile_0init):
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     itmp = search_string('Lattice constants :', tmptxt)
     alat = float(tmptxt[itmp].split(':')[1].split('=')[1].split()[0])
     twopialat = float(tmptxt[itmp].split(':')[1].split('=')[2].split()[0])
@@ -289,32 +283,23 @@ def get_alatinfo(outfile_0init):
 
 
 def get_scfinfo(outfile_0init, outfile_000, outfile):
-    f = open_general(outfile_000)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_000) as f:
+        tmptxt = f.readlines()
 
     itmp = search_string('ITERATION :', tmptxt)
     tmpval = tmptxt[itmp].split(':')[1].split()
     niter = int(tmpval[0])
     nitermax = int(tmpval[3])
 
-    f = open_general(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     itmp1 = search_string('SCF ITERATION CONVERGED', tmptxt)
     itmp2 = search_string('NUMBER OF SCF STEPS EXHAUSTED', tmptxt)
-    if itmp1 >= 0:
-        converged = True
-    else:
-        converged = False
-    if itmp2 >= 0:
-        nmax_reached = True
-    else:
-        nmax_reached = False
+    converged = itmp1 >= 0
+    nmax_reached = itmp2 >= 0
 
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     itmp = search_string('STRMIX        FCM       QBOUND', tmptxt)
     tmpval = tmptxt[itmp + 1].split()
     strmix = float(tmpval[0])
@@ -336,9 +321,8 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     Extract kmesh info from output.0.txt and output.000.txt
     """
     # first get info from output.0.txt
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     nkmesh = []
     itmp = search_string('number of different k-meshes', tmptxt)
     nkmesh.append(int(tmptxt[itmp].split(':')[1].split()[0]))
@@ -356,9 +340,8 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     nkmesh.append(tmpdict)
 
     #next get kmesh_ie from output.000.txt
-    f = open_general(outfile_000)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_000) as f:
+        tmptxt = f.readlines()
     kmesh_ie = []
     itmp = 0
     while itmp >= 0:
@@ -371,9 +354,8 @@ def get_kmeshinfo(outfile_0init, outfile_000):
 
 
 def get_symmetries(outfile_0init):
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     try:
         itmp = search_string('symmetries found for this lattice:', tmptxt)
         nsym = int(tmptxt[itmp].split(':')[1].split()[0])
@@ -400,9 +382,8 @@ def get_symmetries(outfile_0init):
 
 
 def get_ewald(outfile_0init):
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     itmp = search_string('setting bulk Madelung coefficients', tmptxt)
     if itmp >= 0:
         info = '3D'
@@ -427,9 +408,8 @@ def get_nspin(outfile_0init):
     """
     extract NSPIN value from output.0.txt
     """
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     itmp = search_string('NSPIN', tmptxt)
     nspin = int(tmptxt[itmp + 1].split()[0])
     return nspin
@@ -439,9 +419,8 @@ def get_natom(outfile_0init):
     """
     extract NATYP value from output.0.txt
     """
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     itmp = search_string('NATYP', tmptxt)
     natom = int(tmptxt[itmp + 1].split()[0])
     return natom
@@ -451,9 +430,8 @@ def use_newsosol(outfile_0init):
     """
     extract NEWSOSOL info from output.0.txt
     """
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     newsosol = False
     # old style (RUNOPT output)
     itmp = search_string('NEWSOSOL', tmptxt)
@@ -473,9 +451,8 @@ def use_BdG(outfile_0init):
     """
     extract BdG run info from output.0.txt
     """
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     use_BdG = False
     itmp = search_string('<use_BdG>=', tmptxt)
     if itmp >= 0:
@@ -490,9 +467,8 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     """
     Extract spin moment information from outfile and nonco_angles_out (if given)
     """
-    f = open_general(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     itmp = 0
     result = []
     while itmp >= 0:
@@ -521,9 +497,8 @@ def get_orbmom(outfile, natom):
     """
     read orbmom info from outfile and return array (iteration, atom)=orbmom
     """
-    f = open_general(outfile)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile) as f:
+        tmptxt = f.readlines()
     itmp = 0
     result = []
     while itmp >= 0:
@@ -543,9 +518,8 @@ def get_lattice_vectors(outfile_0init):
     """
     read direct and reciprocal lattice vectors in internal units (useful for qdos generation)
     """
-    f = open_general(outfile_0init)
-    tmptxt = f.readlines()
-    f.close()
+    with open_general(outfile_0init) as f:
+        tmptxt = f.readlines()
     vecs, rvecs = [], []
     tmpvecs = []
     for search_txt in ['a_1: ', 'a_2: ', 'a_3: ', 'b_1: ', 'b_2: ', 'b_3: ']:
@@ -970,10 +944,7 @@ def check_error_category(err_cat, err_msg, out_dict):
     # check special cases:
     # 1. nonco_angle_file not present, but newsosol==False anyways
     if 'NONCO_ANGLES_OUT' in err_msg:
-        if 'use_newsosol' in out_dict:
-            return out_dict['use_newsosol']
-        else:
-            return True
+        return out_dict.get('use_newsosol', True)
 
     # default behavior
     return err_cat == 1

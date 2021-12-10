@@ -7,9 +7,11 @@ Created on Wed Nov 15 16:43:31 2017
 """
 import pytest
 from masci_tools.io.kkr_params import kkrparams
-from masci_tools.io.common_functions import open_general
 import tempfile
 import os
+from pathlib import Path
+
+DIR = Path(__file__).parent.resolve()
 
 # helper functions
 
@@ -39,7 +41,7 @@ def check_full_dict(p, p0):
 # tests
 
 
-class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstring
+class Test_create_and_set_keys:  # pylint: disable=missing-class-docstring
 
     def test_create_params_with_inital_values(self):
         p = kkrparams(RBASIS=[0, 0, 0], params_type='voronoi')
@@ -63,7 +65,7 @@ class Test_create_and_set_keys(object):  # pylint: disable=missing-class-docstri
         assert p.values['EMAX'] == 2.
 
 
-class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstring
+class Test_capture_wrong_input:  # pylint: disable=missing-class-docstring
 
     def test_wrong_input_type(self):
         p = kkrparams()
@@ -119,7 +121,7 @@ class Test_capture_wrong_input(object):  # pylint: disable=missing-class-docstri
             p.fill_keywords_to_inputfile()
 
 
-class Test_get_info(object):  # pylint: disable=missing-class-docstring
+class Test_get_info:  # pylint: disable=missing-class-docstring
 
     def test_get_mandatory(self):
         p = kkrparams()
@@ -178,7 +180,7 @@ class Test_get_info(object):  # pylint: disable=missing-class-docstring
         assert set(testopt) == set(['test1', 'test2'])
 
 
-class Test_fill_inputfile(object):
+class Test_fill_inputfile:
     """
     Tests checking writing an input file
     """
@@ -229,7 +231,7 @@ class Test_fill_inputfile(object):
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(is_voro_calc=True)
-            with open('inputcard', 'r') as f:
+            with open('inputcard', 'r', encoding='utf-8') as f:
                 file_content = f.read()
             os.chdir(cwd)
 
@@ -250,7 +252,7 @@ class Test_fill_inputfile(object):
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile()
-            with open('inputcard', 'r') as f:
+            with open('inputcard', 'r', encoding='utf-8') as f:
                 file_content = f.read().strip()
             os.chdir(cwd)
 
@@ -369,9 +371,9 @@ class Test_fill_inputfile(object):
         from numpy import array
         from masci_tools.io.common_functions import search_string
 
-        para_dict = dict([(u'INS', 0), (u'RCLUSTZ', 1.69), (u'LMAX', 2), (u'GMAX', 65.0),
-                          (u'<RMTCORE>', [0.3535533906, 0.3535533906, 0.3535533906, 0.3535533906]), (u'RMAX', 7.0),
-                          (u'NSPIN', 1)])
+        para_dict = dict([('INS', 0), ('RCLUSTZ', 1.69), ('LMAX', 2), ('GMAX', 65.0),
+                          ('<RMTCORE>', [0.3535533906, 0.3535533906, 0.3535533906, 0.3535533906]), ('RMAX', 7.0),
+                          ('NSPIN', 1)])
         zatom = array([47., 47., 47., 47.])
         alat = 7.8692316414074615
         natom = 4
@@ -426,7 +428,7 @@ class Test_fill_inputfile(object):
         file_regression.check(file_content)
 
 
-class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
+class Test_read_inputfile:  # pylint: disable=missing-class-docstring
 
     def test_read_minimal_inputfile(self):
         p = kkrparams(ZATOM=26.,
@@ -462,7 +464,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(output='input.temp.txt')
-            with open('input.temp.txt', 'r') as f:
+            with open('input.temp.txt', 'r', encoding='utf-8') as f:
                 txt = f.readlines()
             # exchange some lines
             tmp = txt[0]
@@ -477,7 +479,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
             tmp = txt[-3]
             txt[-3] = txt[-1]
             txt[-1] = tmp
-            with open('input.temp_unsorted.txt', 'w') as f:
+            with open('input.temp_unsorted.txt', 'w', encoding='utf-8') as f:
                 f.writelines(txt)
             p2 = kkrparams()
             p2.read_keywords_from_inputcard(inputcard='input.temp_unsorted.txt')
@@ -492,7 +494,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         p = kkrparams(params_type='kkr')
 
         # automatically read keywords from inpucard
-        p.read_keywords_from_inputcard(inputcard='../tests/files/kkr/import_calc_old_style/inputcard')
+        p.read_keywords_from_inputcard(inputcard=os.fspath(DIR / Path('files/kkr/import_calc_old_style/inputcard')))
         # convert some read-in stuff back from Ang. units to alat units
         rbl = p.get_value('<RBLEFT>')
         rbr = p.get_value('<RBRIGHT>')
@@ -516,7 +518,7 @@ class Test_read_inputfile(object):  # pylint: disable=missing-class-docstring
         data_regression.check(d_check)
 
 
-class Test_other(object):  # pylint: disable=missing-class-docstring
+class Test_other:  # pylint: disable=missing-class-docstring
 
     def test_get_missing_keys(self):
         p = kkrparams()

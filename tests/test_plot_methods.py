@@ -152,7 +152,7 @@ def test_mpl_load_defaults(file_regression):
     reset_mpl_plot_defaults()
 
 
-class TestSingleScatterPlot(object):
+class TestSingleScatterPlot:
     """
     Test of the single_scatterplot function
     """
@@ -396,7 +396,7 @@ class TestSingleScatterPlot(object):
         return gcf()
 
 
-class TestMultipleScatterPlot(object):
+class TestMultipleScatterPlot:
     """
     Test of the multiple_scatterplots function
     """
@@ -721,7 +721,7 @@ class TestMultipleScatterPlot(object):
         return gcf()
 
 
-class TestMultiScatterPlot(object):
+class TestMultiScatterPlot:
     """
     Test of the multi_scatter_plot function
     """
@@ -776,7 +776,7 @@ class TestMultiScatterPlot(object):
         return gcf()
 
 
-class TestMultiPlotMoved(object):
+class TestMultiPlotMoved:
     """Test of the multiplot_moved function"""
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
@@ -850,7 +850,7 @@ class TestMultiPlotMoved(object):
         return gcf()
 
 
-class TestWaterFallPlot(object):  #pylint: disable=missing-class-docstring
+class TestWaterFallPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/waterfall_plot/',
                                    filename='defaults.png')
@@ -876,7 +876,7 @@ class TestWaterFallPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestSurfacePlot(object):  #pylint: disable=missing-class-docstring
+class TestSurfacePlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/surface_plot/', filename='defaults.png')
     def test_default(self):
@@ -900,7 +900,7 @@ class TestSurfacePlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstring
+class TestMultiAxisScatterPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='defaults.png')
     def test_defaults(self):
@@ -1031,7 +1031,7 @@ class TestMultiAxisScatterPlot(object):  #pylint: disable=missing-class-docstrin
         return gcf()
 
 
-class TestColormeshPlot(object):  #pylint: disable=missing-class-docstring
+class TestColormeshPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/colormesh/', filename='defaults.png')
     def test_defaults(self):
@@ -1054,7 +1054,7 @@ class TestColormeshPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
+class TestHistogramPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='defaults.png')
     def test_defaults(self):
@@ -1159,7 +1159,7 @@ class TestHistogramPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
+class TestBarchartPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/barchart/',
                                    filename='defaults_stacked.png')
@@ -1383,7 +1383,7 @@ class TestBarchartPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
+class TestResiduenPlot:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/', filename='defaults.png')
     def test_defaults(self):
@@ -1507,7 +1507,7 @@ class TestResiduenPlot(object):  #pylint: disable=missing-class-docstring
         return gcf()
 
 
-class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstring
+class TestPlotConvergenceResults:  #pylint: disable=missing-class-docstring
 
     energies = [
         -69269.46134019217, -69269.42108466873, -69269.35509388152, -69269.62486438647, -69269.51102655893,
@@ -1572,7 +1572,7 @@ class TestPlotConvergenceResults(object):  #pylint: disable=missing-class-docstr
         return fig
 
 
-class TestPlotConvergenceMulti(object):  #pylint: disable=missing-class-docstring
+class TestPlotConvergenceMulti:  #pylint: disable=missing-class-docstring
 
     @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convergence_multi/',
                                    filename='defaults.png')

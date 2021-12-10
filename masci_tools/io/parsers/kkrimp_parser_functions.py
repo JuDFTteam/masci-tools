@@ -19,15 +19,15 @@ from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, g
 import traceback
 from masci_tools.io.common_functions import get_Ry2eV
 
-__copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __version__ = '0.7'
-__contributors__ = (u'Philipp Rüßmann', u'Fabian Bertoldo')
+__contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo')
 
 ####################################################################################
 
 
-class KkrimpParserFunctions(object):
+class KkrimpParserFunctions:
     """
     Class of parser functions for KKRimp calculation
 
@@ -47,9 +47,8 @@ class KkrimpParserFunctions(object):
             * 'epts', list of complex valued energy points
             * 'weights', list of complex valued weights for energy integration
         """
-        f = open_general(out_log)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(out_log) as f:
+            tmptxt = f.readlines()
         econt = {}
         itmp = search_string('[read_energy] number of energy points', tmptxt)
         if itmp >= 0:
@@ -73,9 +72,8 @@ class KkrimpParserFunctions(object):
         :returns: niter (int), nitermax (int), converged (bool), nmax_reached (bool), mixinfo (dict)
         :note: mixinfo contains information on mixing scheme and mixing factor used in the calculation
         """
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         # get rms and number of iterations
         itmp, niter, rms = 0, -1, -1
         while itmp >= 0:
@@ -121,15 +119,11 @@ class KkrimpParserFunctions(object):
         :param file: absolute path to out_log.000.txt of KKRimp calculation
         :returns: True(False) if SOC solver is (not) used
         """
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         itmp = search_string('Spin orbit coupling used?', tmptxt)
         itmp = int(tmptxt.pop(itmp).split()[-1])
-        if itmp == 1:
-            newsosol = True
-        else:
-            newsosol = False
+        newsosol = itmp == 1
         return newsosol
 
     def _get_natom(self, file):
@@ -138,9 +132,8 @@ class KkrimpParserFunctions(object):
         :param file: file that is parsed to find number of atoms
         :returns: natom (int), number of atoms in impurity cluster
         """
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         itmp = search_string('NATOM is', tmptxt)
         natom = int(tmptxt.pop(itmp).split()[-1])
         return natom
@@ -158,9 +151,8 @@ class KkrimpParserFunctions(object):
         """
         import numpy as np
 
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         itmp = 0
         spinmom_all = []
         while itmp >= 0:
@@ -189,9 +181,8 @@ class KkrimpParserFunctions(object):
         :param outfile: timing file of the KKRimp run
         :returns: res (dict) timings in seconds, averaged over iterations
         """
-        f = open_general(outfile)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(outfile) as f:
+            tmptxt = f.readlines()
         search_keys = [
             'time until scf starts', 'vpot->tmat', 'gref->gmat', 'gonsite->density', 'energyloop', 'Iteration number',
             'Total running time'
@@ -224,9 +215,8 @@ class KkrimpParserFunctions(object):
         :param file: file that is parsed
         :returns: 1 if calculation is paramagnetic, 2 otherwise
         """
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         itmp = search_string('NSPIN', tmptxt)
         nspin = int(tmptxt.pop(itmp).split()[-1])
         return nspin
@@ -241,10 +231,10 @@ class KkrimpParserFunctions(object):
                   spinmom_at_tot (total spinmoment for the last iteration)
         """
         import numpy as np
-        from math import sqrt
+        from math import sqrt  #pylint: disable=no-name-in-module
 
-        f = open_general(file)
-        lines = f.readlines()
+        with open_general(file) as f:
+            lines = f.readlines()
         startline = len(lines) - natom
         spinmom_at = np.array([lines[startline].split()])
         spinmom_at_all = np.array([lines[1].split()])
@@ -273,8 +263,8 @@ class KkrimpParserFunctions(object):
         """
         import numpy as np
 
-        f = open_general(file)
-        lines = f.readlines()
+        with open_general(file) as f:
+            lines = f.readlines()
         startline = len(lines) - natom
 
         orbmom_at = []
@@ -299,9 +289,8 @@ class KkrimpParserFunctions(object):
         :param potfile: file that is parsed
         :returns: EF (float), value of the Fermi energy in Ry
         """
-        f = open_general(potfile)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(potfile) as f:
+            tmptxt = f.readlines()
         EF = float(tmptxt[3].split()[1])
         return EF
 
@@ -311,9 +300,8 @@ class KkrimpParserFunctions(object):
         :param file: file that is parsed
         :returns: Etot (list), values of the total energy in Ry for all iterations
         """
-        f = open_general(file)
-        tmptxt = f.readlines()
-        f.close()
+        with open_general(file) as f:
+            tmptxt = f.readlines()
         itmp = 0
         Etot = []
         while itmp >= 0:
@@ -584,7 +572,4 @@ class KkrimpParserFunctions(object):
         out_dict = convert_to_pystd(out_dict)
 
         # return output with error messages if there are any
-        if len(msg_list) > 0:
-            return False, msg_list, out_dict
-        else:
-            return True, [], out_dict
+        return len(msg_list) == 0, msg_list, out_dict

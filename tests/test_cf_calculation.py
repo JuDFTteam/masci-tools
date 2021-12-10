@@ -7,6 +7,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pytest
+from pathlib import Path
+
+DIR = Path(__file__).parent.resolve()
 
 
 def test_CFCalculation_txt_files():
@@ -33,11 +36,11 @@ def test_CFCalculation_txt_files():
     ]
 
     cf = CFCalculation(reference_radius='cdn')
-    cf.readPot('files/cf_calculation/VKS.2.0.dat',
-               'files/cf_calculation/VKS.4.0.dat',
-               'files/cf_calculation/VKS.6.0.dat',
+    cf.readPot(DIR / Path('files/cf_calculation/VKS.2.0.dat'),
+               DIR / Path('files/cf_calculation/VKS.4.0.dat'),
+               DIR / Path('files/cf_calculation/VKS.6.0.dat'),
                lm=[(2, 0), (4, 0), (6, 0)])
-    cf.readCDN('files/cf_calculation/Nd.dat', header=3)
+    cf.readCDN(DIR / Path('files/cf_calculation/Nd.dat'), header=3)
     cf.cdn['RMT'] = 3.138049652
     results = cf.performIntegration()
 
@@ -70,8 +73,8 @@ def test_CFCalculation_hdf_files():
     ]
 
     cf = CFCalculation()
-    cf.readPot('files/cf_calculation/CFdata.hdf')
-    cf.readCDN('files/cf_calculation/CFdata.hdf')
+    cf.readPot(DIR / Path('files/cf_calculation/CFdata.hdf'))
+    cf.readCDN(DIR / Path('files/cf_calculation/CFdata.hdf'))
     results = cf.performIntegration()
 
     assert results == expected_results
@@ -117,8 +120,8 @@ def test_CFCalculation_hdf_files_wybourne_convention():
     ]
 
     cf = CFCalculation()
-    cf.readPot('files/cf_calculation/CFdata.hdf')
-    cf.readCDN('files/cf_calculation/CFdata.hdf')
+    cf.readPot(DIR / Path('files/cf_calculation/CFdata.hdf'))
+    cf.readCDN(DIR / Path('files/cf_calculation/CFdata.hdf'))
     results = cf.performIntegration(convert=False)
 
     print(results)
@@ -133,8 +136,8 @@ def test_plot_crystal_field_calculation():
     from masci_tools.tools.cf_calculation import CFCalculation, plot_crystal_field_calculation
 
     cf = CFCalculation()
-    cf.readPot('files/cf_calculation/CFdata.hdf')
-    cf.readCDN('files/cf_calculation/CFdata.hdf')
+    cf.readPot(DIR / Path('files/cf_calculation/CFdata.hdf'))
+    cf.readCDN(DIR / Path('files/cf_calculation/CFdata.hdf'))
 
     plt.gcf().clear()
 

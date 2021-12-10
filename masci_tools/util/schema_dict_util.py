@@ -17,65 +17,20 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
+from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
-from masci_tools.util.lockable_containers import LockableList
+from masci_tools.io.parsers import fleur_schema
+from masci_tools.util.xml.common_functions import check_complex_xpath
 from lxml import etree
-
-
-def _find_paths(schema_dict, name, entries, contains=None, not_contains=None):
-    """
-    Find all paths in the schema_dict in the given entries for the given name
-    and matching the contains/not_contains criteria
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-
-    :returns: list of str, found xpaths matching the criteria
-    """
-
-    if contains is None:
-        contains = []
-    elif not isinstance(contains, (list, set)):
-        contains = [contains]
-
-    if not_contains is None:
-        not_contains = []
-    elif not isinstance(not_contains, (list, set)):
-        not_contains = [not_contains]
-
-    path_list = []
-    for entry in entries:
-        if name in schema_dict[entry]:
-            entry_paths = schema_dict[entry][name]
-
-            if not isinstance(entry_paths, LockableList):
-                entry_paths = [entry_paths]
-            else:
-                entry_paths = entry_paths.get_unlocked()
-
-            invalid_paths = set()
-            for phrase in contains:
-                for xpath in entry_paths:
-                    if phrase not in xpath:
-                        invalid_paths.add(xpath)
-
-            for phrase in not_contains:
-                for xpath in entry_paths:
-                    if phrase in xpath:
-                        invalid_paths.add(xpath)
-
-            for invalid in invalid_paths:
-                entry_paths.remove(invalid)
-
-            path_list += entry_paths
-
-    return path_list
+from logging import Logger
+import warnings
+from typing import Dict, Iterable, Tuple, Union, Any, List
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications
 
@@ -88,27 +43,15 @@ def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
 
     :raises ValueError: If no unique path could be found
     """
-
-    possible_lists = ['tag_paths']
-
-    if 'iteration_tag_paths' in schema_dict:
-        possible_lists += ['iteration_tag_paths']
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    if len(paths) == 1:
-        return paths[0]
-    elif len(paths) == 0:
-        raise ValueError(f'The tag {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}')
-    else:
-        raise ValueError(f'The tag {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains} \n'
-                         f'These are possible: {paths}')
+    warnings.warn('get_tag_xpath is deprecated. Use the tag_xpath method on the schema dictionary instead',
+                  DeprecationWarning)
+    return schema_dict.tag_xpath(name, contains=contains, not_contains=not_contains)
 
 
 def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_contains=None):
     """
+    DEPRECATED
+
     Tries to find a unique relative path from the schema_dict based on the given name of the tag
     name of the root, from which the path should be relative and additional further specifications
 
@@ -122,39 +65,16 @@ def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_conta
 
     :raises ValueError: If no unique path could be found
     """
-    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
-
-    possible_lists = ['tag_paths']
-
-    if 'iteration_tag_paths' in schema_dict:
-        possible_lists += ['iteration_tag_paths']
-
-    #The paths have to include the root_tag
-    if contains is None:
-        contains = [root_tag]
-    else:
-        contains = set(contains)
-        contains.add(root_tag)
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    rel_paths = set()
-    for xpath in paths:
-        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
-
-    if len(rel_paths) == 1:
-        return rel_paths.pop()
-    elif len(rel_paths) == 0:
-        raise ValueError(f'The tag {name} has no possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-    else:
-        raise ValueError(f'The tag {name} has multiple possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                         f'These are possible: {rel_paths}')
+    warnings.warn(
+        'get_relative_tag_xpath is deprecated. Use the relative_tag_xpath method on the schema dictionary instead',
+        DeprecationWarning)
+    return schema_dict.relative_tag_xpath(name, root_tag, contains=contains, not_contains=not_contains)
 
 
 def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the attribute
     and additional further specifications
 
@@ -172,43 +92,13 @@ def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclud
 
     :raises ValueError: If no unique path could be found
     """
-
-    if tag_name is not None:
-        tag_xpath = get_tag_xpath(schema_dict, tag_name, contains=contains, not_contains=not_contains)
-
-        err_msg = f'No attribute {name} found at tag {tag_name}'
-        if tag_xpath in schema_dict['tag_info']:
-            if name not in schema_dict['tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
-        else:
-            if name not in schema_dict['iteration_tag_info'][tag_xpath]['attribs']:
-                raise ValueError(err_msg)
-        return f'{tag_xpath}/@{name}'
-
-    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
-    output = False
-    if 'iteration_unique_attribs' in schema_dict:
-        #outputschema
-        output = True
-        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
-
-    if exclude is not None:
-        for list_name in exclude:
-            possible_lists.remove(f'{list_name}_attribs')
-            if output:
-                possible_lists.remove(f'iteration_{list_name}_attribs')
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    if len(paths) == 1:
-        return paths[0]
-    elif len(paths) == 0:
-        raise ValueError(f'The attrib {name} has no possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
-    else:
-        raise ValueError(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                         f'These are possible: {paths}')
+    warnings.warn('get_attrib_xpath is deprecated. Use the attrib_xpath method on the schema dictionary instead',
+                  DeprecationWarning)
+    return schema_dict.attrib_xpath(name,
+                                    contains=contains,
+                                    not_contains=not_contains,
+                                    exclude=exclude,
+                                    tag_name=tag_name)
 
 
 def get_relative_attrib_xpath(schema_dict,
@@ -219,6 +109,8 @@ def get_relative_attrib_xpath(schema_dict,
                               exclude=None,
                               tag_name=None):
     """
+    DEPRECATED
+
     Tries to find a unique relative path from the schema_dict based on the given name of the attribute
     name of the root, from which the path should be relative and additional further specifications
 
@@ -235,66 +127,15 @@ def get_relative_attrib_xpath(schema_dict,
 
     :raises ValueError: If no unique path could be found
     """
-    from masci_tools.util.xml.common_functions import abs_to_rel_xpath
-
-    if tag_name is not None:
-        tag_xpath = get_relative_tag_xpath(schema_dict,
-                                           tag_name,
-                                           root_tag,
-                                           contains=contains,
-                                           not_contains=not_contains)
-
-        tag_info = get_tag_info(schema_dict,
-                                tag_name,
-                                path_return=False,
-                                multiple_paths=True,
-                                contains=contains,
-                                not_contains=not_contains)
-
-        err_msg = f'No attribute {name} found at tag {tag_name}'
-        if name not in tag_info['attribs']:
-            raise ValueError(err_msg)
-
-        if tag_xpath.endswith('/'):
-            return f'{tag_xpath}@{name}'
-        else:
-            return f'{tag_xpath}/@{name}'
-
-    possible_lists = ['unique_attribs', 'unique_path_attribs', 'other_attribs']
-    output = False
-    if 'iteration_unique_attribs' in schema_dict:
-        #outputschema
-        output = True
-        possible_lists += ['iteration_unique_attribs', 'iteration_unique_path_attribs', 'iteration_other_attribs']
-
-    if exclude is not None:
-        for list_name in exclude:
-            possible_lists.remove(f'{list_name}_attribs')
-            if output:
-                possible_lists.remove(f'iteration_{list_name}_attribs')
-
-    #The paths have to include the root_tag
-    if contains is None:
-        contains = [root_tag]
-    else:
-        contains = set(contains)
-        contains.add(root_tag)
-
-    paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-
-    rel_paths = set()
-    for xpath in paths:
-        rel_paths.add(abs_to_rel_xpath(xpath, root_tag))
-
-    if len(rel_paths) == 1:
-        return rel_paths.pop()
-    elif len(rel_paths) == 0:
-        raise ValueError(f'The attrib {name} has no possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-    else:
-        raise ValueError(f'The attrib {name} has multiple possible relative paths with the current specification.\n'
-                         f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                         f'These are possible: {rel_paths}')
+    warnings.warn(
+        'get_relative_attrib_xpath is deprecated. Use the relative_attrib_xpath method on the schema dictionary instead',
+        DeprecationWarning)
+    return schema_dict.relative_attrib_xpath(name,
+                                             root_tag,
+                                             contains=contains,
+                                             not_contains=not_contains,
+                                             exclude=exclude,
+                                             tag_name=tag_name)
 
 
 def get_tag_info(schema_dict,
@@ -306,6 +147,8 @@ def get_tag_info(schema_dict,
                  multiple_paths=False,
                  parent=False):
     """
+    DEPRECATED
+
     Tries to find a unique path from the schema_dict based on the given name of the tag
     and additional further specifications and returns the tag_info entry for this tag
 
@@ -322,70 +165,20 @@ def get_tag_info(schema_dict,
     :returns: dict, tag_info for the found xpath
     :returns: str, xpath to the tag if `path_return=True`
     """
-    import copy
-    from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
-    from masci_tools.util.xml.common_functions import split_off_tag
-
-    if multiple_paths:
-        possible_lists = ['tag_paths']
-
-        if 'iteration_tag_paths' in schema_dict:
-            possible_lists += ['iteration_tag_paths']
-
-        paths = _find_paths(schema_dict, name, possible_lists, contains=contains, not_contains=not_contains)
-    else:
-        paths = [get_tag_xpath(schema_dict, name, contains=contains, not_contains=not_contains)]
-
-    EMPTY_TAG_INFO = CaseInsensitiveDict({
-        'attribs': CaseInsensitiveFrozenSet(),
-        'optional_attribs': {},
-        'optional': CaseInsensitiveFrozenSet(),
-        'order': [],
-        'several': CaseInsensitiveFrozenSet(),
-        'simple': CaseInsensitiveFrozenSet(),
-        'complex': CaseInsensitiveFrozenSet(),
-        'text': CaseInsensitiveFrozenSet()
-    })
-    EMPTY_TAG_INFO.freeze()
-
-    tag_info = None
-    for path in paths:
-
-        if parent:
-            path, _ = split_off_tag(path)
-
-        if path in schema_dict['tag_info']:
-            entry = schema_dict['tag_info'][path]
-        elif 'iteration_tag_info' in schema_dict:
-            if path in schema_dict['iteration_tag_info']:
-                entry = schema_dict['iteration_tag_info'][path]
-            else:
-                entry = EMPTY_TAG_INFO
-        else:
-            entry = EMPTY_TAG_INFO
-
-        if tag_info is not None:
-            if entry != tag_info:
-                raise ValueError(f'Differing tag_info for the found paths {paths}')
-        else:
-            tag_info = entry
-
-    if not multiple_paths:
-        paths = paths[0]
-
-    if convert_to_builtin:
-        tag_info = {
-            key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
-            for key, val in tag_info.items()
-        }
-
-    if path_return:
-        return tag_info, paths
-    else:
-        return tag_info
+    warnings.warn('get_tag_info is deprecated. Use the tag_info method on the schema dictionary instead',
+                  DeprecationWarning)
+    return schema_dict.tag_info(name,
+                                contains=contains,
+                                not_contains=not_contains,
+                                path_return=path_return,
+                                convert_to_builtin=convert_to_builtin,
+                                multiple_paths=multiple_paths,
+                                parent=parent)
 
 
-def read_constants(root, schema_dict, logger=None):
+def read_constants(root: Union[etree._Element, etree._ElementTree],
+                   schema_dict: 'fleur_schema.SchemaDict',
+                   logger: Logger = None) -> Dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -399,18 +192,14 @@ def read_constants(root, schema_dict, logger=None):
     """
     from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
     import copy
-    import warnings
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 
     try:
         tag_exists(root, schema_dict, 'constant')
-    except ValueError as err:
-        if 'no possible' in str(err):
-            warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
-            return defined_constants
-        else:
-            raise
+    except NoPathFound:
+        warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
+        return defined_constants
 
     if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
         return defined_constants
@@ -432,7 +221,14 @@ def read_constants(root, schema_dict, logger=None):
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
+                       schema_dict: 'fleur_schema.SchemaDict',
+                       name: str,
+                       constants: Dict[str, float] = None,
+                       logger: Logger = None,
+                       complex_xpath: 'etree._xpath' = None,
+                       iteration_path: bool = False,
+                       **kwargs: Any) -> Any:
     """
     Evaluates the value of the attribute based on the given name
     and additional further specifications with the available type information
@@ -442,6 +238,9 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     :param name: str, name of the attribute
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -460,15 +259,14 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
-    attrib_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
+    attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
 
-    if attrib_xpath is None:
-        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
+    if complex_xpath is None:
+        complex_xpath = attrib_xpath
 
-    stringattribute = eval_xpath(node, attrib_xpath, logger=logger, list_return=True)
+    check_complex_xpath(node, attrib_xpath, complex_xpath)
+
+    stringattribute: List[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
     if len(stringattribute) == 0:
         if logger is None:
@@ -478,8 +276,7 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
             logger.warning('No values found for attribute %s', name)
         if list_return:
             return []
-        else:
-            return None
+        return None
 
     converted_value, suc = convert_from_xml(stringattribute,
                                             schema_dict,
@@ -492,14 +289,20 @@ def evaluate_attribute(node, schema_dict, name, constants=None, logger=None, **k
     if not suc:
         if logger is None:
             raise ValueError(f'Failed to evaluate attribute {name}, Got value: {stringattribute}')
-        else:
-            logger.warning('Failed to evaluate attribute %s, Got value: %s', name, stringattribute)
+        logger.warning('Failed to evaluate attribute %s, Got value: %s', name, stringattribute)
 
     return converted_value
 
 
 @register_parsing_function('text')
-def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_text(node: Union[etree._Element, etree._ElementTree],
+                  schema_dict: 'fleur_schema.SchemaDict',
+                  name: str,
+                  constants: Dict[str, float] = None,
+                  logger: Logger = None,
+                  complex_xpath: 'etree._xpath' = None,
+                  iteration_path: bool = False,
+                  **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
     and additional further specifications with the available type information
@@ -509,6 +312,9 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -524,15 +330,14 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
-    tag_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+    tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
 
-    if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
+    stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+                                       list_return=True)  #type:ignore
 
     for text in stringtext.copy():
         if text.strip() == '':
@@ -546,8 +351,7 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
             logger.warning('No text found for tag %s', name)
         if list_return:
             return []
-        else:
-            return None
+        return None
 
     converted_value, suc = convert_from_xml(stringtext,
                                             schema_dict,
@@ -560,14 +364,22 @@ def evaluate_text(node, schema_dict, name, constants=None, logger=None, **kwargs
     if not suc:
         if logger is None:
             raise ValueError(f'Failed to evaluate text for tag {name}, Got text: {stringtext}')
-        else:
-            logger.warning('Failed to evaluate text for tag %s, Got text: %s', name, stringtext)
+        logger.warning('Failed to evaluate text for tag %s, Got text: %s', name, stringtext)
 
     return converted_value
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=False, text=True, **kwargs):
+def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
+                 schema_dict: 'fleur_schema.SchemaDict',
+                 name: str,
+                 constants: Dict[str, float] = None,
+                 logger: Logger = None,
+                 subtags: bool = False,
+                 text: bool = True,
+                 complex_xpath: 'etree._xpath' = None,
+                 iteration_path: bool = False,
+                 **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
     and additional further specifications with the available type information
@@ -579,6 +391,9 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param subtags: optional bool, if True the subtags of the given tag are evaluated
     :param text: optional bool, if True the text of the tag is also parsed
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -598,40 +413,29 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
     ignore = kwargs.pop('ignore', None)
     list_return = kwargs.pop('list_return', False)
 
-    tag_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            kwargs['contains'] = set(kwargs.get('contains', []))
-            kwargs['contains'].add(node.tag)
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+    tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
 
-    if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    #Which attributes are expected
-    tags = set()
-    optional_tags = set()
     try:
-        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, **kwargs)
-        attribs = tag_info['attribs']
-        optional = tag_info['optional_attribs']
-        if subtags:
-            tags = tag_info['simple'] | tag_info['complex']
-            optional_tags = tag_info['optional']
+        tag_info = _select_tag_info(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     except ValueError as err:
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes') from err
-        else:
-            logger.exception(
-                'Failed to evaluate attributes from tag %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
-        attribs = set()
-        optional = set()
-        tags = set()
-        optional_tags = set()
+        logger.exception(
+            'Failed to evaluate attributes from tag %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
+        return {}
+
+    attribs = tag_info['attribs']
+    optional = tag_info['optional_attribs']
+    tags = tag_info['simple'] | tag_info['complex']
+    optional_tags = tag_info['optional']
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -650,19 +454,20 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
             raise ValueError(f'Failed to evaluate attributes from tag {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes')
-        else:
-            logger.error(
-                'Failed to evaluate attributes from tag %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
-    else:
-        attribs = sorted(list(attribs.original_case.values()))
+        logger.error(
+            'Failed to evaluate attributes from tag %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
+    attrib_list = sorted(list(attribs.original_case.values()))
 
-    out_dict = {}
+    out_dict: Dict[str, Any] = {}
 
-    for attrib in attribs:
+    for attrib in attrib_list:
 
-        stringattribute = eval_xpath(node, f'{tag_xpath}/@{attrib}', logger=logger, list_return=True)
+        stringattribute: List[str] = eval_xpath(node,
+                                                f'{str(complex_xpath)}/@{attrib}',
+                                                logger=logger,
+                                                list_return=True)  #type:ignore
 
         if len(stringattribute) == 0:
             if logger is None:
@@ -686,17 +491,17 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
         if not suc:
             if logger is None:
                 raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
-            else:
-                logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
+            logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext = eval_xpath(node, f'{tag_xpath}/text()', logger=logger, list_return=True)
+        stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+                                           list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
             if textval.strip() == '':
-                stringtext.remove(text)
+                stringtext.remove(textval)
 
         if len(stringtext) == 0:
             if logger is None:
@@ -722,11 +527,10 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
             if tag in out_dict:
                 if logger is None:
                     raise ValueError(f'Conflicting key {tag}: ' 'Key is already in the output dictionary')
-                else:
-                    logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
+                logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
-        sub_nodes = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+        sub_nodes: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
         for sub_node in sub_nodes:
             for tag in tags:
                 if tag_exists(sub_node, schema_dict, tag):
@@ -744,11 +548,11 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
                                      text=text))
 
         for tag in tags:
-            for sub_dict in out_dict[tag]:
+            for indx, sub_dict in enumerate(out_dict[tag]):
                 if not sub_dict:
                     out_dict[tag].remove(sub_dict)
                 elif len(sub_dict) == 1 and tag in sub_dict:
-                    out_dict[tag] = sub_dict[tag]
+                    out_dict[tag][indx] = sub_dict[tag]
 
         for tag in tags:
             if len(out_dict[tag]) == 1:
@@ -760,7 +564,13 @@ def evaluate_tag(node, schema_dict, name, constants=None, logger=None, subtags=F
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
+                              schema_dict: 'fleur_schema.SchemaDict',
+                              name: str,
+                              constants: Dict[str, float] = None,
+                              logger: Logger = None,
+                              complex_xpath: 'etree._xpath' = None,
+                              **kwargs: Any) -> Any:
     """
     Evaluates the value and unit attribute of the tag based on the given name
     and additional further specifications with the available type information
@@ -770,6 +580,7 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=No
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -778,6 +589,8 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=No
         :param ignore: list of str (optional), attributes not to parse
         :param list_return: if True, the returned quantity is always a list even if only one element is in it
         :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                               the iteration element is constructed
 
     :returns: value and unit, both converted in convert_xml_attribute
     """
@@ -785,25 +598,36 @@ def evaluate_single_value_tag(node, schema_dict, name, constants=None, logger=No
     only_required = kwargs.get('only_required', False)
     ignore = kwargs.get('ignore', [])
 
-    value_dict = evaluate_tag(node, schema_dict, name, constants=constants, logger=logger, **kwargs)
+    value_dict = evaluate_tag(node,
+                              schema_dict,
+                              name,
+                              constants=constants,
+                              logger=logger,
+                              complex_xpath=complex_xpath,
+                              **kwargs)
 
     if value_dict.get('value') is None:
         if logger is None:
             raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'value' attribute")
-        else:
-            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
+        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
 
     if value_dict.get('units') is None and not only_required and 'units' not in ignore:
         if logger is None:
             raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'units' attribute")
-        else:
-            logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
+        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
 
     return value_dict
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **kwargs):
+def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
+                        schema_dict: 'fleur_schema.SchemaDict',
+                        name: str,
+                        constants: Dict[str, float] = None,
+                        logger: Logger = None,
+                        complex_xpath: 'etree._xpath' = None,
+                        iteration_path: bool = False,
+                        **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
     and additional further specifications with the available type information
@@ -813,6 +637,9 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
     :param name: str, name of the tag
     :param constants: dict, contains the defined constants
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -832,33 +659,28 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
     only_required = kwargs.pop('only_required', False)
     ignore = kwargs.pop('ignore', None)
 
-    tag_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            kwargs['contains'] = set(kwargs.get('contains', []))
-            kwargs['contains'].add(node.tag)
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
+    tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
+    if complex_xpath is None:
+        complex_xpath = tag_xpath
 
-    if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
+    check_complex_xpath(node, tag_xpath, complex_xpath)
 
     #Which attributes are expected
     try:
-        tag_info = get_tag_info(schema_dict, name, path_return=False, multiple_paths=True, parent=True, **kwargs)
-        attribs = tag_info['attribs']
-        optional = tag_info['optional_attribs']
+        tag_info = _select_tag_info(node, schema_dict, name, parent=True, iteration_path=iteration_path, **kwargs)
     except ValueError as err:
         if logger is None:
             raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes') from err
-        else:
-            logger.exception(
-                'Failed to evaluate attributes from parent tag of %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
-        attribs = set()
-        optional = set()
+        logger.exception(
+            'Failed to evaluate attributes from parent tag of %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
+        return {}
+
+    attribs = tag_info['attribs']
+    optional = tag_info['optional_attribs']
 
     if only_required:
         attribs = attribs.difference(optional)
@@ -871,25 +693,31 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
             raise ValueError(f'Failed to evaluate attributes from parent tag of {name}: '
                              'No attributes to parse either the tag does not '
                              'exist or it has no attributes')
-        else:
-            logger.error(
-                'Failed to evaluate attributes from parent tag of %s: '
-                'No attributes to parse either the tag does not '
-                'exist or it has no attributes', name)
-    else:
-        attribs = sorted(list(attribs.original_case.values()))
+        logger.error(
+            'Failed to evaluate attributes from parent tag of %s: '
+            'No attributes to parse either the tag does not '
+            'exist or it has no attributes', name)
+    attrib_list = sorted(list(attribs.original_case.values()))
 
-    elems = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+    elems: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
-    out_dict = {}
-    for attrib in attribs:
+    out_dict: Dict[str, Any] = {}
+    for attrib in attrib_list:
         out_dict[attrib] = []
 
     for elem in elems:
         parent = elem.getparent()
-        for attrib in attribs:
+        if parent is None:
+            if logger is None:
+                raise ValueError(f'No parent found tag {name}')
+            logger.warning('No parent found tag %s', name)
+            continue
+        for attrib in attrib_list:
 
-            stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            try:
+                stringattribute = get_xml_attribute(parent, attrib, logger=logger)
+            except ValueError:
+                stringattribute = None
 
             if stringattribute is None:
                 if logger is None:
@@ -913,8 +741,7 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
             if not suc:
                 if logger is None:
                     raise ValueError(f'Failed to evaluate attribute {attrib}, Got value: {stringattribute}')
-                else:
-                    logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
+                logger.warning('Failed to evaluate attribute %s, Got value: %s', attrib, stringattribute)
 
     if all(len(x) == 1 for x in out_dict.values()) and not list_return:
         out_dict = {key: val[0] for key, val in out_dict.items()}
@@ -923,7 +750,12 @@ def evaluate_parent_tag(node, schema_dict, name, constants=None, logger=None, **
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
+def attrib_exists(node: Union[etree._Element, etree._ElementTree],
+                  schema_dict: 'fleur_schema.SchemaDict',
+                  name: str,
+                  logger: Logger = None,
+                  iteration_path: bool = False,
+                  **kwargs: Any) -> bool:
     """
     Evaluates whether the attribute exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -932,6 +764,8 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -944,23 +778,20 @@ def attrib_exists(node, schema_dict, name, logger=None, **kwargs):
     """
     from masci_tools.util.xml.common_functions import eval_xpath, split_off_attrib
 
-    attrib_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            attrib_xpath = get_relative_attrib_xpath(schema_dict, name, node.tag, **kwargs)
-
-    if attrib_xpath is None:
-        attrib_xpath = get_attrib_xpath(schema_dict, name, **kwargs)
-
+    attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
 
-    tags = eval_xpath(node, tag_xpath, logger=logger, list_return=True)
+    tags: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
 
     return any(attrib_name in tag.attrib for tag in tags)
 
 
 @register_parsing_function('exists')
-def tag_exists(node, schema_dict, name, logger=None, **kwargs):
+def tag_exists(node: Union[etree._Element, etree._ElementTree],
+               schema_dict: 'fleur_schema.SchemaDict',
+               name: str,
+               logger: Logger = None,
+               **kwargs: Any) -> bool:
     """
     Evaluates whether the tag exists in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -973,6 +804,8 @@ def tag_exists(node, schema_dict, name, logger=None, **kwargs):
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     :returns: bool, True if any nodes with the path exist
     """
@@ -980,7 +813,11 @@ def tag_exists(node, schema_dict, name, logger=None, **kwargs):
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node, schema_dict, name, logger=None, **kwargs):
+def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
+                        schema_dict: 'fleur_schema.SchemaDict',
+                        name: str,
+                        logger: Logger = None,
+                        **kwargs: Any) -> int:
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -993,13 +830,23 @@ def get_number_of_nodes(node, schema_dict, name, logger=None, **kwargs):
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     :returns: bool, True if any nodes with the path exist
     """
-    return len(eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs))
+    result = eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs)
+    if not isinstance(result, list):
+        raise ValueError(f'Invalid result for length determination: {str(result)}')
+    return len(result)
 
 
-def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
+def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'fleur_schema.SchemaDict',
+                      name: str,
+                      logger: Logger = None,
+                      iteration_path: bool = False,
+                      **kwargs: Any) -> 'etree._XPathObject':
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -1008,6 +855,8 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
     :param schema_dict: dict, containing all the path information and more
     :param name: str, name of the tag
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -1019,13 +868,170 @@ def eval_simple_xpath(node, schema_dict, name, logger=None, **kwargs):
     from masci_tools.util.xml.common_functions import eval_xpath
 
     list_return = kwargs.pop('list_return', False)
-
-    tag_xpath = None
-    if isinstance(node, etree._Element):
-        if node.tag != schema_dict['root_tag'] and node.tag != 'iteration':
-            tag_xpath = get_relative_tag_xpath(schema_dict, name, node.tag, **kwargs)
-
-    if tag_xpath is None:
-        tag_xpath = get_tag_xpath(schema_dict, name, **kwargs)
-
+    tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     return eval_xpath(node, tag_xpath, logger=logger, list_return=list_return)
+
+
+def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'fleur_schema.SchemaDict',
+                      name: str,
+                      iteration_path: bool = False,
+                      **kwargs: Any) -> str:
+    """
+    Select the simple tag xpath used for the evaluation function in this module
+    based on the given node and the specifications
+
+    1. If the node is an xmltree or an element with the tag of a root tag
+       the normal tag_xpath method is used
+    2. If the node is an etree Element not of an root tag the
+       relative_tag_xpath method is used
+    3. If iteration_path=True and the schema dict is an OutputSchemaDict
+       use the iteration_tag_xpath/relative_iteration_tag_xpath according to
+       the rules above
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    :returns: str of the tag xpath
+    """
+    if iteration_path:
+        if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+            raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
+
+    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+        root_tags += tuple(schema_dict['iteration_tags'])
+
+    xpath = None
+    if isinstance(node, etree._Element):
+        if node.tag not in root_tags:
+            if iteration_path:
+                xpath = schema_dict.relative_iteration_tag_xpath(name, node.tag, **kwargs)  #type:ignore
+            else:
+                xpath = schema_dict.relative_tag_xpath(name, node.tag, **kwargs)
+
+    if xpath is None:
+        if iteration_path:
+            xpath = schema_dict.iteration_tag_xpath(name, **kwargs)  #type:ignore
+        else:
+            xpath = schema_dict.tag_xpath(name, **kwargs)
+
+    return xpath
+
+
+def _select_attrib_xpath(node: Union[etree._Element, etree._ElementTree],
+                         schema_dict: 'fleur_schema.SchemaDict',
+                         name: str,
+                         iteration_path: bool = False,
+                         **kwargs: Any) -> str:
+    """
+    Select the simple attrib xpath used for the evaluation function in this module
+    based on the given node and the specifications
+
+    1. If the node is an xmltree or an element with the tag of a root tag
+       the normal attrib_xpath method is used
+    2. If the node is an etree Element not of an root tag the
+       relative_attrib_xpath method is used
+    3. If iteration_path=True and the schema dict is an OutputSchemaDict
+       use the iteration_attrib_xpath/relative_iteration_attrib_xpath according to
+       the rules above
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the attribute
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
+
+    Kwargs:
+        :param tag_name: str, name of the tag where the attribute should be parsed
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+        :param exclude: list of str, here specific types of attributes can be excluded
+                        valid values are: settable, settable_contains, other
+
+    :returns: str of the tag xpath
+    """
+    if iteration_path:
+        if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+            raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
+
+    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+        root_tags += tuple(schema_dict['iteration_tags'])
+
+    xpath = None
+    if isinstance(node, etree._Element):
+        if node.tag not in root_tags:
+            if iteration_path:
+                xpath = schema_dict.relative_iteration_attrib_xpath(name, node.tag, **kwargs)  #type:ignore
+            else:
+                xpath = schema_dict.relative_attrib_xpath(name, node.tag, **kwargs)
+
+    if xpath is None:
+        if iteration_path:
+            xpath = schema_dict.iteration_attrib_xpath(name, **kwargs)  #type:ignore
+        else:
+            xpath = schema_dict.attrib_xpath(name, **kwargs)
+
+    return xpath
+
+
+def _select_tag_info(node: Union[etree._Element, etree._ElementTree],
+                     schema_dict: 'fleur_schema.SchemaDict',
+                     name: str,
+                     iteration_path: bool = False,
+                     iteration_tag: str = 'iteration',
+                     contains: Union[str, Iterable[str]] = None,
+                     **kwargs: Any) -> fleur_schema.schema_dict.TagInfo:
+    """
+    Get the tag information used for the evaluation function in this module
+    based on the given node and the specifications
+
+    :param node: etree Element, on which to execute the xpath evaluations
+    :param schema_dict: dict, containing all the path information and more
+    :param name: str, name of the tag
+    :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                           the iteration element is constructed
+    :param iteration_tag: name of the iteration tag. Onlt used for iteration_path=True
+
+    Kwargs:
+        :param contains: str, this string has to be in the final path
+        :param not_contains: str, this string has to NOT be in the final path
+
+    All other Kwargs are passed on to the tag_info method
+
+    :returns: dict with the tag information
+    """
+
+    if contains is None:
+        contains = set()
+    elif isinstance(contains, str):
+        contains = {contains}
+    else:
+        contains = set(contains)
+
+    if iteration_path:
+        if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+            raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
+
+    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
+        root_tags += tuple(schema_dict['iteration_tags'])
+
+    if isinstance(node, etree._Element):
+        if node.tag not in root_tags:
+            if iteration_path:
+                iteration_xpath = schema_dict.tag_xpath(iteration_tag)
+                if f'/{node.tag}' not in iteration_xpath:
+                    contains.add(node.tag)
+            else:
+                contains.add(node.tag)
+
+    return schema_dict.tag_info(name, contains=contains, **kwargs)

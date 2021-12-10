@@ -7,9 +7,13 @@
 
 import pytest
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
+from pathlib import Path
+import os
+
+DIR = Path(__file__).parent.resolve()
 
 
-class Test_kkr_parser_functions(object):
+class Test_kkr_parser_functions:
     """
     Tests for the kkr parser functions
     """
@@ -18,13 +22,13 @@ class Test_kkr_parser_functions(object):
         'energy_contour_group', 'warnings_group', 'ewald_sum_group', 'timings_group', 'core_states_group',
         'convergence_group', 'magnetism_group', 'kmesh_group', 'symmetries_group', 'code_info_group'
     ]
-    path0 = './files/kkr/kkr_run_slab_soc_simple/'
-    outfile = path0 + 'out_kkr'
-    outfile_0init = path0 + 'output.0.txt'
-    outfile_000 = path0 + 'output.000.txt'
-    timing_file = path0 + 'out_timing.000.txt'
-    potfile_out = path0 + 'out_potential'
-    nonco_out_file = path0 + 'nonco_angle_out.dat'
+    path0 = DIR / Path('files/kkr/kkr_run_slab_soc_simple/')
+    outfile = os.fspath(path0 / 'out_kkr')
+    outfile_0init = os.fspath(path0 / 'output.0.txt')
+    outfile_000 = os.fspath(path0 / 'output.000.txt')
+    timing_file = os.fspath(path0 / 'out_timing.000.txt')
+    potfile_out = os.fspath(path0 / 'out_potential')
+    nonco_out_file = os.fspath(path0 / 'nonco_angle_out.dat')
 
     def test_complete_kkr_output(self, data_regression):
         """
@@ -45,12 +49,12 @@ class Test_kkr_parser_functions(object):
         Parse complete output of kkr calculation but using file handles as done in aiida-kkr
         """
         out_dict = {}
-        with open(self.outfile) as outfile:
-            with open(self.outfile_0init) as outfile_0init:
-                with open(self.outfile_000) as outfile_000:
-                    with open(self.timing_file) as timing_file:
-                        with open(self.potfile_out) as potfile_out:
-                            with open(self.nonco_out_file) as nonco_out_file:
+        with open(self.outfile, encoding='utf-8') as outfile:
+            with open(self.outfile_0init, encoding='utf-8') as outfile_0init:
+                with open(self.outfile_000, encoding='utf-8') as outfile_000:
+                    with open(self.timing_file, encoding='utf-8') as timing_file:
+                        with open(self.potfile_out, encoding='utf-8') as potfile_out:
+                            with open(self.nonco_out_file, encoding='utf-8') as nonco_out_file:
                                 success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init,
                                                                                    outfile_000, timing_file,
                                                                                    potfile_out, nonco_out_file)
@@ -65,13 +69,13 @@ class Test_kkr_parser_functions(object):
         """
         Parse complete output of kkr calculation with orbital moments
         """
-        path0 = './files/kkr/kkr_run_slab_soc_mag/'
-        outfile = path0 + 'out_kkr'
-        outfile_0init = path0 + 'output.0.txt'
-        outfile_000 = path0 + 'output.000.txt'
-        timing_file = path0 + 'out_timing.000.txt'
-        potfile_out = path0 + 'out_potential'
-        nonco_out_file = path0 + 'nonco_angle_out.dat'
+        path0 = DIR / Path('files/kkr/kkr_run_slab_soc_mag/')
+        outfile = os.fspath(path0 / 'out_kkr')
+        outfile_0init = os.fspath(path0 / 'output.0.txt')
+        outfile_000 = os.fspath(path0 / 'output.000.txt')
+        timing_file = os.fspath(path0 / 'out_timing.000.txt')
+        potfile_out = os.fspath(path0 / 'out_potential')
+        nonco_out_file = os.fspath(path0 / 'nonco_angle_out.dat')
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file,
                                                            potfile_out, nonco_out_file)
@@ -85,13 +89,13 @@ class Test_kkr_parser_functions(object):
         Parse complete output of kkr calculation nosoc, magnetic
         """
 
-        path0 = './files/kkr/kkr_run_slab_nosoc/'
-        outfile = path0 + 'out_kkr'
-        outfile_0init = path0 + 'output.0.txt'
-        outfile_000 = path0 + 'output.000.txt'
-        timing_file = path0 + 'out_timing.000.txt'
-        potfile_out = path0 + 'out_potential'
-        nonco_out_file = path0 + 'nonco_angle_out.dat'
+        path0 = DIR / Path('files/kkr/kkr_run_slab_nosoc/')
+        outfile = os.fspath(path0 / 'out_kkr')
+        outfile_0init = os.fspath(path0 / 'output.0.txt')
+        outfile_000 = os.fspath(path0 / 'output.000.txt')
+        timing_file = os.fspath(path0 / 'out_timing.000.txt')
+        potfile_out = os.fspath(path0 / 'out_potential')
+        nonco_out_file = os.fspath(path0 / 'nonco_angle_out.dat')
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file,
                                                            potfile_out, nonco_out_file)
@@ -183,12 +187,12 @@ class Test_kkr_parser_functions(object):
         """
         Parse kkr output where out_potential is missing. Compares error messages
         """
-        path0 = './files/kkr/kkr_run_slab_soc_mag/'
-        outfile = path0 + 'out_kkr'
-        outfile_0init = path0 + 'output.0.txt'
-        outfile_000 = path0 + 'output.000.txt'
-        timing_file = path0 + 'out_timing.000.txt'
-        potfile_out = path0 + 'out_potential'
+        path0 = DIR / Path('files/kkr/kkr_run_slab_soc_mag/')
+        outfile = os.fspath(path0 / 'out_kkr')
+        outfile_0init = os.fspath(path0 / 'output.0.txt')
+        outfile_000 = os.fspath(path0 / 'output.000.txt')
+        timing_file = os.fspath(path0 / 'out_timing.000.txt')
+        potfile_out = os.fspath(path0 / 'out_potential')
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file,
                                                            potfile_out, 'wrong_name')
@@ -209,12 +213,12 @@ class Test_kkr_parser_functions(object):
         """
         Parse output of dos calculation since ouput changes slightly (e.g. no ewald sum)
         """
-        path0 = './files/kkr/kkr_run_dos_output/'
-        outfile = path0 + 'out_kkr'
-        outfile_0init = path0 + 'output.0.txt'
-        outfile_000 = path0 + 'output.000.txt'
-        timing_file = path0 + 'out_timing.000.txt'
-        potfile_out = path0 + 'out_potential'
+        path0 = DIR / Path('files/kkr/kkr_run_dos_output/')
+        outfile = os.fspath(path0 / 'out_kkr')
+        outfile_0init = os.fspath(path0 / 'output.0.txt')
+        outfile_000 = os.fspath(path0 / 'output.000.txt')
+        timing_file = os.fspath(path0 / 'out_timing.000.txt')
+        potfile_out = os.fspath(path0 / 'out_potential')
         out_dict = {}
         success, msg_list, out_dict = parse_kkr_outputfile(out_dict, outfile, outfile_0init, outfile_000, timing_file,
                                                            potfile_out, 'wrong_name')
@@ -227,10 +231,12 @@ class Test_kkr_parser_functions(object):
         """
         Parse output of a dos calculation in 3D (used to fail due to symmetries reading)
         """
-        p = './files/kkr/parser_3Dsymmetries/'
-        success, msg_list, out_dict = parse_kkr_outputfile({}, p + 'out_kkr', p + 'output.0.txt', p + 'output.000.txt',
-                                                           p + 'out_timing.000.txt', p + 'out_potential',
-                                                           p + 'nonco_angle_out.dat')
+        p = DIR / Path('files/kkr/parser_3Dsymmetries/')
+        success, msg_list, out_dict = parse_kkr_outputfile({}, os.fspath(p / 'out_kkr'), os.fspath(p / 'output.0.txt'),
+                                                           os.fspath(p / 'output.000.txt'),
+                                                           os.fspath(p / 'out_timing.000.txt'),
+                                                           os.fspath(p / 'out_potential'),
+                                                           os.fspath(p / 'nonco_angle_out.dat'))
         assert success
         assert msg_list == []
         data_regression.check(out_dict)

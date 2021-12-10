@@ -18,18 +18,26 @@ import numpy as np
 import os
 import copy
 import warnings
+from pathlib import Path
+from typing import Dict, Iterable, List, Sequence, Union, Tuple, Optional, IO, Any, cast
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
 from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, AtomSiteProperties
 
+__all__ = ('write_inpgen_file', 'read_inpgen_file', 'AtomDictProperties', 'Kinds')
+
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
     'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'expert', 'film',
     'kpt', 'end'
 ]
-POSSIBLE_PARAMS = {
+POSSIBLE_PARAMS: Dict[str, List[str]] = {
     'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
     'lattice': ['latsys', 'a0', 'a', 'b', 'c', 'alpha', 'beta', 'gamma'],
     'atom': ['id', 'z', 'rmt', 'dx', 'jri', 'lmax', 'lnonsph', 'ncst', 'econfig', 'bmu', 'lo', 'element', 'name'],
@@ -39,8 +47,8 @@ POSSIBLE_PARAMS = {
     'film': ['dvac', 'dtild'],
     'soc': ['theta', 'phi'],
     'qss': ['x', 'y', 'z'],
-    'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria'],
-    'title': {}
+    'kpt': ['nkpt', 'kpts', 'div1', 'div2', 'div3', 'tkb', 'tria', 'gamma'],
+    'title': []
 }
 
 VALUE_ONLY_NAMELISTS = ['soc', 'qss']
@@ -49,16 +57,37 @@ VALUE_ONLY_NAMELISTS = ['soc', 'qss']
 REPLACER_VALUES_BOOL = [True, False, 'True', 'False', 't', 'T', 'F', 'f']
 
 
-def write_inpgen_file(cell,
-                      atom_sites,
-                      kinds=None,
-                      return_contents=False,
-                      file='inpgen.in',
-                      pbc=(True, True, True),
-                      input_params=None,
-                      significant_figures_cell=9,
-                      significant_figures_positions=10,
-                      convert_from_angstroem=True):
+class AtomDictProperties(TypedDict, total=False):
+    """
+    TypedDict for the atom properties
+    """
+    position: Union[List[float], Tuple[float, float, float], np.ndarray]
+    kind_name: str
+
+
+class Kinds(TypedDict, total=False):
+    """
+    TypedDict for the kinds
+    """
+    symbols: Sequence[str]
+    name: str
+    weights: Sequence[float]
+
+
+FileInput = Union[str, Path, bytes, os.PathLike, IO]
+
+
+def write_inpgen_file(cell: Union[np.ndarray, List[List[float]]],
+                      atom_sites: Union[Sequence[AtomSiteProperties], Sequence[Tuple[List[float], str, str]],
+                                        Sequence[AtomDictProperties]],
+                      kinds: Iterable[Kinds] = None,
+                      return_contents: bool = False,
+                      file: FileInput = 'inpgen.in',
+                      pbc: Tuple[bool, bool, bool] = (True, True, True),
+                      input_params: Dict = None,
+                      significant_figures_cell: int = 9,
+                      significant_figures_positions: int = 10,
+                      convert_from_angstroem: bool = True) -> Optional[str]:
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
     :param cell: 3x3 arraylike. The bravais matrix of the structure, in Angstrom by default
@@ -92,9 +121,6 @@ def write_inpgen_file(cell,
 
     :raises ValueError: If some input is wrong or inconsistent.
 
-    :returns:
-        [list]: A report, list of strings, things which where logged within the process
-
     Comments: This was extracted out of aiida-fleur for more general use,
     the datastructures stayed very close to what aiida provides (to_raw()), it may not
     yet be convenient for all usecases. I.e data so far has to be given in Angstrom and will be converted to fleur units.
@@ -103,11 +129,6 @@ def write_inpgen_file(cell,
 
     # Get the connection between coordination number and element symbol
     _atomic_numbers = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
-
-    _blocked_keywords = []
-
-    # TODO different kpt mods? (use kpointNode)? aiida-fleur FleurinpdData can do it.
-    _use_kpoints = False
 
     # If two lattices are given, via the input &lattice
     # and a structure of some form
@@ -118,7 +139,6 @@ def write_inpgen_file(cell,
     _inp_title = 'A Fleur input generator calculation with aiida'
     bulk = True
     film = False
-    report = []
 
     # some keywords require a string " around them in the input file.
     string_replace = ['econfig', 'lo', 'element', 'name', 'xctyp']
@@ -136,6 +156,7 @@ def write_inpgen_file(cell,
     own_lattice = False  # not _use_aiida_structure
 
     if all(isinstance(site, dict) for site in atom_sites):
+        atom_sites = cast(Sequence[AtomDictProperties], atom_sites)
         if kinds is None:
             raise ValueError('The argument kinds is required, when atom_sites is provided as dicts')
 
@@ -143,14 +164,17 @@ def write_inpgen_file(cell,
         if any(len(symbol) == 0 for symbol in symbols):
             raise ValueError('Failed getting symbols for all kinds. Check that all needed kinds are given')
         atom_sites = [
-            AtomSiteProperties(position=site['position'], symbol=kind[0], kind=site['kind_name'])
+            AtomSiteProperties(position=list(site['position']), symbol=kind[0], kind=site['kind_name'])
             for site, kind in zip(atom_sites, symbols)
         ]
 
-    elif all(not isinstance(site, AtomSiteProperties) for site in atom_sites):
+    elif any(not isinstance(site, AtomSiteProperties) for site in atom_sites):
         if kinds is not None:
             raise ValueError('The argument kinds is not required, when atom_sites is provided as tuples')
         atom_sites = [AtomSiteProperties(*site) for site in atom_sites]
+
+    #Workaround: cast(Sequence[AtomsiteProperties], atom_sites) does not work for some reason
+    atom_sites = [cast(AtomSiteProperties, site) for site in atom_sites]
 
     ##########################################
     ############# INPUT CHECK ################
@@ -263,13 +287,13 @@ def write_inpgen_file(cell,
                 continue
 
         atomic_number = _atomic_numbers[site.symbol]
-        atomic_number_name = atomic_number
+        atomic_number_name = str(atomic_number)
         if atomic_number == 0:  # 'X' element for vacancies
             natoms = natoms - 1
             continue
         # per default we use relative coordinates in Fleur
         # we have to scale back to atomic units from angstrom
-        pos = site.position
+        pos = list(site.position)
         if bulk:
             vector_rel = abs_to_rel(pos, cell)
         elif film:
@@ -278,6 +302,7 @@ def write_inpgen_file(cell,
         position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
 
         if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
+            label = ''
             try:
                 # Kind names can be more then numbers now, this might need to be reworked
                 head = site.kind.rstrip('0123456789')
@@ -285,20 +310,16 @@ def write_inpgen_file(cell,
                 #if int(kind_name[len(head)]) > 4:
                 #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
             except ValueError:
-                kind_namet = site.kind
-                report.append(
-                    'Warning: Kind name {} will be ignored by the FleurinputgenCalculation and not set a charge number.'
-                    .format(site.kind))
-                # append a label to the detached atom
-                atom_positions_text.append(f'    {atomic_number_name:7} {position_str} {kind_namet}\n')
+                warnings.warn(f'Warning: Kind name {site.kind} will be ignored and not used to set a charge number.')
             else:
                 atomic_number_name = f'{atomic_number}.{kind_namet}'
-                atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
+                label = str(kind_namet)
+            atom_positions_text.append(f'    {atomic_number_name:>7} {position_str} {label}\n')
         else:
-            atom_positions_text.append(f'    {atomic_number_name:7} {position_str}\n')
+            atom_positions_text.append(f'    {atomic_number_name:>7} {position_str}\n')
     # TODO check format
     # we write it later, since we do not know what natoms is before the loop...
-    atom_positions_text = f'    {natoms:3}\n' + ''.join(atom_positions_text)
+    atom_positions_str = f'    {natoms:3}\n' + ''.join(atom_positions_text)
 
     #### Kpts ####
     # TODO: kpts
@@ -328,7 +349,7 @@ def write_inpgen_file(cell,
     inpgen_file_content.append('\n')
 
     # Write Atomic positons
-    inpgen_file_content.append(atom_positions_text)
+    inpgen_file_content.append(atom_positions_str)
 
     # Write namelists after atomic positions
     for namels_name in namelists_toprint:
@@ -348,21 +369,19 @@ def write_inpgen_file(cell,
                          'not valid namelists for the current type of calculation: '
                          f"{','.join(list(input_params.keys()))}")
 
-    inpgen_file_content = ''.join(inpgen_file_content)
+    inpgen_file_content_str = ''.join(inpgen_file_content)
 
     if not return_contents:
         if isinstance(file, io.IOBase):
-            file.write(inpgen_file_content)
+            file.write(inpgen_file_content_str)
         else:
-            with open(file, 'w') as inpfile:
-                inpfile.write(inpgen_file_content)
+            with open(file, 'w', encoding='utf-8') as inpfile:  #type:ignore
+                inpfile.write(inpgen_file_content_str)
 
-        return report
-    else:
-        return inpgen_file_content
+    return inpgen_file_content_str
 
 
-def get_input_data_text(key, val, value_only, mapping=None):
+def get_input_data_text(key: str, val: Any, value_only: bool, mapping: Dict[str, Any] = None) -> str:
     """
     Given a key and a value, return a string (possibly multiline for arrays)
     with the text to be added to the input file.
@@ -403,25 +422,24 @@ def get_input_data_text(key, val, value_only, mapping=None):
             #changed {0}({2}) = {1}\n".format
 
         #Sort according to the mapping then rejoin the string
-        list_of_strings = sorted(list_of_strings, key=lambda key: mapping[key])
+        list_of_strings = sorted(list_of_strings, key=lambda key: mapping[key])  #type:ignore
         return ''.join(list_of_strings)
-    elif not isinstance(val, str) and hasattr(val, '__iter__'):
+    if not isinstance(val, str) and hasattr(val, '__iter__'):
         if value_only:
             list_of_strings = [f'  ({idx + 1}){conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         else:
             # a list/array/tuple of values
             list_of_strings = [f'  {key}({idx + 1})={conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         return ''.join(list_of_strings)
-    else:
-        # single value
-        #return "  {0}={1} ".format(key, conv_to_fortran(val))
-        if value_only:
-            return f' {val} '
-        else:
-            return f'  {key}={val} '
+
+    # single value
+    #return "  {0}={1} ".format(key, conv_to_fortran(val))
+    if value_only:
+        return f' {val} '
+    return f'  {key}={val} '
 
 
-def conv_to_fortran(val, quote_strings=True):
+def conv_to_fortran(val: Any, quote_strings: bool = True) -> str:
     """
     Convert values to fortran friendly strings
 
@@ -447,13 +465,16 @@ def conv_to_fortran(val, quote_strings=True):
         else:
             val_str = f'{val!s}'
     else:
-        raise ValueError("Invalid value '{}' of type '{}' passed, accepts only booleans, ints, "
-                         'floats and strings'.format(val, type(val)))
+        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
+                         'floats and strings')
 
     return val_str
 
 
-def read_inpgen_file(file, convert_to_angstroem=True):
+def read_inpgen_file(
+    file: FileInput,
+    convert_to_angstroem: bool = True
+) -> Tuple[Optional[np.ndarray], List[AtomSiteProperties], Tuple[bool, bool, bool], Dict[str, Any]]:
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
 
@@ -466,14 +487,14 @@ def read_inpgen_file(file, convert_to_angstroem=True):
     input_params = {}
     namelists_raw = {}
     atom_sites = []
-    cell = []
+    cell: Optional[np.ndarray] = np.zeros((3, 3))
     lattice_information = []
 
     if isinstance(file, io.IOBase):
         contents = file.read()
     else:
-        if os.path.exists(file):
-            with open(file, 'r') as f:
+        if os.path.exists(file):  #type:ignore
+            with open(file, 'r', encoding='utf-8') as f:  #type:ignore
                 contents = f.read()
         else:
             contents = file
@@ -508,7 +529,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         if line.endswith('/'):
             name_list_start = False
             j = 0
-            while namelist_name in namelists_raw.keys():
+            while namelist_name in namelists_raw:
                 namelist_name = namelist_name + f'{j}'
             namelists_raw[namelist_name] = namelist_raw
 
@@ -545,7 +566,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
                 keyt = key
             if pval[0] not in POSSIBLE_PARAMS[keyt] and keyt not in VALUE_ONLY_NAMELISTS:
                 raise ValueError(f'Value {pval[0]} is not allowed as inpgen input of namelist {keyt}.')
-            elif keyt in VALUE_ONLY_NAMELISTS:
+            if keyt in VALUE_ONLY_NAMELISTS:
                 att_name = POSSIBLE_PARAMS[keyt][indx]
                 value = pval[0]
                 indx += 1
@@ -565,6 +586,8 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         input_params[key] = parsed_name_dict
 
     film = input_params.get('input', {}).get('film', False)
+    if film:
+        pbc = (True, True, False)
 
     if cell is not None:
         if len(lattice_information) <= 6:
@@ -578,10 +601,10 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         cell *= global_scaling
         cell = cell * column_scaling
         if convert_to_angstroem:
-            cell *= BOHR_A
+            cell *= BOHR_A  #type:ignore
     else:
         atom_information = lattice_information
-        warnings.warn('Lattice was specified via the &lattice namelist',
+        warnings.warn('Lattice was specified via the &lattice namelist'
                       'Atom positions will be returned as relative positions')
 
     if len(atom_information) <= 1:
@@ -592,7 +615,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         atom_info = atom_string.split()
 
         nz, _, add_id = atom_info[0].partition('.')
-        element = PERIODIC_TABLE_ELEMENTS[int(nz)]['symbol']
+        element: str = PERIODIC_TABLE_ELEMENTS[int(nz)]['symbol']  #type:ignore
         pos = np.array([float(val) for val in atom_info[1:4]])
 
         if cell is not None:
@@ -603,7 +626,7 @@ def read_inpgen_file(file, convert_to_angstroem=True):
             else:
                 pos = rel_to_abs(pos, cell)
 
-        kind_name = None
+        kind_name: str = None  #type:ignore
         if add_id:
             kind_name = f'{element}-{add_id}'
         else:
@@ -612,6 +635,6 @@ def read_inpgen_file(file, convert_to_angstroem=True):
         if len(atom_info) == 5:
             kind_name = atom_info[4]
 
-        atom_sites.append(AtomSiteProperties(position=pos, symbol=element, kind=kind_name))
+        atom_sites.append(AtomSiteProperties(position=list(pos), symbol=element, kind=kind_name))
 
     return cell, atom_sites, pbc, input_params

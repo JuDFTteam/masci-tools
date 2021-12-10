@@ -13,11 +13,16 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
+from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, Union, List, Set
 from lxml import etree
 import warnings
+import os
+from logging import Logger
+if TYPE_CHECKING:
+    from masci_tools.io.parsers import fleur_schema
 
 
-def clear_xml(tree):
+def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
     """
     Removes comments and executes xinclude tags of an
     xml tree.
@@ -47,23 +52,25 @@ def clear_xml(tree):
         next_sibling = next_sibling.getnext()
 
     #find any include tags
-    include_tags = eval_xpath(cleared_tree,
-                              '//xi:include',
-                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
-                              list_return=True)
+    include_tags: List[etree._Element] = eval_xpath(cleared_tree,
+                                                    '//xi:include',
+                                                    namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                                                    list_return=True)  #type:ignore
 
     parents = []
     known_tags = []
     for tag in include_tags:
         parent = tag.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of included tag')
         parents.append(parent)
         known_tags.append({elem.tag for elem in parent if isinstance(elem.tag, str)})
 
     # replace XInclude parts to validate against schema
     if len(include_tags) != 0:
-        cleared_tree.xinclude()
+        cleared_tree.xinclude()  #type:ignore
 
-    all_included_tags = set()
+    all_included_tags: Set[str] = set()
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
         new_tags = {elem.tag for elem in parent if isinstance(elem.tag, str)}
@@ -79,14 +86,16 @@ def clear_xml(tree):
         all_included_tags = all_included_tags.union(included_tag_names)
         for tag_name in included_tag_names:
             for elem in parent.iterchildren(tag=tag_name):
-                for attribute in elem.keys():
+                for attribute in elem.attrib.keys():
                     if 'base' in attribute:
-                        elem.attrib.pop(attribute, None)
+                        elem.attrib.pop(attribute, None)  #type:ignore
 
     # remove comments from inp.xml
-    comments = cleared_tree.xpath('//comment()')
+    comments: List[etree._Element] = cleared_tree.xpath('//comment()')  #type:ignore
     for comment in comments:
         com_parent = comment.getparent()
+        if com_parent is None:
+            raise ValueError('Could not find parent of comment tag')
         com_parent.remove(comment)
 
     etree.indent(cleared_tree)
@@ -94,7 +103,9 @@ def clear_xml(tree):
     return cleared_tree, all_included_tags
 
 
-def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
+def reverse_xinclude(
+        xmltree: etree._ElementTree, schema_dict: 'fleur_schema.SchemaDict', included_tags: Iterable[str],
+        **kwargs: os.PathLike) -> Tuple[etree._ElementTree, Dict[Union[os.PathLike, str], etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.
     The original xmltree will be returned with the corresponding xinclude tags
@@ -121,7 +132,6 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     :raises ValueError: if the tag can not be found in teh given xmltree
     """
-    from masci_tools.util.schema_dict_util import get_tag_xpath
     import copy
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
@@ -130,7 +140,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     excluded_tree = copy.deepcopy(xmltree)
 
-    include_file_names = {
+    include_file_names: Dict[str, Union[os.PathLike, str]] = {
         'relaxation': 'relax.xml',
         'kPointLists': 'kpts.xml',
         'symmetryOperations': 'sym.xml',
@@ -156,29 +166,30 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
             file_name = f'unknown-{unknown_file_names}.xml'
 
         try:
-            tag_xpath = get_tag_xpath(schema_dict, tag)
-        except ValueError as exc:
-            raise ValueError(f'Cannot determine place of included tag {tag}') from exc
+            tag_xpath = schema_dict.tag_xpath(tag)
+        except Exception as err:
+            raise ValueError(f'Cannot determine place of included tag {tag}') from err
+        included_tag_res: List[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
 
-        included_tag = eval_xpath(root, tag_xpath, list_return=True)
-
-        if len(included_tag) != 1:
+        if len(included_tag_res) != 1:
             raise ValueError(f'Cannot determine place of included tag {tag}')
-        included_tag = included_tag[0]
+        included_tag = included_tag_res[0]
 
         included_trees[file_name] = etree.ElementTree(included_tag)
 
         parent = included_tag.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of included tag')
 
-        xinclude_elem = etree.Element(INCLUDE_TAG, href=file_name, nsmap=INCLUDE_NSMAP)
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))
+        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)  #type:ignore
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
 
         parent.replace(included_tag, xinclude_elem)
 
     if 'relax.xml' not in included_trees:
         #The relax.xml include should always be there
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
         root.append(xinclude_elem)
 
     etree.indent(excluded_tree)
@@ -188,7 +199,9 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     return excluded_tree, included_trees
 
 
-def validate_xml(xmltree, schema, error_header='File does not validate'):
+def validate_xml(xmltree: etree._ElementTree,
+                 schema: etree.XMLSchema,
+                 error_header: str = 'File does not validate') -> None:
     """
     Checks a given xmltree against a schema and produces a nice error message
     with all the validation errors collected
@@ -205,7 +218,7 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
         cleared_tree, _ = clear_xml(xmltree)
         schema.assertValid(cleared_tree)
     except etree.DocumentInvalid as exc:
-        error_log = sorted(schema.error_log, key=lambda x: x.message)
+        error_log = sorted(schema.error_log, key=lambda x: x.message)  #type:ignore
         error_output = []
         first_occurence = []
         for message, group in groupby(error_log, key=lambda x: x.message):
@@ -222,7 +235,12 @@ def validate_xml(xmltree, schema, error_header='File does not validate'):
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def eval_xpath(node, xpath, logger=None, list_return=False, namespaces=None):
+def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEvaluatorBase'],
+               xpath: 'etree._xpath',
+               logger: Logger = None,
+               list_return: bool = False,
+               namespaces: 'etree._DictAnyStr' = None,
+               **variables: 'etree._XPathObject') -> 'etree._XPathObject':
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -238,27 +256,46 @@ def eval_xpath(node, xpath, logger=None, list_return=False, namespaces=None):
     :returns: text, attribute or a node list
     """
 
-    if not isinstance(node, (etree._Element, etree._ElementTree)):
+    if not isinstance(node, (etree._Element, etree._ElementTree, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
         if logger is not None:
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
+    if isinstance(xpath, etree.XPath) and isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+        if logger is not None:
+            logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
+        raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
+
+    if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
+        if logger is not None:
+            logger.exception(
+                'Passing namespaces is only supported for string xpaths and nodes. for etree.XPath or XPathEvaluatore use namespaces in the init function'
+            )
+        raise ValueError(
+            'Passing namespaces is only supported for string xpaths and nodes. for etree.XPath or XPathEvaluatore use namespaces in the init function'
+        )
+
     try:
-        return_value = node.xpath(xpath, namespaces=namespaces)
+        if isinstance(xpath, etree.XPath):
+            return_value = xpath(node, **variables)
+        elif isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+            return_value = node(xpath, **variables)
+        else:
+            return_value = node.xpath(xpath, namespaces=namespaces, **variables)  #type:ignore
     except etree.XPathEvalError as err:
         if logger is not None:
             logger.exception(
                 'There was a XpathEvalError on the xpath: %s \n'
                 'Either it does not exist, or something is wrong with the expression.', xpath)
-        raise ValueError(f'There was a XpathEvalError on the xpath: {xpath} \n'
+        raise ValueError(f'There was a XpathEvalError on the xpath: {str(xpath)} \n'
                          'Either it does not exist, or something is wrong with the expression.') from err
-    if len(return_value) == 1 and not list_return:
-        return return_value[0]
-    else:
-        return return_value
+    if isinstance(return_value, list):
+        if len(return_value) == 1 and not list_return:
+            return return_value[0]  #type:ignore
+    return return_value
 
 
-def get_xml_attribute(node, attributename, logger=None):
+def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger = None) -> Optional[str]:
     """
     Get an attribute value from a node.
 
@@ -272,27 +309,25 @@ def get_xml_attribute(node, attributename, logger=None):
         attrib_value = node.get(attributename)
         if attrib_value:
             return attrib_value
-        else:
-            if logger is not None:
-                logger.warning(
-                    'Tried to get attribute: "%s" from element %s.\n '
-                    'I received "%s", maybe the attribute does not exist', attributename, node.tag, attrib_value)
-            else:
-                raise ValueError(f'Tried to get attribute: "{attributename}" from element {node.tag}.\n '
-                                 f'I received "{attrib_value}", maybe the attribute does not exist')
+        if logger is None:
+            raise ValueError(f'Tried to get attribute: "{attributename}" from element {node.tag}.\n '
+                             f'I received "{attrib_value}", maybe the attribute does not exist')
+        logger.warning(
+            'Tried to get attribute: "%s" from element %s.\n '
+            'I received "%s", maybe the attribute does not exist', attributename, node.tag, attrib_value)
+
     else:  # something doesn't work here, some nodes get through here
-        if logger is not None:
-            logger.error(
-                'Can not get attributename: "%s" from node of type %s, '
-                'because node is not an element of etree.', attributename, type(node))
-        else:
+        if logger is None:
             raise TypeError(f'Can not get attributename: "{attributename}" from node of type {type(node)}, '
                             f'because node is not an element of etree.')
+        logger.error(
+            'Can not get attributename: "%s" from node of type %s, '
+            'because node is not an element of etree.', attributename, type(node))
 
     return None
 
 
-def split_off_tag(xpath):
+def split_off_tag(xpath: str) -> Tuple[str, str]:
     """
     Splits off the last part of the given xpath
 
@@ -301,27 +336,28 @@ def split_off_tag(xpath):
     split_xpath = xpath.split('/')
     if split_xpath[-1] == '':
         return '/'.join(split_xpath[:-2]), split_xpath[-2]
-    else:
-        return '/'.join(split_xpath[:-1]), split_xpath[-1]
+    return '/'.join(split_xpath[:-1]), split_xpath[-1]
 
 
-def split_off_attrib(xpath):
+def split_off_attrib(xpath: str) -> Tuple[str, str]:
     """
     Splits off attribute of the given xpath (part after @)
 
     :param xpath: str of the xpath to split up
     """
     split_xpath = xpath.split('/@')
-    assert len(split_xpath) == 2, f"Splitting off attribute failed for: '{split_xpath}'"
-    return tuple(split_xpath)
+    if len(split_xpath) != 2:
+        raise ValueError(f"Splitting off attribute failed for: '{split_xpath}'")
+    return tuple(split_xpath)  #type:ignore
 
 
-def check_complex_xpath(node, base_xpath, complex_xpath):
+def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: 'etree._xpath',
+                        complex_xpath: 'etree._xpath') -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath
 
-    :param node: root node of an etree
+    :param node: root node of an etree or an etree
     :param base_xpath: str of the xpath without complex syntax
     :param complex_xpath: str of the xpath to check
 
@@ -329,14 +365,15 @@ def check_complex_xpath(node, base_xpath, complex_xpath):
                         of the base_xpath
     """
 
-    results_base = set(eval_xpath(node, base_xpath, list_return=True))
-    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))
+    results_base = set(eval_xpath(node, base_xpath, list_return=True))  #type:ignore
+    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
 
     if not results_base.issuperset(results_complex):
-        raise ValueError(f"Complex xpath '{complex_xpath}' is not compatible with the base_xpath '{base_xpath}'")
+        raise ValueError(
+            f"Complex xpath '{str(complex_xpath)}' is not compatible with the base_xpath '{str(base_xpath)}'")
 
 
-def abs_to_rel_xpath(xpath, new_root):
+def abs_to_rel_xpath(xpath: str, new_root: str) -> str:
     """
     Convert a given xpath to be relative from a tag appearing in the
     original xpath.

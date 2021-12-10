@@ -22,8 +22,8 @@ correspond to the keys in the output dictionary
 
 The following keys are expected in each entry:
     :param parse_type: str, defines which methods to use when extracting the information
-    :param path_spec: dict with all the arguments that should be passed to get_tag_xpath
-                      or get_attrib_xpath to get the correct path
+    :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                      or attrib_xpath to get the correct path
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
 
@@ -327,10 +327,19 @@ TASKS_DEFINITION = {
         '_minimal': True,
         '_conversions': ['convert_total_energy'],
         'energy_hartree': {
-            'parse_type': 'singleValue',
+            'parse_type': 'attrib',
             'path_spec': {
-                'name': 'totalEnergy'
+                'name': 'value',
+                'tag_name': 'freeEnergy'
             }
+        },
+        'energy_hartree_units': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'units',
+                'tag_name': 'totalEnergy'
+            },
+            'overwrite_last': True,
         },
     },
     'distances': {
@@ -593,6 +602,55 @@ TASKS_DEFINITION = {
                 'name': 'units',
                 'contains': 'Forcetheorem_JIJ'
             }
+        }
+    },
+    'torques': {
+        '_minimum_version': '0.35',  #Typo torgue/torque before
+        '_optional': True,
+        'torque_x': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'sigma_x',
+                'contains': 'noncollinearTorque'
+            }
+        },
+        'torque_y': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'sigma_y',
+                'contains': 'noncollinearTorque'
+            }
+        }
+    },
+    'noco_angles': {
+        '_general': True,
+        '_optional': True,
+        'noco_alpha': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'alpha',
+                'tag_name': 'nocoParams',
+                'contains': 'Group'
+            }
+        },
+        'noco_beta': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'beta',
+                'tag_name': 'nocoParams',
+                'contains': 'Group'
+            }
+        }
+    },
+    'corelevels': {
+        '_optional': True,
+        'corestates': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'coreStates'
+            },
+            'subtags': True,
+            'flat': False
         }
     }
 }

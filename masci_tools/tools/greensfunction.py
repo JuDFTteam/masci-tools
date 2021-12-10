@@ -15,20 +15,27 @@ This module contains utility and functions to work with Green's functions calcul
 and written to ``greensf.hdf`` files by fleur
 """
 from collections import namedtuple
-from itertools import groupby
+from itertools import groupby, chain
 import numpy as np
 import h5py
 from typing import List, Tuple, Iterator, Dict, Any
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
 from masci_tools.util.constants import HTR_TO_EV
 
-GreensfElement = namedtuple('GreensfElement',
-                            ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'contour', 'nLO', 'atomDiff'])
+GreensfElement = namedtuple(
+    'GreensfElement',
+    ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'kresolved', 'contour', 'nLO', 'atomDiff'])
+
+CoefficientName = Literal['sphavg', 'uu', 'ud', 'du', 'dd', 'ulou', 'uulo', 'ulod', 'dulo', 'uloulo']
 
 
-def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
+def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int = None) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a spherically averaged Green's function element
 
@@ -38,7 +45,7 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    return {
+    recipe = {
         'datasets': {
             'sphavg': {
                 'h5path':
@@ -116,8 +123,78 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
         }
     }
 
+    if version >= 7:
+        recipe['attributes']['local_spin_frame'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Switch whether the element is in the global spin frame',
+            'transforms': [
+                Transformation(name='get_attribute', args=('local_spin_frame',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={}),
+                Transformation(name='apply_lambda', args=(lambda x: x == 1,), kwargs={})
+            ]
+        }
 
-def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, Any]:
+        recipe['attributes']['local_real_frame'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Switch whether the element is in the global real space frame',
+            'transforms': [
+                Transformation(name='get_attribute', args=('local_real_frame',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={}),
+                Transformation(name='apply_lambda', args=(lambda x: x == 1,), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['alpha'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle alpha for the first atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('alpha',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['alphap'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle alpha for the second atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('alphap',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['beta'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle beta for the first atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('beta',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+
+        recipe['attributes']['betap'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Noco angle beta for the second atom',
+            'transforms': [
+                Transformation(name='get_attribute', args=('betap',), kwargs={}),
+                Transformation(name='get_first_element', args=(), kwargs={})
+            ]
+        }
+    return recipe
+
+
+def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0, version: int = None) -> Dict[str, Any]:
     """
     Get the HDF5Reader recipe for reading in a radial Green's function element
 
@@ -127,7 +204,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    recipe = _get_sphavg_recipe(group_name, index, contour)
+    recipe = _get_sphavg_recipe(group_name, index, contour, version=version)
 
     recipe['datasets'].pop('sphavg')
 
@@ -137,13 +214,46 @@ def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
         'transforms': [
             Transformation(name='get_all_child_datasets',
                            args=(),
-                           kwargs={'ignore': ['scalarProducts', 'LOContribution']}),
+                           kwargs={'ignore': ['scalarProducts', 'LOcontribution', 'mmpmat']}),
             Transformation(name='convert_to_complex_array', args=(), kwargs={}),
             Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
         ],
         'unpack_dict':
         True
     }
+
+    if nLO > 0:
+        recipe['datasets']['lo_coefficients'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/LOcontribution',
+            'transforms': [
+                Transformation(name='merge_subgroup_datasets',
+                               args=(),
+                               kwargs={
+                                   'ignore': 'uloulop-',
+                                   'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                               }),
+                Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+                Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+            ],
+            'unpack_dict':
+            True
+        }
+        recipe['datasets']['uloulo'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/LOcontribution',
+            'transforms': [
+                Transformation(name='merge_subgroup_datasets',
+                               args=(),
+                               kwargs={
+                                   'contains': 'uloulop-',
+                                   'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                               }),
+                Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+                Transformation(name='stack_datasets', args=(), kwargs={'axis': 1}),
+                Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+            ],
+        }
 
     recipe['attributes']['scalarProducts'] = {
         'h5path': f'/{group_name}/element-{index}/scalarProducts',
@@ -153,6 +263,73 @@ def _get_radial_recipe(group_name: str, index: int, contour: int) -> Dict[str, A
     recipe['attributes']['radialFunctions'] = {
         'h5path': '/RadialFunctions',
         'transforms': [Transformation(name='get_all_child_datasets', args=(), kwargs={})]
+    }
+
+    return recipe
+
+
+def _get_kresolved_recipe(group_name: str, index: int, contour: int, version: int = None):
+    """
+    Get the HDF5Reader recipe for reading in a k-resolved Green's function element
+
+    :param group_name: str of the group containing the Green's function elements
+    :param index: integer index of the element to read in (indexing starts at 1)
+    :param contour: integer index of the energy contour to read in (indexing starts at 1)
+
+    :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
+    """
+    recipe = _get_sphavg_recipe(group_name, index, contour, version=version)
+
+    recipe['datasets'].pop('sphavg')
+
+    recipe['datasets']['sphavg'] = {
+        'h5path':
+        f'/{group_name}/element-{index}',
+        'transforms': [
+            Transformation(name='get_all_child_datasets', args=(), kwargs={'contains': ['kresolved-']}),
+            Transformation(name='convert_to_complex_array', args=(), kwargs={}),
+            Transformation(name='stack_datasets',
+                           args=(),
+                           kwargs={
+                               'axis': 0,
+                               'sort_key': lambda x: int(x.split('-', maxsplit=1)[1])
+                           }),
+            Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={})
+        ],
+    }
+
+    recipe['attributes']['nkpts'] = {
+        'h5path':
+        '/general/kpts',
+        'transforms': [
+            Transformation(name='get_attribute', args=('nkpt',), kwargs={}),
+            Transformation(name='get_first_element', args=(), kwargs={}),
+        ],
+    }
+
+    recipe['attributes']['kpoints_kind'] = {
+        'h5path':
+        '/general/kpts',
+        'transforms': [
+            Transformation(name='get_attribute', args=('kind',), kwargs={}),
+            Transformation(name='convert_to_str', args=(), kwargs={'join': True}),
+        ],
+    }
+
+    recipe['attributes']['kpoints'] = {
+        'h5path': '/general/kpts/coordinates',
+    }
+
+    recipe['attributes']['reciprocal_cell'] = {'h5path': '/general/reciprocalCell'}
+
+    recipe['attributes']['special_kpoint_indices'] = {
+        'h5path': '/general/kpts/specialPointIndices',
+        'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
+    }
+
+    recipe['attributes']['special_kpoint_labels'] = {
+        'h5path': '/general/kpts/specialPointLabels',
+        'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
     }
 
     return recipe
@@ -168,8 +345,9 @@ def _get_greensf_group_name(hdffile: h5py.File) -> str:
     """
     if '/GreensFunctionElements' in hdffile:
         return 'GreensFunctionElements'
-    elif '/Hubbard1Elements' in hdffile:
+    if '/Hubbard1Elements' in hdffile:
         return 'Hubbard1Elements'
+    raise ValueError("No Green's function group found")
 
 
 def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
@@ -192,11 +370,29 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     sphavg = element.attrs['l_sphavg'][0] == 1
     onsite = element.attrs['l_onsite'][0] == 1
     contour = element.attrs['iContour'][0]
+    kresolved = element.attrs.get('l_kresolved', [0])[0] == 1
     atomDiff = np.array(element.attrs['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
     nLO = element.attrs['numLOs'][0]
 
-    return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, contour, nLO, atomDiff)
+    return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
+
+
+def _get_version(hdffile: h5py.File):
+    """
+    Get the file version of the given greensf.hdf file
+
+    :param hdffile: h5py.File of the greensf.hdf file
+    """
+    meta = hdffile.get('/meta')
+    version = None
+    if meta is not None:
+        version = meta.attrs['version'][0]
+
+    if version is None:
+        raise ValueError('Failed to extract file version of greensf.hdf file')
+
+    return version
 
 
 def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, Any], Dict[str, Any]]:
@@ -212,13 +408,16 @@ def _read_gf_element(file: Any, index: int) -> Tuple[GreensfElement, Dict[str, A
               :py:class:`~masci_tools.io.parsers.hdf5.HDF5Reader`
     """
     with HDF5Reader(file) as h5reader:
-        gf_element = _read_element_header(h5reader._h5_file, index)
-        group_name = _get_greensf_group_name(h5reader._h5_file)
+        version = _get_version(h5reader.file)
+        gf_element = _read_element_header(h5reader.file, index)
+        group_name = _get_greensf_group_name(h5reader.file)
 
-        if gf_element.sphavg:
-            recipe = _get_sphavg_recipe(group_name, index, gf_element.contour)
+        if gf_element.kresolved:
+            recipe = _get_kresolved_recipe(group_name, index, gf_element.contour, version=version)
+        elif gf_element.sphavg:
+            recipe = _get_sphavg_recipe(group_name, index, gf_element.contour, version=version)
         else:
-            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nlo=gf_element.nLO)
+            recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO, version=version)
 
         data, attributes = h5reader.read(recipe=recipe)
 
@@ -241,24 +440,72 @@ class GreensFunction:
         self.weights = data.pop('energy_weights')
 
         self.data = data
+        self.extras = attributes
 
-        if not self.sphavg:
-            self.scalar_products = attributes['scalarProducts']
+        self.kpoints = None
+        self.kpath = None
+        if self.kresolved:
+            self.kpoints = attributes['kpoints']
+            if attributes['kpoints_kind'] == 'path':
+                #Project kpoints onto 1D path
+                self.kpath = self.kpoints @ attributes['reciprocal_cell'].T
+                self.kpath = np.array([np.linalg.norm(ki - kj) for ki, kj in zip(self.kpath[1:], self.kpath[:-1])])
+                self.kpath = np.insert(self.kpath, 0, 0.0)
+                self.kpath = np.cumsum(self.kpath)
+
+        elif not self.sphavg:
+            #Remove trailing n or p
+            self.scalar_products = {key.strip('pn'): val for key, val in attributes['scalarProducts'].items()}
             self.radial_functions = attributes['radialFunctions']
-            raise NotImplementedError("Radial Green's functions not yet implemented")
+            if self.nLO > 0:
+                all_local_orbitals = self.radial_functions['llo']
+
+                lo_list_atomtype = [indx for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l]
+                lo_list_atomtypep = [
+                    indx for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
+                ]
+
+                for key, val in self.scalar_products.items():
+                    if key == 'uloulo':
+                        self.scalar_products[key] = val[lo_list_atomtype, lo_list_atomtypep, ...]
+                    elif key.startswith('ulo'):
+                        self.scalar_products[key] = val[lo_list_atomtype, ...]
+                    elif key.endswith('ulo'):
+                        self.scalar_products[key] = val[lo_list_atomtypep, ...]
+
+                #TODO: Same selections for radial_functions
 
         self.spins = attributes['spins']
         self.mperp = attributes['mperp']
         self.lmax = attributes['lmax']
 
     @classmethod
-    def fromFile(cls, file: Any, index: int) -> 'GreensFunction':
+    def fromFile(cls, file: Any, index: int = None, **selection_params: Any) -> 'GreensFunction':
         """
         Classmethod for creating a :py:class:`GreensFunction` instance directly from a hdf file
 
         :param file: path or opened file handle to a greensf.hdf file
-        :param index: int index of the element to read in
+        :param index: optional int index of the element to read in
+
+        If index is not given Keyword arguments with the keys being the names of the fields of
+        :py:class:`GreensfElement` can be given to select the right Green's function. The specification
+        has to match only one element in the file
         """
+
+        if index is None:
+            if not selection_params:
+                raise ValueError('If index is not given, parameters for selection need to be provided')
+            elements = listElements(file)
+            index = select_element_indices(elements, **selection_params)
+            if len(index) == 1:
+                index = index[0] + 1
+            else:
+                raise ValueError(
+                    f'Found multiple possible matches for the given criteria. Indices {index} are possible')
+        else:
+            if selection_params:
+                raise ValueError('If index is given no further selection parameters are allowed')
+
         element, data, attributes = _read_gf_element(file, index)
         return cls(element, data, attributes)
 
@@ -274,6 +521,75 @@ class GreensFunction:
         if attr in GreensfElement._fields:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
+
+    def get_coefficient(self, name: CoefficientName, spin: int = None, radial: bool = False) -> np.ndarray:
+        """
+        Get the coefficient with the given name from the data attribute
+
+        :param name: name of the coefficient
+        :param radial: if the Green's function is stored by coefficient and radial is True
+                       it is multiplied by the corresponding radial function
+                       otherwise the scalar product is multiplied
+        :param spin: integer index of the spin to retrieve
+
+        :returns: numpy.ndarray for the given coefficient and spin
+        """
+        if spin is not None:
+            spin -= 1
+            spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
+
+        if radial and self.sphavg:
+            raise ValueError("No radial dependence possible. Green's function is spherically averaged")
+
+        coeff = 1
+        if name != 'sphavg':
+            if radial:
+                raise NotImplementedError()
+            else:
+                if spin is not None:
+                    spin1, spin2 = self.to_spin_indices(spin)
+                    coeff = self.scalar_products[name][..., spin1, spin2].T
+                else:
+                    coeff = self.scalar_products[name].T
+        elif not self.sphavg:
+            raise ValueError("No entry sphavg available. Green's function is stored radially resolved")
+
+        data = self.data[name].T  #Converting from fortran index order
+        if spin is not None:
+            data = data[:, :, :, spin_index, ...]
+        else:
+            if self.mperp:
+                #Build up the full 2x2 spin matrix for the coefficient
+                axes = list(range(len(data.shape)))
+                axes[2] = 1
+                axes[1] = 2
+                spin_offd = np.transpose(data[:, :, :, [2], ...].conj(), axes=axes)
+                data = np.concatenate((data, spin_offd), axis=3)
+            else:
+                data = np.concatenate((data, np.empty_like(data[:, :, :, [0, 1], ...])), axis=3)
+            #Reorder spin entries so that the spin-diagonal contributions also
+            #end up on the diagonal of the 2x2 matrix
+            spin_order = [0, 2, 3, 1]
+            data = data[:, :, :, spin_order, ...]
+            shape = tuple(chain(data.shape[:3], (2, 2), data.shape[4:]))
+            data = np.reshape(data, shape)
+
+        if self.kresolved:
+            #Move upper/lower contour index to last one
+            return np.swapaxes(data, -2, -1)
+
+        if spin is not None:
+            if name == 'uloulo':
+                return np.einsum('...ij,...ij->...ij', data, coeff)
+            if 'lo' in name:
+                return np.einsum('...i,...i->...i', data, coeff)
+            return data * coeff
+
+        if name == 'uloulo':
+            return np.einsum('...ijkl,...ijkl->...ijkl', data, coeff)
+        if 'lo' in name:
+            return np.einsum('...ijk,...ijk->...ijk', data, coeff)
+        return np.einsum('...ij,...ij->...ij', data, coeff)
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -321,12 +637,7 @@ class GreensFunction:
         """
         if self.mperp:
             return 4
-        else:
-            return self.spins
-
-    def get_scalar_product_by_key(self, key: str, spin: int) -> float:
-        spin1, spin2 = self.to_spin_indices(spin)
-        return self.scalar_products[f'{key}n'][spin1, spin2]
+        return self.spins
 
     def __str__(self) -> str:
         """
@@ -339,7 +650,7 @@ class GreensFunction:
                           *,
                           m: int = None,
                           mp: int = None,
-                          spin: int,
+                          spin: int = None,
                           imag: bool = True,
                           both_contours: bool = False) -> np.ndarray:
         """
@@ -354,12 +665,6 @@ class GreensFunction:
 
         :returns: numpy array with the selected data
         """
-        if spin is not None:
-            spin -= 1
-            spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
-        else:
-            spin_index = slice(0, min(3, self.nspins))
-
         if m is not None:
             m_index = self.to_m_index(m)
         else:
@@ -370,15 +675,24 @@ class GreensFunction:
         else:
             mp_index = slice(self.lmax - self.l, self.lmax + self.lp + 1, 1)
 
-        gf = self.data['sphavg'][:, spin_index, mp_index, m_index, :].T
+        if self.sphavg:
+            gf = self.get_coefficient('sphavg', spin=spin)[:, m_index, mp_index, ...]
+        else:
+            gf =  self.get_coefficient('uu', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('ud', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('du', spin=spin)[:,m_index,mp_index,...] \
+                + self.get_coefficient('dd', spin=spin)[:,m_index,mp_index,...] \
+                + np.sum(self.get_coefficient('uulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('ulou', spin=spin)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', spin=spin)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', spin=spin)[:,m_index,mp_index,...], axis=(-1,-2))
 
         if both_contours:
             return gf
+        if imag:
+            data = -1 / (2 * np.pi * 1j) * (gf[..., 0] - gf[..., 1])
         else:
-            if imag:
-                data = -1 / (2 * np.pi * 1j) * (gf[..., 0] - gf[..., 1])
-            else:
-                data = -1 / (2 * np.pi) * (gf[..., 0] + gf[..., 1])
+            data = -1 / (2 * np.pi) * (gf[..., 0] + gf[..., 1])
 
         return data.real
 
@@ -395,7 +709,10 @@ class GreensFunction:
         if self.l != self.lp:
             raise ValueError('Trace only supported for l==lp')
 
-        data = np.zeros(self.points.shape)
+        if self.kresolved:
+            data = np.zeros((*self.points.shape, self.extras['nkpts']))
+        else:
+            data = np.zeros(self.points.shape)
         for m in range(-self.l, self.l + 1):
             data += self.energy_dependence(m=m, mp=m, spin=spin, imag=imag)
 
@@ -474,40 +791,79 @@ def listElements(hdffile: Any, show: bool = False) -> List[GreensfElement]:
     return elements
 
 
-def selectOnsite(hdffile: Any, l: int, atomType: int, lp: int = None, show: bool = True) -> List[int]:
+def select_elements_from_file(hdffile: Any, show: bool = False, **selection_params) -> Iterator[GreensFunction]:
     """
-    Find the specified onsite element in the ``greensf.hdf`` file
+    Construct the green's function mathcing specified criteria from a given ``greensf.hdf`` file
 
-    :param hdffile: filepath or file handle to a greensf.hdf file
-    :param l: integer of the orbital quantum number
-    :param atomType: integer of the atom type
-    :param lp: optional integer of the second orbital quantum number (default equal to l)
-    :param show: bool if True the found elements are printed in a table and the selected ones are marked
+    :param hdffile: file or file path to the ``greensf.hdf`` file
+    :param show: bool if True the found elements will be printed
 
-    :returns: list of indexes in the ``greensf.hdf`` file corresponding to the selected criteria
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: iterator over the matching :py:class:`GreensFunction`
     """
-    if lp is None:
-        lp = l
 
-    elements = listElements(hdffile)
+    elements = listElements(hdffile, show=show)
+    found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    foundIndices = []
+    def gf_iterator(found_elements):
+        for index in found_elements:
+            yield GreensFunction.from_file(hdffile, index=index + 1)
+
+    return gf_iterator(found_elements)
+
+
+def select_elements(greensfunctions: List[GreensFunction],
+                    show: bool = False,
+                    **selection_params) -> Iterator[GreensFunction]:
+    """
+    Select :py:class:`GreensFunction` objects from a list based on constraints on the
+    values of their underlying :py:class:`GreensfElement`
+
+    :param greensfunctions: list of :py:class:`GreensFunction` to choose from
+    :param show: bool if True the found elements will be printed
+
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: iterator over the matching :py:class:`GreensFunction`
+    """
+    elements = [gf.element for gf in greensfunctions]
+    found_elements = select_element_indices(elements, show=show, **selection_params)
+
+    def gf_iterator(found_elements):
+        for index in found_elements:
+            yield greensfunctions[index]
+
+    return gf_iterator(found_elements)
+
+
+def select_element_indices(elements: List[GreensfElement], show: bool = False, **selection_params) -> List[int]:
+    """
+    Select :py:class:`GreensfElement` objects from a list based on constraints on their
+    values
+
+    :param elements: list of :py:class:`GreensfElement` to choose from
+    :param show: bool if True the found elements will be printed
+
+    The Keyword arguments correspond to the names of the fields and their desired value
+
+    :returns: list of the indices matching the criteria
+    """
+
+    for key in selection_params:
+        if key not in GreensfElement._fields:
+            raise KeyError(f"Key {key} is not allowed for selecting Green's function elements")
+
+    found_elements = []
     for index, elem in enumerate(elements):
-        if elem.l != l:
-            continue
-        if elem.lp != lp:
-            continue
-        if elem.atomType != atomType:
-            continue
-        if elem.atomTypep != atomType:
-            continue
-        if np.linalg.norm(elem.atomDiff) > 1e-12:
-            continue
-        foundIndices.append(index + 1)
+        if all(elem._asdict()[key] ==
+               val if not isinstance(elem._asdict()[key], np.ndarray) else np.allclose(elem._asdict()[key], val)
+               for key, val in selection_params.items()):
+            found_elements.append(index)
 
     if show:
-        printElements(elements, mark=foundIndices)
-    return foundIndices
+        printElements(elements, index=found_elements)
+    return found_elements
 
 
 def intersite_shells_from_file(hdffile: Any,

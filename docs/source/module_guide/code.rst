@@ -109,7 +109,7 @@ Functions for modifying the input file
 Functions/Classes for loading/validating fleur XML files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: masci_tools.io.parsers.fleur.fleur_schema.schema_dict.SchemaDict
+.. autoclass:: masci_tools.io.parsers.fleur_schema.schema_dict.SchemaDict
    :members:
 
 .. automodule:: masci_tools.io.io_fleurxml
@@ -143,3 +143,12 @@ Definition of default parsing tasks for fleur out.xml
 
 .. automodule:: masci_tools.io.parsers.fleur.task_migrations
    :members:
+
+
+Commandline interface (CLI)
++++++++++++++++++++++++++++
+.. _masci_tools_cmdline:
+
+.. click:: masci_tools.cmdline.commands.root:cli
+    :prog: masci_tools
+    :show-nested:

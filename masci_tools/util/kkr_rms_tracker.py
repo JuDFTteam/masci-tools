@@ -291,7 +291,7 @@ while (True):
                 try:
                     t_iter = subprocess.check_output('grep Iter ' + path0 + 'out_timing.000.txt',
                                                      shell=True).decode('utf-8').split('\n')[-2].split()[-1]
-                    t_iter = '%5.2f min' % (float(t_iter) / 60)
+                    t_iter = f'{float(t_iter) / 60:5.2f} min'
                 except:
                     t_iter = 'no time info for last iteration'
                 suptitle(time.ctime() + ', time in last iteration: ' + t_iter)

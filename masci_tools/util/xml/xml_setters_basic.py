@@ -16,12 +16,16 @@ have the ability to create missing tags on the fly. This functionality is added 
 in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema dictionary
 to do these operations robustly
 """
+from typing import Iterable, Union, List, Any, cast
 from lxml import etree
 from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
 
 
-def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
+def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                    xpath: 'etree._xpath',
+                    newelement: etree._Element,
+                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     replaces xml tags by another tag on an xmletree in place
 
@@ -36,21 +40,29 @@ def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     import copy
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()  #type:ignore
+    else:
+        root = xmltree
 
-    nodes = eval_xpath(root, xpath, list_return=True)
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to replace found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
         parent = node.getparent()
-        index = parent.index(node)
+        if parent is None:
+            raise ValueError('Could not find parent of node')
+        index = parent.index(node)  #type:ignore
         parent.remove(node)
         parent.insert(index, copy.deepcopy(newelement))
 
@@ -58,7 +70,10 @@ def xml_replace_tag(xmltree, xpath, newelement, occurrences=None):
     return xmltree
 
 
-def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
+def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
+                   xpath: 'etree._xpath',
+                   attrib: str,
+                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes an xml attribute in an xmletree.
 
@@ -72,24 +87,33 @@ def xml_delete_att(xmltree, xpath, attrib, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
-    nodes = eval_xpath(root, xpath, list_return=True)
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()  #type:ignore
+    else:
+        root = xmltree
+
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to delete attributes on found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
-        node.attrib.pop(attrib, None)
+        node.attrib.pop(attrib, None)  #type:ignore
 
     return xmltree
 
 
-def xml_delete_tag(xmltree, xpath, occurrences=None):
+def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                   xpath: 'etree._xpath',
+                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Deletes a xml tag in an xmletree.
 
@@ -102,33 +126,77 @@ def xml_delete_tag(xmltree, xpath, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
-    nodes = eval_xpath(root, xpath, list_return=True)
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()  #type:ignore
+    else:
+        root = xmltree
+
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+
+    if len(nodes) == 0:
+        warnings.warn(f'No nodes to delete found on xpath: {str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
         parent = node.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of node')
         parent.remove(node)
 
     etree.indent(xmltree)
     return xmltree
 
 
-def xml_create_tag(xmltree,
-                   xpath,
-                   element,
-                   place_index=None,
-                   tag_order=None,
-                   occurrences=None,
-                   correct_order=True,
-                   several=True):
+def _reorder_tags(node: etree._Element, tag_order: List[str]) -> etree._Element:
+    """
+    Order the children of the given node into the given order
+
+    Prerequisites for this function:
+        - We already know that all nodes on the node are valid in the order
+
+    :param node: Element of the node to reorder
+    :param tag_order: list of the names of the tags
+
+    :returns: The reordered node
+    """
+    import copy
+
+    ordered_node = copy.deepcopy(node)
+
+    #Remove all child nodes from new_tag (deepcopied so they are still on node)
+    for child in ordered_node.iterchildren():
+        ordered_node.remove(child)
+
+    for tag in tag_order:
+        #Iterate over all children with the given tag on the node and append to the new_tag
+        for child in node.iterchildren(tag=tag):
+            ordered_node.append(child)
+
+    #Now replace the node with the reordered node
+    parent = node.getparent()
+    if parent is None:
+        raise ValueError('Could not find parent of node')
+    index = parent.index(node)  #type:ignore
+    parent.remove(node)
+    parent.insert(index, ordered_node)
+    return ordered_node
+
+
+def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
+                   xpath: 'etree._xpath',
+                   element: Union[str, etree._Element],
+                   place_index: int = None,
+                   tag_order: List[str] = None,
+                   occurrences: Union[int, Iterable[int]] = None,
+                   correct_order: bool = True,
+                   several: bool = True) -> Union[etree._Element, etree._ElementTree]:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -158,15 +226,15 @@ def xml_create_tag(xmltree,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(element):
-        element_name = element
+        element_name: str = element  #type:ignore
         try:
-            element = etree.Element(element)
+            element = etree.Element(element_name)
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag
+        element_name = element.tag  #type:ignore
 
-    parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
+    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
@@ -174,14 +242,14 @@ def xml_create_tag(xmltree,
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            parent_nodes = [parent_nodes[occ] for occ in occurrences]
+            parent_nodes = [parent_nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for parent in parent_nodes:
-        element_to_write = copy.deepcopy(element)
+        element_to_write: etree._Element = copy.deepcopy(element)  #type:ignore
         if tag_order is not None:
             try:
                 tag_index = tag_order.index(element_name)
@@ -211,35 +279,17 @@ def xml_create_tag(xmltree,
                     raise ValueError('Existing order does not correspond to tag_order list\n'
                                      f'Expected order: {tag_order}\n'
                                      f'Actual order: {existing_order}')
-                else:
-                    #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
-                    warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
-                                  f'Expected order: {tag_order}\n'
-                                  f'Actual order: {existing_order}')
-
-                    new_tag = copy.deepcopy(parent)
-
-                    #Remove all child nodes from new_tag (deepcopied so they are still on parent)
-                    for node in new_tag.iterchildren():
-                        new_tag.remove(node)
-
-                    for tag in tag_order:
-                        #Iterate over all children with the given tag on the parent and append to the new_tag
-                        for node in parent.iterchildren(tag=tag):
-                            new_tag.append(node)
-
-                    #Now replace the parent node with the reordered node
-                    parent_of_parent = parent.getparent()
-                    index = parent_of_parent.index(parent)
-                    parent_of_parent.remove(parent)
-                    parent_of_parent.insert(index, new_tag)
-                    parent = new_tag
+                #Here we know that there are no unexpected tags in the order, so we can 'repair' the order
+                warnings.warn('Existing order does not correspond to tag_order list. Correcting it\n'
+                              f'Expected order: {tag_order}\n'
+                              f'Actual order: {existing_order}')
+                parent = _reorder_tags(parent, tag_order)
 
             for tag in reversed(behind_tags):
                 existing_tags = list(parent.iterchildren(tag=tag))
 
                 if len(existing_tags) != 0:
-                    insert_index = parent.index(existing_tags[-1]) + 1
+                    insert_index = parent.index(existing_tags[-1]) + 1  #type:ignore
                     try:
                         parent.insert(insert_index, element_to_write)
                     except ValueError as exc:
@@ -271,7 +321,12 @@ def xml_create_tag(xmltree,
     return xmltree
 
 
-def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occurrences=None):
+def xml_set_attrib_value_no_create(
+        xmltree: Union[etree._Element, etree._ElementTree],
+        xpath: 'etree._xpath',
+        attributename: str,
+        attribv: Any,
+        occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -288,17 +343,22 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
-    nodes = eval_xpath(root, xpath, list_return=True)
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()  #type:ignore
+    else:
+        root = xmltree
+
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
+        warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {str(xpath)}')
         return xmltree
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
@@ -316,7 +376,10 @@ def xml_set_attrib_value_no_create(xmltree, xpath, attributename, attribv, occur
     return xmltree
 
 
-def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
+def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
+                           xpath: 'etree._xpath',
+                           text: Any,
+                           occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
     """
     Sets the text of a tag in a xmltree to a given value.
     By default the text will be set on all nodes returned for the specified xpath.
@@ -332,17 +395,22 @@ def xml_set_text_no_create(xmltree, xpath, text, occurrences=None):
     """
     from masci_tools.io.common_functions import is_sequence
 
-    root = xmltree.getroot()
-    nodes = eval_xpath(root, xpath, list_return=True)
+    if not etree.iselement(xmltree):
+        root = xmltree.getroot()  #type:ignore
+    else:
+        root = xmltree
+
+    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
+        warnings.warn(f'No nodes to set text on found on xpath: {str(xpath)}')
         return xmltree
 
     if occurrences is not None:
         if not is_sequence(occurrences):
-            occurrences = [occurrences]
+            occurrences = [occurrences]  #type:ignore
         try:
-            nodes = [nodes[occ] for occ in occurrences]
+            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 

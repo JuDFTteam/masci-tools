@@ -59,11 +59,16 @@ Entries in the `attributes` section are read and transformed first and can subse
 for the `datasets`. These correpsond to the transforms created with the :py:class:`~masci_tools.io.parsers.hdf5.reader.AttribTransformation`
 namedtuple instead of :py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation`.
 """
+from typing import Union, List
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
 from masci_tools.util.constants import HTR_TO_EV, BOHR_A
-from .reader import Transformation, AttribTransformation
+from .reader import HDF5Recipe, Transformation, AttribTransformation
 
 
-def dos_recipe_format(group):
+def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5Recipe:
     """
     Format for denisty of states calculations retrieving the DOS from the given group
 
@@ -83,7 +88,7 @@ def dos_recipe_format(group):
     else:
         raise ValueError(f'Unknown group: {group}')
 
-    return {
+    return HDF5Recipe({
         'datasets': {
             'dos': {
                 'h5path':
@@ -155,7 +160,7 @@ def dos_recipe_format(group):
                 ]
             }
         }
-    }
+    })
 
 
 #DOS Recipes
@@ -165,7 +170,7 @@ FleurORBCOMP = dos_recipe_format('Orbcomp')
 FleurMCD = dos_recipe_format('MCD')
 
 
-def bands_recipe_format(group, simple=False):
+def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simple: bool = False) -> HDF5Recipe:
     """
     Format for bandstructure calculations retrieving weights from the given group
 
@@ -186,7 +191,7 @@ def bands_recipe_format(group, simple=False):
     else:
         raise ValueError(f'Unknown group: {group}')
 
-    recipe = {
+    recipe = HDF5Recipe({
         'datasets': {
             'eigenvalues': {
                 'h5path':
@@ -309,7 +314,7 @@ def bands_recipe_format(group, simple=False):
                 ]
             }
         }
-    }
+    })
 
     if simple:
         return recipe
@@ -333,7 +338,8 @@ def bands_recipe_format(group, simple=False):
     return recipe
 
 
-def get_fleur_bands_specific_weights(weight_name, group='Local'):
+def get_fleur_bands_specific_weights(weight_name: Union[str, List[str]],
+                                     group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'] = 'Local') -> HDF5Recipe:
     """
     Recipe for bandstructure calculations only retrieving one
     additional weight besides the eigenvalues and kpath

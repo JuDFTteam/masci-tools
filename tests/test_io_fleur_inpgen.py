@@ -313,10 +313,10 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
     file_regression.check(content)
 
 
-def test_read_inpgen_file(data_regression):
+def test_read_inpgen_file(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_defaults_dict.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -328,12 +328,12 @@ def test_read_inpgen_file(data_regression):
     })
 
 
-def test_read_inpgen_file_contents(data_regression):
+def test_read_inpgen_file_contents(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r') as f:
+    with open(TESTFILE, 'r', encoding='utf-8') as f:
         content = f.read()
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(content)
@@ -346,12 +346,12 @@ def test_read_inpgen_file_contents(data_regression):
     })
 
 
-def test_read_inpgen_file_handle(data_regression):
+def test_read_inpgen_file_handle(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_defaults_dict.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r') as f:
+    with open(TESTFILE, 'r', encoding='utf-8') as f:
         cell, atom_sites, pbc, input_params = read_inpgen_file(f)
 
     data_regression.check({
@@ -362,10 +362,10 @@ def test_read_inpgen_file_handle(data_regression):
     })
 
 
-def test_read_inpgen_file_parameters(data_regression):
+def test_read_inpgen_file_parameters(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_parameters.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_parameters.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -377,10 +377,10 @@ def test_read_inpgen_file_parameters(data_regression):
     })
 
 
-def test_read_inpgen_file_econfig(data_regression):
+def test_read_inpgen_file_econfig(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_econfig.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_econfig.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -392,10 +392,10 @@ def test_read_inpgen_file_econfig(data_regression):
     })
 
 
-def test_read_inpgen_file_soc_qss(data_regression):
+def test_read_inpgen_file_soc_qss(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_soc_qss.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_soc_qss.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -407,10 +407,10 @@ def test_read_inpgen_file_soc_qss(data_regression):
     })
 
 
-def test_read_inpgen_file_film(data_regression):
+def test_read_inpgen_file_film(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/test_write_inpgen_file_film.txt'
+    TESTFILE = datadir / 'test_write_inpgen_file_film.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -422,10 +422,10 @@ def test_read_inpgen_file_film(data_regression):
     })
 
 
-def test_read_inpgen_file_comments(data_regression):
+def test_read_inpgen_file_comments(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
-    TESTFILE = 'test_io_fleur_inpgen/inpgen_file_with_comments.txt'
+    TESTFILE = datadir / 'inpgen_file_with_comments.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 
@@ -445,12 +445,10 @@ def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     from masci_tools.io.fleur_inpgen import write_inpgen_file
     from masci_tools.util.xml.xml_getters import get_parameter_data, get_structure_data
 
-    TESTFILE = 'files/fleur/Max-R5/SiLOXML/files/inp.xml'
-
-    xmltree, schema_dict = load_inpxml(TESTFILE)
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     params = get_parameter_data(xmltree, schema_dict)
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=True)
+    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
     with tempfile.NamedTemporaryFile('r') as tmp:
         write_inpgen_file(cell, atoms, input_params=params, file=tmp.name)

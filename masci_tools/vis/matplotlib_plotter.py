@@ -64,7 +64,7 @@ class MatplotlibPlotter(Plotter):
         'markersize': 4.0,
         'color': None,
         'zorder': None,
-        'repeat_colors_after': None,
+        'repeat_parameters': None,
         'edgecolor': None,
         'facecolor': None,
         'plot_label': None,
@@ -201,8 +201,8 @@ class MatplotlibPlotter(Plotter):
         'Color to use in the plot(s)',
         'zorder':
         'z-position to use for the plot(s) (Is used to define fore- and background)',
-        'repeat_colors_after':
-        'If set the colors will be repeated after the given number of plots. '
+        'repeat_parameters':
+        'If set as integer the parameters for single plots (except labels) will be repeated after the given number of plots. '
         'Only implemented for multiple_scatterplots',
         'edgecolor':
         'Edgecolor to use in the plot(s)',
@@ -408,7 +408,11 @@ class MatplotlibPlotter(Plotter):
                 plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
 
         if list_of_dicts:
-            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
+            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs,
+                                                              self.single_plot,
+                                                              self.num_plots,
+                                                              repeat_after=self['repeat_parameters'],
+                                                              ignore_repeat={'plot_label'})
 
         if not list_of_dicts and 'label' in plot_kwargs:
             label = plot_kwargs.pop('label')

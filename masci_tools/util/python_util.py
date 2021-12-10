@@ -60,10 +60,31 @@ def to_number(a_string: str) -> _typing.Union[int, float, str]:
 
 
 def now() -> _datetime.datetime:
-    """Get now time localized to UTC."""
+    """Get now time localized to UTC.
+
+    This is the same format which AiiDA uses for attributes `ctime`, `mtime`.
+    """
     return _datetime.datetime.now(tz=_pytz.UTC)
     # same as: pytz.UTC.localize(datetime.now())
-    # not same as: datetime.now(tz=timezone.utc)
+    # NOT same as: datetime.now(tz=timezone.utc)
+    # NOT same as: datetime.utcnow()
+
+
+def validate_datetime_isoformat(datetime_str: str) -> bool:
+    """Validate whether a datetime object string is isoformat.
+
+    :param datetime_str: A datetime string.
+    :return: True if isoformat, else False.
+
+    >>> import datetime
+    >>> from masci_tools.util.python_util import validate_datetime_isoformat
+    >>>
+    >>> assert validate_datetime_isoformat(datetime.datetime.now().isoformat())
+    >>> assert validate_datetime_isoformat(datetime.datetime.now().isoformat('T','seconds'))
+    """
+    regex = r'^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\.[0-9]+)?(Z|[+-](?:2[0-3]|[01][0-9]):[0-5][0-9])?$'
+    match = _re.compile(regex).match
+    return match(datetime_str) is not None
 
 
 def random_string(length: int,
@@ -152,7 +173,60 @@ def sort_lists_by_list(lists: _typing.List[_typing.List],
     return zip(*sorted(zip(*lists), reverse=desc, key=lambda x: x[key_list_index]))
 
 
-class NoIndent(object):
+def sort_dict(a_dict: dict, key: _typing.Callable = None, reverse: bool = False) -> dict:
+    """Return a copy of a dictionary, sorted by its keys. Nested / recursive.
+
+    :param a_dict: dictionary
+    :param key: optional function to use for sorting, default `None`. Example: `len` for string keys.
+    :param reverse: False: sort ascending, True: descending.
+    :return: sorted copy of dictionary
+    """
+    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(a_dict.items(), key=key, reverse=reverse)}
+
+
+def modify_dict(a_dict: dict, transform_value: _typing.Callable = lambda v: v, to_level: int = 99) -> dict:
+    """Return a copy of a dictionary with modified values. Nested / recursive.
+
+    Example:
+
+    >>> from masci_tools.util.python_util import modify_dict, sort_dict
+    >>>
+    >>> d = {'b': [2, 3],
+    >>>      'a': 1,
+    >>>      'c': {'ca': 4, 'cb': [5, 6], 'cc': {'ccb': [8, 9], 'cca': 7}}}
+    >>>
+    >>> d2 = {'a': 1,
+    >>>       'b': {2: None, 3: None},
+    >>>       'c': {'ca': 4, 'cb': {5: None, 6: None}, 'cc': {'cca': 7, 'ccb': [8, 9]}}}
+    >>>
+    >>> d3 = sort_dict(modify_dict(a_dict=d,
+    >>>                            transform_value=lambda v: {k:None for k in v} if isinstance(v,list) else v,
+    >>>                            to_level=2)
+    >>>               )
+    >>> d3 == d2
+    True
+
+    :param a_dict: dictionary
+    :param transform_value: function to transform (each non-dict) value. Default returns value unchanged.
+    :param to_level: Stop modifications below this level. The values on uppermost level have level 1.
+    :return: modified copy of dictionary
+    """
+    to_level = to_level if to_level else int(1e9)
+
+    def inner_modify_dict(sub_dict: dict, level: int = 1):
+        if level <= to_level:
+            for k, v in sub_dict.copy().items():
+                if isinstance(v, dict):
+                    sub_dict[k] = inner_modify_dict(v, level + 1)
+                else:
+                    sub_dict[k] = transform_value(v)
+        return sub_dict
+
+    copy_dict = _copy.deepcopy(a_dict)
+    return inner_modify_dict(copy_dict)
+
+
+class NoIndent:
     """ Value wrapper. """
 
     def __init__(self, value: _typing.Any):
@@ -160,7 +234,7 @@ class NoIndent(object):
 
 
 class JSONEncoderTailoredIndent(_json.JSONEncoder):
-    """JSONEncoder which allows to not indent items wrapped in 'NoIndent()'.
+    """JSONEncoder which allows to not indent items wrapped in :py:class:`~.NoIndent`.
 
     Reference: https://stackoverflow.com/a/13252112/8116031
 
@@ -219,6 +293,39 @@ class JSONEncoderTailoredIndent(_json.JSONEncoder):
             json_repr = json_repr.replace(f'"{format_spec.format(id_obj)}"', json_obj_repr)
 
         return json_repr
+
+
+class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
+    """JSONEncoder which serializes datetime values into dateime isoformat strings.
+
+    To deserialize back from isoformat string to datetime object, write a method which
+    when meeting such a value, turns it into a datetime object, and pass it to the used JSON
+    load function as `object_hook` arguemnt.
+
+    >>> import datetime
+    >>> import json
+    >>> from masci_tools.util.python_util import JSONEncoderDatetime2Isoformat
+    >>>
+    >>> # define decoder isoformat -> datetime
+    >>> def json_decode_isoformat_2_datetime(a_dict):
+    >>>     date_keys = ['ctime', 'mtime']
+    >>>     if any(key in a_dict for key in date_keys):
+    >>>         for key in date_keys:
+    >>>             value = a_dict.get(key, None)
+    >>>             if value:
+    >>>                 a_dict[key] = _datetime.datetime.fromisoformat(value)
+    >>>     return a_dict
+    >>>
+    >>> # de/serialization roundtrip
+    >>> foo = {'ctime': now(), 'bar': 42, 'mtime': datetime.datetime(2021, 9, 28)}
+    >>> foo_enc = json.dumps(foo, indent=4, cls=JSONEncoderDatetime2Isoformat)
+    >>> foo_dec = json.loads(foo_enc, object_hook=json_decode_isoformat_2_datetime)
+    >>> assert foo_dec == foo
+    """
+
+    def default(self, o: _typing.Any) -> _typing.Any:
+        if isinstance(o, (_datetime.date, _datetime.datetime)):
+            return o.isoformat()
 
 
 def dataclass_default_field(obj: _typing.Any, deepcopy=True) -> _typing.Any:
@@ -282,7 +389,7 @@ class SizeEstimator:
         from gc import get_referents
 
         if isinstance(obj, self.BLACKLIST):
-            raise TypeError('getsize() does not take argument of type: ' + str(type(object)))
+            raise TypeError('getsize() does not take argument of type: ' + str(type(obj)))
         seen_ids = set()
         size = 0
         objects = [obj]

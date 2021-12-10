@@ -1,0 +1,451 @@
+nmmpmat:
+  rotate_nmmpmat:
+  - - xmltree
+    - null
+  - - nmmplines
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - orbital
+    - null
+  - - phi
+    - null
+  - - theta
+    - null
+  set_nmmpmat:
+  - - xmltree
+    - null
+  - - nmmplines
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - orbital
+    - null
+  - - spin
+    - null
+  - - state_occupations
+    - null
+  - - orbital_occupations
+    - null
+  - - denmat
+    - null
+  - - phi
+    - null
+  - - theta
+    - null
+schema_dict:
+  add_number_to_attrib:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributename
+    - null
+  - - add_number
+    - null
+  - - complex_xpath
+    - null
+  - - mode
+    - abs
+  - - occurrences
+    - null
+  - - kwargs
+    - null
+  add_number_to_first_attrib:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributename
+    - null
+  - - add_number
+    - null
+  - - complex_xpath
+    - null
+  - - mode
+    - abs
+  - - kwargs
+    - null
+  clone_species:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - new_name
+    - null
+  - - changes
+    - null
+  create_tag:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag
+    - null
+  - - complex_xpath
+    - null
+  - - create_parents
+    - false
+  - - occurrences
+    - null
+  - - kwargs
+    - null
+  delete_att:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attrib_name
+    - null
+  - - complex_xpath
+    - null
+  - - occurrences
+    - null
+  - - kwargs
+    - null
+  delete_tag:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag_name
+    - null
+  - - complex_xpath
+    - null
+  - - occurrences
+    - null
+  - - kwargs
+    - null
+  replace_tag:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag_name
+    - null
+  - - newelement
+    - null
+  - - complex_xpath
+    - null
+  - - occurrences
+    - null
+  - - kwargs
+    - null
+  set_atomgroup:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributedict
+    - null
+  - - position
+    - null
+  - - species
+    - null
+  - - create
+    - false
+  set_atomgroup_label:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - atom_label
+    - null
+  - - attributedict
+    - null
+  - - create
+    - false
+  set_attrib_value:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributename
+    - null
+  - - attribv
+    - null
+  - - complex_xpath
+    - null
+  - - occurrences
+    - null
+  - - create
+    - false
+  - - kwargs
+    - null
+  set_complex_tag:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag_name
+    - null
+  - - changes
+    - null
+  - - complex_xpath
+    - null
+  - - create
+    - false
+  - - kwargs
+    - null
+  set_first_attrib_value:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributename
+    - null
+  - - attribv
+    - null
+  - - complex_xpath
+    - null
+  - - create
+    - false
+  - - kwargs
+    - null
+  set_first_text:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - attributename
+    - null
+  - - attribv
+    - null
+  - - complex_xpath
+    - null
+  - - create
+    - false
+  - - kwargs
+    - null
+  set_inpchanges:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - change_dict
+    - null
+  - - path_spec
+    - null
+  set_kpath:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - kpath
+    - null
+  - - count
+    - null
+  - - gamma
+    - false
+  set_kpointlist:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - kpoints
+    - null
+  - - weights
+    - null
+  - - name
+    - null
+  - - kpoint_type
+    - path
+  - - special_labels
+    - null
+  - - switch
+    - false
+  - - overwrite
+    - false
+  set_nkpts:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - count
+    - null
+  - - gamma
+    - false
+  set_simple_tag:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag_name
+    - null
+  - - changes
+    - null
+  - - complex_xpath
+    - null
+  - - create_parents
+    - false
+  - - kwargs
+    - null
+  set_species:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - attributedict
+    - null
+  - - create
+    - false
+  set_species_label:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - atom_label
+    - null
+  - - attributedict
+    - null
+  - - create
+    - false
+  set_text:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - tag_name
+    - null
+  - - text
+    - null
+  - - complex_xpath
+    - null
+  - - occurrences
+    - null
+  - - create
+    - false
+  - - kwargs
+    - null
+  shift_value:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - change_dict
+    - null
+  - - mode
+    - abs
+  - - path_spec
+    - null
+  shift_value_species_label:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - atom_label
+    - null
+  - - attributename
+    - null
+  - - value_given
+    - null
+  - - mode
+    - abs
+  - - kwargs
+    - null
+  switch_kpointset:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - list_name
+    - null
+  switch_species:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - new_species_name
+    - null
+  - - position
+    - null
+  - - species
+    - null
+  - - clone
+    - false
+  - - changes
+    - null
+  switch_species_label:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - atom_label
+    - null
+  - - new_species_name
+    - null
+  - - clone
+    - false
+  - - changes
+    - null
+xpath:
+  xml_create_tag:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - element
+    - null
+  - - place_index
+    - null
+  - - tag_order
+    - null
+  - - occurrences
+    - null
+  - - correct_order
+    - true
+  - - several
+    - true
+  xml_delete_att:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - attrib
+    - null
+  - - occurrences
+    - null
+  xml_delete_tag:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - occurrences
+    - null
+  xml_replace_tag:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - newelement
+    - null
+  - - occurrences
+    - null
+  xml_set_attrib_value_no_create:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - attributename
+    - null
+  - - attribv
+    - null
+  - - occurrences
+    - null
+  xml_set_text_no_create:
+  - - xmltree
+    - null
+  - - xpath
+    - null
+  - - text
+    - null
+  - - occurrences
+    - null

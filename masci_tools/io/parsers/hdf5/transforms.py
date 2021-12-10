@@ -22,9 +22,11 @@ for the following 3 cases:
        are known. Two options can be chosen apply the transformation to all keys in the dict
        or throw an error
 """
+from typing import Callable
 import h5py
 import numpy as np
 from functools import wraps
+from collections import defaultdict
 from .reader import HDF5Reader
 
 
@@ -32,7 +34,7 @@ class HDF5TransformationError(Exception):
     pass
 
 
-def hdf5_transformation(*, attribute_needed):
+def hdf5_transformation(*, attribute_needed: bool) -> Callable:
     """
     Decorator for registering a function as a transformation functions
     on the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
@@ -41,12 +43,13 @@ def hdf5_transformation(*, attribute_needed):
                              attribute value and is therefore only available for the entries in datasets
     """
 
-    def hdf5_transformation_decorator(func):
+    def hdf5_transformation_decorator(func: Callable) -> Callable:
         """
         Return decorated HDF5Reader object with _transforms dict and
         _attribute_transforms set attribute
         Here all registered transforms are inserted
         """
+        #pylint: disable=protected-access
 
         @wraps(func)
         def transform_func(*args, **kwargs):
@@ -56,14 +59,10 @@ def hdf5_transformation(*, attribute_needed):
             except Exception as exc:
                 raise HDF5TransformationError(f'The HDF5 transformation {func.__name__} failed with {exc}') from exc
 
-        if getattr(HDF5Reader, '_transforms', None) is None:
-            HDF5Reader._transforms = {}  # pylint: disable=protected-access
-            HDF5Reader._attribute_transforms = set()  # pylint: disable=protected-access
-
-        HDF5Reader._transforms[func.__name__] = transform_func  # pylint: disable=protected-access
+        HDF5Reader._transforms[func.__name__] = transform_func
 
         if attribute_needed:
-            HDF5Reader._attribute_transforms.add(func.__name__)  # pylint: disable=protected-access
+            HDF5Reader._attribute_transforms.add(func.__name__)
 
         return transform_func
 
@@ -206,6 +205,8 @@ def get_all_child_datasets(group, ignore=None, contains=None):
     :param group: h5py object to extract from
     :param ignore: str or iterable of str (optional). These
                    keys will be ignored
+    :param contains: str or iterable of str (optional). This phrase has to be in the key
+
 
     :returns: a dict with the contained dataset entered with their names as keys
     """
@@ -217,15 +218,81 @@ def get_all_child_datasets(group, ignore=None, contains=None):
 
     transformed = {}
     for key, val in group.items():
-        if key in ignore:
+        if any(phrase in key for phrase in ignore):
             continue
         if contains is not None:
-            if contains not in key:
+            if any(phrase not in key for phrase in contains):
                 continue
         if isinstance(val, h5py.Dataset):
             transformed[key] = val
 
     return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def merge_subgroup_datasets(group,
+                            ignore=None,
+                            contains=None,
+                            ignore_group=None,
+                            contains_group=None,
+                            stack_results=True,
+                            sort_key=None):
+    """
+    Get all datasets contained in the given group
+
+    :param group: h5py object to extract from
+    :param ignore_group: str or iterable of str (optional). These
+                   keys will be ignored
+    :param contains_group: str or iterable of str (optional). This phrase has to be in the key
+    :param ignore: str or iterable of str (optional). These
+                   keys of the datasets in the subgroup will be ignored
+    :param contains: str or iterable of str (optional). This phrase has to be in the key of the datasets in the subgroup
+    :param stack_results: bool if True the resulting list of datasets will be used to construct one numpy array
+
+    :returns: a dict with the contained dataset of the subgroups of the given group entered with their names as keys
+    """
+    if ignore_group is None:
+        ignore_group = set()
+
+    if isinstance(ignore_group, str):
+        ignore_group = set([ignore_group])
+
+    transformed = defaultdict(list)
+
+    for key in sorted(group.keys(), key=sort_key):
+        val = group[key]
+        if any(phrase in key for phrase in ignore_group):
+            continue
+        if contains_group is not None:
+            if any(phrase not in key for phrase in contains_group):
+                continue
+        if isinstance(val, h5py.Group):
+            subgroup_dsets = get_all_child_datasets(val, ignore=ignore, contains=contains)
+            for k, v in subgroup_dsets.items():
+                transformed[k].append(v)
+
+    if stack_results:
+        transformed = {key: np.stack(val) for key, val in transformed.items()}
+
+    return transformed
+
+
+@hdf5_transformation(attribute_needed=False)
+def stack_datasets(dataset, axis=0, sort_key=None):
+    """
+    Stack the entries in the given dict dataset along the given axis
+
+    :param dataset: dict dataset to transform
+    :param axis: int along which axis should be stacked
+
+    :returns: the array resulting from stacking all entries in the dictionary
+    """
+
+    if not isinstance(dataset, dict):
+        raise NotImplementedError
+
+    keys = sorted(dataset.keys(), key=sort_key)
+    return np.stack([dataset[key] for key in keys], axis=axis)
 
 
 @hdf5_transformation(attribute_needed=False)
@@ -531,15 +598,18 @@ def split_array(dataset, suffixes=None, name=None):
 
 
 @hdf5_transformation(attribute_needed=False)
-def convert_to_str(dataset):
+def convert_to_str(dataset, join=False):
     """Converts the given dataset to a numpy array of type string
 
     :param dataset: dataset to transform
+    :param join: bool if True the result will be joined together
 
     :returns: numpy array of dtype str
     """
 
     transformed = np.array(dataset).astype(str)
+    if join:
+        transformed = ''.join(transformed)
 
     return transformed
 

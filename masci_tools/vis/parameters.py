@@ -32,6 +32,7 @@ def NestedPlotParameters(plotter_object):
 
     :param plotter_object: Plotter instance
     """
+    #pylint: disable=protected-access
     assert isinstance(plotter_object, Plotter), \
            'The NestedPlotParameters contextmanager should only be used for Plotter objects'
 
@@ -76,6 +77,7 @@ def ensure_plotter_consistency(plotter_object):
             Also after execution the defaults and parameters are checked to make sure
             they are consistent
             """
+            #pylint: disable=protected-access
 
             global_defaults_before = copy.deepcopy(plotter_object._user_defaults)
 
@@ -157,7 +159,7 @@ def _generate_plot_parameters_table(defaults, descriptions):
     return '\n'.join(table)
 
 
-class Plotter(object):
+class Plotter:
     """
     Base class for handling parameters for plotting methods. For different plotting backends
     a subclass can be created to represent the specific parameters of the backend.
@@ -276,10 +278,8 @@ class Plotter(object):
                     return value
                 if index < len(value):
                     return value[index]
-                else:
-                    return value[0]
-            else:
-                return value
+                return value[0]
+            return value
         except KeyError:
             return None
 
@@ -307,7 +307,7 @@ class Plotter(object):
         return ret_dict
 
     @staticmethod
-    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots):
+    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots, repeat_after=None, ignore_repeat=None):
         """
         Converts dict of lists and single values to list of length num_plots
         or single dict for single_plot=True
@@ -318,6 +318,10 @@ class Plotter(object):
 
         :returns: list of dicts
         """
+
+        if ignore_repeat is None:
+            ignore_repeat = set()
+
         any_list = any(isinstance(val, (list, tuple)) for val in dict_of_lists.values())
 
         #Make sure that every entry is actually a list
@@ -333,12 +337,17 @@ class Plotter(object):
             list_of_dicts = []
             # enforce that all lists of the same lengths
             maxlen = max(map(len, dict_of_lists.values()))
+            if repeat_after is not None:
+                maxlen = max(num_plots, maxlen)
             for index in range(maxlen):
                 tempdict = {}
                 # don't use comprehension here, otherwise the wrong key is caught
                 for key, value in dict_of_lists.items():
                     try:
-                        tempdict[key] = value[index]
+                        if repeat_after is not None and index >= repeat_after and key not in ignore_repeat:
+                            tempdict[key] = value[index % repeat_after]
+                        else:
+                            tempdict[key] = value[index]
                     except IndexError as ex:
                         raise IndexError(f'List under key: {key} index: {index} out of range, '
                                          f'should have length: {maxlen}. '
@@ -612,7 +621,7 @@ class Plotter(object):
         else:
             dict_to_save = self._user_defaults
 
-        with open(filename, 'w') as file:
+        with open(filename, 'w', encoding='utf-8') as file:
             json.dump(dict_to_save, file, indent=4, sort_keys=True)
 
     def load_defaults(self, filename='plot_defaults.json'):
@@ -621,7 +630,7 @@ class Plotter(object):
 
         :param filename: filename,from  where the defaults should be taken
         """
-        with open(filename, 'r') as file:
+        with open(filename, 'r', encoding='utf-8') as file:
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)

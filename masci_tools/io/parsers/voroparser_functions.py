@@ -22,9 +22,9 @@ import io
 import sys
 import traceback
 
-__copyright__ = (u'Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__contributors__ = (u'Philipp Rüßmann')
+__contributors__ = ('Philipp Rüßmann')
 __version__ = 1.4
 
 ####################################################################################
@@ -32,8 +32,7 @@ __version__ = 1.4
 
 def get_valence_min(outfile='out_voronoi'):
     """Construct minimum of energy contour (between valence band bottom and core states)"""
-    f = open_general(outfile)
-    with f:  # make sure the file is properly closed
+    with open_general(outfile) as f:
         txt = f.readlines()
         searchstr = 'All other states are above'
         valence_minimum = np.array([float(line.split(':')[1].split()[0]) for line in txt if searchstr in line])
@@ -229,26 +228,18 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
     out_dict = convert_to_pystd(out_dict)
 
     # return output with error messages if there are any
-    if len(msg_list) > 0:
-        return False, msg_list, out_dict
-    else:
-        return True, [], out_dict
+    return len(msg_list) == 0, msg_list, out_dict
 
 
 def startpot_jellium(outfile):
-    f = open_general(outfile)
-    with f:  # make sure the file is properly closed
+    with open_general(outfile) as f:
         tmptxt = f.readlines()
     itmp = search_string('JELLSTART POTENTIALS', tmptxt)
-    if itmp == -1:
-        return False
-    else:
-        return True
+    return itmp != -1
 
 
 def get_volumes(outfile):
-    f = open_general(outfile)
-    with f:  # make sure the file is properly closed
+    with open_general(outfile) as f:
         tmptxt = f.readlines()
 
     itmp = search_string('Total volume (alat^3)', tmptxt)
@@ -268,10 +259,8 @@ def get_volumes(outfile):
 
 
 def get_cls_info(outfile):
-    f = open_general(outfile)
-    with f:  # make sure the file is properly closed
+    with open_general(outfile) as f:
         tmptxt = f.readlines()
-        f.close()
         itmp = 0
         Ncls = 0
         Natom = 0
@@ -292,8 +281,7 @@ def get_cls_info(outfile):
 
 
 def get_shape_array(outfile, atominfo):
-    f = open_general(outfile)
-    with f:  # make sure the file is properly closed
+    with open_general(outfile) as f:
         txt = f.readlines()
     #naez/natyp number of items either one number (=ishape without cpa or two =[iatom, ishape] with CPA)
     # read in naez and/or natyp and then find ishape array (1..natyp[=naez without CPA])
@@ -321,8 +309,7 @@ def get_shape_array(outfile, atominfo):
         raise ValueError(f'Neither NAEZ nor NATYP found in {outfile}')
 
     # read shape index from atominfo file
-    f = open_general(atominfo)
-    with f:  # make sure the file is properly closed
+    with open_general(atominfo) as f:
         tmptxt = f.readlines()
 
     itmp = search_string('<SHAPE>', tmptxt) + 1
@@ -338,8 +325,7 @@ def get_shape_array(outfile, atominfo):
 
 
 def get_radii(naez, radii):
-    f = open_general(radii)
-    with f:  # make sure the file is properly closed
+    with open_general(radii) as f:
         txt = f.readlines()
     results = []
     for iatom in range(naez):
@@ -359,8 +345,7 @@ def get_radii(naez, radii):
 
 
 def get_fpradius(naez, atominfo):
-    f = open_general(atominfo)
-    with f:  # make sure the file is properly closed
+    with open_general(atominfo) as f:
         txt = f.readlines()
     itmp = search_string('<FPRADIUS>', txt) + 1
     results = []
@@ -373,8 +358,7 @@ def get_fpradius(naez, atominfo):
 
 
 def get_alat(inpfile):
-    f = open_general(inpfile)
-    with f:  # make sure the file is properly closed
+    with open_general(inpfile) as f:
         txt = f.readlines()
     itmp = search_string('ALATBASIS', txt)
     result = float(txt[itmp].split('ALATBASIS')[1].split('=')[1].split()[0])
@@ -382,8 +366,7 @@ def get_alat(inpfile):
 
 
 def get_radial_meshpoints(potfile):
-    f = open_general(potfile)
-    with f:  # make sure the file is properly closed
+    with open_general(potfile) as f:  # make sure the file is properly closed
         txt = f.readlines()
     itmp = 0
     result = []

@@ -36,9 +36,13 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
-              'sphinx.ext.intersphinx']
+              'sphinx.ext.intersphinx',
+              'sphinx_click']
 
-intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None)}
+intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
+                       'python': ('https://docs.python.org/3', None),
+                       'lxml': ('https://lxml.de/apidoc/',None),
+                       'h5py': ('https://docs.h5py.org/en/latest/', None)}
 
 todo_include_todos = True
 
@@ -55,8 +59,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Masci-tools'
-copyright = u'2016-2021, Forschungszentrum Jülich GmbH, PGI-1/IAS-1 Quantum Theory of Materials'
+project = 'Masci-tools'
+copyright = '2016-2021, Forschungszentrum Jülich GmbH, PGI-1/IAS-1 Quantum Theory of Materials'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -210,8 +214,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'masci-tools.tex', u'Masci-tools Documentation',
-   u'The JuDFT team', 'manual'),
+  ('index', 'masci-tools.tex', 'Masci-tools Documentation',
+   'The JuDFT team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -265,8 +269,8 @@ autodoc_mock_imports = ['bokeh']
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'masci-tools', u'Masci-tools Documentation',
-     [u'The JuDFT team'], 1)
+    ('index', 'masci-tools', 'Masci-tools Documentation',
+     ['The JuDFT team'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -279,8 +283,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'masci-tools', u'Masci-tools Documentation',
-   u'The JuDFT team', 'masci-tools', 'Tools for Computational Material Science.',
+  ('index', 'masci-tools', 'Masci-tools Documentation',
+   'The JuDFT team', 'masci-tools', 'Tools for Computational Material Science.',
    'Miscellaneous'),
 ]
 
@@ -299,7 +303,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Masci-tools'
+epub_title = 'Masci-tools'
 epub_author = author
 epub_publisher = author
 epub_copyright = copyright
@@ -397,12 +401,31 @@ nitpick_ignore = [
     ('py:obj', 'bool'),
     ('py:obj', 'Mapping'),
     ('py:obj', 'plum'),
+    ('py:class', 'T'),
+    ('py:class', 'S'),
+    ('py:class', 'masci_tools.io.parsers.fleur_schema.schema_dict.F'),
+    ('py:class', 'masci_tools.io.parsers.fleur_schema.schema_dict.SchemaDictDispatch'),
+    ('py:class', '_S'),
+    ('py:class', 'etree._xpath'),
+    ('py:class', 'etree._DictAnyStr'),
+    ('py:class', 'etree._XPathObject'),
+    ('py:class', 'etree._XPathEvaluatorBase'),
+    ('py:class', 'fleur_schema.SchemaDict'),
+    ('py:class', 'fleur_schema.InputSchemaDict'),
+    ('py:class', 'fleur_schema.OutputSchemaDict'),
+    ('py:class', 'fleur_schema.AttributeType'),
+    ('py:class', 'IO'),
+    ('py:class', 'h5py._hl.base.HLObject'),
+    ('py:class', 'h5py._hl.group.Group'),
+    ('py:class', 'masci_tools.io.common_functions._TVectorType'),
 ]
 
+
+# These folders are copied to the documentation's HTML output
 html_static_path = ['_static']
 
-html_context = {
-    'css_files': [
-        '_static/theme_overrides.css',  # override wide tables in RTD theme
-    ],
-}
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'theme_overrides.css',
+]

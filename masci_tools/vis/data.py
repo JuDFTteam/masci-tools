@@ -213,8 +213,7 @@ class PlotData:
         """
         if first:
             return next(PlotDataIterator(self, mode='keys'))
-        else:
-            return PlotDataIterator(self, mode='keys')
+        return PlotDataIterator(self, mode='keys')
 
     def values(self, first=False):
         """
@@ -224,8 +223,7 @@ class PlotData:
         """
         if first:
             return next(PlotDataIterator(self, mode='values', mappable=True))
-        else:
-            return PlotDataIterator(self, mode='values', mappable=True)
+        return PlotDataIterator(self, mode='values', mappable=True)
 
     def items(self, first=False, mappable=False):
         """
@@ -236,8 +234,7 @@ class PlotData:
         """
         if first:
             return next(PlotDataIterator(self, mode='items', mappable=mappable))
-        else:
-            return PlotDataIterator(self, mode='items', mappable=mappable)
+        return PlotDataIterator(self, mode='items', mappable=mappable)
 
     def get_keys(self, data_key):
         """
@@ -312,8 +309,7 @@ class PlotData:
 
         if separate:
             return min_val
-        else:
-            return min(min_val)
+        return min(min_val)
 
     def max(self, data_key, separate=False, mask=None, mask_data_key=None):
         """
@@ -352,8 +348,7 @@ class PlotData:
 
         if separate:
             return max_val
-        else:
-            return max(max_val)
+        return max(max_val)
 
     def apply(self, data_key, lambda_func, apply_to_whole_array=True, **kwargs):
         """
@@ -419,8 +414,7 @@ class PlotData:
 
         if len(result) == 1 and not list_return:
             return result[0]
-        else:
-            return result
+        return result
 
     def get_mask(self, mask, data_key=None):
         """
@@ -768,8 +762,8 @@ class PlotDataIterator:
 
         if self._iter_mode == 'values':
             plot_data = {key: data[val] if val is not None else None for key, val in columns._asdict().items()}
-            return self._plot_data._column_spec(**plot_data)
-        elif self._iter_mode == 'items':
+            return self._plot_data._column_spec(**plot_data)  #pylint: disable=protected-access
+        if self._iter_mode == 'items':
             return columns, data
         raise StopIteration
 
@@ -822,7 +816,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
                 out_data = new_list
 
             return out_data
-        elif isinstance(out_data, list):
+        if isinstance(out_data, list):
             if len(out_data) == len(data):
                 for indx, (entry, new_data) in enumerate(zip(out_data, data)):
                     entry[f'{key}_{indx}'] = new_data

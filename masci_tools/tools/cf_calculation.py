@@ -188,7 +188,7 @@ class CFCalculation:
             self.bravaisMat['pot'] = np.array(info.get('bravaisMatrix'))
 
         if numPOT == 0:
-            raise IOError(f'No potentials found in {hdffile}')
+            raise ValueError(f'No potentials found in {hdffile}')
 
         potential_groups = {key for key in hdffile if 'pot-' in key}
 
@@ -221,7 +221,7 @@ class CFCalculation:
                         self.vlm[(l, m)] = _data
 
         else:
-            raise IOError(f'No potential for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No potential for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
             print(f'readPOTHDF: Generated the following information: {self.vlm.keys()}')
@@ -231,7 +231,7 @@ class CFCalculation:
         The muffin-tin radius is infered from the biggest argument in the rmesh
         """
 
-        with open(file, newline='') as csvfile:
+        with open(file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
             if index not in self.vlm:
@@ -269,7 +269,7 @@ class CFCalculation:
             self.bravaisMat['cdn'] = np.array(info.get('bravaisMatrix'))
 
         if numCDN == 0:
-            raise IOError(f'No charge densities found in {hdffile}')
+            raise ValueError(f'No charge densities found in {hdffile}')
 
         cdn_groups = {key for key in hdffile if 'cdn-' in key}
 
@@ -291,7 +291,7 @@ class CFCalculation:
             self.cdn['data'] = np.array(_data)
 
         else:
-            raise IOError(f'No charge density for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No charge density for atomType {atomType} found in {hdffile}')
 
         if not self.quiet:
             print(f'readcdnHDF: Generated the following information: {self.cdn.keys()}')
@@ -301,7 +301,7 @@ class CFCalculation:
         The muffin-tin radius is infered from the biggest argument in the rmesh
         """
 
-        with open(file, newline='') as csvfile:
+        with open(file, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
             if 'data' not in self.cdn:
@@ -584,8 +584,7 @@ def plot_crystal_field_potential(cfcoeffs,
 
     if np.abs(phi_grid - phi).min() > 1e-5:
         raise ValueError(f'Angle {phi} not found in grid')
-    else:
-        phi_ind = np.abs(phi_grid - phi).argmin()
+    phi_ind = np.abs(phi_grid - phi).argmin()
 
     theta_grid_pm = list(-1.0 * theta_grid)
     theta_cf = list(cf_grid[:, phi_ind])
@@ -619,7 +618,7 @@ def plot_crystal_field_potential(cfcoeffs,
     cbar = plt.colorbar(shrink=0.8)
     cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
     cbar.ax.tick_params(labelsize=14)
-    ax.set_title(r'Crystal Field potential for $\phi={{{:.2f}}}\pi$'.format(phi_fract), fontsize=labelFontsize)
+    ax.set_title(rf'Crystal Field potential for $\phi={{{phi_fract:.2f}}}\pi$', fontsize=labelFontsize)
     ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
     ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
     ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)

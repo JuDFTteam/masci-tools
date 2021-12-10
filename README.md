@@ -2,6 +2,7 @@
 [![GitHub version](https://img.shields.io/github/v/tag/JuDFTTeam/masci-tools?include_prereleases&label=GitHub%20version&logo=GitHub)](https://github.com/JuDFTteam/masci-tools/releases)
 [![PyPI version](https://img.shields.io/pypi/v/masci-tools)](https://pypi.org/project/masci-tools/)
 [![PyPI pyversion](https://img.shields.io/pypi/pyversions/masci-tools)](https://pypi.org/project/masci-tools/)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/masci-tools.svg)](https://anaconda.org/conda-forge/masci-tools)
 [![Build status](https://github.com/JuDFTteam/masci-tools/workflows/masci-tools/badge.svg?branch=develop&event=push)](https://github.com/JuDFTteam/masci-tools/actions)
 [![Coverage Status](https://codecov.io/gh/JuDFTteam/masci-tools/branch/develop/graph/badge.svg)](https://codecov.io/gh/JuDFTteam/masci-tools)
 [![Documentation Status](https://readthedocs.org/projects/masci-tools/badge/?version=latest)](https://masci-tools.readthedocs.io/en/latest/?badge=latest)
@@ -42,6 +43,10 @@ These python packages are needed:
 * `ase`
 * `pymatgen`
 * `mendeleev`
+* `click`
+* `click-completion`
+* `PyYAML`
+* `tabulate`
 
 It should not depend on `aiida-core`!
 
@@ -57,7 +62,9 @@ It should not depend on `aiida-core`!
 * `tools`
     * Contains rather high-level utility which is rather complete
 * `vis`
-    * Contain a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ... 
+    * Contains a collection of matplotlib/bokeh methods used for plotting common results from material science simulations, e.g. bandstructures, DOS, ... 
+* `cmdline`
+    * Contains a small click command line interface exposing some parts of the library
 
 ## License
 
