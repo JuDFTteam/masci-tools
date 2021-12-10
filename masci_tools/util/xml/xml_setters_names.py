@@ -889,22 +889,21 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
 
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
-    atomgroup_xpath = atomgroup_base_path
+    atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=True)
 
     if not position and not species:  # not specfied what to change
         return xmltree
 
-    if position:
-        if not position == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
-    if species:
-        if not species == 'all':
-            if species[:4] == 'all-':  #format all-<string>
-                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
-            else:
-                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+    if position and position != 'all':
+        atomgroup_xpath.add_filter('atomGroup',{'index': position})
+    if species and species != 'all':
+        if species[:4] == 'all-':  #format all-<string>
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'contains': species[4:]}})
+        else:
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'=': species}})
 
     species_change = dict(attributedict).pop('species', None)  #dict to avoid mutating attributedict
     if species_change is not None:

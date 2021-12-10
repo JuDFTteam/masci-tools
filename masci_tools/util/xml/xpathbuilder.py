@@ -153,8 +153,6 @@ class XPathBuilder:
             if isinstance(content, int):
                 if content == -1:
                     predicate = 'last()'
-                elif content == 1:
-                    predicate = 'first()'
                 elif content < 0:
                     predicate = f'last() - ${tag}_index'
                     self.path_variables[f'{tag}_index'] = content + 1
