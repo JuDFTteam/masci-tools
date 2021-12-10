@@ -90,7 +90,7 @@ class XPathBuilder:
         if not self.compile_path and kwargs:
             raise ValueError('Keyword arguments only available for compiled Xpaths')
         if isinstance(simple_path, str):
-            self.components = simple_path.split('/')
+            self.components = simple_path.rstrip('/').split('/')
         elif isinstance(simple_path, etree.XPath):
             self.components = simple_path.path.split('/')  #type: ignore
         else:
