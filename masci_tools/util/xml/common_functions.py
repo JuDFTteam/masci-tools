@@ -339,6 +339,7 @@ TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
 Type for xpath expressions
 """
 
+
 def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     """
     Splits off the last part of the given xpath
