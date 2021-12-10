@@ -179,7 +179,7 @@ class XPathBuilder:
                     predicate = 'last()'
                 elif content < 0:
                     predicate = f'last() - ${tag}_index'
-                    self.path_variables[f'{tag}_index'] = content + 1
+                    self.path_variables[f'{tag}_index'] = abs(content + 1)
                 else:
                     predicate = f'${tag}_index'
                     self.path_variables[f'{tag}_index'] = content
@@ -187,7 +187,11 @@ class XPathBuilder:
                 cond, index = dict(content).popitem()
                 if cond == '==':
                     cond = '='
-                predicate = f'position() {cond} ${tag}_index'
+                if index < 0:
+                    index = abs(index + 1)
+                    predicate = f'position() {cond} last() - ${tag}_index'
+                else:
+                    predicate = f'position() {cond} ${tag}_index'
                 self.path_variables[f'{tag}_index'] = index
         elif '/' not in operator:
             if not isinstance(content, dict):
@@ -202,7 +206,7 @@ class XPathBuilder:
             if cond == 'contains':
                 predicate = f'contains(@*[local-name()=${variable_name}],${value_variable_name})'
             elif cond == 'not-contains':
-                predicate = f'not contains(@*[local-name()=${variable_name}],${value_variable_name})'
+                predicate = f'not(contains(@*[local-name()=${variable_name}],${value_variable_name}))'
             else:
                 predicate = f'@*[local-name()=${variable_name}] {cond} ${value_variable_name}'
 
@@ -228,7 +232,7 @@ class XPathBuilder:
             if cond == 'contains':
                 predicate = f'contains({path_variable},${value_variable_name})'
             elif cond == 'not-contains':
-                predicate = f'not contains({path_variable},${value_variable_name})'
+                predicate = f'not(contains({path_variable},${value_variable_name}))'
             else:
                 predicate = f'{path_variable} {cond} ${value_variable_name}'
 
