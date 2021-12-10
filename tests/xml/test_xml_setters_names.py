@@ -5,7 +5,6 @@ Tests for the functions in xml_setters_names
 These tests do not extensively test all possible functionality. this is done in the
 tests for the underlying functions in xml_setters_xpaths and xml_setters_basic
 """
-import os
 from lxml import etree
 import pytest
 from masci_tools.io.parsers.fleur_schema import NoUniquePathFound, NoPathFound
@@ -123,6 +122,62 @@ def test_create_tag_complex_xpath(load_inpxml):
                                                            [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
                                                            [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
 
+    with pytest.raises(ValueError):
+        create_tag(xmltree,
+                   schema_dict,
+                   'lo',
+                   contains='species',
+                   complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']",
+                   filters={'lo': {
+                       'index': 1
+                   }})
+
+
+def test_create_tag_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    create_tag(xmltree, schema_dict, 'lo', contains='species', filters={'species': {'name': 'Fe-1'}})
+
+    los_after = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in los_after] == ['Fe-1', 'Fe-1', 'Fe-1', 'Pt-1']
+    assert [node.attrib.items() for node in los_after] == [[],
+                                                           [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
+
+
+def test_create_tag_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    create_tag(xmltree,
+               schema_dict,
+               'lo',
+               contains='species',
+               complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species'),
+               filters={'species': {
+                   'name': 'Fe-1'
+               }})
+
+    los_after = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in los_after] == ['Fe-1', 'Fe-1', 'Fe-1', 'Pt-1']
+    assert [node.attrib.items() for node in los_after] == [[],
+                                                           [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+                                                           [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
+
 
 def test_create_tag_occurrences(load_inpxml):
 
@@ -191,6 +246,60 @@ def test_delete_tag_complex_xpath(load_inpxml):
                'lo',
                contains='species',
                complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+
+    assert len(nodes) == 1
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Pt-1']
+
+    with pytest.raises(ValueError):
+        delete_tag(xmltree,
+                   schema_dict,
+                   'lo',
+                   contains='species',
+                   complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo",
+                   filters={'lo': {
+                       'index': 1
+                   }})
+
+
+def test_delete_tag_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    delete_tag(xmltree, schema_dict, 'lo', contains='species', filters={'species': {'name': 'Fe-1'}})
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+
+    assert len(nodes) == 1
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Pt-1']
+
+
+def test_delete_tag_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    delete_tag(xmltree,
+               schema_dict,
+               'lo',
+               contains='species',
+               complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+               filters={'species': {
+                   'name': 'Fe-1'
+               }})
 
     nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
 
@@ -270,6 +379,58 @@ def test_delete_att_complex_xpath(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == '2.20000000'
     assert eval_xpath(root, "/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere/@radius") == '2.20000000'
 
+    with pytest.raises(ValueError):
+        delete_att(xmltree,
+                   schema_dict,
+                   'radius',
+                   contains='species',
+                   complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/mtSphere",
+                   filters={'lo': {
+                       'index': '1'
+                   }})
+
+
+def test_delete_att_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
+                      list_return=True) == ['2.20000000', '2.20000000']
+
+    delete_att(xmltree, schema_dict, 'radius', contains='species', filters={'species': {'name': 'Fe-1'}})
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == '2.20000000'
+    assert eval_xpath(root, "/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere/@radius") == '2.20000000'
+
+
+def test_delete_att_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import delete_att
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius',
+                      list_return=True) == ['2.20000000', '2.20000000']
+
+    delete_att(xmltree,
+               schema_dict,
+               'radius',
+               contains='species',
+               complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/mtSphere'),
+               filters={'species': {
+                   'name': 'Fe-1'
+               }})
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == '2.20000000'
+    assert eval_xpath(root, "/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere/@radius") == '2.20000000'
+
 
 def test_delete_att_occurrences(load_inpxml):
 
@@ -345,6 +506,72 @@ def test_replace_tag_complex_xpath(load_inpxml):
                 new_elem,
                 contains='species',
                 complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo")
+
+    lo_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+    replaced_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)
+
+    assert len(lo_nodes) == 1
+    assert [node.getparent().attrib['name'] for node in lo_nodes] == ['Pt-1']
+    assert len(replaced_nodes) == 2
+    assert [node.getparent().attrib['name'] for node in replaced_nodes] == ['Fe-1', 'Fe-1']
+
+    with pytest.raises(ValueError):
+        replace_tag(xmltree,
+                    schema_dict,
+                    'lo',
+                    new_elem,
+                    contains='species',
+                    complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo",
+                    filters={'lo': {
+                        'index': 1
+                    }})
+
+
+def test_replace_tag_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    replace_tag(xmltree, schema_dict, 'lo', new_elem, contains='species', filters={'species': {'name': 'Fe-1'}})
+
+    lo_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
+    replaced_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)
+
+    assert len(lo_nodes) == 1
+    assert [node.getparent().attrib['name'] for node in lo_nodes] == ['Pt-1']
+    assert len(replaced_nodes) == 2
+    assert [node.getparent().attrib['name'] for node in replaced_nodes] == ['Fe-1', 'Fe-1']
+
+
+def test_replace_tag_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)) == 3
+
+    replace_tag(xmltree,
+                schema_dict,
+                'lo',
+                new_elem,
+                contains='species',
+                complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+                filters={'species': {
+                    'name': 'Fe-1'
+                }})
 
     lo_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo', list_return=True)
     replaced_nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/test_tag', list_return=True)
@@ -477,6 +704,54 @@ def test_set_attrib_value_complex_xpath(load_inpxml):
 
     assert lo_types == ['TEST', 'TEST', 'SCLO']
 
+    with pytest.raises(ValueError):
+        set_attrib_value(xmltree,
+                         schema_dict,
+                         'type',
+                         'TEST',
+                         contains='species',
+                         complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo",
+                         filters={'lo': {
+                             'index': 1
+                         }})
+
+
+def test_set_attrib_value_filters(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_attrib_value(xmltree, schema_dict, 'type', 'TEST', contains='species', filters={'species': {'name': 'Fe-1'}})
+
+    lo_types = eval_xpath(root, '/fleurInput/atomSpecies/species/lo/@type')
+
+    assert lo_types == ['TEST', 'TEST', 'SCLO']
+
+
+def test_set_attrib_value_filters_and_complex_xpath(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_attrib_value
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_attrib_value(xmltree,
+                     schema_dict,
+                     'type',
+                     'TEST',
+                     contains='species',
+                     complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+                     filters={'species': {
+                         'name': 'Fe-1'
+                     }})
+
+    lo_types = eval_xpath(root, '/fleurInput/atomSpecies/species/lo/@type')
+
+    assert lo_types == ['TEST', 'TEST', 'SCLO']
+
 
 def test_set_attrib_value_occurrences(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -521,6 +796,63 @@ def test_set_first_attrib_value_complex_xpath(load_inpxml):
                            'TEST',
                            contains='species',
                            complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo")
+
+    lo_types = eval_xpath(root, '/fleurInput/atomSpecies/species/lo/@type')
+
+    assert lo_types == ['SCLO', 'SCLO', 'TEST']
+
+    with pytest.raises(ValueError):
+        set_first_attrib_value(xmltree,
+                               schema_dict,
+                               'type',
+                               'TEST',
+                               contains='species',
+                               complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo",
+                               filters={'lo': {
+                                   'index': 1
+                               }})
+
+
+def test_set_first_attrib_value_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_first_attrib_value(xmltree,
+                           schema_dict,
+                           'type',
+                           'TEST',
+                           contains='species',
+                           filters={'species': {
+                               'name': 'Pt-1'
+                           }})
+
+    lo_types = eval_xpath(root, '/fleurInput/atomSpecies/species/lo/@type')
+
+    assert lo_types == ['SCLO', 'SCLO', 'TEST']
+
+
+def test_set_first_attrib_value_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_attrib_value
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_first_attrib_value(xmltree,
+                           schema_dict,
+                           'type',
+                           'TEST',
+                           contains='species',
+                           complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+                           filters={'species': {
+                               'name': 'Pt-1'
+                           }})
 
     lo_types = eval_xpath(root, '/fleurInput/atomSpecies/species/lo/@type')
 
@@ -606,6 +938,52 @@ def test_set_text_specification_complex_xpath(load_inpxml):
 
     assert res == ['10.0000000000000 10.0000000000000 10.0000000000000', '    0.250000     0.250000     0.000000']
 
+    with pytest.raises(ValueError):
+        set_text(xmltree,
+                 schema_dict,
+                 'kPoint', [10.0, 10.0, 10.0],
+                 complex_xpath='/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint[1]',
+                 filters={'kPointList': {
+                     'name': 'kp1'
+                 }})
+
+
+def test_set_text_specification_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_text(xmltree, schema_dict, 'kPoint', [10.0, 10.0, 10.0], filters={'kPoint': {'index': 1}})
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['10.0000000000000 10.0000000000000 10.0000000000000', '    0.250000     0.250000     0.000000']
+
+
+def test_set_text_specification_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_text
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_text(xmltree,
+             schema_dict,
+             'kPoint', [10.0, 10.0, 10.0],
+             complex_xpath=XPathBuilder('/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'),
+             filters={'kPoint': {
+                 'index': 1
+             }})
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['10.0000000000000 10.0000000000000 10.0000000000000', '    0.250000     0.250000     0.000000']
+
 
 def test_set_text_specification_occurrences(load_inpxml):
 
@@ -649,6 +1027,52 @@ def test_set_first_text_complex_xpath(load_inpxml):
                    schema_dict,
                    'kPoint', [10.0, 10.0, 10.0],
                    complex_xpath='/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint[2]')
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['   -0.250000     0.250000     0.000000', '10.0000000000000 10.0000000000000 10.0000000000000']
+
+    with pytest.raises(ValueError):
+        set_first_text(xmltree,
+                       schema_dict,
+                       'kPoint', [10.0, 10.0, 10.0],
+                       complex_xpath='/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint[2]',
+                       filters={'kPointList': {
+                           'name': 'kp1'
+                       }})
+
+
+def test_set_first_text_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_first_text(xmltree, schema_dict, 'kPoint', [10.0, 10.0, 10.0], filters={'kPoint': {'index': 2}})
+
+    res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
+
+    assert res == ['   -0.250000     0.250000     0.000000', '10.0000000000000 10.0000000000000 10.0000000000000']
+
+
+def test_set_first_text_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_first_text
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_first_text(xmltree,
+                   schema_dict,
+                   'kPoint', [10.0, 10.0, 10.0],
+                   complex_xpath=XPathBuilder('/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint'),
+                   filters={'kPoint': {
+                       'index': 2
+                   }})
 
     res = eval_xpath(root, '/fleurInput/cell/bzIntegration/kPointLists/kPointList/kPoint/text()')
 
@@ -747,6 +1171,63 @@ def test_add_number_to_attrib_complex_xpath(load_inpxml):
 
     assert res == ['2.20000000', '2.7000000000']
 
+    with pytest.raises(ValueError):
+        add_number_to_attrib(xmltree,
+                             schema_dict,
+                             'radius',
+                             0.5,
+                             not_contains='Group',
+                             complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere",
+                             filters={'species': {
+                                 'index': 1
+                             }})
+
+
+def test_add_number_to_attrib_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree,
+                         schema_dict,
+                         'radius',
+                         0.5,
+                         not_contains='Group',
+                         filters={'species': {
+                             'name': 'Pt-1'
+                         }})
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']
+
+
+def test_add_number_to_attrib_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_attrib
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    add_number_to_attrib(xmltree,
+                         schema_dict,
+                         'radius',
+                         0.5,
+                         not_contains='Group',
+                         complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/mtSphere'),
+                         filters={'species': {
+                             'name': 'Pt-1'
+                         }})
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']
+
 
 def test_add_number_to_attrib_occurrences(load_inpxml):
 
@@ -825,6 +1306,63 @@ def test_add_number_to_first_attrib_complex_xpath(load_inpxml):
                                0.5,
                                not_contains='Group',
                                complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere")
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']
+
+    with pytest.raises(ValueError):
+        add_number_to_first_attrib(xmltree,
+                                   schema_dict,
+                                   'radius',
+                                   0.5,
+                                   not_contains='Group',
+                                   complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/mtSphere",
+                                   filters={'species': {
+                                       'name': 'Pt-1'
+                                   }})
+
+
+def test_add_number_to_first_attrib_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    add_number_to_first_attrib(xmltree,
+                               schema_dict,
+                               'radius',
+                               0.5,
+                               not_contains='Group',
+                               filters={'species': {
+                                   'name': 'Pt-1'
+                               }})
+
+    res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
+
+    assert res == ['2.20000000', '2.7000000000']
+
+
+def test_add_number_to_first_attrib_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import add_number_to_first_attrib
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    add_number_to_first_attrib(xmltree,
+                               schema_dict,
+                               'radius',
+                               0.5,
+                               not_contains='Group',
+                               complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/mtSphere'),
+                               filters={'species': {
+                                   'name': 'Pt-1'
+                               }})
 
     res = eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius')
 
@@ -965,6 +1503,90 @@ def test_set_simple_tag_complex_xpath(load_inpxml):
         [('type', 'TEST'), ('n', '15')],
     ]
 
+    with pytest.raises(ValueError):
+        set_simple_tag(xmltree,
+                       schema_dict,
+                       'lo', [{
+                           'type': 'TEST',
+                           'n': 12
+                       }, {
+                           'type': 'TEST',
+                           'n': 15
+                       }],
+                       contains='species',
+                       complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']",
+                       filters={'species': {
+                           'index': 1
+                       }})
+
+
+def test_set_simple_tag_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_simple_tag(xmltree,
+                   schema_dict,
+                   'lo', [{
+                       'type': 'TEST',
+                       'n': 12
+                   }, {
+                       'type': 'TEST',
+                       'n': 15
+                   }],
+                   contains='species',
+                   filters={'species': {
+                       'name': 'Pt-1'
+                   }})
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Fe-1', 'Pt-1', 'Pt-1']
+    assert [node.attrib.items() for node in nodes] == [
+        [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'TEST'), ('n', '12')],
+        [('type', 'TEST'), ('n', '15')],
+    ]
+
+
+def test_set_simple_tag_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_simple_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_simple_tag(xmltree,
+                   schema_dict,
+                   'lo', [{
+                       'type': 'TEST',
+                       'n': 12
+                   }, {
+                       'type': 'TEST',
+                       'n': 15
+                   }],
+                   contains='species',
+                   complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species'),
+                   filters={'species': {
+                       'name': 'Pt-1'
+                   }})
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Fe-1', 'Pt-1', 'Pt-1']
+    assert [node.attrib.items() for node in nodes] == [
+        [('type', 'SCLO'), ('l', '0'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'SCLO'), ('l', '1'), ('n', '3'), ('eDeriv', '0')],
+        [('type', 'TEST'), ('n', '12')],
+        [('type', 'TEST'), ('n', '15')],
+    ]
+
 
 def test_set_complex_tag(load_inpxml):
 
@@ -1046,6 +1668,74 @@ def test_set_complex_tag_complex_xpath(load_inpxml):
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == 'd'
     assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F T F T'
 
+    with pytest.raises(ValueError):
+        set_complex_tag(xmltree,
+                        schema_dict,
+                        'torgueCalculation',
+                        changes,
+                        not_contains='Group',
+                        create=True,
+                        complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/torgueCalculation",
+                        filters={'species': {
+                            'name': 'Pt-1'
+                        }})
+
+
+def test_set_complex_tag_filters(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_complex_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {'kkintgrcutoff': 'd', 'greensfElements': {'s': [False, True, False, True]}}
+
+    set_complex_tag(xmltree,
+                    schema_dict,
+                    'torgueCalculation',
+                    changes,
+                    not_contains='Group',
+                    create=True,
+                    filters={'species': {
+                        'name': 'Pt-1'
+                    }})
+
+    node = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation')
+
+    assert node.getparent().attrib['name'] == 'Pt-1'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == 'd'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F T F T'
+
+
+def test_set_complex_tag_filters_and_complex_xpath(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_complex_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {'kkintgrcutoff': 'd', 'greensfElements': {'s': [False, True, False, True]}}
+
+    set_complex_tag(xmltree,
+                    schema_dict,
+                    'torgueCalculation',
+                    changes,
+                    not_contains='Group',
+                    create=True,
+                    complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/torgueCalculation'),
+                    filters={'species': {
+                        'name': 'Pt-1'
+                    }})
+
+    node = eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation')
+
+    assert node.getparent().attrib['name'] == 'Pt-1'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/@kkintgrCutoff') == 'd'
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s/text()') == 'F T F T'
+
 
 def test_set_species(load_inpxml):
     """
@@ -1079,6 +1769,57 @@ def test_set_species(load_inpxml):
     }
 
     set_species(xmltree, schema_dict, 'Fe-1', changes)
+
+    los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
+
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/mtSphere/@radius') == ['10.0000000000', '2.20000000']
+    assert eval_xpath(root, '/fleurInput/atomSpecies/species/electronConfig/stateOccupation/@state') == [
+        'state', 'state2', '(6s1/2)', '(5d5/2)'
+    ]
+    assert [lo.attrib for lo in los] == [{
+        'type': 'TEST',
+        'n': '5',
+        'l': '12'
+    }, {
+        'type': 'SCLO',
+        'l': '1',
+        'n': '5',
+        'eDeriv': '0'
+    }]
+
+
+def test_set_species_filters(load_inpxml):
+    """
+    Test of the set_species function (underlying functionality is tested in tests for xml_set_complex_tag)
+
+    Here only the species selection is tested extensively
+    """
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_species
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {
+        'mtSphere': {
+            'radius': 10.0
+        },
+        'lo': {
+            'type': 'TEST',
+            'n': 5,
+            'l': 12
+        },
+        'electronConfig': {
+            'stateOccupation': [{
+                'state': 'state'
+            }, {
+                'state': 'state2'
+            }]
+        }
+    }
+
+    set_species(xmltree, schema_dict, 'all', changes, filters={'species': {'name': 'Fe-1'}})
 
     los = eval_xpath(root, '/fleurInput/atomSpecies/species/lo')
 
@@ -1315,6 +2056,22 @@ def test_set_atomgroup_species(load_inpxml):
     changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
 
     set_atomgroup(xmltree, schema_dict, changes, species='Fe-1')
+
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
+    assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/cFCoeffs/@potential') == 'T'
+
+
+def test_set_atomgroup_filters(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_atomgroup
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    changes = {'force': {'relaxXYZ': 'FFF'}, 'nocoParams': {'beta': 7.0}, 'cFCoeffs': {'potential': True}}
+
+    set_atomgroup(xmltree, schema_dict, changes, species='all', filters={'atomGroup': {'species': 'Fe-1'}})
 
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/force/@relaxXYZ') == ['FFF', 'TTT']
     assert eval_xpath(root, '/fleurInput/atomGroups/atomGroup/nocoParams/@beta') == ['7.0000000000', '1.570796326']
@@ -1569,6 +2326,9 @@ def test_switch_species(load_inpxml):
 
     switch_species(xmltree, schema_dict, 'Fe-1', position='all')
     assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Fe-1', 'Fe-1']
+
+    switch_species(xmltree, schema_dict, 'Pt-1', species='all', filters={'atomGroup': {'species': 'Fe-1'}})
+    assert eval_xpath(xmltree, '/fleurInput/atomGroups/atomGroup/@species') == ['Pt-1', 'Pt-1']
 
     with pytest.raises(ValueError):
         switch_species(xmltree, schema_dict, 'not-existing', species='Fe-1')

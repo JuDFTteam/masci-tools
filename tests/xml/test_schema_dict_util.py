@@ -536,7 +536,7 @@ def test_schema_dict_util_abs_to_rel_path(load_inpxml):
 
 def test_schema_dict_util_complex_xpath(load_inpxml):
     """
-    Test of the absolute to relative xpath conversion in schema_dict_util functions
+    Test of the complex xpath argument in schema_dict_util functions
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
                                                   evaluate_text
@@ -617,7 +617,7 @@ def test_schema_dict_util_complex_xpath(load_inpxml):
 
 def test_schema_dict_util_filters(load_inpxml):
     """
-    Test of the absolute to relative xpath conversion in schema_dict_util functions
+    Test of the filters argument in schema_dict_util functions
     """
     from masci_tools.util.schema_dict_util import eval_simple_xpath, get_number_of_nodes, tag_exists, \
                                                   evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
