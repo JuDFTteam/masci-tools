@@ -22,7 +22,7 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 from masci_tools.util.typing import XPathLike
-from masci_tools.util.xml.xpathbuilder import XPathBuilder
+from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
 
@@ -832,35 +832,20 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
         'attributedict': {'nocoParams': {'beta': val}}
 
     """
-    from masci_tools.util.schema_dict_util import tag_exists, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import get_xml_attribute
-
+    from masci_tools.util.schema_dict_util import tag_exists
     if atom_label == 'all':
-        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
-        return xmltree
+        return set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
-
-    species_to_set = set()
-
-    # set all species, where given label is present
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if label == atom_label:
-                species_to_set.add(get_xml_attribute(group, 'species'))
-
-    for species_name in species_to_set:
-        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, position=None, species=species_name)
-
-    return xmltree
+    return set_atomgroup(xmltree,
+                         schema_dict,
+                         attributedict,
+                         filters={'atomGroup': {
+                             label_path: {
+                                 '=': f'{atom_label: >20}'
+                             }
+                         }})
 
 
 def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
@@ -868,6 +853,7 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
                   attributedict: Dict[str, Any],
                   position: Union[int, Literal['all']] = None,
                   species: str = None,
+                  filters: FilterType = None,
                   create: bool = False) -> Union[etree._Element, etree._ElementTree]:
     """
     Method to set parameters of an atom group of the fleur inp.xml file.
@@ -889,16 +875,15 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
 
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
-    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
-    atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=True)
+    atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=False, filters=filters)
 
-    if not position and not species:  # not specfied what to change
+    if not position and not species and not filters:  # not specfied what to change
         return xmltree
 
     if position and position != 'all':
-        atomgroup_xpath.add_filter('atomGroup',{'index': position})
+        atomgroup_xpath.add_filter('atomGroup', {'index': position})
     if species and species != 'all':
         if species[:4] == 'all-':  #format all-<string>
             atomgroup_xpath.add_filter('atomGroup', {'species': {'contains': species[4:]}})
@@ -946,33 +931,19 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree],
     if atom_label == 'all':
         return switch_species(xmltree, schema_dict, new_species_name, species='all', clone=clone, changes=changes)
 
-    atom_label = f'{atom_label: >20}'
-    all_groups: List[etree._Element] = eval_simple_xpath(xmltree, schema_dict, 'atomGroup',
-                                                         list_return=True)  #type:ignore
+    film = tag_exists(xmltree, schema_dict, 'filmPos')
+    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    species_to_set = set()
-
-    # set all species, where given label is present
-    for group in all_groups:
-        if tag_exists(group, schema_dict, 'filmPos'):
-            atoms: List[etree._Element] = eval_simple_xpath(group, schema_dict, 'filmPos',
-                                                            list_return=True)  #type:ignore
-        else:
-            atoms = eval_simple_xpath(group, schema_dict, 'relPos', list_return=True)  #type:ignore
-        for atom in atoms:
-            label = get_xml_attribute(atom, 'label')
-            if label == atom_label:
-                species_to_set.add(get_xml_attribute(group, 'species'))
-
-    for species_name in species_to_set:
-        xmltree = switch_species(xmltree,
-                                 schema_dict,
-                                 new_species_name,
-                                 species=species_name,
-                                 clone=clone,
-                                 changes=changes)
-
-    return xmltree
+    return switch_species(xmltree,
+                          schema_dict,
+                          new_species_name,
+                          clone=clone,
+                          changes=changes,
+                          filters={'atomGroup': {
+                              label_path: {
+                                  '=': f'{atom_label: >20}'
+                              }
+                          }})
 
 
 def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
@@ -980,6 +951,7 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
                    new_species_name: str,
                    position: Union[int, Literal['all']] = None,
                    species: str = None,
+                   filters: FilterType = None,
                    clone: bool = False,
                    changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
     """
@@ -1000,23 +972,21 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
 
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
-    atomgroup_xpath = atomgroup_base_path
+    atomgroup_xpath = XPathBuilder(atomgroup_base_path, filters=filters)
 
     if not clone and changes is not None:
         raise ValueError('changes should only be passed with clone=True')
 
-    if not position and not species:  # not specfied what to change
+    if not position and not species and not filters:  # not specfied what to change
         return xmltree
 
-    if position:
-        if not position == 'all':
-            atomgroup_xpath = f'{atomgroup_base_path}[{position}]'
-    if species:
-        if not species == 'all':
-            if species[:4] == 'all-':  #format all-<string>
-                atomgroup_xpath = f'{atomgroup_base_path}[contains(@species,"{species[4:]}")]'
-            else:
-                atomgroup_xpath = f'{atomgroup_base_path}[@species = "{species}"]'
+    if position and position != 'all':
+        atomgroup_xpath.add_filter('atomGroup', {'index': position})
+    if species and species != 'all':
+        if species[:4] == 'all-':  #format all-<string>
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'contains': species[4:]}})
+        else:
+            atomgroup_xpath.add_filter('atomGroup', {'species': {'=': species}})
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
     if new_species_name not in existing_names:

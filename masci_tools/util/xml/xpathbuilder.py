@@ -161,12 +161,16 @@ class XPathBuilder:
                     self.path_variables[f'{tag}_index'] = content
             else:
                 cond, index = dict(content).popitem()
+                if cond == '==':
+                    cond = '='
                 predicate = f'position() {cond} ${tag}_index'
                 self.path_variables[f'{tag}_index'] = index
         elif '/' not in operator:
             if not isinstance(content, dict):
                 content = {'=': content}
             cond, value = dict(content).popitem()
+            if cond == '==':
+                cond = '='
 
             variable_name = f'{tag}_cond_{self.value_conditions}_name'
             value_variable_name = f'{tag}_cond_{self.value_conditions}'
@@ -185,6 +189,8 @@ class XPathBuilder:
             if not isinstance(content, dict):
                 content = {'=': content}
             cond, value = dict(content).popitem()
+            if cond == '==':
+                cond = '='
             parts = operator.strip('/').split('/')
             variable_name = f'{tag}_cond_{self.value_conditions}_name'
             value_variable_name = f'{tag}_cond_{self.value_conditions}'
