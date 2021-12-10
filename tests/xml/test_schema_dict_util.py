@@ -532,3 +532,194 @@ def test_schema_dict_util_abs_to_rel_path(load_inpxml):
         'element': 'Pt',
         'name': 'Pt-1'
     }
+
+
+def test_schema_dict_util_complex_xpath(load_inpxml):
+    """
+    Test of the absolute to relative xpath conversion in schema_dict_util functions
+    """
+    from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
+                                                  evaluate_text
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    assert evaluate_attribute(
+        xmltree,
+        schema_dict,
+        'type',
+        contains='species/lo',
+        complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo/@type") == ['SCLO', 'SCLO']
+    with pytest.raises(ValueError):
+        evaluate_attribute(xmltree,
+                           schema_dict,
+                           'type',
+                           contains='species/lo',
+                           complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/lo/@type",
+                           filters={'lo': {
+                               'index': 1
+                           }})
+
+    assert evaluate_text(
+        xmltree,
+        schema_dict,
+        'coreConfig',
+        contains='species',
+        complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/electronConfig/coreConfig") == ['[Ne]']
+    with pytest.raises(ValueError):
+        evaluate_text(xmltree,
+                      schema_dict,
+                      'coreConfig',
+                      contains='species',
+                      complex_xpath="/fleurInput/atomSpecies/species[@name='Fe-1']/electronConfig/coreConfig",
+                      filters={'lo': {
+                          'index': 1
+                      }})
+
+    assert evaluate_tag(xmltree,
+                        schema_dict,
+                        'lo',
+                        contains='species',
+                        complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo") == {
+                            'eDeriv': 0,
+                            'l': 1,
+                            'n': 5,
+                            'type': 'SCLO'
+                        }
+    with pytest.raises(ValueError):
+        evaluate_tag(xmltree,
+                     schema_dict,
+                     'lo',
+                     contains='species',
+                     complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo",
+                     filters={'lo': {
+                         'index': 1
+                     }})
+
+    assert evaluate_parent_tag(xmltree,
+                               schema_dict,
+                               'lo',
+                               contains='species',
+                               complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo") == {
+                                   'atomicNumber': 78,
+                                   'element': 'Pt',
+                                   'name': 'Pt-1'
+                               }
+    with pytest.raises(ValueError):
+        evaluate_parent_tag(xmltree,
+                            schema_dict,
+                            'lo',
+                            contains='species',
+                            complex_xpath="/fleurInput/atomSpecies/species[@name='Pt-1']/lo",
+                            filters={'lo': {
+                                'index': 1
+                            }})
+
+
+def test_schema_dict_util_filters(load_inpxml):
+    """
+    Test of the absolute to relative xpath conversion in schema_dict_util functions
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath, get_number_of_nodes, tag_exists, \
+                                                  evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
+                                                  evaluate_text
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    species = eval_simple_xpath(xmltree,
+                                schema_dict,
+                                'species',
+                                filters={'species': {
+                                    'name': 'Fe-1'
+                                }},
+                                list_return=True)
+    assert len(species) == 1
+    assert species[0].attrib['name'] == 'Fe-1'
+
+    assert tag_exists(xmltree, schema_dict, 'lo', contains='species', filters={'species': {'name': 'Fe-1'}})
+    assert not tag_exists(xmltree,
+                          schema_dict,
+                          'filmPos',
+                          filters={
+                              'atomGroup': {
+                                  'species': 'Fe-1'
+                              },
+                              'filmPos': {
+                                  'label': {
+                                      'not-contains': '22'
+                                  }
+                              }
+                          })
+
+    assert get_number_of_nodes(xmltree, schema_dict, 'lo', contains='species', filters={'species': {
+        'name': 'Fe-1'
+    }}) == 2
+    assert get_number_of_nodes(xmltree, schema_dict, 'lo', contains='species', filters={'species': {
+        'name': 'Pt-1'
+    }}) == 1
+
+    assert evaluate_attribute(xmltree,
+                              schema_dict,
+                              'type',
+                              contains='species/lo',
+                              filters={'species': {
+                                  'name': 'Fe-1'
+                              }}) == ['SCLO', 'SCLO']
+    assert evaluate_attribute(xmltree,
+                              schema_dict,
+                              'type',
+                              contains='species/lo',
+                              complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo/@type'),
+                              filters={'species': {
+                                  'name': 'Fe-1'
+                              }}) == ['SCLO', 'SCLO']
+
+    assert evaluate_text(xmltree, schema_dict, 'coreConfig', contains='species', filters={'species': {
+        'name': 'Fe-1'
+    }}) == ['[Ne]']
+    assert evaluate_text(xmltree,
+                         schema_dict,
+                         'coreConfig',
+                         contains='species',
+                         complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/electronConfig/coreConfig'),
+                         filters={'species': {
+                             'name': 'Fe-1'
+                         }}) == ['[Ne]']
+
+    assert evaluate_tag(xmltree, schema_dict, 'lo', contains='species', filters={'species': {
+        'name': 'Pt-1'
+    }}) == {
+        'eDeriv': 0,
+        'l': 1,
+        'n': 5,
+        'type': 'SCLO'
+    }
+    assert evaluate_tag(xmltree,
+                        schema_dict,
+                        'lo',
+                        contains='species',
+                        complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+                        filters={'species': {
+                            'name': 'Pt-1'
+                        }}) == {
+                            'eDeriv': 0,
+                            'l': 1,
+                            'n': 5,
+                            'type': 'SCLO'
+                        }
+
+    assert evaluate_parent_tag(xmltree, schema_dict, 'lo', contains='species', filters={'species': {
+        'name': 'Pt-1'
+    }}) == {
+        'atomicNumber': 78,
+        'element': 'Pt',
+        'name': 'Pt-1'
+    }
+    evaluate_parent_tag(xmltree,
+                        schema_dict,
+                        'lo',
+                        contains='species',
+                        complex_xpath=XPathBuilder('/fleurInput/atomSpecies/species/lo'),
+                        filters={'species': {
+                            'name': 'Pt-1'
+                        }})
