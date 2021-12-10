@@ -4,4 +4,4 @@ include CHANGELOG.md
 include LICENSE.txt
 include README.md
 recursive-include docs *
-recursive-include docs masci_tools/tools/*
+recursive-include masci_tools/tools *
