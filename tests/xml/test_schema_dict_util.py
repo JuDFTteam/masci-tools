@@ -227,7 +227,7 @@ def test_evaluate_tag(caplog, load_inpxml, load_outxml):
         evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, text=False)
 
     with caplog.at_level(logging.WARNING):
-        assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, logger=LOGGER, text=False) == {}
+        assert len(evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS, logger=LOGGER, text=False)) == 0
     assert 'Failed to evaluate attributes from tag qss' in caplog.text
 
     assert evaluate_tag(root, schema_dict, 'qss', FLEUR_DEFINED_CONSTANTS) == {'qss': [0.0, 0.0, 0.0]}

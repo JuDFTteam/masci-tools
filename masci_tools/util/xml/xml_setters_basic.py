@@ -17,10 +17,11 @@ in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema d
 to do these operations robustly
 """
 from typing import Iterable, Union, List, Any, cast
-from masci_tools.util.typing import XPathLike
 from lxml import etree
-from masci_tools.util.xml.common_functions import eval_xpath
 import warnings
+
+from masci_tools.util.typing import XPathLike
+from masci_tools.util.xml.common_functions import eval_xpath
 
 
 def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],

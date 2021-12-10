@@ -35,8 +35,6 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
 
     :returns: cleared_tree, an xmltree without comments and with replaced xinclude tags
     """
-    import copy
-
     cleared_tree = copy.deepcopy(tree)
 
     #Remove comments outside the root element (Since they have no parents this would lead to a crash)
@@ -136,7 +134,6 @@ def reverse_xinclude(
 
     :raises ValueError: if the tag can not be found in teh given xmltree
     """
-    import copy
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
     INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
