@@ -47,6 +47,8 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     :param denmat: matrix, specify the density matrix explicitely
     :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
     :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :raises ValueError: If something in the input is wrong
     :raises KeyError: If no LDA+U procedure is found on a species
@@ -156,6 +158,8 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
     :param phi: float, angle (radian), by which to rotate the density matrix
     :param theta: float, angle (radian), by which to rotate the density matrix
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :raises ValueError: If something in the input is wrong
     :raises KeyError: If no LDA+U procedure is found on a species
