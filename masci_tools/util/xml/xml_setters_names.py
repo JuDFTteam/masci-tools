@@ -47,6 +47,8 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to create or etree Element with the same name to insert
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
     :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
@@ -104,6 +106,8 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to delete
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
                         By default all nodes are used.
 
@@ -145,6 +149,8 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the attribute to delete
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
                         By default all nodes are used.
 
@@ -192,6 +198,8 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag: str of the tag to replace
     :param newelement: etree Element to replace the tag
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
                         By default all nodes are used.
 
@@ -238,6 +246,8 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to change
     :param add_number: number to add/multiply with the old attribute value
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param mode: str (either `rel` or `abs`).
                  `rel` multiplies the old value with `add_number`
                  `abs` adds the old value and `add_number`
@@ -341,6 +351,8 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
@@ -405,6 +417,8 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -449,6 +463,8 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag_name: str name of the tag, where the text should be set
     :param text: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
@@ -495,6 +511,8 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
     :param tag_name: str name of the tag, where the text should be set
     :param text: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -534,6 +552,8 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
                     Keys in the dictionary correspond to {'attributename': attributevalue}
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create_parents: bool optional (default False), if True and the path, where the simple tags are
                            set does not exist it is created
 
@@ -600,6 +620,8 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
                           to do on this tag (attributename, subdict with changes to the subtag, ...)
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create: bool optional (default False), if True and the path, where the complex tag is
                    set does not exist it is created
 
@@ -682,6 +704,8 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
                          Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
     :param attributedict: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :raises ValueError: if species name is non existent in inp.xml and should not be created.
                         also if other given tags are garbage. (errors from eval_xpath() methods)
@@ -888,6 +912,8 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
     :param create: bool, if species does not exist create it and all subtags?
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
 
@@ -988,6 +1014,8 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
     :param clone: if True and the new species name does not exist and it corresponds to changing
                   from one species the species will be cloned with :py:func:`clone_species()`
     :param changes: changes to do if the species is cloned
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
     """

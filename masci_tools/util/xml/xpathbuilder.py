@@ -31,7 +31,31 @@ class XPathBuilder:
         the path if compile_path=True
 
     .. note::
-        Filters dictionary syntax (TODO)
+        Filters/Constraints (or predicates like they are called for XPaths) can either
+        be added by providing the ``filters`` argument in the constructor or by calling
+        the :py:meth:`add_filter()` method.
+
+        The ``filters`` argument is a dictionary with the tag names, where to apply the condition,
+        as keys and the condition as values while the :py:meth:`add_filter()` method takes these
+        as it's two arguments. The tag name has to be a part of the original simple xpath expression.
+        The conditition is a dictionary with one key specifying the kind of condition and the value for the
+        condition. The condition can also be the name of an attribute or path, in which case the value can be another
+        condition dictionary. The following conditions operators i.e. keys in the dictionary are supported:
+
+            - ``=``/``==``: equal to
+            - ``!=``: not equal to
+            - ``<``: less than
+            - ``>``: greater than
+            - ``<=``: less than or equal to
+            - ``>=``: greater than or equal to
+            - ``contains``: attribute/tag contains the given value (case sensitive)
+            - ``not-contains``: attribute/tag does not contains the given value
+            - ``index``: Select tags based on their index in the parent tag (either explicit index or another condition)
+            - ``has``: Select tags based on the presence of the given attribute/tag
+            - ``has-not``: Select tags based on the absence of the given attribute/tag
+            - ``and``: Provide multiple conditions in a list joined by ``and``
+            - ``or``: Provide multiple conditions in a list joined by ``or``
+            - ``<string>``: All other strings are interpreted as paths to attributes/tags specifying conditions on their value
 
     :param simple_path: basic simple XPath expression to start from
     :param filters: dictionary with filters

@@ -244,6 +244,8 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -324,6 +326,8 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -410,6 +414,8 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -613,6 +619,8 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
         :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
         :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                                the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: value and unit, both converted in convert_xml_attribute
     """
@@ -663,6 +671,8 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param contains: str, this string has to be in the final path
@@ -784,6 +794,7 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
                   name: str,
                   logger: Logger = None,
                   iteration_path: bool = False,
+                  filters: FilterType = None,
                   **kwargs: Any) -> bool:
     """
     Evaluates whether the attribute exists in the xmltree based on the given name
@@ -795,6 +806,8 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -809,9 +822,9 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
 
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
+    tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters)
 
-    tags: List[etree._Element] = eval_xpath(node, tag_xpath, logger=logger, list_return=True)  #type:ignore
-
+    tags: List[etree._Element] = eval_xpath(node, tag_xpath_builder, logger=logger, list_return=True)  #type:ignore
     return any(attrib_name in tag.attrib for tag in tags)
 
 
@@ -835,6 +848,8 @@ def tag_exists(node: Union[etree._Element, etree._ElementTree],
         :param not_contains: str, this string has to NOT be in the final path
         :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: bool, True if any nodes with the path exist
     """
@@ -861,6 +876,8 @@ def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
         :param not_contains: str, this string has to NOT be in the final path
         :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: bool, True if any nodes with the path exist
     """
@@ -887,6 +904,8 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param contains: str, this string has to be in the final path
