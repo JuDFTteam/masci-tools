@@ -57,6 +57,20 @@ class XPathBuilder:
             - ``or``: Provide multiple conditions in a list joined by ``or``
             - ``<string>``: All other strings are interpreted as paths to attributes/tags specifying conditions on their value
 
+    Example::
+
+        from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+        # XPath selecting all lo tags for SCLO type LOs and Iron species
+        xpath = XPathBuilder('/fleurInput/atomSpecies/species/lo',
+                             filters = {'species': {
+                                            'name': {'contains': 'Fe'},
+                                        }
+                                        'lo': {
+                                            'type': 'SCLO'
+                                        }
+                                    })
+
     :param simple_path: basic simple XPath expression to start from
     :param filters: dictionary with filters
     :param compile_path: bool if True the path property will be compiled as etree.XPath
