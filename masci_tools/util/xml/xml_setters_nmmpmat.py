@@ -18,6 +18,7 @@ from typing import Union, List
 import numpy as np
 from lxml import etree
 from masci_tools.io.parsers import fleur_schema
+from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 
 
 def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
@@ -30,7 +31,8 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
                 orbital_occupations: List[float] = None,
                 denmat: np.ndarray = None,
                 phi: float = None,
-                theta: float = None) -> List[str]:
+                theta: float = None,
+                filters: FilterType = None) -> List[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
@@ -57,13 +59,12 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_base_path = schema_dict.tag_xpath('species')
+    species_xpath = XPathBuilder(species_base_path, filters=filters, strict=True)
 
-    if species_name == 'all':
-        species_xpath = species_base_path
-    elif species_name[:4] == 'all-':  #format all-<string>
-        species_xpath = f'{species_base_path}[contains(@name,"{species_name[4:]}")]'
-    else:
-        species_xpath = f'{species_base_path}[@name = "{species_name}"]'
+    if species_name[:4] == 'all-':  #format all-<string>
+        species_xpath.add_filter('species', {'name': {'contains': species_name[4:]}})
+    elif species_name != 'all':
+        species_xpath.add_filter('species', {'name': species_name})
 
     all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
 
@@ -137,9 +138,14 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     return nmmplines
 
 
-def rotate_nmmpmat(xmltree: Union[etree._Element,
-                                  etree._ElementTree], nmmplines: List[str], schema_dict: 'fleur_schema.SchemaDict',
-                   species_name: str, orbital: int, phi: float, theta: float) -> List[str]:
+def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
+                   nmmplines: List[str],
+                   schema_dict: 'fleur_schema.SchemaDict',
+                   species_name: str,
+                   orbital: int,
+                   phi: float,
+                   theta: float,
+                   filters: FilterType = None) -> List[str]:
     """
     Rotate the density matrix with the given angles phi and theta
 
@@ -161,13 +167,12 @@ def rotate_nmmpmat(xmltree: Union[etree._Element,
     from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
     species_base_path = schema_dict.tag_xpath('species')
+    species_xpath = XPathBuilder(species_base_path, filters=filters, strict=True)
 
-    if species_name == 'all':
-        species_xpath = species_base_path
-    elif species_name[:4] == 'all-':  #format all-<string>
-        species_xpath = f'{species_base_path}[contains(@name,"{species_name[4:]}")]'
-    else:
-        species_xpath = f'{species_base_path}[@name = "{species_name}"]'
+    if species_name[:4] == 'all-':  #format all-<string>
+        species_xpath.add_filter('species', {'name': {'contains': species_name[4:]}})
+    elif species_name != 'all':
+        species_xpath.add_filter('species', {'name': species_name})
 
     all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
 
