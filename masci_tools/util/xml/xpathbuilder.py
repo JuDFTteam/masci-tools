@@ -14,7 +14,7 @@
 This module contains Classes for building complex XPath expressions based on
 general attribute conditions from simple XPath expressions
 """
-from typing import Dict, Any, cast
+from typing import Dict, Any, Iterable, cast
 from lxml import etree
 
 FilterType = Dict[str, Any]
@@ -79,6 +79,24 @@ class XPathBuilder:
     Other Kwargs will be passed on to the etree.XPath compilation if ``compile_path=True``
     """
 
+    BINARY_OPERATORS = {'=', '==', '!=', '<', '>', '<=', '>=', 'contains', 'not-contains', 'starts-with', 'ends-with'}
+    UNARY_OPERATORS = {'has', 'has-not', 'number-nodes'}
+    #NODESET_OPERATORS = {'union'}
+    COMPOUND_OPERATORS = {'and', 'or', 'in', 'not-in'}
+
+    #Operators, which are not formatted in the default way {left} {operator} {right}
+    OPERATOR_FORMAT = {
+        '==': '{left} = {right}',
+        'contains': 'contains({left}, {right})',
+        'not-contains': 'not(contains({left}, {right}))',
+        'starts-with': 'starts-with({left}, {right})',
+        'ends-with': 'ends-with({left}, {right})',
+        'number-nodes': 'count({left})',
+        'has': '{left}',
+        'has-not': 'not({left})',
+        #'union': '{left} | {right}', # not supported yet since the right syntax for the filters is not clear
+    }
+
     def __init__(self,
                  simple_path: 'etree._xpath',
                  filters: Dict[str, FilterType] = None,
@@ -142,12 +160,20 @@ class XPathBuilder:
 
         return self.components.pop(-1)
 
-    def get_predicate(self, tag: str, condition: Any) -> str:
+    def get_predicate(self,
+                      tag: str,
+                      condition: Any,
+                      compound: bool = False,
+                      path: str = 'text()',
+                      process_path: bool = False) -> str:
         """
         Construct the predicate for the given tag and condition
 
         :param tag: str name of the tag
         :param condition: condition specified, either dict or single value
+        :param compound: bool if True the enclosing condition is a compound condition, forbidding any other compound condition
+        :param path: path, to which to apply the condition
+        :param process_path: bool if True the path will taken apart into its components and the components will be checked with XPath variables
         """
 
         if not isinstance(condition, dict):
@@ -157,104 +183,115 @@ class XPathBuilder:
             raise ValueError('Only one key allowed in condition')
 
         operator, content = dict(condition).popitem()
-        if operator == '==':
-            operator = '='
 
-        return self.process_condition(tag, operator, content)
+        if compound and operator in self.COMPOUND_OPERATORS:
+            raise ValueError(f'Compound operators not allowed in already compound condition: {operator}')
 
-    def process_condition(self, tag: str, operator: str, content: Any) -> str:
+        return self.process_condition(tag, operator, content, path, process_path=process_path)
+
+    def process_condition(self, tag: str, operator: str, content: Any, path: str, process_path: bool = False) -> str:
         """
         Process the condition for the given tag and condition
 
         :param tag: str name of the tag
         :param operator: operator for condition
         :param content: content of condition
+        :param path: path, to which to apply the condition
+        :param process_path: bool if True the path will taken apart into its components and the components will be checked with XPath variables
         """
 
         if operator == 'and':
             if not isinstance(content, (list, tuple)):
-                raise TypeError('For and operator and provide the conditions as a list')
-            predicates = [self.get_predicate(tag, condition_part) for condition_part in content]
+                raise TypeError('For and operator provide the conditions as a list')
+            predicates = [
+                self.get_predicate(tag, condition_part, compound=True, path=path) for condition_part in content
+            ]
             predicate = ' and '.join(predicates)
         elif operator == 'or':
             if not isinstance(content, (list, tuple)):
-                raise TypeError('For or operator and provide the conditions as a list')
-            predicates = [self.get_predicate(tag, condition_part) for condition_part in content]
+                raise TypeError('For or operator provide the conditions as a list')
+            predicates = [
+                self.get_predicate(tag, condition_part, compound=True, path=path) for condition_part in content
+            ]
             predicate = ' or '.join(predicates)
-        elif operator == 'has':
-            predicate = f'${tag}_has'
-            self.path_variables[f'{tag}_has'] = content
-        elif operator == 'has-not':
-            predicate = f'${tag}_has_not'
-            self.path_variables[f'{tag}_has_not'] = content
+        elif operator == 'in':
+            if not isinstance(content, Iterable):
+                raise TypeError('For in operator provide a sequence of possible values')
+            predicate = self.get_predicate(tag, {'or': [{'=': value} for value in content]}, compound=True, path=path)
+        elif operator == 'not-in':
+            if not isinstance(content, Iterable):
+                raise TypeError('For not-in operator provide a sequence of possible values')
+            predicate = self.get_predicate(tag, {'and': [{'!=': value} for value in content]}, compound=True, path=path)
         elif operator == 'index':
             if isinstance(content, int):
-                if content == -1:
+                index = content
+                if index == -1:
                     predicate = 'last()'
-                elif content < 0:
+                elif index < 0:
+                    index = abs(index + 1)
                     predicate = f'last() - ${tag}_index'
-                    self.path_variables[f'{tag}_index'] = abs(content + 1)
                 else:
                     predicate = f'${tag}_index'
-                    self.path_variables[f'{tag}_index'] = content
             else:
                 cond, index = dict(content).popitem()
-                if cond == '==':
-                    cond = '='
+                if cond not in self.BINARY_OPERATORS:
+                    raise ValueError(f'Operator {cond} not allowed for index')
                 if index < 0:
                     index = abs(index + 1)
-                    predicate = f'position() {cond} last() - ${tag}_index'
+                    index_str = f'last() - ${tag}_index'
                 else:
-                    predicate = f'position() {cond} ${tag}_index'
-                self.path_variables[f'{tag}_index'] = index
-        elif '/' not in operator:
-            if not isinstance(content, dict):
-                content = {'=': content}
-            cond, value = dict(content).popitem()
-            if cond == '==':
-                cond = '='
+                    index_str = f'${tag}_index'
+                operator_fmt = self.OPERATOR_FORMAT.get(cond, f'{{left}} {cond} {{right}}')
+                predicate = operator_fmt.format(left='position()', right=index_str)
+            self.path_variables[f'{tag}_index'] = index
+        elif operator in self.BINARY_OPERATORS:
+            operator_fmt = self.OPERATOR_FORMAT.get(operator, f'{{left}} {operator} {{right}}')
 
-            variable_name = f'{tag}_cond_{self.value_conditions}_name'
-            value_variable_name = f'{tag}_cond_{self.value_conditions}'
-
-            if cond == 'contains':
-                predicate = f'contains(@*[local-name()=${variable_name}],${value_variable_name})'
-            elif cond == 'not-contains':
-                predicate = f'not(contains(@*[local-name()=${variable_name}],${value_variable_name}))'
+            variable_name = f'{tag}_cond_{self.value_conditions}'
+            if process_path:
+                path_variable = self._path_condition(path, tag)
             else:
-                predicate = f'@*[local-name()=${variable_name}] {cond} ${value_variable_name}'
+                path_variable = path
 
-            self.path_variables[variable_name] = operator
-            self.path_variables[value_variable_name] = value
+            predicate = operator_fmt.format(left=path_variable, right=f'${variable_name}')
+            self.path_variables[variable_name] = content
             self.value_conditions += 1
+        elif operator in self.UNARY_OPERATORS - {'has', 'has-not'}:
+            operator_fmt = self.OPERATOR_FORMAT.get(operator, '{left}')
+            if process_path:
+                path_variable = self._path_condition(path, tag)
+            else:
+                path_variable = path
+            path_variable = operator_fmt.format(left=path_variable)
+            predicate = self.get_predicate(tag, content, path=path_variable)
+        elif operator in {'has', 'has-not'}:
+            operator_fmt = self.OPERATOR_FORMAT.get(operator, '{left}')
+            predicate = operator_fmt.format(left=self._path_condition(content, tag))
         else:
-            if not isinstance(content, dict):
-                content = {'=': content}
-            cond, value = dict(content).popitem()
-            if cond == '==':
-                cond = '='
-            parts = operator.strip('/').split('/')
-            variable_name = f'{tag}_cond_{self.value_conditions}_name'
-            value_variable_name = f'{tag}_cond_{self.value_conditions}'
-
-            path_variable = []
-            for indx, part in enumerate(parts):
-                path_variable.append(f"{'@' if '@' in part else ''}*[local-name()=${variable_name}_{indx}]")
-                self.path_variables[f'{variable_name}_{indx}'] = part.lstrip('@')
-            path_variable_str = '/'.join(path_variable)
-
-            if cond == 'contains':
-                predicate = f'contains({path_variable_str},${value_variable_name})'
-            elif cond == 'not-contains':
-                predicate = f'not(contains({path_variable_str},${value_variable_name}))'
-            else:
-                predicate = f'{path_variable_str} {cond} ${value_variable_name}'
-
-            self.path_variables[variable_name] = operator
-            self.path_variables[value_variable_name] = value
-            self.value_conditions += 1
+            predicate = self.get_predicate(tag, content, path=operator, process_path=True)
 
         return predicate
+
+    def _path_condition(self, path, prefix) -> str:
+        """
+        Prepare conditions based on variables
+
+        :param path: str path to process
+        :param prefix: str prefix to use for xpath varaibles
+        """
+        parts = path.strip('/').split('/')
+        variable_name = f'{prefix}_cond_{self.value_conditions}_name'
+
+        path_variable = []
+        for indx, part in enumerate(parts):
+            if part != '.':
+                path_variable.append(
+                    f"{'@' if '@' in part or '/' not in path else ''}*[local-name()=${variable_name}_{indx}]")
+            else:
+                path_variable.append(part)
+            self.path_variables[f'{variable_name}_{indx}'] = part.lstrip('@')
+
+        return '/'.join(path_variable)
 
     @property
     def path(self) -> 'etree._xpath':

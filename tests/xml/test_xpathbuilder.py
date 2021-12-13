@@ -89,12 +89,12 @@ def test_xpathbuilder():
     }, ['Fe-1', 'Pt-1']),
     ('/fleurInput/atomSpecies/species/@name', {
         'species': {
-            'has': 'lo'
+            'has': './lo'
         }
     }, ['Fe-1', 'Pt-1']),
     ('/fleurInput/atomSpecies/species/@name', {
         'species': {
-            'has-not': 'ldaU'
+            'has-not': './ldaU'
         }
     }, ['Fe-1', 'Pt-1']),
     ('/fleurInput/atomGroups/atomGroup/@species', {
@@ -135,6 +135,15 @@ def test_xpathbuilder():
             }]
         }
     }, ['Fe-1', 'Pt-1']),
+    ('/fleurInput/atomSpecies/species/@name', {
+        'species': {
+            './lo': {
+                'number-nodes': {
+                    '>': 1
+                }
+            }
+        }
+    }, 'Fe-1'),
 ])
 def test_xpathbuilder_with_eval(load_inpxml, simple_xpath, filters, expected):
     """
