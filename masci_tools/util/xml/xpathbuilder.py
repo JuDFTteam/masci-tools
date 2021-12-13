@@ -14,7 +14,7 @@
 This module contains Classes for building complex XPath expressions based on
 general attribute conditions from simple XPath expressions
 """
-from typing import Dict, Any, Iterable, cast
+from typing import Dict, Any, Iterable, cast, Union, Tuple
 from lxml import etree
 
 FilterType = Dict[str, Any]
@@ -50,12 +50,18 @@ class XPathBuilder:
             - ``>=``: greater than or equal to
             - ``contains``: attribute/tag contains the given value (case sensitive)
             - ``not-contains``: attribute/tag does not contains the given value
+            - ``starts-with``: attribute/tag starts with the given value (case sensitive)
+            - ``ends-with``: attribute/tag ends with the given value (case sensitive)
             - ``index``: Select tags based on their index in the parent tag (either explicit index or another condition)
             - ``has``: Select tags based on the presence of the given attribute/tag
             - ``has-not``: Select tags based on the absence of the given attribute/tag
+            - ``number-nodes``: Compute the number of nodes in the previous path and select based on further criteria
             - ``and``: Provide multiple conditions in a list joined by ``and``
             - ``or``: Provide multiple conditions in a list joined by ``or``
+            - ``in``: Select tags if the value of the path is in a given list of values
+            - ``not-in``: Select tags if the value of the path is not in a given list of values
             - ``<string>``: All other strings are interpreted as paths to attributes/tags specifying conditions on their value
+            - ``<tuple of paths>``: Multiple strings are interpreted as multiple node sets, which are joined with |
 
     Example::
 
@@ -65,7 +71,7 @@ class XPathBuilder:
         xpath = XPathBuilder('/fleurInput/atomSpecies/species/lo',
                              filters = {'species': {
                                             'name': {'contains': 'Fe'},
-                                        }
+                                        },
                                         'lo': {
                                             'type': 'SCLO'
                                         }
@@ -81,7 +87,6 @@ class XPathBuilder:
 
     BINARY_OPERATORS = {'=', '==', '!=', '<', '>', '<=', '>=', 'contains', 'not-contains', 'starts-with', 'ends-with'}
     UNARY_OPERATORS = {'has', 'has-not', 'number-nodes'}
-    #NODESET_OPERATORS = {'union'}
     COMPOUND_OPERATORS = {'and', 'or', 'in', 'not-in'}
 
     #Operators, which are not formatted in the default way {left} {operator} {right}
@@ -94,7 +99,6 @@ class XPathBuilder:
         'number-nodes': 'count({left})',
         'has': '{left}',
         'has-not': 'not({left})',
-        #'union': '{left} | {right}', # not supported yet since the right syntax for the filters is not clear
     }
 
     def __init__(self,
@@ -251,7 +255,7 @@ class XPathBuilder:
             if process_path:
                 path_variable = self._path_condition(path, tag)
             else:
-                path_variable = path
+                path_variable = ' | '.join(path) if isinstance(path, tuple) else path
 
             predicate = operator_fmt.format(left=path_variable, right=f'${variable_name}')
             self.path_variables[variable_name] = content
@@ -261,7 +265,7 @@ class XPathBuilder:
             if process_path:
                 path_variable = self._path_condition(path, tag)
             else:
-                path_variable = path
+                path_variable = ' | '.join(path) if isinstance(path, tuple) else path
             path_variable = operator_fmt.format(left=path_variable)
             predicate = self.get_predicate(tag, content, path=path_variable)
         elif operator in {'has', 'has-not'}:
@@ -272,13 +276,17 @@ class XPathBuilder:
 
         return predicate
 
-    def _path_condition(self, path, prefix) -> str:
+    def _path_condition(self, path: Union[str, Tuple[str, ...]], prefix: str) -> str:
         """
         Prepare conditions based on variables
 
         :param path: str path to process
         :param prefix: str prefix to use for xpath varaibles
         """
+        if isinstance(path, tuple):
+            #Multiple node sets. Join them with union
+            return ' | '.join(self._path_condition(p, f'{prefix}_{indx}') for indx, p in enumerate(path))
+
         parts = path.strip('/').split('/')
         variable_name = f'{prefix}_cond_{self.value_conditions}_name'
 
