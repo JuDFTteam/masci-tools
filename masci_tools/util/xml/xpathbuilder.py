@@ -86,7 +86,7 @@ class XPathBuilder:
     """
 
     BINARY_OPERATORS = {'=', '==', '!=', '<', '>', '<=', '>=', 'contains', 'not-contains', 'starts-with', 'ends-with'}
-    UNARY_OPERATORS = {'has', 'has-not', 'number-nodes'}
+    UNARY_OPERATORS = {'has', 'has-not', 'number-nodes', 'string-length'}
     COMPOUND_OPERATORS = {'and', 'or', 'in', 'not-in'}
 
     #Operators, which are not formatted in the default way {left} {operator} {right}
@@ -95,8 +95,9 @@ class XPathBuilder:
         'contains': 'contains({left}, {right})',
         'not-contains': 'not(contains({left}, {right}))',
         'starts-with': 'starts-with({left}, {right})',
-        'ends-with': 'ends-with({left}, {right})',
+        'ends-with': '{right} = substring({left}, string-length({left}) - string-length({right}) + 1)', #'ends-with({left}, {right})' only avaliable in XPath 2.0
         'number-nodes': 'count({left})',
+        'string-length': 'string-length({left})',
         'has': '{left}',
         'has-not': 'not({left})',
     }
@@ -129,7 +130,7 @@ class XPathBuilder:
             for key, val in filters.items():
                 self.add_filter(key, val)
 
-    def add_filter(self, tag: str, conditions: FilterType) -> None:
+    def add_filter(self, tag: str, conditions: Union[FilterType, Any]) -> None:
         """
         Add a filter to the filters dictionary
 
@@ -138,6 +139,8 @@ class XPathBuilder:
         """
         if tag not in self.components:
             raise ValueError(f"The tag {tag} is not part of the given xpath expression: {'/'.join(self.components)}")
+        if not isinstance(conditions, dict):
+            conditions = {'=': conditions}
 
         self.filters[tag] = {**self.filters.get(tag, {}), **conditions}
 
@@ -168,7 +171,7 @@ class XPathBuilder:
                       tag: str,
                       condition: Any,
                       compound: bool = False,
-                      path: str = 'text()',
+                      path: str = '.',
                       process_path: bool = False) -> str:
         """
         Construct the predicate for the given tag and condition
@@ -208,24 +211,24 @@ class XPathBuilder:
             if not isinstance(content, (list, tuple)):
                 raise TypeError('For and operator provide the conditions as a list')
             predicates = [
-                self.get_predicate(tag, condition_part, compound=True, path=path) for condition_part in content
+                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path) for condition_part in content
             ]
             predicate = ' and '.join(predicates)
         elif operator == 'or':
             if not isinstance(content, (list, tuple)):
                 raise TypeError('For or operator provide the conditions as a list')
             predicates = [
-                self.get_predicate(tag, condition_part, compound=True, path=path) for condition_part in content
+                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path) for condition_part in content
             ]
             predicate = ' or '.join(predicates)
         elif operator == 'in':
             if not isinstance(content, Iterable):
                 raise TypeError('For in operator provide a sequence of possible values')
-            predicate = self.get_predicate(tag, {'or': [{'=': value} for value in content]}, compound=True, path=path)
+            predicate = self.get_predicate(tag, {'or': [{'=': value} for value in content]}, path=path, process_path=process_path)
         elif operator == 'not-in':
             if not isinstance(content, Iterable):
                 raise TypeError('For not-in operator provide a sequence of possible values')
-            predicate = self.get_predicate(tag, {'and': [{'!=': value} for value in content]}, compound=True, path=path)
+            predicate = self.get_predicate(tag, {'and': [{'!=': value} for value in content]}, path=path, process_path=process_path)
         elif operator == 'index':
             if isinstance(content, int):
                 index = content

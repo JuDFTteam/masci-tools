@@ -144,6 +144,49 @@ def test_xpathbuilder():
             }
         }
     }, 'Fe-1'),
+    ('/fleurInput/atomGroups/atomGroup/@species', {
+        'atomGroup': {
+            ('relPos/@label', 'filmPos/@label'): {
+                'not-contains': '22'
+            }
+        }
+    }, 'Pt-1'),
+    ('/fleurInput/atomSpecies/species/@name', {
+        'species': {
+            'name': {
+                'starts-with': 'P'
+            }
+        }
+    }, 'Pt-1'),
+    ('/fleurInput/atomGroups/atomGroup/@species', {
+        'atomGroup': {
+            ('relPos/@label', 'filmPos/@label'): {
+                'ends-with': '22'
+            }
+        }
+    }, 'Fe-1'),
+    ('/fleurInput/atomSpecies/species/lo/@n', {
+        'lo': {
+            'l': {
+                'in': [0, 1]
+            }
+        }
+    }, ['3','3','5']),
+    ('/fleurInput/atomSpecies/species/lo/@n', {
+        'lo': {
+            'l': {
+                'not-in': [0, 2]
+            }
+        }
+    }, ['3','5']),
+    ('/fleurInput/atomSpecies/species/electronConfig/coreConfig/text()', {
+        'coreConfig': '[Ne]'
+    }, '[Ne]'),
+    ('/fleurInput/atomGroups/atomGroup/@species', {
+        'atomGroup': {
+            'species': {'string-length': {'>=': 3}}
+        }
+    }, ['Fe-1', 'Pt-1']),
 ])
 def test_xpathbuilder_with_eval(load_inpxml, simple_xpath, filters, expected):
     """
