@@ -95,7 +95,8 @@ class XPathBuilder:
         'contains': 'contains({left}, {right})',
         'not-contains': 'not(contains({left}, {right}))',
         'starts-with': 'starts-with({left}, {right})',
-        'ends-with': '{right} = substring({left}, string-length({left}) - string-length({right}) + 1)', #'ends-with({left}, {right})' only avaliable in XPath 2.0
+        'ends-with':
+        '{right} = substring({left}, string-length({left}) - string-length({right}) + 1)',  #'ends-with({left}, {right})' only avaliable in XPath 2.0
         'number-nodes': 'count({left})',
         'string-length': 'string-length({left})',
         'has': '{left}',
@@ -211,24 +212,34 @@ class XPathBuilder:
             if not isinstance(content, (list, tuple)):
                 raise TypeError('For and operator provide the conditions as a list')
             predicates = [
-                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path) for condition_part in content
+                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path)
+                for condition_part in content
             ]
             predicate = ' and '.join(predicates)
         elif operator == 'or':
             if not isinstance(content, (list, tuple)):
                 raise TypeError('For or operator provide the conditions as a list')
             predicates = [
-                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path) for condition_part in content
+                self.get_predicate(tag, condition_part, compound=True, path=path, process_path=process_path)
+                for condition_part in content
             ]
             predicate = ' or '.join(predicates)
         elif operator == 'in':
             if not isinstance(content, Iterable):
                 raise TypeError('For in operator provide a sequence of possible values')
-            predicate = self.get_predicate(tag, {'or': [{'=': value} for value in content]}, path=path, process_path=process_path)
+            predicate = self.get_predicate(tag, {'or': [{
+                '=': value
+            } for value in content]},
+                                           path=path,
+                                           process_path=process_path)
         elif operator == 'not-in':
             if not isinstance(content, Iterable):
                 raise TypeError('For not-in operator provide a sequence of possible values')
-            predicate = self.get_predicate(tag, {'and': [{'!=': value} for value in content]}, path=path, process_path=process_path)
+            predicate = self.get_predicate(tag, {'and': [{
+                '!=': value
+            } for value in content]},
+                                           path=path,
+                                           process_path=process_path)
         elif operator == 'index':
             if isinstance(content, int):
                 index = content

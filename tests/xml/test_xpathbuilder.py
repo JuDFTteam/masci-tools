@@ -171,20 +171,24 @@ def test_xpathbuilder():
                 'in': [0, 1]
             }
         }
-    }, ['3','3','5']),
+    }, ['3', '3', '5']),
     ('/fleurInput/atomSpecies/species/lo/@n', {
         'lo': {
             'l': {
                 'not-in': [0, 2]
             }
         }
-    }, ['3','5']),
+    }, ['3', '5']),
     ('/fleurInput/atomSpecies/species/electronConfig/coreConfig/text()', {
         'coreConfig': '[Ne]'
     }, '[Ne]'),
     ('/fleurInput/atomGroups/atomGroup/@species', {
         'atomGroup': {
-            'species': {'string-length': {'>=': 3}}
+            'species': {
+                'string-length': {
+                    '>=': 3
+                }
+            }
         }
     }, ['Fe-1', 'Pt-1']),
 ])
