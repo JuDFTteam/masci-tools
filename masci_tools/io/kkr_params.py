@@ -747,6 +747,10 @@ class kkrparams:
                 None, '%l', False,
                 'Run option: calculate the wronskian relations of first and second kind for the wavefunctions (see PhD Bauer pp 48)'
             ]),
+            ('<CALC_CHI_NS>', [
+                None, '%l', False,
+                'Run option: calculate the radially averaged anomalous density matrix and write to `den_lm_ir_ns.npy` file. Only for BdG mode.'
+            ]),
             # end new style run options
         ])
 
