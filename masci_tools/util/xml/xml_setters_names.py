@@ -73,7 +73,7 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -123,7 +123,7 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -170,7 +170,7 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     tag_xpath, attrib_name = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -215,7 +215,7 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -269,7 +269,7 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath, attributename = split_off_attrib(attrib_xpath)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -378,7 +378,7 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath, attributename = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -479,7 +479,7 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -576,7 +576,7 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters)
+        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -636,7 +636,7 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters)
+        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(

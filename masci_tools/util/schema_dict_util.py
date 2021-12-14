@@ -20,7 +20,7 @@ attribute from the right place in the given etree
 from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
-from masci_tools.util.xml.common_functions import check_complex_xpath
+from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.typing import XPathLike
 from lxml import etree
@@ -267,7 +267,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
 
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(attrib_xpath, filters=filters)
+        complex_xpath = XPathBuilder(attrib_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -345,7 +345,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -355,7 +355,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+    stringtext: List[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
                                        list_return=True)  #type:ignore
 
     for text in stringtext.copy():
@@ -437,7 +437,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -493,7 +493,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     for attrib in attrib_list:
 
         stringattribute: List[str] = eval_xpath(node,
-                                                f'{str(complex_xpath)}/@{attrib}',
+                                                add_tag(complex_xpath, f'@{attrib}'),
                                                 logger=logger,
                                                 list_return=True)  #type:ignore
 
@@ -524,7 +524,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext: List[str] = eval_xpath(node, f'{str(complex_xpath)}/text()', logger=logger,
+        stringtext: List[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
                                            list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
@@ -694,7 +694,7 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters)
+        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
     elif filters is not None:
         if not isinstance(complex_xpath, XPathBuilder):
             raise ValueError(
@@ -822,7 +822,7 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
 
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
-    tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters)
+    tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters, strict=True)
 
     tags: List[etree._Element] = eval_xpath(node, tag_xpath_builder, logger=logger, list_return=True)  #type:ignore
     return any(attrib_name in tag.attrib for tag in tags)
