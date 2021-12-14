@@ -22,6 +22,7 @@ import warnings
 
 from masci_tools.util.typing import XPathLike
 from masci_tools.util.xml.common_functions import eval_xpath
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 
 def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
@@ -50,7 +51,8 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to replace found on xpath: {str(xpath)}')
+        warnings.warn(
+            f'No nodes to replace found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -97,7 +99,9 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to delete attributes on found on xpath: {str(xpath)}')
+        warnings.warn(
+            f'No nodes to delete attributes on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
+        )
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -136,7 +140,8 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to delete found on xpath: {str(xpath)}')
+        warnings.warn(
+            f'No nodes to delete found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}')
 
     if occurrences is not None:
         if not is_sequence(occurrences):
@@ -353,7 +358,9 @@ def xml_set_attrib_value_no_create(
     nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to set attribute {attributename} on found on xpath: {str(xpath)}')
+        warnings.warn(
+            f'No nodes to set attribute {attributename} on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
+        )
         return xmltree
 
     if occurrences is not None:
@@ -405,7 +412,9 @@ def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
     nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(f'No nodes to set text on found on xpath: {str(xpath)}')
+        warnings.warn(
+            f'No nodes to set text on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
+        )
         return xmltree
 
     if occurrences is not None:

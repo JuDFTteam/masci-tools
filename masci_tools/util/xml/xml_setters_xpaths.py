@@ -220,9 +220,10 @@ def xml_set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        raise ValueError(f"Could not set attribute '{attributename}' on path '{str(xpath)}' "
-                         'because atleast one subtag is missing. '
-                         'Use create=True to create the subtags')
+        raise ValueError(
+            f"Could not set attribute '{attributename}' on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' "
+            'because atleast one subtag is missing. '
+            'Use create=True to create the subtags')
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
@@ -319,8 +320,9 @@ def xml_set_text(xmltree: Union[etree._Element, etree._ElementTree],
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        raise ValueError(f"Could not set text on path '{str(xpath)}' because atleast one subtag is missing. "
-                         'Use create=True to create the subtags')
+        raise ValueError(
+            f"Could not set text on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' because atleast one subtag is missing. "
+            'Use create=True to create the subtags')
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
@@ -613,6 +615,7 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
     :returns: xmltree with changes to the complex tag
     """
+    import copy
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
 
@@ -666,7 +669,14 @@ def xml_set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
 
             for indx, tagdict in enumerate(val):
                 for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):  #type:ignore
-                    current_elem_xpath = f'{str(sub_xpath)}[{k*len(val)+indx+1}]'
+                    current_elem_xpath: XPathLike
+                    if isinstance(sub_xpath, XPathBuilder):
+                        current_elem_xpath = copy.deepcopy(sub_xpath)
+                        current_elem_xpath.add_filter(sub_xpath.components[-1], {'index': k * len(val) + indx + 1})
+                    elif isinstance(sub_xpath, etree.XPath):
+                        current_elem_xpath = etree.XPath(f'{str(sub_xpath)}[{k*len(val)+indx+1}]')
+                    else:
+                        current_elem_xpath = f'{str(sub_xpath)}[{k*len(val)+indx+1}]'
                     xmltree = xml_set_complex_tag(xmltree,
                                                   schema_dict,
                                                   current_elem_xpath,
