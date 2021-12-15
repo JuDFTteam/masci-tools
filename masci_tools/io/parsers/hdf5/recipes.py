@@ -94,15 +94,14 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
                 'h5path':
                 f'/{group}/DOS',
                 'transforms': [
-                    Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': 'energyGrid'}),
+                    Transformation(name='get_all_child_datasets', kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atoms_groups',
                                          args=(f'{atom_prefix}{{}}'.format,),
                                          kwargs={'make_set': True}),
-                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,), kwargs={}),
+                    Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,)),
                     Transformation(
                         name='split_array',
-                        args=(),
                         kwargs={'suffixes': ['up', 'down']},
                     )
                 ],
@@ -111,14 +110,14 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
             },
             'energy_grid': {
                 'h5path': f'/{group}/DOS/energyGrid',
-                'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={})]
+                'transforms': [Transformation(name='multiply_scalar', args=(HTR_TO_EV,))]
             }
         },
         'attributes': {
             'group_name': {
                 'h5path': f'/{group}',
                 'transforms': [
-                    Transformation(name='get_name', args=(), kwargs={}),
+                    Transformation(name='get_name'),
                 ],
             },
             'n_types': {
@@ -126,15 +125,14 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
                 '/atoms',
                 'description':
                 'Number of atom types',
-                'transforms': [
-                    Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
-                ]
+                'transforms':
+                [Transformation(name='get_attribute', args=('nTypes',)),
+                 Transformation(name='get_first_element')]
             },
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
                 'description': 'Atomic numbers',
-                'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
+                'transforms': [Transformation(name='periodic_elements')]
             },
             'atoms_groups': {
                 'h5path': '/atoms/equivAtomsGroup'
@@ -145,8 +143,8 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
                 'description':
                 'fermi_energy of the system',
                 'transforms': [
-                    Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
+                    Transformation(name='get_attribute', args=('lastFermiEnergy',)),
+                    Transformation(name='get_first_element')
                 ]
             },
             'spins': {
@@ -154,10 +152,9 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
                 '/general',
                 'description':
                 'number of distinct spin directions in the system',
-                'transforms': [
-                    Transformation(name='get_attribute', args=('spins',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
-                ]
+                'transforms':
+                [Transformation(name='get_attribute', args=('spins',)),
+                 Transformation(name='get_first_element')]
             }
         }
     })
@@ -199,18 +196,15 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
                 'transforms': [
                     AttribTransformation(name='shift_by_attribute',
                                          attrib_name='fermi_energy',
-                                         args=(),
                                          kwargs={
                                              'negative': True,
                                          }),
-                    Transformation(name='multiply_scalar', args=(HTR_TO_EV,), kwargs={}),
-                    Transformation(name='split_array',
-                                   args=(),
-                                   kwargs={
-                                       'suffixes': ['up', 'down'],
-                                       'name': 'eigenvalues'
-                                   }),
-                    Transformation(name='flatten_array', args=(), kwargs={})
+                    Transformation(name='multiply_scalar', args=(HTR_TO_EV,)),
+                    Transformation(name='split_array', kwargs={
+                        'suffixes': ['up', 'down'],
+                        'name': 'eigenvalues'
+                    }),
+                    Transformation(name='flatten_array')
                 ],
                 'unpack_dict':
                 True
@@ -221,11 +215,10 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
                 'transforms': [
                     AttribTransformation(name='multiply_by_attribute',
                                          attrib_name='reciprocal_cell',
-                                         args=(),
                                          kwargs={'transpose': True}),
-                    Transformation(name='calculate_norm', args=(), kwargs={'between_neighbours': True}),
-                    Transformation(name='cumulative_sum', args=(), kwargs={}),
-                    AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands', args=(), kwargs={}),
+                    Transformation(name='calculate_norm', kwargs={'between_neighbours': True}),
+                    Transformation(name='cumulative_sum'),
+                    AttribTransformation(name='repeat_array_by_attribute', attrib_name='nbands'),
                 ]
             },
         },
@@ -233,42 +226,35 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
             'group_name': {
                 'h5path': f'/{group}',
                 'transforms': [
-                    Transformation(name='get_name', args=(), kwargs={}),
+                    Transformation(name='get_name'),
                 ],
             },
             'kpoints': {
                 'h5path': '/kpts/coordinates',
             },
             'nkpts': {
-                'h5path':
-                '/Local/BS/eigenvalues',
-                'transforms': [
-                    Transformation(name='get_shape', args=(), kwargs={}),
-                    Transformation(name='index_dataset', args=(1,), kwargs={})
-                ]
+                'h5path': '/Local/BS/eigenvalues',
+                'transforms': [Transformation(name='get_shape'),
+                               Transformation(name='index_dataset', args=(1,))]
             },
             'nbands': {
-                'h5path':
-                '/Local/BS/eigenvalues',
-                'transforms': [
-                    Transformation(name='get_shape', args=(), kwargs={}),
-                    Transformation(name='index_dataset', args=(2,), kwargs={})
-                ]
+                'h5path': '/Local/BS/eigenvalues',
+                'transforms': [Transformation(name='get_shape'),
+                               Transformation(name='index_dataset', args=(2,))]
             },
             'atoms_elements': {
                 'h5path': '/atoms/atomicNumbers',
                 'description': 'Atomic numbers',
-                'transforms': [Transformation(name='periodic_elements', args=(), kwargs={})]
+                'transforms': [Transformation(name='periodic_elements')]
             },
             'n_types': {
                 'h5path':
                 '/atoms',
                 'description':
                 'Number of atom types',
-                'transforms': [
-                    Transformation(name='get_attribute', args=('nTypes',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
-                ]
+                'transforms':
+                [Transformation(name='get_attribute', args=('nTypes',)),
+                 Transformation(name='get_first_element')]
             },
             'atoms_position': {
                 'h5path': '/atoms/positions',
@@ -283,15 +269,15 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
             'bravais_matrix': {
                 'h5path': '/cell/bravaisMatrix',
                 'description': 'Coordinate transformation internal to physical for atoms',
-                'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,), kwargs={})]
+                'transforms': [Transformation(name='multiply_scalar', args=(BOHR_A,))]
             },
             'special_kpoint_indices': {
                 'h5path': '/kpts/specialPointIndices',
-                'transforms': [Transformation(name='shift_dataset', args=(-1,), kwargs={})]
+                'transforms': [Transformation(name='shift_dataset', args=(-1,))]
             },
             'special_kpoint_labels': {
                 'h5path': '/kpts/specialPointLabels',
-                'transforms': [Transformation(name='convert_to_str', args=(), kwargs={})]
+                'transforms': [Transformation(name='convert_to_str')]
             },
             'fermi_energy': {
                 'h5path':
@@ -299,8 +285,8 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
                 'description':
                 'fermi_energy of the system',
                 'transforms': [
-                    Transformation(name='get_attribute', args=('lastFermiEnergy',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
+                    Transformation(name='get_attribute', args=('lastFermiEnergy',)),
+                    Transformation(name='get_first_element')
                 ]
             },
             'spins': {
@@ -308,10 +294,9 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
                 '/general',
                 'description':
                 'number of distinct spin directions in the system',
-                'transforms': [
-                    Transformation(name='get_attribute', args=('spins',), kwargs={}),
-                    Transformation(name='get_first_element', args=(), kwargs={})
-                ]
+                'transforms':
+                [Transformation(name='get_attribute', args=('spins',)),
+                 Transformation(name='get_first_element')]
             }
         }
     })
@@ -323,13 +308,13 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
         'h5path':
         f'/{group}/BS',
         'transforms': [
-            Transformation(name='get_all_child_datasets', args=(), kwargs={'ignore': ['eigenvalues', 'kpts']}),
+            Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
             AttribTransformation(name='add_partial_sums',
                                  attrib_name='atoms_groups',
                                  args=(f'{atom_prefix}{{}}'.format,),
                                  kwargs={'make_set': True}),
-            Transformation(name='split_array', args=(), kwargs={'suffixes': ['up', 'down']}),
-            Transformation(name='flatten_array', args=(), kwargs={})
+            Transformation(name='split_array', kwargs={'suffixes': ['up', 'down']}),
+            Transformation(name='flatten_array')
         ],
         'unpack_dict':
         True
@@ -362,13 +347,13 @@ def get_fleur_bands_specific_weights(weight_name: Union[str, List[str]],
                 'h5path':
                 f'/{group}/BS',
                 'transforms': [
-                    Transformation(name='get_all_child_datasets', args=(), kwargs={'contains': name}),
-                    Transformation(name='sum_over_dict_entries', args=(), kwargs={'overwrite_dict': True}),
-                    Transformation(name='split_array', args=(), kwargs={
+                    Transformation(name='get_all_child_datasets', kwargs={'contains': name}),
+                    Transformation(name='sum_over_dict_entries', kwargs={'overwrite_dict': True}),
+                    Transformation(name='split_array', kwargs={
                         'suffixes': ['up', 'down'],
                         'name': name
                     }),
-                    Transformation(name='flatten_array', args=(), kwargs={})
+                    Transformation(name='flatten_array')
                 ],
                 'unpack_dict':
                 True
@@ -378,11 +363,11 @@ def get_fleur_bands_specific_weights(weight_name: Union[str, List[str]],
                 'h5path':
                 f'/{group}/BS/{name}',
                 'transforms': [
-                    Transformation(name='split_array', args=(), kwargs={
+                    Transformation(name='split_array', kwargs={
                         'suffixes': ['up', 'down'],
                         'name': name
                     }),
-                    Transformation(name='flatten_array', args=(), kwargs={})
+                    Transformation(name='flatten_array')
                 ],
                 'unpack_dict':
                 True
