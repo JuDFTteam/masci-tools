@@ -1,7 +1,17 @@
 # Changelog
 
+# latest
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...develop)
+
+### Added
+- ``XPathBuilder`` class for specifying complex conditions on xpaths with a dictionary. Added ``filters`` argument to ``schema_dict_util`` and ``xml_setters`` functions for this dictionary [[#96]](https://github.com/JuDFTteam/masci-tools/pull/96)
+### Improved
+Nothing here yet
+### Bugfixes
+- Fixed issue with ``MANIFEST.in``, where non-python files from the ``tools`` subpackage were not included in the built packages
+
 ## v.0.7.0
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.6.2)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.7.0)
 
 Commandline interface, refactoring of SchemaDict/XML functions and major improvements for package configuration/tooling for developers. Added support for python ``3.10``. Dropped testing for python ``3.6``.
 ### Added
@@ -42,7 +52,7 @@ Commandline interface, refactoring of SchemaDict/XML functions and major improve
 - Dropped testing for python ``3.6`` in CI
 
 ## v.0.6.2
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.6.1)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.1...v0.6.2)
 
 Small bugfixes and refactoring for plotting routines
 ### Added
