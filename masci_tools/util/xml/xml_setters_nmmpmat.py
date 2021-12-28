@@ -79,11 +79,7 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     if spin > nspins:
         raise ValueError(f'Invalid input: spin {spin} requested, but input has only {nspins} spins')
 
-    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
-                                                       schema_dict,
-                                                       'ldaU',
-                                                       contains='species',
-                                                       list_return=True)  #type:ignore
+    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     if state_occupations is not None:
@@ -186,11 +182,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
             if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
                 nspins = 3
 
-    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
-                                                       schema_dict,
-                                                       'ldaU',
-                                                       contains='species',
-                                                       list_return=True)  #type:ignore
+    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     #Check that numRows matches the number of lines in nmmp_lines_copy
@@ -261,11 +253,7 @@ def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplin
             if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
                 nspins = 3
 
-    all_ldau: List[etree._Element] = eval_simple_xpath(xmltree,
-                                                       schema_dict,
-                                                       'ldaU',
-                                                       contains='species',
-                                                       list_return=True)  #type:ignore
+    all_ldau = eval_simple_xpath(xmltree, schema_dict, 'ldaU', contains='species', list_return=True)
     numRows = nspins * 14 * len(all_ldau)
 
     tol = 0.01

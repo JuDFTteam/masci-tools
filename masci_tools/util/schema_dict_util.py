@@ -26,7 +26,7 @@ from masci_tools.util.typing import XPathLike
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import Dict, Iterable, Tuple, Union, Any, List
+from typing import Dict, Iterable, Literal, Tuple, Union, Any, List, overload
 
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
@@ -887,13 +887,38 @@ def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
     return len(result)
 
 
+@overload
 def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
                       schema_dict: 'fleur_schema.SchemaDict',
                       name: str,
                       logger: Logger = None,
                       iteration_path: bool = False,
                       filters: FilterType = None,
-                      **kwargs: Any) -> 'etree._XPathObject':
+                      list_return: Literal[True] = ...,
+                      **kwargs: Any) -> 'List[etree._Element]':
+    ...
+
+
+@overload
+def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'fleur_schema.SchemaDict',
+                      name: str,
+                      logger: Logger = None,
+                      iteration_path: bool = False,
+                      filters: FilterType = None,
+                      list_return: Literal[False] = ...,
+                      **kwargs: Any) -> 'Union[etree._Element, List[etree._Element]]':
+    ...
+
+
+def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
+                      schema_dict: 'fleur_schema.SchemaDict',
+                      name: str,
+                      logger: Logger = None,
+                      iteration_path: bool = False,
+                      filters: FilterType = None,
+                      list_return: bool = False,
+                      **kwargs: Any) -> 'Union[etree._Element, List[etree._Element]]':
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -906,21 +931,20 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
                            the iteration element is constructed
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+    :param list_return: bool, if True a list is always returned
 
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
-        :param list_return: bool, if True a list is always returned
 
     :returns: etree Elements obtained via the simple xpath expression
     """
     from masci_tools.util.xml.common_functions import eval_xpath
 
-    list_return = kwargs.pop('list_return', False)
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath_builder = XPathBuilder(tag_xpath, strict=True, filters=filters)
 
-    return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)
+    return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
 
 
 def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],

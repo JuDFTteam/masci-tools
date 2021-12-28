@@ -190,11 +190,7 @@ def outxml_parser(outxmlfile: XMLInput,
 
     out_dict['input_file_version'] = outschema_dict['inp_version']
     # get all iterations in out.xml file
-    iteration_nodes: List[etree._Element] = eval_simple_xpath(root,
-                                                              outschema_dict,
-                                                              'iteration',
-                                                              logger=logger,
-                                                              list_return=True)  #type:ignore
+    iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation
