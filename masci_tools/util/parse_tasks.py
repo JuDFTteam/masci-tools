@@ -138,7 +138,7 @@ class ParseTasks:
         self._general_tasks: List[str] = []
         self.version = convert_str_version_number(version)
 
-        tasks_dict: Dict[str, Dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)  #type:ignore
+        tasks_dict: Dict[str, Dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)
         if validate_defaults:
             #Manually add each task to make sure that there are no typos/inconsitencies in the keys
             self.tasks = {}
@@ -147,7 +147,7 @@ class ParseTasks:
         else:
             self.tasks = tasks_dict
 
-        working: Set[str] = tasks.__working_out_versions__  #type:ignore
+        working: Set[str] = tasks.__working_out_versions__
         #Look if the base version is compatible if not look for a migration
         if version not in working:
 
@@ -161,7 +161,7 @@ class ParseTasks:
                     'Since the given version is newer than the latest working version\n'
                     'I will continue. Errors and warnings can occur!', UserWarning)
             else:
-                base: str = tasks.__base_version__  #type:ignore
+                base: str = tasks.__base_version__
                 migration_list = find_migration(base, version, self.migrations)
 
                 if migration_list is None:

@@ -16,7 +16,7 @@ of fleur in a robust way.
 
 Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
-from typing import Any, Callable, Dict, List, NamedTuple, Tuple, Union, IO
+from typing import Any, Callable, Dict, List, NamedTuple, Tuple, Union, Optional
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.io.io_fleurxml import load_inpxml, XMLInput
@@ -162,9 +162,9 @@ class FleurXMLModifier:
     @classmethod
     def apply_modifications(cls,
                             xmltree: etree._ElementTree,
-                            nmmp_lines: List[str],
+                            nmmp_lines: Optional[List[str]],
                             modification_tasks: List[ModifierTask],
-                            validate_changes: bool = True) -> Tuple[etree._ElementTree, List[str]]:
+                            validate_changes: bool = True) -> Tuple[etree._ElementTree, Optional[List[str]]]:
         """
         Applies given modifications to the fleurinp lxml tree.
         It also checks if a new lxml tree is validated against schema.
@@ -281,10 +281,11 @@ class FleurXMLModifier:
         pprint(self._tasks)
         return self._tasks
 
-    def modify_xmlfile(self,
-                       original_inpxmlfile: XMLInput,
-                       original_nmmp_file: Union[str, Path, bytes, os.PathLike, List[str]] = None,
-                       validate_changes: bool = True) -> Tuple[etree._ElementTree, List[str]]:
+    def modify_xmlfile(
+            self,
+            original_inpxmlfile: XMLInput,
+            original_nmmp_file: Union[str, Path, bytes, os.PathLike, List[str]] = None,
+            validate_changes: bool = True) -> Union[Tuple[etree._ElementTree, List[str]], etree._ElementTree]:
         """
         Applies the registered modifications to a given inputfile
 
@@ -306,7 +307,7 @@ class FleurXMLModifier:
             else:
                 original_nmmp_lines = original_nmmp_file  #type:ignore
         else:
-            original_nmmp_lines = None  #type:ignore
+            original_nmmp_lines = None
 
         new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
                                                                original_nmmp_lines,

@@ -13,8 +13,8 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, TypeVar, Union, List, Set, cast
-from masci_tools.util.typing import XPathLike
+from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, Union, List, Set, cast
+from masci_tools.util.typing import XPathLike, TXPathLike
 from lxml import etree
 import warnings
 import os
@@ -334,12 +334,6 @@ def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger =
     return None
 
 
-TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
-"""
-Type for xpath expressions
-"""
-
-
 def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     """
     Splits off the last part of the given xpath
@@ -351,7 +345,7 @@ def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     :param xpath:  xpath to split up
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        xpath = copy.deepcopy(xpath)
         tag = xpath.strip_off_tag()
         return xpath, tag
 
@@ -367,7 +361,7 @@ def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
         xpath_str, tag = '/'.join(split_xpath[:-1]), split_xpath[-1]
 
     if isinstance(xpath, etree.XPath):
-        xpath = cast(TXPathLike, etree.XPath(xpath_str))
+        xpath = etree.XPath(xpath_str)  #type:ignore [assignment]
     else:
         xpath = xpath_str
 
@@ -388,12 +382,12 @@ def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
     :returns: xpath with the form {old_xpath}/tag
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        xpath = copy.deepcopy(xpath)
         xpath.append_tag(tag)
     elif isinstance(xpath, etree.XPath):
-        xpath = cast(TXPathLike, etree.XPath(f'{str(xpath.path)}/{tag}'))  #type:ignore [attr-defined]
+        xpath = etree.XPath(f'{str(xpath.path)}/{tag}')  #type:ignore [attr-defined,assignment]
     else:
-        xpath = cast(TXPathLike, f"{str(xpath).rstrip('/')}/{tag}")
+        xpath = f"{str(xpath).rstrip('/')}/{tag}"
     return xpath
 
 
@@ -408,14 +402,14 @@ def split_off_attrib(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     :param xpath: xpath to split up
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = cast(TXPathLike, copy.deepcopy(xpath))
+        xpath = copy.deepcopy(xpath)
         attrib = xpath.strip_off_tag()
         if '@' not in attrib:
             raise ValueError('Path does not end with an attribute')
         return xpath, attrib.lstrip('@')
 
     if isinstance(xpath, etree.XPath):
-        xpath_str = xpath.path  #type: ignore
+        xpath_str = xpath.path  #type: ignore [attr-defined]
     else:
         xpath_str = xpath
 
@@ -425,9 +419,9 @@ def split_off_attrib(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     xpath_str, attrib = tuple(split_xpath)
 
     if isinstance(xpath, etree.XPath):
-        xpath = cast(TXPathLike, etree.XPath(xpath_str))
+        xpath = etree.XPath(xpath_str)  #type:ignore [assignment]
     else:
-        xpath = cast(TXPathLike, xpath_str)
+        xpath = xpath_str
 
     return xpath, attrib
 

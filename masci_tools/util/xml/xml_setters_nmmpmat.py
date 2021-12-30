@@ -14,7 +14,7 @@
 This module contains useful methods for initializing or modifying a n_mmp_mat file
 for LDA+U
 """
-from typing import Union, List
+from typing import Union, List, Optional
 import numpy as np
 from lxml import etree
 from masci_tools.io.parsers import fleur_schema
@@ -236,7 +236,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     return nmmplines
 
 
-def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: List[str],
+def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: Optional[List[str]],
                      schema_dict: 'fleur_schema.SchemaDict') -> None:
     """
     Checks that the given nmmp_lines is valid with the given xmltree

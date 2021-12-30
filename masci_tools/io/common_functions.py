@@ -572,7 +572,7 @@ def rel_to_abs_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray
         return absolute_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(absolute_vector)  #type:ignore
-    return absolute_vector  #type:ignore
+    return absolute_vector
 
 
 def find_symmetry_relation(from_pos: VectorType,

@@ -142,7 +142,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
         return self.symmetric_difference(other)  #type: ignore[arg-type]
 
     def __or__(self, other: AbstractSet[_S]) -> 'CaseInsensitiveFrozenSet[Union[_S,T]]':
-        return self.union(other)  #type: ignore[arg-type]
+        return self.union(other)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
@@ -168,7 +168,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
         new_case_dict = self._get_new_original_case(self.original_case.values(), other)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def union(self, *others: Iterable[T]) -> 'CaseInsensitiveFrozenSet[T]':
+    def union(self, *others: Iterable[_S]) -> 'CaseInsensitiveFrozenSet[T]':
         new_frozenset = super().union(*[{cast(T, self._norm_key(key)) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
