@@ -419,6 +419,7 @@ nitpick_ignore = [
     ('py:class', 'h5py._hl.base.HLObject'),
     ('py:class', 'h5py._hl.group.Group'),
     ('py:class', 'masci_tools.io.common_functions._TVectorType'),
+    ('py:class', 'masci_tools.util.typing.TXPathLike'),
 ]
 
 
