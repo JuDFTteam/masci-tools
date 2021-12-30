@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test for the case insensitive, immutable set implemented in util
 """

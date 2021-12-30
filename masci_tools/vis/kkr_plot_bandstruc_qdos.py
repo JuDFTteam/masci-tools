@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,10 +13,6 @@
 dispersionplot function for plotting KKR bandstructures (i.e. qdos) files
 """
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from six.moves import range  # pylint: disable=redefined-builtin
 
 
 def dispersionplot(

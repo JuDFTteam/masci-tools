@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 CLI commands for interacting with the fleur schemas in the masci-tools repository
 """

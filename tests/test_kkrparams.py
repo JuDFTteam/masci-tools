@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Wed Nov 15 16:43:31 2017
 
@@ -126,8 +125,8 @@ class Test_get_info:  # pylint: disable=missing-class-docstring
     def test_get_mandatory(self):
         p = kkrparams()
         manlist = p.get_all_mandatory()
-        assert set(manlist) == set(
-            ['LMAX', 'NAEZ', 'BRAVAIS', 'RMAX', 'GMAX', 'NSPIN', '<RBASIS>', 'ALATBASIS', '<ZATOM>'])
+        assert set(manlist) == {
+            'LMAX', 'NAEZ', 'BRAVAIS', 'RMAX', 'GMAX', 'NSPIN', '<RBASIS>', 'ALATBASIS', '<ZATOM>'}
 
     def test_get_set_values(self):
         p = kkrparams()
@@ -177,7 +176,7 @@ class Test_get_info:  # pylint: disable=missing-class-docstring
         runopt = p.get_value('RUNOPT')
         testopt = p.get_value('TESTOPT')
         assert runopt == ['NEWSOSOL']
-        assert set(testopt) == set(['test1', 'test2'])
+        assert set(testopt) == {'test1', 'test2'}
 
 
 class Test_fill_inputfile:
@@ -231,7 +230,7 @@ class Test_fill_inputfile:
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(is_voro_calc=True)
-            with open('inputcard', 'r', encoding='utf-8') as f:
+            with open('inputcard', encoding='utf-8') as f:
                 file_content = f.read()
             os.chdir(cwd)
 
@@ -252,7 +251,7 @@ class Test_fill_inputfile:
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile()
-            with open('inputcard', 'r', encoding='utf-8') as f:
+            with open('inputcard', encoding='utf-8') as f:
                 file_content = f.read().strip()
             os.chdir(cwd)
 
@@ -464,7 +463,7 @@ class Test_read_inputfile:  # pylint: disable=missing-class-docstring
         with tempfile.TemporaryDirectory() as td:
             os.chdir(td)
             p.fill_keywords_to_inputfile(output='input.temp.txt')
-            with open('input.temp.txt', 'r', encoding='utf-8') as f:
+            with open('input.temp.txt', encoding='utf-8') as f:
                 txt = f.readlines()
             # exchange some lines
             tmp = txt[0]
@@ -523,14 +522,14 @@ class Test_other:  # pylint: disable=missing-class-docstring
     def test_get_missing_keys(self):
         p = kkrparams()
         missing = p.get_missing_keys()
-        assert set(missing) == set(
-            ['<ZATOM>', 'BRAVAIS', 'LMAX', 'GMAX', 'RMAX', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'])
+        assert set(missing) == {
+            '<ZATOM>', 'BRAVAIS', 'LMAX', 'GMAX', 'RMAX', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'}
         missing = p.get_missing_keys(use_aiida=True)
-        assert set(missing) == set(['LMAX', 'GMAX', 'RMAX', 'NSPIN'])
+        assert set(missing) == {'LMAX', 'GMAX', 'RMAX', 'NSPIN'}
 
         p = kkrparams(params_type='voronoi', EMIN=-2, LMAX=3)
         missing = p.get_missing_keys()
-        assert set(missing) == set(['<ZATOM>', 'BRAVAIS', 'RCLUSTZ', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'])
+        assert set(missing) == {'<ZATOM>', 'BRAVAIS', 'RCLUSTZ', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'}
 
     def test_set_value_None(self):
         p = kkrparams()

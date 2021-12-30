@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the `masci_tools.vis.data` module
 """

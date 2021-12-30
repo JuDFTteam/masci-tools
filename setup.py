@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 setup: usage: pip install -e .[graphs]
 """
 
-from __future__ import absolute_import
 from setuptools import setup, find_packages
 import io  # needed to have `open` with encoding option
 
@@ -11,7 +9,7 @@ import io  # needed to have `open` with encoding option
 from os import path
 
 this_directory = path.abspath(path.dirname(__file__))
-with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
+with open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
     long_description = f.read()
 
 if __name__ == '__main__':

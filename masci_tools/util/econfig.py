@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Functions for expanding/splitting or converting electron configuration strings
 """

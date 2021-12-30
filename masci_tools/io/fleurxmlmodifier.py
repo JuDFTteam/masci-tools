@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -302,7 +301,7 @@ class FleurXMLModifier:
 
         if original_nmmp_file is not None:
             if isinstance(original_nmmp_file, (str, Path)):
-                with open(original_nmmp_file, mode='r', encoding='utf-8') as n_mmp_file:
+                with open(original_nmmp_file, encoding='utf-8') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
                 original_nmmp_lines = original_nmmp_file  #type:ignore

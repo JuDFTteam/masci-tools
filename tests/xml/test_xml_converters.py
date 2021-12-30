@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test of the functions in masci_tools.util.xml.converters
 """

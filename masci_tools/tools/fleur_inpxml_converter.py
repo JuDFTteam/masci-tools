@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module implements a commandline tool available with ``masci-tools inpxml`` to
 convert inp.xml files between different file versions
@@ -461,7 +460,7 @@ def load_conversion(from_version, to_version):
     """
     filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
 
-    with open(filepath, 'r', encoding='utf-8') as f:
+    with open(filepath, encoding='utf-8') as f:
         conversion = json.load(f)
 
     #convert back to the namedtuples

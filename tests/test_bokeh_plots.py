@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the bokeh visualization. Since the concrete visualization is difficult
 to test we check the content of the underlying json for correctness

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the calculator of mathematical expressions in the inp.xml files
 """

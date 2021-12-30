@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Modules with functions for visualizing things related to greensfunctions from fleur
 """

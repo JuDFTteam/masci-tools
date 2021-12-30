@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -11,14 +10,9 @@
 #                                                                             #
 ###############################################################################
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 from numpy import array, sum, sqrt, log, abs, loadtxt, zeros_like, shape
 from matplotlib.pyplot import plot, figure, subplot, show, ion, title, suptitle, legend, gca, ioff, axvline, gcf
 import subprocess, sys, os, time
-from six.moves import range
-from builtins import str
 
 print()
 print('  ########  start script rms_tracker  ########')
@@ -323,7 +317,7 @@ while (True):
                 title('current iteration')
                 d_old = []
                 for i in range(j):
-                    d = loadtxt((path0 + 'dos.atom%i' % (i + 1)))
+                    d = loadtxt(path0 + 'dos.atom%i' % (i + 1))
                     lab = i
                     plot(d[:, 0], sum(d[:, 1:], axis=1), '-', label=lab)
                     d_old.append(d)

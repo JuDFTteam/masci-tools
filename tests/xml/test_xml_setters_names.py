@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for the functions in xml_setters_names
 

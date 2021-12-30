@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -252,14 +251,14 @@ class SchemaDict(LockableDict):
         if contains is None:
             contains = set()
         elif isinstance(contains, str):
-            contains = set([contains])
+            contains = {contains}
         else:
             contains = set(contains)
 
         if not_contains is None:
             not_contains = set()
         elif isinstance(not_contains, str):
-            not_contains = set([not_contains])
+            not_contains = {not_contains}
         else:
             not_contains = set(not_contains)
 

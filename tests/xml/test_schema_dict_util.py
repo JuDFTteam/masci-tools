@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test of the utility functions for the schema dictionaries
 both path finding and easy information extraction

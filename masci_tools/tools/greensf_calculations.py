@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module collects functions for calculating properties with the greens functions
 calculated by Fleur. At the moment the following are implemented:

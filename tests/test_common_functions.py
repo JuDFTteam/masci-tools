@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: ruess
 """
@@ -51,7 +50,7 @@ class Test_common_functions:
         assert abs(alat - np.sqrt(2) / 2) < 10**-10
 
     def test_search_string(self):
-        with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), 'r', encoding='utf-8') as f:
+        with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), encoding='utf-8') as f:
             txt = f.readlines()
         alatline = search_string('ALAT', txt)
         noline = search_string('ALT', txt)

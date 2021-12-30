@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Configurations for masci_tools tests
 """
@@ -34,7 +33,7 @@ def load_inpxml(test_file):
         import masci_tools.io.io_fleurxml as fleur_io
         if not absolute:
             path = test_file(path)
-        with open(path, 'r', encoding='utf-8') as inpxmlfile:
+        with open(path, encoding='utf-8') as inpxmlfile:
             return fleur_io.load_inpxml(inpxmlfile)
 
     return _load_inpxml
@@ -48,7 +47,7 @@ def load_outxml(test_file):
         import masci_tools.io.io_fleurxml as fleur_io
         if not absolute:
             path = test_file(path)
-        with open(path, 'r', encoding='utf-8') as outxmlfile:
+        with open(path, encoding='utf-8') as outxmlfile:
             return fleur_io.load_outxml(outxmlfile)
 
     return _load_outxml

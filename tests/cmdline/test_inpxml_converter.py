@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the inpxml converter
 """
@@ -23,7 +22,7 @@ def test_generate_conversion(file_regression, remove_conversion):
     print(result.output)
 
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, encoding='utf-8') as f:
         content = f.read()
 
     file_regression.check(content, extension='.json')
@@ -44,7 +43,7 @@ def test_convert_inpxml(tmp_path, test_file, file_regression):
     print(result.output)
 
     assert result.exception is None, 'An unexpected exception occured: {result.exception}'
-    with open(tmp_path / 'inp.xml', 'r', encoding='utf-8') as f:
+    with open(tmp_path / 'inp.xml', encoding='utf-8') as f:
         content = f.read()
 
     file_regression.check(content, extension='.xml')

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test of the consistency the input schema dictionaries with the SchemaFiles in the same folder
 """
@@ -625,7 +624,7 @@ def clean_for_reg_dump(value_to_clean):
         for indx, val in enumerate(value_to_clean):
             value_to_clean[indx] = clean_for_reg_dump(val)
     elif isinstance(value_to_clean, CaseInsensitiveFrozenSet):
-        value_to_clean = set(clean_for_reg_dump(val) for val in value_to_clean)
+        value_to_clean = {clean_for_reg_dump(val) for val in value_to_clean}
     elif isinstance(value_to_clean, AttributeType):
         value_to_clean = dict(value_to_clean._asdict())
 

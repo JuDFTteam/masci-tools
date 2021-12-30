@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for the basic xml setter functions
 """
@@ -227,7 +226,7 @@ def test_xml_delete_att_single(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
-    keys = set([('Kmax', '4.00000000'), ('Gmax', '10.00000000'), ('GmaxXC', '8.70000000'), ('numbands', '0')])
+    keys = {('Kmax', '4.00000000'), ('Gmax', '10.00000000'), ('GmaxXC', '8.70000000'), ('numbands', '0')}
 
     node = eval_xpath(root, '/fleurInput/calculationSetup/cutoffs')
 

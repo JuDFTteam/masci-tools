@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -630,7 +629,7 @@ class Plotter:
 
         :param filename: filename,from  where the defaults should be taken
         """
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)

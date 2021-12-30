@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -494,7 +493,7 @@ def read_inpgen_file(
         contents = file.read()
     else:
         if os.path.exists(file):  #type:ignore
-            with open(file, 'r', encoding='utf-8') as f:  #type:ignore
+            with open(file, encoding='utf-8') as f:  #type:ignore
                 contents = f.read()
         else:
             contents = file

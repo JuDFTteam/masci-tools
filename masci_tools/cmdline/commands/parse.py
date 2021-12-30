@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Commands for parsing information from KKR/Fleur files
 """

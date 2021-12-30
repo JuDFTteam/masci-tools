@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), 2018 Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.    #
 #                All rights reserved.                                         #
@@ -13,14 +12,8 @@
 # edited by Philipp Ruessmann 2014
 # added averaging of spin up/down by Philipp Sep. 2015
 # pylint: skip-file
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 from numpy import *
 from sys import argv, exit
-from six.moves import map
-from six.moves import range
-from six.moves import input
 
 mode = 'pot'
 if len(argv) == 2:
@@ -277,7 +270,7 @@ while 1:
         tempsave = order[row1]
         del order[row1]
     if mode1 == 4:
-        if type(tempsave) == type(1):
+        if type(tempsave) == int:
             if tempsave != -1:
                 row1 = int(eval(input('Paste before number:')))
                 order.insert(row1, tempsave)
@@ -306,7 +299,7 @@ while 1:
         for i in range(row1, row2 + 1):
             del order[row1]
     if mode1 == 8:
-        if type(tempsave) == type(1):
+        if type(tempsave) == int:
             if tempsave != -1:
                 row1 = int(eval(input('Paste before number:')))
                 row2 = int(eval(input('How many times?:')))

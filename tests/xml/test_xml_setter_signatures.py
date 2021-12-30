@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test to make sure that signatures of the functions exposed to the FleurXMLModifier
 are not changed by accident.

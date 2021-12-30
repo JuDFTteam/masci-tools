@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -214,7 +213,7 @@ def get_all_child_datasets(group, ignore=None, contains=None):
         ignore = set()
 
     if isinstance(ignore, str):
-        ignore = set([ignore])
+        ignore = {ignore}
 
     transformed = {}
     for key, val in group.items():
@@ -255,7 +254,7 @@ def merge_subgroup_datasets(group,
         ignore_group = set()
 
     if isinstance(ignore_group, str):
-        ignore_group = set([ignore_group])
+        ignore_group = {ignore_group}
 
     transformed = defaultdict(list)
 

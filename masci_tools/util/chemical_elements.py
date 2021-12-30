@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=protected-access
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
@@ -207,7 +206,7 @@ class ChemicalElements:
 
                 # if from file,
         if filepath:
-            with open(filepath, 'r') as file:
+            with open(filepath) as file:
                 self.__elmts = _json.load(file)
                 # in case any group keys were numeric, they will now be string. rectify that.
                 # in case user WANTS them to be string, can always use 'rename' method to turn them back.
@@ -1038,7 +1037,7 @@ class ChemicalElements:
         :type filepath: str or pathlib.Path
         """
         try:
-            with open(filepath, 'r') as file:
+            with open(filepath) as file:
                 data = _json.load(file)
         except (FileNotFoundError, _json.JSONDecodeError) as err:
             print(f'File {filepath} not found or JSON decoding -> dict failed.')
