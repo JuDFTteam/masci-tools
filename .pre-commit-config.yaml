@@ -10,7 +10,6 @@ repos:
     - id: double-quote-string-fixer
       types: [python]
     - id: end-of-file-fixer
-    - id: fix-encoding-pragma
     - id: mixed-line-ending
       types: [python]
     - id: trailing-whitespace

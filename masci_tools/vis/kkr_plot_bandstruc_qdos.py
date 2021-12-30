@@ -14,7 +14,6 @@ dispersionplot function for plotting KKR bandstructures (i.e. qdos) files
 """
 
 
-
 def dispersionplot(
     p0='./',
     totonly=True,

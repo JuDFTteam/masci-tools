@@ -10,7 +10,6 @@
 ###############################################################################
 
 
-
 def plot_shapefun(pos, out, mode):
     """
   Creates a simple matplotlib image to show the shapefunctions given it's positions in the unit cell, the atoms's vertices in `ut` and the plotting mode

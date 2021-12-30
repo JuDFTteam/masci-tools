@@ -125,8 +125,7 @@ class Test_get_info:  # pylint: disable=missing-class-docstring
     def test_get_mandatory(self):
         p = kkrparams()
         manlist = p.get_all_mandatory()
-        assert set(manlist) == {
-            'LMAX', 'NAEZ', 'BRAVAIS', 'RMAX', 'GMAX', 'NSPIN', '<RBASIS>', 'ALATBASIS', '<ZATOM>'}
+        assert set(manlist) == {'LMAX', 'NAEZ', 'BRAVAIS', 'RMAX', 'GMAX', 'NSPIN', '<RBASIS>', 'ALATBASIS', '<ZATOM>'}
 
     def test_get_set_values(self):
         p = kkrparams()
@@ -522,8 +521,7 @@ class Test_other:  # pylint: disable=missing-class-docstring
     def test_get_missing_keys(self):
         p = kkrparams()
         missing = p.get_missing_keys()
-        assert set(missing) == {
-            '<ZATOM>', 'BRAVAIS', 'LMAX', 'GMAX', 'RMAX', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'}
+        assert set(missing) == {'<ZATOM>', 'BRAVAIS', 'LMAX', 'GMAX', 'RMAX', 'NAEZ', '<RBASIS>', 'NSPIN', 'ALATBASIS'}
         missing = p.get_missing_keys(use_aiida=True)
         assert set(missing) == {'LMAX', 'GMAX', 'RMAX', 'NSPIN'}
 
