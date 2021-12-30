@@ -26,8 +26,11 @@ from masci_tools.util.typing import XPathLike
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import Dict, Iterable, Literal, Tuple, Union, Any, List, overload
-
+from typing import Dict, Iterable, Tuple, Union, Any, List, overload
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore
 
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
