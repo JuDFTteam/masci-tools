@@ -4,7 +4,7 @@ This module defines some aliases used in typing
 """
 from typing import TypeVar, Union
 try:
-    from typing import TypeAlias #type: ignore[attr-defined]
+    from typing import TypeAlias  #type: ignore[attr-defined]
 except ImportError:
     from typing_extensions import TypeAlias
 from lxml import etree

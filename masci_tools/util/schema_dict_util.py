@@ -32,6 +32,7 @@ try:
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 
+
 def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
     """
     DEPRECATED
