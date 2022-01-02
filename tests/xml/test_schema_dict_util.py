@@ -320,7 +320,6 @@ def test_single_value_tag(caplog, load_outxml):
     """
     Test of the evaluate_single_value_tag function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag
     from masci_tools.util.xml.common_functions import eval_xpath
 
@@ -330,7 +329,7 @@ def test_single_value_tag(caplog, load_outxml):
     iteration_xpath = schema_dict.tag_xpath('iteration')
     iteration = eval_xpath(root, iteration_xpath, list_return=True)[0]
 
-    expected = {'comment': None, 'units': 'Htr', 'value': -4204.714048254}
+    expected = {'units': 'Htr', 'value': -4204.714048254}
     totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', FLEUR_DEFINED_CONSTANTS)
     assert totalEnergy == expected
 
