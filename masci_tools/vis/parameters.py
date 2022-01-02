@@ -163,10 +163,9 @@ class Plotter:
     Base class for handling parameters for plotting methods. For different plotting backends
     a subclass can be created to represent the specific parameters of the backend.
 
-    Args:
-        :param default_parameters: dict with hardcoded default parameters
-        :param general_keys: set of str optional, defines parameters which are
-                             not allowed to change for each entry in the plot data
+    :param default_parameters: dict with hardcoded default parameters
+    :param general_keys: set of str optional, defines parameters which are
+                            not allowed to change for each entry in the plot data
 
     Kwargs in the __init__ method are forwarded to :py:func:`Plotter.set_defaults()`
     to change the current defaults away from the hardcoded parameters.

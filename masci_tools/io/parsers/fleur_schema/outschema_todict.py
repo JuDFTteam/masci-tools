@@ -22,13 +22,12 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
-from typing import AnyStr, TYPE_CHECKING, Callable
+from typing import AnyStr, Callable
 try:
     from typing import TypedDict, Literal
 except ImportError:
     from typing_extensions import TypedDict, Literal  #type:ignore
-if TYPE_CHECKING:
-    from .inpschema_todict import InputSchemaData
+from . import inpschema_todict
 
 
 class OutputSchemaData(TypedDict, total=False):
@@ -64,7 +63,7 @@ KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteratio
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: AnyStr, inpschema_dict: InputSchemaData) -> OutputSchemaData:
+def create_outschema_dict(path: AnyStr, inpschema_dict: inpschema_todict.InputSchemaData) -> OutputSchemaData:
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -124,7 +123,8 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: InputSchemaData) -> Outp
     return schema_dict
 
 
-def merge_schema_dicts(inputschema_dict: InputSchemaData, outputschema_dict: OutputSchemaData) -> OutputSchemaData:
+def merge_schema_dicts(inputschema_dict: inpschema_todict.InputSchemaData,
+                       outputschema_dict: OutputSchemaData) -> OutputSchemaData:
     """
     Merge the information from the input schema into the outputschema
     This combines the type information and adjusts the paths from the inputschema

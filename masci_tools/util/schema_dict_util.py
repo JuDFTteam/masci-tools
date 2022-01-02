@@ -23,11 +23,13 @@ from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
-from masci_tools.util.typing import XPathLike
+from masci_tools.util.typing import XPathLike, XMLLike
 from lxml import etree
 from logging import Logger
 import warnings
-from typing import Dict, Iterable, Tuple, Union, Any, List, overload
+import copy
+from typing import Iterable, Any, overload
+import os
 try:
     from typing import Literal
 except ImportError:
@@ -183,9 +185,7 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root: etree._Element | etree._ElementTree,
-                   schema_dict: fleur_schema.SchemaDict,
-                   logger: Logger = None) -> dict[str, float]:
+def read_constants(root: XMLLike, schema_dict: fleur_schema.SchemaDict, logger: Logger = None) -> dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -228,7 +228,7 @@ def read_constants(root: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node: etree._Element | etree._ElementTree,
+def evaluate_attribute(node: XMLLike,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
                        constants: dict[str, float] = None,
@@ -310,7 +310,7 @@ def evaluate_attribute(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('text')
-def evaluate_text(node: etree._Element | etree._ElementTree,
+def evaluate_text(node: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
                   constants: dict[str, float] = None,
@@ -394,7 +394,7 @@ def evaluate_text(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node: etree._Element | etree._ElementTree,
+def evaluate_tag(node: XMLLike,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
                  constants: dict[str, float] = None,
@@ -597,7 +597,7 @@ def evaluate_tag(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node: etree._Element | etree._ElementTree,
+def evaluate_single_value_tag(node: XMLLike,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
                               constants: dict[str, float] = None,
@@ -655,7 +655,7 @@ def evaluate_single_value_tag(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node: etree._Element | etree._ElementTree,
+def evaluate_parent_tag(node: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
                         constants: dict[str, float] = None,
@@ -794,7 +794,7 @@ def evaluate_parent_tag(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node: etree._Element | etree._ElementTree,
+def attrib_exists(node: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
                   logger: Logger = None,
@@ -834,7 +834,7 @@ def attrib_exists(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('exists')
-def tag_exists(node: etree._Element | etree._ElementTree,
+def tag_exists(node: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
                logger: Logger = None,
@@ -862,7 +862,7 @@ def tag_exists(node: etree._Element | etree._ElementTree,
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node: etree._Element | etree._ElementTree,
+def get_number_of_nodes(node: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
                         logger: Logger = None,
@@ -893,7 +893,7 @@ def get_number_of_nodes(node: etree._Element | etree._ElementTree,
 
 
 @overload
-def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
@@ -905,7 +905,7 @@ def eval_simple_xpath(node: etree._Element | etree._ElementTree,
 
 
 @overload
-def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
@@ -916,7 +916,7 @@ def eval_simple_xpath(node: etree._Element | etree._ElementTree,
     ...
 
 
-def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
@@ -952,7 +952,102 @@ def eval_simple_xpath(node: etree._Element | etree._ElementTree,
     return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
 
 
-def _select_tag_xpath(node: etree._Element | etree._ElementTree,
+def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
+                     **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
+    """
+    Split the xmltree back up according to the given included tags.
+    The original xmltree will be returned with the corresponding xinclude tags
+    and the included trees are returned in a dict mapping the inserted filename
+    to the extracted tree
+
+    Tags for which no known filename is known are returned under unknown-1.xml, ...
+    The following tags have known filenames:
+
+        - `relaxation`: ``relax.xml``
+        - `kPointLists`: ``kpts.xml``
+        - `symmetryOperations`: ``sym.xml``
+        - `atomSpecies`: ``species.xml``
+        - `atomGroups`: ``atoms.xml``
+
+    Additional mappings can be given in the keyword arguments
+
+    :param xmltree: an xml-tree which will be processed
+    :param schema_dict: Schema dictionary containing all the necessary information
+    :param included_tags: Iterable of str, containing the names of the tags to be excluded
+
+    :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
+              to the excluded trees
+
+    :raises ValueError: if the tag can not be found in teh given xmltree
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
+    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
+
+    excluded_tree = copy.deepcopy(xmltree)
+
+    include_file_names: dict[str, os.PathLike | str] = {
+        'relaxation': 'relax.xml',
+        'kPointLists': 'kpts.xml',
+        'symmetryOperations': 'sym.xml',
+        'atomSpecies': 'species.xml',
+        'atomGroups': 'atoms.xml'
+    }
+
+    include_file_names = {**include_file_names, **kwargs}
+
+    unknown_file_names = 0
+    included_trees = {}
+    root = excluded_tree.getroot()
+
+    if not all(isinstance(tag, str) for tag in included_tags):
+        raise ValueError(f'included_tags is not made up of strings: {included_tags}')
+
+    for tag in included_tags:
+        if tag in include_file_names:
+            file_name = include_file_names[tag]
+        else:
+            warnings.warn(f'No filename known for tag {tag}')
+            unknown_file_names += 1
+            file_name = f'unknown-{unknown_file_names}.xml'
+
+        try:
+            tag_xpath = schema_dict.tag_xpath(tag)
+        except Exception as err:
+            raise ValueError(f'Cannot determine place of included tag {tag}') from err
+        included_tag_res: list[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
+
+        if len(included_tag_res) != 1:
+            raise ValueError(f'Cannot determine place of included tag {tag}')
+        included_tag = included_tag_res[0]
+
+        included_trees[file_name] = etree.ElementTree(included_tag)
+
+        parent = included_tag.getparent()
+        if parent is None:
+            raise ValueError('Could not find parent of included tag')
+
+        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)  #type:ignore
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+
+        parent.replace(included_tag, xinclude_elem)
+
+    if 'relax.xml' not in included_trees:
+        #The relax.xml include should always be there
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+        root.append(xinclude_elem)
+
+    etree.indent(excluded_tree)
+    for tree in included_trees.values():
+        etree.indent(tree)
+
+    return excluded_tree, included_trees
+
+
+def _select_tag_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       iteration_path: bool = False,
@@ -1006,7 +1101,7 @@ def _select_tag_xpath(node: etree._Element | etree._ElementTree,
     return xpath
 
 
-def _select_attrib_xpath(node: etree._Element | etree._ElementTree,
+def _select_attrib_xpath(node: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
                          name: str,
                          iteration_path: bool = False,
@@ -1063,7 +1158,7 @@ def _select_attrib_xpath(node: etree._Element | etree._ElementTree,
     return xpath
 
 
-def _select_tag_info(node: etree._Element | etree._ElementTree,
+def _select_tag_info(node: XMLLike,
                      schema_dict: fleur_schema.SchemaDict,
                      name: str,
                      iteration_path: bool = False,

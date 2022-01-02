@@ -22,7 +22,7 @@ try:
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 
-from masci_tools.util.typing import XPathLike
+from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
@@ -30,7 +30,7 @@ from masci_tools.io.parsers import fleur_schema
 from lxml import etree
 
 
-def create_tag(xmltree: etree._Element | etree._ElementTree,
+def create_tag(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                tag: str | etree._Element,
                complex_xpath: XPathLike = None,
@@ -93,7 +93,7 @@ def create_tag(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def delete_tag(xmltree: etree._Element | etree._ElementTree,
+def delete_tag(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                tag_name: str,
                complex_xpath: XPathLike = None,
@@ -136,7 +136,7 @@ def delete_tag(xmltree: etree._Element | etree._ElementTree,
     return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
 
 
-def delete_att(xmltree: etree._Element | etree._ElementTree,
+def delete_att(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                attrib_name: str,
                complex_xpath: XPathLike = None,
@@ -183,7 +183,7 @@ def delete_att(xmltree: etree._Element | etree._ElementTree,
     return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
 
 
-def replace_tag(xmltree: etree._Element | etree._ElementTree,
+def replace_tag(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 tag_name: str,
                 newelement: etree._Element,
@@ -228,7 +228,7 @@ def replace_tag(xmltree: etree._Element | etree._ElementTree,
     return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
 
 
-def add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
+def add_number_to_attrib(xmltree: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
                          attributename: str,
                          add_number: Any,
@@ -288,7 +288,7 @@ def add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
                                     occurrences=occurrences)
 
 
-def add_number_to_first_attrib(xmltree: etree._Element | etree._ElementTree,
+def add_number_to_first_attrib(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
                                attributename: str,
                                add_number: Any,
@@ -330,7 +330,7 @@ def add_number_to_first_attrib(xmltree: etree._Element | etree._ElementTree,
                                 **kwargs)
 
 
-def set_attrib_value(xmltree: etree._Element | etree._ElementTree,
+def set_attrib_value(xmltree: XMLLike,
                      schema_dict: fleur_schema.SchemaDict,
                      attributename: str,
                      attribv: Any,
@@ -397,7 +397,7 @@ def set_attrib_value(xmltree: etree._Element | etree._ElementTree,
                                 create=create)
 
 
-def set_first_attrib_value(xmltree: etree._Element | etree._ElementTree,
+def set_first_attrib_value(xmltree: XMLLike,
                            schema_dict: fleur_schema.SchemaDict,
                            attributename: str,
                            attribv: Any,
@@ -442,7 +442,7 @@ def set_first_attrib_value(xmltree: etree._Element | etree._ElementTree,
                             **kwargs)
 
 
-def set_text(xmltree: etree._Element | etree._ElementTree,
+def set_text(xmltree: XMLLike,
              schema_dict: fleur_schema.SchemaDict,
              tag_name: str,
              text: Any,
@@ -491,7 +491,7 @@ def set_text(xmltree: etree._Element | etree._ElementTree,
     return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
 
-def set_first_text(xmltree: etree._Element | etree._ElementTree,
+def set_first_text(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    attributename: str,
                    attribv: Any,
@@ -533,7 +533,7 @@ def set_first_text(xmltree: etree._Element | etree._ElementTree,
                     **kwargs)
 
 
-def set_simple_tag(xmltree: etree._Element | etree._ElementTree,
+def set_simple_tag(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    tag_name: str,
                    changes: list[dict[str, Any]] | dict[str, Any],
@@ -594,7 +594,7 @@ def set_simple_tag(xmltree: etree._Element | etree._ElementTree,
                               create_parents=create_parents)
 
 
-def set_complex_tag(xmltree: etree._Element | etree._ElementTree,
+def set_complex_tag(xmltree: XMLLike,
                     schema_dict: fleur_schema.SchemaDict,
                     tag_name: str,
                     changes: dict[str, Any],
@@ -648,7 +648,7 @@ def set_complex_tag(xmltree: etree._Element | etree._ElementTree,
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
 
-def set_species_label(xmltree: etree._Element | etree._ElementTree,
+def set_species_label(xmltree: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       atom_label: str,
                       attributedict: dict[str, Any],
@@ -690,7 +690,7 @@ def set_species_label(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def set_species(xmltree: etree._Element | etree._ElementTree,
+def set_species(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
                 attributedict: dict[str, Any],
@@ -744,7 +744,7 @@ def set_species(xmltree: etree._Element | etree._ElementTree,
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 
 
-def clone_species(xmltree: etree._Element | etree._ElementTree,
+def clone_species(xmltree: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   species_name: str,
                   new_name: str,
@@ -795,7 +795,7 @@ def clone_species(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def shift_value_species_label(xmltree: etree._Element | etree._ElementTree,
+def shift_value_species_label(xmltree: XMLLike,
                               schema_dict: fleur_schema.SchemaDict,
                               atom_label: str,
                               attributename: str,
@@ -857,7 +857,7 @@ def shift_value_species_label(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def set_atomgroup_label(xmltree: etree._Element | etree._ElementTree,
+def set_atomgroup_label(xmltree: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         atom_label: str,
                         attributedict: dict[str, Any],
@@ -897,7 +897,7 @@ def set_atomgroup_label(xmltree: etree._Element | etree._ElementTree,
                          }})
 
 
-def set_atomgroup(xmltree: etree._Element | etree._ElementTree,
+def set_atomgroup(xmltree: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   attributedict: dict[str, Any],
                   position: int | Literal['all'] | None = None,
@@ -956,7 +956,7 @@ def set_atomgroup(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def switch_species_label(xmltree: etree._Element | etree._ElementTree,
+def switch_species_label(xmltree: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
                          atom_label: str,
                          new_species_name: str,
@@ -996,7 +996,7 @@ def switch_species_label(xmltree: etree._Element | etree._ElementTree,
                           }})
 
 
-def switch_species(xmltree: etree._Element | etree._ElementTree,
+def switch_species(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    new_species_name: str,
                    position: int | Literal['all'] | None = None,
@@ -1062,7 +1062,7 @@ def switch_species(xmltree: etree._Element | etree._ElementTree,
     return xml_set_attrib_value(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, 'species', new_species_name)
 
 
-def shift_value(xmltree: etree._Element | etree._ElementTree,
+def shift_value(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 change_dict: dict[str, Any],
                 mode: Literal['abs', 'rel'] = 'abs',
@@ -1100,7 +1100,7 @@ def shift_value(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def set_inpchanges(xmltree: etree._Element | etree._ElementTree,
+def set_inpchanges(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    change_dict: dict[str, Any],
                    path_spec: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
@@ -1157,7 +1157,7 @@ def set_inpchanges(xmltree: etree._Element | etree._ElementTree,
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_kpointlist(xmltree: etree._Element | etree._ElementTree,
+def set_kpointlist(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    kpoints: Iterable[Iterable[float]],
                    weights: Iterable[float],
@@ -1236,8 +1236,7 @@ def set_kpointlist(xmltree: etree._Element | etree._ElementTree,
 
 
 @set_kpointlist.register(max_version='0.31')
-def set_kpointlist_max4(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
-                        kpoints: Iterable[Iterable[float]],
+def set_kpointlist_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, kpoints: Iterable[Iterable[float]],
                         weights: Iterable[float]) -> etree._Element | etree._ElementTree:
     """
     Explicitely create a kPointList from the given kpoints and weights. This
@@ -1284,7 +1283,7 @@ def set_kpointlist_max4(xmltree: etree._Element | etree._ElementTree, schema_dic
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def switch_kpointset(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
+def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict,
                      list_name: str) -> etree._Element | etree._ElementTree:
     """
     Switch the used k-point set
@@ -1310,7 +1309,7 @@ def switch_kpointset(xmltree: etree._Element | etree._ElementTree, schema_dict: 
 
 
 @switch_kpointset.register(max_version='0.31')
-def switch_kpointset_max4(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
+def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict,
                           list_name: str) -> etree._Element | etree._ElementTree:
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
@@ -1329,7 +1328,7 @@ def switch_kpointset_max4(xmltree: etree._Element | etree._ElementTree, schema_d
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_nkpts(xmltree: etree._Element | etree._ElementTree,
+def set_nkpts(xmltree: XMLLike,
               schema_dict: fleur_schema.SchemaDict,
               count: int,
               gamma: bool = False) -> etree._Element | etree._ElementTree:
@@ -1352,7 +1351,7 @@ def set_nkpts(xmltree: etree._Element | etree._ElementTree,
 
 
 @set_nkpts.register(max_version='0.31')
-def set_nkpts_max4(xmltree: etree._Element | etree._ElementTree,
+def set_nkpts_max4(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    count: int,
                    gamma: bool = False) -> etree._Element | etree._ElementTree:
@@ -1385,7 +1384,7 @@ def set_nkpts_max4(xmltree: etree._Element | etree._ElementTree,
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_kpath(xmltree: etree._Element | etree._ElementTree,
+def set_kpath(xmltree: XMLLike,
               schema_dict: fleur_schema.SchemaDict,
               kpath: dict[str, Iterable[float]],
               count: int,
@@ -1412,7 +1411,7 @@ def set_kpath(xmltree: etree._Element | etree._ElementTree,
 
 
 @set_kpath.register(max_version='0.31')
-def set_kpath_max4(xmltree: etree._Element | etree._ElementTree,
+def set_kpath_max4(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    kpath: dict[str, Iterable[float]],
                    count: int,

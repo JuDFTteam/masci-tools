@@ -48,7 +48,25 @@ BASE_TYPES = {
 NAMESPACES = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
 
+def convert_str_version_number(version_str: str) -> tuple[int, int]:
+    """
+    Convert the version number as a integer for easy comparisons
+
+    :param version_str: str of the version number, e.g. '0.33'
+
+    :returns: tuple of ints representing the version str
+    """
+
+    version_numbers = version_str.split('.')
+
+    if len(version_numbers) != 2:
+        raise ValueError(f"Version number is malformed: '{version_str}'")
+
+    return tuple(int(part) for part in version_numbers)  #type:ignore
+
+
 class AttributeType(NamedTuple):
+    """Type for describing the types of attributes/text"""
     base_type: str
     length: int | Literal['unbounded'] | None
 

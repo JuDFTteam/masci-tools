@@ -21,12 +21,12 @@ from typing import Iterable, Any, cast
 from lxml import etree
 import warnings
 
-from masci_tools.util.typing import XPathLike
+from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.common_functions import eval_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 
-def xml_replace_tag(xmltree: etree._Element | etree._ElementTree,
+def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
                     newelement: etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
@@ -45,7 +45,7 @@ def xml_replace_tag(xmltree: etree._Element | etree._ElementTree,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()  #type:ignore
+        root = xmltree.getroot()
     else:
         root = xmltree
 
@@ -75,7 +75,7 @@ def xml_replace_tag(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def xml_delete_att(xmltree: etree._Element | etree._ElementTree,
+def xml_delete_att(xmltree: XMLLike,
                    xpath: XPathLike,
                    attrib: str,
                    occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
@@ -93,7 +93,7 @@ def xml_delete_att(xmltree: etree._Element | etree._ElementTree,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()  #type:ignore
+        root = xmltree.getroot()
     else:
         root = xmltree
 
@@ -118,7 +118,7 @@ def xml_delete_att(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def xml_delete_tag(xmltree: etree._Element | etree._ElementTree,
+def xml_delete_tag(xmltree: XMLLike,
                    xpath: XPathLike,
                    occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
@@ -134,7 +134,7 @@ def xml_delete_tag(xmltree: etree._Element | etree._ElementTree,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()  #type:ignore
+        root = xmltree.getroot()
     else:
         root = xmltree
 
@@ -197,7 +197,7 @@ def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
     return ordered_node
 
 
-def xml_create_tag(xmltree: etree._Element | etree._ElementTree,
+def xml_create_tag(xmltree: XMLLike,
                    xpath: XPathLike,
                    element: str | etree._Element,
                    place_index: int = None,
@@ -330,7 +330,7 @@ def xml_create_tag(xmltree: etree._Element | etree._ElementTree,
 
 
 def xml_set_attrib_value_no_create(
-        xmltree: etree._Element | etree._ElementTree,
+        xmltree: XMLLike,
         xpath: XPathLike,
         attributename: str,
         attribv: Any,
@@ -352,7 +352,7 @@ def xml_set_attrib_value_no_create(
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()  #type:ignore
+        root = xmltree.getroot()
     else:
         root = xmltree
 
@@ -386,7 +386,7 @@ def xml_set_attrib_value_no_create(
     return xmltree
 
 
-def xml_set_text_no_create(xmltree: etree._Element | etree._ElementTree,
+def xml_set_text_no_create(xmltree: XMLLike,
                            xpath: XPathLike,
                            text: Any,
                            occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
@@ -406,7 +406,7 @@ def xml_set_text_no_create(xmltree: etree._Element | etree._ElementTree,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()  #type:ignore
+        root = xmltree.getroot()
     else:
         root = xmltree
 

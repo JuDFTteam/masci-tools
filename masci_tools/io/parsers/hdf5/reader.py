@@ -20,11 +20,12 @@ import h5py
 import warnings
 import logging
 from pathlib import Path
-from typing import IO, Callable, NamedTuple, Any, cast
+from typing import Callable, NamedTuple, Any, cast
+from masci_tools.util.typing import FileLike
 try:
-    from typing import TypedDict, Required  #type: ignore
+    from typing import TypedDict
 except ImportError:
-    from typing_extensions import TypedDict, Required
+    from typing_extensions import TypedDict
 
 
 class Transformation(NamedTuple):
@@ -41,14 +42,14 @@ class AttribTransformation(NamedTuple):
 
 
 class HDF5Transformation(TypedDict, total=False):
-    h5path: Required[str]
+    h5path: str  #This should strictly be marked as required when it's possible
     transforms: list[Transformation | AttribTransformation]
     unpack_dict: bool
     description: str
 
 
 class HDF5LimitedTransformation(TypedDict, total=False):
-    h5path: Required[str]
+    h5path: str  #This should strictly be marked as required when it's possible
     transforms: list[Transformation]
     unpack_dict: bool
     description: str
@@ -95,13 +96,13 @@ class HDF5Reader:
     _transforms: dict[str, Callable] = {}
     _attribute_transforms: set[str] = set()
 
-    def __init__(self, file: str | bytes | Path | os.PathLike | IO, move_to_memory: bool = True) -> None:
+    def __init__(self, file: FileLike, move_to_memory: bool = True) -> None:
 
         self._original_file = file
         self.file: h5py.File = None
 
         if isinstance(self._original_file, (io.IOBase, Path)):
-            self.filename = self._original_file.name
+            self.filename = self._original_file.name  # type: ignore
         elif isinstance(self._original_file, bytes):
             self.filename = os.fsdecode(self._original_file)
         else:

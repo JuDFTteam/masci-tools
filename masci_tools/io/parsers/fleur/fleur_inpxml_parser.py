@@ -18,21 +18,22 @@ from __future__ import annotations
 from lxml import etree
 from pprint import pprint
 
-from masci_tools.io.io_fleurxml import load_inpxml, XMLInput
+from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
 from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
+from masci_tools.util.typing import XMLFileLike
 import logging
-from typing import Dict, Any, Optional
+from typing import Any
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
 
-def inpxml_parser(inpxmlfile: XMLInput,
-                  parser_info_out: dict[str, Any] = None,
+def inpxml_parser(inpxmlfile: XMLFileLike,
+                  parser_info_out: dict[str, Any] | None = None,
                   strict: bool = False,
                   debug: bool = False,
-                  base_url: str = None) -> dict[str, Any]:
+                  base_url: str | None = None) -> dict[str, Any]:
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary

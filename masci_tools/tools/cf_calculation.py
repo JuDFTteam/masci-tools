@@ -47,16 +47,15 @@ class CFCalculation:
         The function constructs an equidistant mesh between 0 and the muffin tin radius
         defined in `self.reference_radius` and with `self.radial_points` points
 
-    Parameters:
-        :param radial_points: int, number of radial points in the interpolated mesh
-        :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
-                                 is used for the equidistant mesh.
-                                 IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
-        :param pot_cutoff: float Defines minimum value that has to appear in potentials to not be omitted (Only HDF)
-        :param only_m0: bool, Ignores coefficients with m!=0 if True
-        :param quiet: bool, supresses print statements if True
+    :param radial_points: int, number of radial points in the interpolated mesh
+    :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
+                                is used for the equidistant mesh.
+                                IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
+    :param pot_cutoff: float Defines minimum value that has to appear in potentials to not be omitted (Only HDF)
+    :param only_m0: bool, Ignores coefficients with m!=0 if True
+    :param quiet: bool, supresses print statements if True
 
-   """
+    """
 
     __version__ = '0.1.0'
 
@@ -111,16 +110,13 @@ class CFCalculation:
         """Reads in the potentials for the CF coefficient calculation
         If hdf files are given also the muffin tin radius is read in
 
-        Parameters:
-            :param args: Expects string filenames for the potentials to read in
-                         The function expects either HDF files or txt files with the
-                         format (rmesh,vlmup,vlmdn)
-            :param lm: list of tuples, Defines the l and m indices for the given txt files
-
-        kwargs:
-            :param atomType: int, Defines the atomType to read in (only for HDF files)
-            :param header: int, Define how many lines to skip in the beginning of txt file
-            :param complexData: bool, Define if the data in the text file is complex
+        :param args: Expects string filenames for the potentials to read in
+                     The function expects either HDF files or txt files with the
+                     format (rmesh,vlmup,vlmdn)
+        :param lm: list of tuples, Defines the l and m indices for the given txt files
+        :param atomType: int, Defines the atomType to read in (only for HDF files)
+        :param header: int, Define how many lines to skip in the beginning of txt file
+        :param complexData: bool, Define if the data in the text file is complex
 
         Raises:
             ValueError: lm indices list length has to match number of files read in
@@ -457,20 +453,20 @@ def plot_crystal_field_calculation(cfcalc,
                                    pot_colors=None,
                                    save=False,
                                    show=True):
-    """Plot the given potentials and charge densities
+    """
+    Plot the given potentials and charge densities
 
-        Parameters:
-            :param cfcalc: CFcalculation containing the data to plot
-            :param filename: str, Define the filename to save the figure
-            :param pot_title: Title for the potential subplot
-            :param cdn_title: Title for the charge density subplot
-            :param xlabel: label for the x axis of both subplots
-            :param pot_ylabel: label for the y axis of the potential subplot
-            :param cdn_ylabel: label for the y axis f the charge density subplot
-            :param fontsize: fontsize for titles and labels on the axis
-            :param labelsize: fontsize for the ticks on the axis,
+    :param cfcalc: CFcalculation containing the data to plot
+    :param filename: str, Define the filename to save the figure
+    :param pot_title: Title for the potential subplot
+    :param cdn_title: Title for the charge density subplot
+    :param xlabel: label for the x axis of both subplots
+    :param pot_ylabel: label for the y axis of the potential subplot
+    :param cdn_ylabel: label for the y axis f the charge density subplot
+    :param fontsize: fontsize for titles and labels on the axis
+    :param labelsize: fontsize for the ticks on the axis,
 
-        """
+    """
 
     cfcalc._validateInput()
 
@@ -527,19 +523,19 @@ def plot_crystal_field_potential(cfcoeffs,
                                  phi=0.0,
                                  save=False,
                                  show=True):
-    """Plots the angular dependence of the calculated CF potential as well
-        as a plane defined by phi.
+    """
+    Plots the angular dependence of the calculated CF potential as well
+    as a plane defined by phi.
 
-        Parameters:
-            :param cfcoeffs: list of CFCoefficients to construct the potential
-            :param filename: str, defines the filename to save the figure
-            :param spin: str; Either 'up', 'dn' or 'avg'. Which spin direction to plot
-                         ('avg'-> ('up'+'dn')/2.0)
-            :param phi: float, defines the phi angle of the plane
+    :param cfcoeffs: list of CFCoefficients to construct the potential
+    :param filename: str, defines the filename to save the figure
+    :param spin: str; Either 'up', 'dn' or 'avg'. Which spin direction to plot
+                    ('avg'-> ('up'+'dn')/2.0)
+    :param phi: float, defines the phi angle of the plane
 
-        :raises AssertionError: When coefficients are provided as wrong types or in the wrong convention
+    :raises AssertionError: When coefficients are provided as wrong types or in the wrong convention
 
-        """
+    """
 
     assert all(isinstance(coeff, CFCoefficient) for coeff in cfcoeffs), \
            'Only provide a list of CFCoefficients to plot_crystal_field_potential'

@@ -22,14 +22,14 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
-from masci_tools.util.typing import XPathLike
+from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.common_functions import eval_xpath, add_tag
 from masci_tools.io.parsers import fleur_schema
 
 from lxml import etree
 
 
-def xml_create_tag_schema_dict(xmltree: etree._Element | etree._ElementTree,
+def xml_create_tag_schema_dict(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
                                xpath: XPathLike,
                                base_xpath: str,
@@ -107,7 +107,7 @@ def xml_create_tag_schema_dict(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def eval_xpath_create(xmltree: etree._Element | etree._ElementTree,
+def eval_xpath_create(xmltree: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       xpath: XPathLike,
                       base_xpath: str,
@@ -156,7 +156,7 @@ def eval_xpath_create(xmltree: etree._Element | etree._ElementTree,
     return nodes
 
 
-def xml_set_attrib_value(xmltree: etree._Element | etree._ElementTree,
+def xml_set_attrib_value(xmltree: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
                          xpath: XPathLike,
                          base_xpath: str,
@@ -228,7 +228,7 @@ def xml_set_attrib_value(xmltree: etree._Element | etree._ElementTree,
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
 
 
-def xml_set_first_attrib_value(xmltree: etree._Element | etree._ElementTree,
+def xml_set_first_attrib_value(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
                                xpath: XPathLike,
                                base_xpath: str,
@@ -267,7 +267,7 @@ def xml_set_first_attrib_value(xmltree: etree._Element | etree._ElementTree,
                                 occurrences=0)
 
 
-def xml_set_text(xmltree: etree._Element | etree._ElementTree,
+def xml_set_text(xmltree: XMLLike,
                  schema_dict: fleur_schema.SchemaDict,
                  xpath: XPathLike,
                  base_xpath: str,
@@ -327,7 +327,7 @@ def xml_set_text(xmltree: etree._Element | etree._ElementTree,
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
 
-def xml_set_first_text(xmltree: etree._Element | etree._ElementTree,
+def xml_set_first_text(xmltree: XMLLike,
                        schema_dict: fleur_schema.SchemaDict,
                        xpath: XPathLike,
                        base_xpath: str,
@@ -355,7 +355,7 @@ def xml_set_first_text(xmltree: etree._Element | etree._ElementTree,
     return xml_set_text(xmltree, schema_dict, xpath, base_xpath, text, create=create, occurrences=0)
 
 
-def xml_add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
+def xml_add_number_to_attrib(xmltree: XMLLike,
                              schema_dict: fleur_schema.SchemaDict,
                              xpath: XPathLike,
                              base_xpath: str,
@@ -399,7 +399,7 @@ def xml_add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
     possible_types = schema_dict['attrib_types'][attributename]
 
     if not etree.iselement(xmltree):
-        constants = read_constants(xmltree.getroot(), schema_dict)  #type:ignore
+        constants = read_constants(xmltree.getroot(), schema_dict)
     else:
         constants = read_constants(xmltree, schema_dict)
 
@@ -469,7 +469,7 @@ def xml_add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def xml_add_number_to_first_attrib(xmltree: etree._Element | etree._ElementTree,
+def xml_add_number_to_first_attrib(xmltree: XMLLike,
                                    schema_dict: fleur_schema.SchemaDict,
                                    xpath: XPathLike,
                                    base_xpath: str,
@@ -506,7 +506,7 @@ def xml_add_number_to_first_attrib(xmltree: etree._Element | etree._ElementTree,
                                     occurrences=0)
 
 
-def xml_set_simple_tag(xmltree: etree._Element | etree._ElementTree,
+def xml_set_simple_tag(xmltree: XMLLike,
                        schema_dict: fleur_schema.SchemaDict,
                        xpath: XPathLike,
                        base_xpath: str,
@@ -584,7 +584,7 @@ def xml_set_simple_tag(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def xml_set_complex_tag(xmltree: etree._Element | etree._ElementTree,
+def xml_set_complex_tag(xmltree: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         xpath: XPathLike,
                         base_xpath: str,

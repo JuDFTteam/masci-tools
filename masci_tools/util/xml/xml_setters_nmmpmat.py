@@ -19,9 +19,10 @@ import numpy as np
 from lxml import etree
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
+from masci_tools.util.typing import XMLLike
 
 
-def set_nmmpmat(xmltree: etree._Element | etree._ElementTree,
+def set_nmmpmat(xmltree: XMLLike,
                 nmmplines: list[str],
                 schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
@@ -136,7 +137,7 @@ def set_nmmpmat(xmltree: etree._Element | etree._ElementTree,
     return nmmplines
 
 
-def rotate_nmmpmat(xmltree: etree._Element | etree._ElementTree,
+def rotate_nmmpmat(xmltree: XMLLike,
                    nmmplines: list[str],
                    schema_dict: fleur_schema.SchemaDict,
                    species_name: str,
@@ -228,8 +229,7 @@ def rotate_nmmpmat(xmltree: etree._Element | etree._ElementTree,
     return nmmplines
 
 
-def validate_nmmpmat(xmltree: etree._Element | etree._ElementTree, nmmplines: list[str] | None,
-                     schema_dict: fleur_schema.SchemaDict) -> None:
+def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict: fleur_schema.SchemaDict) -> None:
     """
     Checks that the given nmmp_lines is valid with the given xmltree
 

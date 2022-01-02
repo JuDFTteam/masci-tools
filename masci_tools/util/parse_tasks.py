@@ -21,7 +21,7 @@ from importlib import import_module
 import copy
 import os
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Any, Union
+from typing import Callable, Iterable, Any
 try:
     from typing import Literal, TypeAlias  #type: ignore
 except ImportError:
@@ -32,12 +32,16 @@ from logging import Logger, LoggerAdapter
 from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
+from masci_tools.util.typing import XMLLike
 import masci_tools
 
 PACKAGE_DIRECTORY = Path(masci_tools.__file__).parent.resolve()
 DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('io/parsers/fleur/default_parse_tasks.py')
 
 MigrationDict: TypeAlias = "dict[str, dict[str, Literal['compatible'] | Callable]]"
+"""
+Type describing the dictionary defining the migration pathways
+"""
 
 
 def find_migration(start: str, target: str, migrations: MigrationDict) -> list[Callable] | None:
@@ -378,7 +382,7 @@ class ParseTasks:
 
     def perform_task(self,
                      task_name: str,
-                     node: etree._Element | etree._ElementTree,
+                     node: XMLLike,
                      out_dict: dict,
                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                      constants: dict[str, float],

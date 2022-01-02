@@ -14,15 +14,11 @@ Common functions for parsing input/output files or XMLschemas from FLEUR
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable
-from masci_tools.util.typing import XPathLike, TXPathLike
+from masci_tools.util.typing import XMLLike, XPathLike, TXPathLike
 from lxml import etree
 import warnings
-import os
 import copy
-from logging import Logger
-if TYPE_CHECKING:
-    from masci_tools.io.parsers import fleur_schema
+import logging
 
 from .xpathbuilder import XPathBuilder
 
@@ -106,9 +102,10 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
     return cleared_tree, all_included_tags
 
 
-def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
-                     **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
+def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     """
+    DEPRECATED ALIAS: Moved to masci_tools.util.schema_dict_util
+
     Split the xmltree back up according to the given included tags.
     The original xmltree will be returned with the corresponding xinclude tags
     and the included trees are returned in a dict mapping the inserted filename
@@ -134,70 +131,9 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
 
     :raises ValueError: if the tag can not be found in teh given xmltree
     """
-
-    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
-    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
-    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
-
-    excluded_tree = copy.deepcopy(xmltree)
-
-    include_file_names: dict[str, os.PathLike | str] = {
-        'relaxation': 'relax.xml',
-        'kPointLists': 'kpts.xml',
-        'symmetryOperations': 'sym.xml',
-        'atomSpecies': 'species.xml',
-        'atomGroups': 'atoms.xml'
-    }
-
-    include_file_names = {**include_file_names, **kwargs}
-
-    unknown_file_names = 0
-    included_trees = {}
-    root = excluded_tree.getroot()
-
-    if not all(isinstance(tag, str) for tag in included_tags):
-        raise ValueError(f'included_tags is not made up of strings: {included_tags}')
-
-    for tag in included_tags:
-        if tag in include_file_names:
-            file_name = include_file_names[tag]
-        else:
-            warnings.warn(f'No filename known for tag {tag}')
-            unknown_file_names += 1
-            file_name = f'unknown-{unknown_file_names}.xml'
-
-        try:
-            tag_xpath = schema_dict.tag_xpath(tag)
-        except Exception as err:
-            raise ValueError(f'Cannot determine place of included tag {tag}') from err
-        included_tag_res: list[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
-
-        if len(included_tag_res) != 1:
-            raise ValueError(f'Cannot determine place of included tag {tag}')
-        included_tag = included_tag_res[0]
-
-        included_trees[file_name] = etree.ElementTree(included_tag)
-
-        parent = included_tag.getparent()
-        if parent is None:
-            raise ValueError('Could not find parent of included tag')
-
-        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)  #type:ignore
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
-
-        parent.replace(included_tag, xinclude_elem)
-
-    if 'relax.xml' not in included_trees:
-        #The relax.xml include should always be there
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
-        root.append(xinclude_elem)
-
-    etree.indent(excluded_tree)
-    for tree in included_trees.values():
-        etree.indent(tree)
-
-    return excluded_tree, included_trees
+    from masci_tools.util.schema_dict_util import reverse_xinclude
+    warnings.warn('DEPRECATED: reverse_xinclude moved to masci_tools.util.schema_dict_util', DeprecationWarning)
+    return reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs)
 
 
 def validate_xml(xmltree: etree._ElementTree,
@@ -236,9 +172,9 @@ def validate_xml(xmltree: etree._ElementTree,
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def eval_xpath(node: etree._Element | etree._ElementTree | etree._XPathEvaluatorBase,
+def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
                xpath: XPathLike,
-               logger: Logger = None,
+               logger: logging.Logger = None,
                list_return: bool = False,
                namespaces: etree._DictAnyStr = None,
                **variables: etree._XPathObject) -> etree._XPathObject:
@@ -286,7 +222,7 @@ def eval_xpath(node: etree._Element | etree._ElementTree | etree._XPathEvaluator
         elif isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
             return_value = node(xpath, **variables)
         else:
-            return_value = node.xpath(xpath, namespaces=namespaces, **variables)  #type:ignore
+            return_value = node.xpath(xpath, namespaces=namespaces, **variables)
     except etree.XPathEvalError as err:
         if logger is not None:
             logger.exception(
@@ -302,7 +238,7 @@ def eval_xpath(node: etree._Element | etree._ElementTree | etree._XPathEvaluator
     return return_value
 
 
-def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger = None) -> str | None:
+def get_xml_attribute(node: etree._Element, attributename: str, logger: logging.Logger = None) -> str | None:
     """
     Get an attribute value from a node.
 
@@ -426,8 +362,7 @@ def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     return xpath, attrib
 
 
-def check_complex_xpath(node: etree._Element | etree._ElementTree, base_xpath: XPathLike,
-                        complex_xpath: XPathLike) -> None:
+def check_complex_xpath(node: XMLLike, base_xpath: XPathLike, complex_xpath: XPathLike) -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath

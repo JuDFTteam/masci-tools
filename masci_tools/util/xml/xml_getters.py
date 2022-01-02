@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
+from masci_tools.util.typing import XMLLike
 from lxml import etree
 import warnings
 import numpy as np
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
     from masci_tools.io.parsers import fleur_schema
 
 
-def get_fleur_modes(xmltree: etree._Element | etree._ElementTree,
+def get_fleur_modes(xmltree: XMLLike,
                     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                     logger: Logger = None) -> dict[str, Any]:
     """
@@ -168,7 +169,7 @@ def get_fleur_modes(xmltree: etree._Element | etree._ElementTree,
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_nkpts(xmltree: etree._Element | etree._ElementTree,
+def get_nkpts(xmltree: XMLLike,
               schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
               logger: Logger = None) -> int:
     """
@@ -225,7 +226,7 @@ def get_nkpts(xmltree: etree._Element | etree._ElementTree,
 
 
 @get_nkpts.register(max_version='0.31')
-def get_nkpts_max4(xmltree: etree._Element | etree._ElementTree,
+def get_nkpts_max4(xmltree: XMLLike,
                    schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                    logger: Logger = None) -> int:
     """
@@ -302,7 +303,7 @@ def get_nkpts_max4(xmltree: etree._Element | etree._ElementTree,
     return nkpts
 
 
-def get_cell(xmltree: etree._Element | etree._ElementTree,
+def get_cell(xmltree: XMLLike,
              schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
              logger: Logger = None,
              convert_to_angstroem: bool = True) -> tuple[np.ndarray, tuple[bool, bool, bool]]:
@@ -388,7 +389,7 @@ def get_cell(xmltree: etree._Element | etree._ElementTree,
     return cell, pbc
 
 
-def _get_species_info(xmltree: etree._Element | etree._ElementTree,
+def _get_species_info(xmltree: XMLLike,
                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                       logger: Logger = None) -> dict[str, dict[str, str]]:
     """
@@ -460,7 +461,7 @@ def _get_species_info(xmltree: etree._Element | etree._ElementTree,
     return species_info
 
 
-def get_parameter_data(xmltree: etree._Element | etree._ElementTree,
+def get_parameter_data(xmltree: XMLLike,
                        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                        inpgen_ready: bool = True,
                        write_ids: bool = True,
@@ -655,7 +656,7 @@ def get_parameter_data(xmltree: etree._Element | etree._ElementTree,
     return parameters
 
 
-def get_structure_data(xmltree: etree._Element | etree._ElementTree,
+def get_structure_data(xmltree: XMLLike,
                        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                        include_relaxations: bool = True,
                        site_namedtuple: bool = True,
@@ -851,7 +852,7 @@ def get_structure_data(xmltree: etree._Element | etree._ElementTree,
 
 @schema_dict_version_dispatch(output_schema=False)
 def get_kpoints_data(
-    xmltree: etree._Element | etree._ElementTree,
+    xmltree: XMLLike,
     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
     name: str = None,
     index: int = None,
@@ -969,7 +970,7 @@ def get_kpoints_data(
 
 @get_kpoints_data.register(max_version='0.31')
 def get_kpoints_data_max4(
-        xmltree: etree._Element | etree._ElementTree,
+        xmltree: XMLLike,
         schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
         logger: Logger = None,
         convert_to_angstroem: bool = True,
@@ -1049,7 +1050,7 @@ def get_kpoints_data_max4(
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_relaxation_information(xmltree: etree._Element | etree._ElementTree,
+def get_relaxation_information(xmltree: XMLLike,
                                schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                                logger: Logger = None) -> dict[str, Any]:
     """
@@ -1106,7 +1107,7 @@ def get_relaxation_information(xmltree: etree._Element | etree._ElementTree,
 
 
 @get_relaxation_information.register(max_version='0.28')
-def get_relaxation_information_pre029(xmltree: etree._Element | etree._ElementTree,
+def get_relaxation_information_pre029(xmltree: XMLLike,
                                       schema_dict: (fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict),
                                       logger: Logger = None) -> None:
     """
@@ -1126,7 +1127,7 @@ def get_relaxation_information_pre029(xmltree: etree._Element | etree._ElementTr
         f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")
 
 
-def get_symmetry_information(xmltree: etree._Element | etree._ElementTree,
+def get_symmetry_information(xmltree: XMLLike,
                              schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                              logger: Logger = None) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """

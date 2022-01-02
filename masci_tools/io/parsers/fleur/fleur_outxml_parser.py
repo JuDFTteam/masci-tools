@@ -18,33 +18,34 @@ from __future__ import annotations
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
-from masci_tools.io.io_fleurxml import load_outxml, XMLInput
+from masci_tools.io.io_fleurxml import load_outxml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
+from masci_tools.util.typing import XMLFileLike
 from lxml import etree
 import copy
 import warnings
 import logging
-from typing import Dict, Any, Iterable, Optional, Tuple, Union, List
+from typing import Any, Iterable
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 
-def outxml_parser(outxmlfile: XMLInput,
-                  parser_info_out: dict[str, Any] = None,
+def outxml_parser(outxmlfile: XMLFileLike,
+                  parser_info_out: dict[str, Any] | None = None,
                   iteration_to_parse: Literal['all', 'last', 'first'] | int = 'last',
                   minimal_mode: bool = False,
-                  additional_tasks: dict[str, dict[str, Any]] = None,
-                  optional_tasks: Iterable[str] = None,
+                  additional_tasks: dict[str, dict[str, Any]] | None = None,
+                  optional_tasks: Iterable[str] | None = None,
                   overwrite: bool = False,
                   append: bool = False,
                   list_return: bool = False,
                   strict: bool = False,
                   debug: bool = False,
                   ignore_validation: bool = False,
-                  base_url: str = None) -> dict[str, Any]:
+                  base_url: str | None = None) -> dict[str, Any]:
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 

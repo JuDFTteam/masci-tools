@@ -23,7 +23,7 @@ from functools import update_wrapper, wraps
 from pathlib import Path
 from typing import Callable, Iterable, TypeVar, Any, cast
 
-from .fleur_schema_parser_functions import TagInfo
+from .fleur_schema_parser_functions import TagInfo, convert_str_version_number
 try:
     from typing import Literal, Protocol
 except ImportError:
@@ -36,7 +36,6 @@ from lxml import etree
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
 from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag
-from masci_tools.util.xml.converters import convert_str_version_number
 from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
