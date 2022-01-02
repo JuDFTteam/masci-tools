@@ -21,7 +21,7 @@ from lxml import etree
 try:
     from typing import Literal, TypedDict
 except ImportError:
-    from typing_extensions import Literal, TypedDict  #type: ignore
+    from typing_extensions import Literal, TypedDict  #type: ignore[misc]
 import warnings
 import math
 
@@ -62,7 +62,7 @@ def convert_str_version_number(version_str: str) -> tuple[int, int]:
     if len(version_numbers) != 2:
         raise ValueError(f"Version number is malformed: '{version_str}'")
 
-    return tuple(int(part) for part in version_numbers)  #type:ignore
+    return tuple(int(part) for part in version_numbers)  #type: ignore[return-value]
 
 
 class AttributeType(NamedTuple):
@@ -158,8 +158,10 @@ def _cache_xpath_eval(func: Callable) -> Callable:
                 results[version].clear()
                 return res
             results[version][hash_args] = res
+        else:
+            res = results[version][hash_args]
 
-        return results[version][hash_args].copy()  #type:ignore
+        return res.copy() if getattr(res, 'copy', None) is not None else res
 
     return wrapper
 
@@ -336,10 +338,10 @@ def _get_length(xmlschema_evaluator: etree.XPathDocumentEvaluator,
 
     if type_tag == 'simpleType':
 
-        child = type_elem.getchildren()  #type:ignore
-        if len(child) != 1:
+        children = list(type_elem)
+        if len(children) != 1:
             return 1
-        child = child[0]
+        child = children[0]
 
         child_type = _normalized_name(child.tag)
         if child_type == 'restriction':
