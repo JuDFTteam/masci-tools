@@ -12,6 +12,7 @@
 """
 Common functions for converting types to and from XML files
 """
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterable, List, Tuple, Union, Dict, Any, cast
 try:
@@ -27,12 +28,12 @@ BASE_TYPES = Union[Literal['int'], Literal['switch'], Literal['string'], Literal
 CONVERTED_TYPES = Union[int, float, bool, str]
 
 
-def convert_to_xml(value: Union[Any, List[Any]],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def convert_to_xml(value: Any | list[Any],
+                   schema_dict: fleur_schema.SchemaDict,
                    name: str,
                    text: bool = False,
                    logger: Logger = None,
-                   list_return: bool = False) -> Tuple[Union[str, List[str]], bool]:
+                   list_return: bool = False) -> tuple[str | list[str], bool]:
     """
     Tries to converts a given string to the types specified in the schema_dict.
     First succeeded conversion will be returned
@@ -71,14 +72,14 @@ def convert_to_xml(value: Union[Any, List[Any]],
 
 
 def convert_from_xml(
-    xmlstring: Union[str, List[str]],
-    schema_dict: 'fleur_schema.SchemaDict',
+    xmlstring: str | list[str],
+    schema_dict: fleur_schema.SchemaDict,
     name: str,
     text: bool = False,
-    constants: Dict[str, float] = None,
+    constants: dict[str, float] = None,
     logger: Logger = None,
     list_return: bool = False
-) -> Tuple[Union[CONVERTED_TYPES, List[CONVERTED_TYPES], List[Union[CONVERTED_TYPES, List[CONVERTED_TYPES]]]], bool]:
+) -> tuple[CONVERTED_TYPES | list[CONVERTED_TYPES] | list[CONVERTED_TYPES | list[CONVERTED_TYPES]], bool]:
     """
     Tries to converts a given string to the types specified in the schema_dict.
     First succeeded conversion will be returned
@@ -119,12 +120,12 @@ def convert_from_xml(
 
 
 def convert_from_xml_explicit(
-    xmlstring: Union[str, List[str]],
-    definitions: List['fleur_schema.AttributeType'],
-    constants: Dict[str, float] = None,
+    xmlstring: str | list[str],
+    definitions: list[fleur_schema.AttributeType],
+    constants: dict[str, float] = None,
     logger: Logger = None,
     list_return: bool = False
-) -> Tuple[Union[CONVERTED_TYPES, List[CONVERTED_TYPES], List[Union[CONVERTED_TYPES, List[CONVERTED_TYPES]]]], bool]:
+) -> tuple[CONVERTED_TYPES | list[CONVERTED_TYPES] | list[CONVERTED_TYPES | list[CONVERTED_TYPES]], bool]:
     """
     Tries to converts a given string to the types given in definitions.
     First succeeded conversion will be returned
@@ -145,7 +146,7 @@ def convert_from_xml_explicit(
     if not isinstance(xmlstring, list):
         xmlstring = [xmlstring]
 
-    converted_list: List[Union[CONVERTED_TYPES, List[CONVERTED_TYPES]]] = []
+    converted_list: list[CONVERTED_TYPES | list[CONVERTED_TYPES]] = []
     all_success = True
     for text in xmlstring:
 
@@ -171,7 +172,7 @@ def convert_from_xml_explicit(
             all_success = False
             continue
 
-        types: Tuple[BASE_TYPES, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore
+        types: tuple[BASE_TYPES, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore
         lengths = {definition.length for definition in text_definitions}
 
         if len(text_definitions) == 1:
@@ -196,11 +197,11 @@ def convert_from_xml_explicit(
     return ret_value, all_success
 
 
-def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
-                            definitions: List['fleur_schema.AttributeType'],
+def convert_to_xml_explicit(value: Any | Iterable[Any],
+                            definitions: list[fleur_schema.AttributeType],
                             logger: Logger = None,
                             float_format: str = '.10',
-                            list_return: bool = False) -> Tuple[Union[str, List[str]], bool]:
+                            list_return: bool = False) -> tuple[str | list[str], bool]:
     """
     Tries to convert a given list of values to str for a xml file based on the definitions (length and type).
     First succeeded conversion will be returned
@@ -253,7 +254,7 @@ def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
             all_success = False
             continue
 
-        types: Tuple[BASE_TYPES, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore
+        types: tuple[BASE_TYPES, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore
 
         converted_text, suc = convert_to_xml_single_values(val, types, logger=logger, float_format=float_format)
         all_success = all_success and suc
@@ -267,10 +268,10 @@ def convert_to_xml_explicit(value: Union[Any, Iterable[Any]],
     return ret_value, all_success
 
 
-def convert_from_xml_single_values(xmlstring: Union[str, List[str]],
-                                   possible_types: Tuple[BASE_TYPES, ...],
-                                   constants: Dict[str, float] = None,
-                                   logger: Logger = None) -> Tuple[List[CONVERTED_TYPES], bool]:
+def convert_from_xml_single_values(xmlstring: str | list[str],
+                                   possible_types: tuple[BASE_TYPES, ...],
+                                   constants: dict[str, float] = None,
+                                   logger: Logger = None) -> tuple[list[CONVERTED_TYPES], bool]:
     """
     Tries to converts a given string attribute to the types given in possible_types.
     First succeeded conversion will be returned
@@ -297,7 +298,7 @@ def convert_from_xml_single_values(xmlstring: Union[str, List[str]],
     all_success = True
     for text in xmlstring:
 
-        exceptions: List[Exception] = []
+        exceptions: list[Exception] = []
         for value_type in possible_types:
             if value_type == 'float':
                 try:
@@ -356,10 +357,10 @@ def convert_from_xml_single_values(xmlstring: Union[str, List[str]],
     return converted_list, all_success
 
 
-def convert_to_xml_single_values(value: Union[Any, Iterable[Any]],
-                                 possible_types: Tuple[BASE_TYPES, ...],
+def convert_to_xml_single_values(value: Any | Iterable[Any],
+                                 possible_types: tuple[BASE_TYPES, ...],
                                  logger: Logger = None,
-                                 float_format: str = '.10') -> Tuple[List[str], bool]:
+                                 float_format: str = '.10') -> tuple[list[str], bool]:
     """
     Tries to converts a given attributevalue to a string for a xml file according
     to the types given in possible_types.
@@ -384,7 +385,7 @@ def convert_to_xml_single_values(value: Union[Any, Iterable[Any]],
 
     converted_value: str
     converted_list = []
-    exceptions: List[Exception] = []
+    exceptions: list[Exception] = []
     all_success = True
     for val in value:
 
@@ -425,7 +426,7 @@ def convert_to_xml_single_values(value: Union[Any, Iterable[Any]],
     return converted_list, all_success
 
 
-def convert_from_fortran_bool(stringbool: Union[str, bool]) -> bool:
+def convert_from_fortran_bool(stringbool: str | bool) -> bool:
     """
     Converts a string in this case ('T', 'F', or 't', 'f') to True or False
 
@@ -449,7 +450,7 @@ def convert_from_fortran_bool(stringbool: Union[str, bool]) -> bool:
     raise TypeError(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
 
 
-def convert_to_fortran_bool(boolean: Union[bool, str]) -> Literal['T', 'F']:
+def convert_to_fortran_bool(boolean: bool | str) -> Literal['T', 'F']:
     """
     Converts a Boolean as string to the format defined in the input
 
@@ -473,7 +474,7 @@ def convert_to_fortran_bool(boolean: Union[bool, str]) -> Literal['T', 'F']:
     raise TypeError('convert_to_fortran_bool accepts only a string or ' f'bool as argument, given {boolean} ')
 
 
-def convert_fleur_lo(loelements: List[etree._Element]) -> str:
+def convert_fleur_lo(loelements: list[etree._Element]) -> str:
     """
     Converts lo xml elements from the inp.xml file into a lo string for the inpgen
     """
@@ -522,7 +523,7 @@ def convert_fleur_electronconfig(econfig_element: etree._Element) -> str:
     return f'{core_config_str} | {valence_config_str}'
 
 
-def convert_str_version_number(version_str: str) -> Tuple[int, int]:
+def convert_str_version_number(version_str: str) -> tuple[int, int]:
     """
     Convert the version number as a integer for easy comparisons
 

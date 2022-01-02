@@ -12,7 +12,9 @@
 """
 Common functions for parsing input/output files or XMLschemas from FLEUR
 """
-from typing import TYPE_CHECKING, Dict, Iterable, Optional, Tuple, Union, List, Set, cast
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Iterable
 from masci_tools.util.typing import XPathLike, TXPathLike
 from lxml import etree
 import warnings
@@ -25,7 +27,7 @@ if TYPE_CHECKING:
 from .xpathbuilder import XPathBuilder
 
 
-def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
+def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
     """
     Removes comments and executes xinclude tags of an
     xml tree.
@@ -53,7 +55,7 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
         next_sibling = next_sibling.getnext()
 
     #find any include tags
-    include_tags: List[etree._Element] = eval_xpath(cleared_tree,
+    include_tags: list[etree._Element] = eval_xpath(cleared_tree,
                                                     '//xi:include',
                                                     namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
                                                     list_return=True)  #type:ignore
@@ -71,7 +73,7 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
     if len(include_tags) != 0:
         cleared_tree.xinclude()  #type:ignore
 
-    all_included_tags: Set[str] = set()
+    all_included_tags: set[str] = set()
     # get rid of xml:base attribute in the included parts
     for parent, old_tags in zip(parents, known_tags):
         new_tags = {elem.tag for elem in parent if isinstance(elem.tag, str)}
@@ -92,7 +94,7 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
                         elem.attrib.pop(attribute, None)  #type:ignore
 
     # remove comments from inp.xml
-    comments: List[etree._Element] = cleared_tree.xpath('//comment()')  #type:ignore
+    comments: list[etree._Element] = cleared_tree.xpath('//comment()')  #type:ignore
     for comment in comments:
         com_parent = comment.getparent()
         if com_parent is None:
@@ -104,9 +106,8 @@ def clear_xml(tree: etree._ElementTree) -> Tuple[etree._ElementTree, Set[str]]:
     return cleared_tree, all_included_tags
 
 
-def reverse_xinclude(
-        xmltree: etree._ElementTree, schema_dict: 'fleur_schema.SchemaDict', included_tags: Iterable[str],
-        **kwargs: os.PathLike) -> Tuple[etree._ElementTree, Dict[Union[os.PathLike, str], etree._ElementTree]]:
+def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
+                     **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.
     The original xmltree will be returned with the corresponding xinclude tags
@@ -140,7 +141,7 @@ def reverse_xinclude(
 
     excluded_tree = copy.deepcopy(xmltree)
 
-    include_file_names: Dict[str, Union[os.PathLike, str]] = {
+    include_file_names: dict[str, os.PathLike | str] = {
         'relaxation': 'relax.xml',
         'kPointLists': 'kpts.xml',
         'symmetryOperations': 'sym.xml',
@@ -169,7 +170,7 @@ def reverse_xinclude(
             tag_xpath = schema_dict.tag_xpath(tag)
         except Exception as err:
             raise ValueError(f'Cannot determine place of included tag {tag}') from err
-        included_tag_res: List[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
+        included_tag_res: list[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
 
         if len(included_tag_res) != 1:
             raise ValueError(f'Cannot determine place of included tag {tag}')
@@ -235,12 +236,12 @@ def validate_xml(xmltree: etree._ElementTree,
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEvaluatorBase'],
+def eval_xpath(node: etree._Element | etree._ElementTree | etree._XPathEvaluatorBase,
                xpath: XPathLike,
                logger: Logger = None,
                list_return: bool = False,
-               namespaces: 'etree._DictAnyStr' = None,
-               **variables: 'etree._XPathObject') -> 'etree._XPathObject':
+               namespaces: etree._DictAnyStr = None,
+               **variables: etree._XPathObject) -> etree._XPathObject:
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -301,7 +302,7 @@ def eval_xpath(node: Union[etree._Element, etree._ElementTree, 'etree._XPathEval
     return return_value
 
 
-def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger = None) -> Optional[str]:
+def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger = None) -> str | None:
     """
     Get an attribute value from a node.
 
@@ -333,7 +334,7 @@ def get_xml_attribute(node: etree._Element, attributename: str, logger: Logger =
     return None
 
 
-def split_off_tag(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
+def split_off_tag(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     """
     Splits off the last part of the given xpath
 
@@ -390,7 +391,7 @@ def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
     return xpath
 
 
-def split_off_attrib(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
+def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     """
     Splits off attribute of the given xpath (part after @)
 
@@ -425,7 +426,7 @@ def split_off_attrib(xpath: TXPathLike) -> Tuple[TXPathLike, str]:
     return xpath, attrib
 
 
-def check_complex_xpath(node: Union[etree._Element, etree._ElementTree], base_xpath: XPathLike,
+def check_complex_xpath(node: etree._Element | etree._ElementTree, base_xpath: XPathLike,
                         complex_xpath: XPathLike) -> None:
     """
     Check that the given complex xpath produces a subset of the results

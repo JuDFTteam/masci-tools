@@ -15,7 +15,9 @@ have the ability to create missing tags on the fly. This functionality is added 
 in :py:mod:`~masci_tools.util.xml.xml_setters_xpaths` since we need the schema dictionary
 to do these operations robustly
 """
-from typing import Iterable, Union, List, Any, cast
+from __future__ import annotations
+
+from typing import Iterable, Any, cast
 from lxml import etree
 import warnings
 
@@ -24,10 +26,10 @@ from masci_tools.util.xml.common_functions import eval_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 
-def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
+def xml_replace_tag(xmltree: etree._Element | etree._ElementTree,
                     xpath: XPathLike,
                     newelement: etree._Element,
-                    occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
+                    occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     replaces xml tags by another tag on an xmletree in place
 
@@ -47,7 +49,7 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(
@@ -73,10 +75,10 @@ def xml_replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
+def xml_delete_att(xmltree: etree._Element | etree._ElementTree,
                    xpath: XPathLike,
                    attrib: str,
-                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
+                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     Deletes an xml attribute in an xmletree.
 
@@ -95,7 +97,7 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(
@@ -116,9 +118,9 @@ def xml_delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
+def xml_delete_tag(xmltree: etree._Element | etree._ElementTree,
                    xpath: XPathLike,
-                   occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
+                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     Deletes a xml tag in an xmletree.
 
@@ -136,7 +138,7 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(
@@ -160,7 +162,7 @@ def xml_delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def _reorder_tags(node: etree._Element, tag_order: List[str]) -> etree._Element:
+def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
     """
     Order the children of the given node into the given order
 
@@ -195,14 +197,14 @@ def _reorder_tags(node: etree._Element, tag_order: List[str]) -> etree._Element:
     return ordered_node
 
 
-def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
+def xml_create_tag(xmltree: etree._Element | etree._ElementTree,
                    xpath: XPathLike,
-                   element: Union[str, etree._Element],
+                   element: str | etree._Element,
                    place_index: int = None,
-                   tag_order: List[str] = None,
-                   occurrences: Union[int, Iterable[int]] = None,
+                   tag_order: list[str] = None,
+                   occurrences: int | Iterable[int] | None = None,
                    correct_order: bool = True,
-                   several: bool = True) -> Union[etree._Element, etree._ElementTree]:
+                   several: bool = True) -> etree._Element | etree._ElementTree:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -240,7 +242,7 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         element_name = element.tag  #type:ignore
 
-    parent_nodes: List[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+    parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
@@ -327,12 +329,11 @@ def xml_create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def xml_set_attrib_value_no_create(
-        xmltree: Union[etree._Element, etree._ElementTree],
-        xpath: XPathLike,
-        attributename: str,
-        attribv: Any,
-        occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
+def xml_set_attrib_value_no_create(xmltree: etree._Element | etree._ElementTree,
+                                   xpath: XPathLike,
+                                   attributename: str,
+                                   attribv: Any,
+                                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -354,7 +355,7 @@ def xml_set_attrib_value_no_create(
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(
@@ -384,10 +385,10 @@ def xml_set_attrib_value_no_create(
     return xmltree
 
 
-def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
+def xml_set_text_no_create(xmltree: etree._Element | etree._ElementTree,
                            xpath: XPathLike,
                            text: Any,
-                           occurrences: Union[int, Iterable[int]] = None) -> Union[etree._Element, etree._ElementTree]:
+                           occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     Sets the text of a tag in a xmltree to a given value.
     By default the text will be set on all nodes returned for the specified xpath.
@@ -408,7 +409,7 @@ def xml_set_text_no_create(xmltree: Union[etree._Element, etree._ElementTree],
     else:
         root = xmltree
 
-    nodes: List[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
         warnings.warn(

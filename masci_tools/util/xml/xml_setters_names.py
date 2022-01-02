@@ -13,8 +13,10 @@
 Functions for modifying the xml input file of Fleur utilizing the schema dict
 and as little knowledge of the concrete xpaths as possible
 """
+from __future__ import annotations
+
 import warnings
-from typing import Any, Iterable, List, Union, Dict, Tuple
+from typing import Any, Iterable
 try:
     from typing import Literal
 except ImportError:
@@ -28,14 +30,14 @@ from masci_tools.io.parsers import fleur_schema
 from lxml import etree
 
 
-def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
-               schema_dict: 'fleur_schema.SchemaDict',
-               tag: Union[str, etree._Element],
+def create_tag(xmltree: etree._Element | etree._ElementTree,
+               schema_dict: fleur_schema.SchemaDict,
+               tag: str | etree._Element,
                complex_xpath: XPathLike = None,
                filters: FilterType = None,
                create_parents: bool = False,
-               occurrences: Union[int, Iterable[int]] = None,
-               **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+               occurrences: int | Iterable[int] | None = None,
+               **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     This method creates a tag with a uniquely identified xpath under the nodes of its parent.
     If there are no nodes evaluated the subtags can be created with `create_parents=True`
@@ -91,13 +93,13 @@ def create_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
-               schema_dict: 'fleur_schema.SchemaDict',
+def delete_tag(xmltree: etree._Element | etree._ElementTree,
+               schema_dict: fleur_schema.SchemaDict,
                tag_name: str,
                complex_xpath: XPathLike = None,
                filters: FilterType = None,
-               occurrences: Union[int, Iterable[int]] = None,
-               **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+               occurrences: int | Iterable[int] | None = None,
+               **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     This method deletes a tag with a uniquely identified xpath.
 
@@ -134,13 +136,13 @@ def delete_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
 
 
-def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
-               schema_dict: 'fleur_schema.SchemaDict',
+def delete_att(xmltree: etree._Element | etree._ElementTree,
+               schema_dict: fleur_schema.SchemaDict,
                attrib_name: str,
                complex_xpath: XPathLike = None,
                filters: FilterType = None,
-               occurrences: Union[int, Iterable[int]] = None,
-               **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+               occurrences: int | Iterable[int] | None = None,
+               **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     This method deletes a attribute with a uniquely identified xpath.
 
@@ -181,14 +183,14 @@ def delete_att(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
 
 
-def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                schema_dict: 'fleur_schema.SchemaDict',
+def replace_tag(xmltree: etree._Element | etree._ElementTree,
+                schema_dict: fleur_schema.SchemaDict,
                 tag_name: str,
                 newelement: etree._Element,
                 complex_xpath: XPathLike = None,
                 filters: FilterType = None,
-                occurrences: Union[int, Iterable[int]] = None,
-                **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                occurrences: int | Iterable[int] | None = None,
+                **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     This method deletes a tag with a uniquely identified xpath.
 
@@ -226,15 +228,15 @@ def replace_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
 
 
-def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
-                         schema_dict: 'fleur_schema.SchemaDict',
+def add_number_to_attrib(xmltree: etree._Element | etree._ElementTree,
+                         schema_dict: fleur_schema.SchemaDict,
                          attributename: str,
                          add_number: Any,
                          complex_xpath: XPathLike = None,
                          filters: FilterType = None,
                          mode: Literal['abs', 'rel'] = 'abs',
-                         occurrences: Union[int, Iterable[int]] = None,
-                         **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                         occurrences: int | Iterable[int] | None = None,
+                         **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Adds a given number to the attribute value in a xmltree specified by the name of the attribute
     and optional further specification
@@ -286,14 +288,14 @@ def add_number_to_attrib(xmltree: Union[etree._Element, etree._ElementTree],
                                     occurrences=occurrences)
 
 
-def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree],
-                               schema_dict: 'fleur_schema.SchemaDict',
+def add_number_to_first_attrib(xmltree: etree._Element | etree._ElementTree,
+                               schema_dict: fleur_schema.SchemaDict,
                                attributename: str,
                                add_number: Any,
                                complex_xpath: XPathLike = None,
                                filters: FilterType = None,
                                mode: Literal['abs', 'rel'] = 'abs',
-                               **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                               **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
     and optional further specification
@@ -328,15 +330,15 @@ def add_number_to_first_attrib(xmltree: Union[etree._Element, etree._ElementTree
                                 **kwargs)
 
 
-def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
-                     schema_dict: 'fleur_schema.SchemaDict',
+def set_attrib_value(xmltree: etree._Element | etree._ElementTree,
+                     schema_dict: fleur_schema.SchemaDict,
                      attributename: str,
                      attribv: Any,
                      complex_xpath: XPathLike = None,
                      filters: FilterType = None,
-                     occurrences: Union[int, Iterable[int]] = None,
+                     occurrences: int | Iterable[int]  | None = None,
                      create: bool = False,
-                     **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                     **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Sets an attribute in a xmltree to a given value, specified by its name and further
     specifications.
@@ -395,14 +397,14 @@ def set_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                                 create=create)
 
 
-def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
-                           schema_dict: 'fleur_schema.SchemaDict',
+def set_first_attrib_value(xmltree: etree._Element | etree._ElementTree,
+                           schema_dict: fleur_schema.SchemaDict,
                            attributename: str,
                            attribv: Any,
                            complex_xpath: XPathLike = None,
                            filters: FilterType = None,
                            create: bool = False,
-                           **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                           **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Sets the first occurrence of an attribute in a xmltree to a given value, specified by its name and further
     specifications.
@@ -440,15 +442,15 @@ def set_first_attrib_value(xmltree: Union[etree._Element, etree._ElementTree],
                             **kwargs)
 
 
-def set_text(xmltree: Union[etree._Element, etree._ElementTree],
-             schema_dict: 'fleur_schema.SchemaDict',
+def set_text(xmltree: etree._Element | etree._ElementTree,
+             schema_dict: fleur_schema.SchemaDict,
              tag_name: str,
              text: Any,
              complex_xpath: XPathLike = None,
              filters: FilterType = None,
-             occurrences: Union[int, Iterable[int]] = None,
+             occurrences: int | Iterable[int] | None = None,
              create: bool = False,
-             **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+             **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Sets the text on tags in a xmltree to a given value, specified by the name of the tag and
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
@@ -489,14 +491,14 @@ def set_text(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
 
-def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def set_first_text(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
                    attributename: str,
                    attribv: Any,
                    complex_xpath: XPathLike = None,
                    filters: FilterType = None,
                    create: bool = False,
-                   **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                   **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Sets the text the first occurrence of a tag in a xmltree to a given value, specified by the name of the tag and
     further specifications. By default the text will be set on all nodes returned for the specified xpath.
@@ -531,14 +533,14 @@ def set_first_text(xmltree: Union[etree._Element, etree._ElementTree],
                     **kwargs)
 
 
-def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def set_simple_tag(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
                    tag_name: str,
-                   changes: Union[List[Dict[str, Any]], Dict[str, Any]],
+                   changes: list[dict[str, Any]] | dict[str, Any],
                    complex_xpath: XPathLike = None,
                    filters: FilterType = None,
                    create_parents: bool = False,
-                   **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                   **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
     subtags. The tag is specified by its name and further specification
@@ -592,14 +594,14 @@ def set_simple_tag(xmltree: Union[etree._Element, etree._ElementTree],
                               create_parents=create_parents)
 
 
-def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
-                    schema_dict: 'fleur_schema.SchemaDict',
+def set_complex_tag(xmltree: etree._Element | etree._ElementTree,
+                    schema_dict: fleur_schema.SchemaDict,
                     tag_name: str,
-                    changes: Dict[str, Any],
+                    changes: dict[str, Any],
                     complex_xpath: XPathLike = None,
                     filters: FilterType = None,
                     create: bool = False,
-                    **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                    **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Function to correctly set tags/attributes for a given tag.
     Goes through the attributedict and decides based on the schema_dict, how the corresponding
@@ -646,11 +648,11 @@ def set_complex_tag(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
 
-def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'fleur_schema.SchemaDict',
+def set_species_label(xmltree: etree._Element | etree._ElementTree,
+                      schema_dict: fleur_schema.SchemaDict,
                       atom_label: str,
-                      attributedict: Dict[str, Any],
-                      create: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                      attributedict: dict[str, Any],
+                      create: bool = False) -> etree._Element | etree._ElementTree:
     """
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
     method for a certain atom species that corresponds to an atom with a given label
@@ -688,12 +690,12 @@ def set_species_label(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def set_species(xmltree: Union[etree._Element, etree._ElementTree],
-                schema_dict: 'fleur_schema.SchemaDict',
+def set_species(xmltree: etree._Element | etree._ElementTree,
+                schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
-                attributedict: Dict[str, Any],
+                attributedict: dict[str, Any],
                 filters: FilterType = None,
-                create: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                create: bool = False) -> etree._Element | etree._ElementTree:
     """
     Method to set parameters of a species tag of the fleur inp.xml file.
 
@@ -742,11 +744,11 @@ def set_species(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
 
 
-def clone_species(xmltree: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'fleur_schema.SchemaDict',
+def clone_species(xmltree: etree._Element | etree._ElementTree,
+                  schema_dict: fleur_schema.SchemaDict,
                   species_name: str,
                   new_name: str,
-                  changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+                  changes: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
     """
     Method to create a new species from an existing one with evtl. modifications
 
@@ -793,13 +795,13 @@ def clone_species(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree],
-                              schema_dict: 'fleur_schema.SchemaDict',
+def shift_value_species_label(xmltree: etree._Element | etree._ElementTree,
+                              schema_dict: fleur_schema.SchemaDict,
                               atom_label: str,
                               attributename: str,
                               value_given: Any,
                               mode: Literal['abs', 'rel'] = 'abs',
-                              **kwargs: Any) -> Union[etree._Element, etree._ElementTree]:
+                              **kwargs: Any) -> etree._Element | etree._ElementTree:
     """
     Shifts the value of an attribute on a species by label
     if atom_label contains 'all' then applies to all species
@@ -855,11 +857,11 @@ def shift_value_species_label(xmltree: Union[etree._Element, etree._ElementTree]
     return xmltree
 
 
-def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
-                        schema_dict: 'fleur_schema.SchemaDict',
+def set_atomgroup_label(xmltree: etree._Element | etree._ElementTree,
+                        schema_dict: fleur_schema.SchemaDict,
                         atom_label: str,
-                        attributedict: Dict[str, Any],
-                        create: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                        attributedict: dict[str, Any],
+                        create: bool = False) -> etree._Element | etree._ElementTree:
     """
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
     method for a certain atom species that corresponds to an atom with a given label.
@@ -881,7 +883,7 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
     """
     from masci_tools.util.schema_dict_util import tag_exists
     if atom_label == 'all':
-        return set_atomgroup(xmltree, schema_dict, attributedict, position=None, species='all')
+        return set_atomgroup(xmltree, schema_dict, attributedict, species='all')
     film = tag_exists(xmltree, schema_dict, 'filmPos')
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
@@ -895,13 +897,13 @@ def set_atomgroup_label(xmltree: Union[etree._Element, etree._ElementTree],
                          }})
 
 
-def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'fleur_schema.SchemaDict',
-                  attributedict: Dict[str, Any],
-                  position: Union[int, Literal['all']] = None,
-                  species: str = None,
-                  filters: FilterType = None,
-                  create: bool = False) -> Union[etree._Element, etree._ElementTree]:
+def set_atomgroup(xmltree: etree._Element | etree._ElementTree,
+                  schema_dict: fleur_schema.SchemaDict,
+                  attributedict: dict[str, Any],
+                  position: int | Literal['all'] | None = None,
+                  species: str | None = None,
+                  filters: FilterType | None = None,
+                  create: bool = False) -> etree._Element | etree._ElementTree:
     """
     Method to set parameters of an atom group of the fleur inp.xml file.
 
@@ -954,12 +956,12 @@ def set_atomgroup(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree],
-                         schema_dict: 'fleur_schema.SchemaDict',
+def switch_species_label(xmltree: etree._Element | etree._ElementTree,
+                         schema_dict: fleur_schema.SchemaDict,
                          atom_label: str,
                          new_species_name: str,
                          clone: bool = False,
-                         changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+                         changes: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
     """
     Method to switch the species of an atom group of the fleur inp.xml file based on a label
     of a contained atom
@@ -994,14 +996,14 @@ def switch_species_label(xmltree: Union[etree._Element, etree._ElementTree],
                           }})
 
 
-def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def switch_species(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
                    new_species_name: str,
-                   position: Union[int, Literal['all']] = None,
-                   species: str = None,
-                   filters: FilterType = None,
+                   position: int | Literal['all'] | None = None,
+                   species: str | None = None,
+                   filters: FilterType | None = None,
                    clone: bool = False,
-                   changes: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+                   changes: dict[str, Any] | None = None) -> etree._Element | etree._ElementTree:
     """
     Method to switch the species of an atom group of the fleur inp.xml file.
 
@@ -1060,11 +1062,11 @@ def switch_species(xmltree: Union[etree._Element, etree._ElementTree],
     return xml_set_attrib_value(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, 'species', new_species_name)
 
 
-def shift_value(xmltree: Union[etree._Element, etree._ElementTree],
-                schema_dict: 'fleur_schema.SchemaDict',
-                change_dict: Dict[str, Any],
+def shift_value(xmltree: etree._Element | etree._ElementTree,
+                schema_dict: fleur_schema.SchemaDict,
+                change_dict: dict[str, Any],
                 mode: Literal['abs', 'rel'] = 'abs',
-                path_spec: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+                path_spec: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
     """
     Shifts numerical values of attributes directly in the inp.xml file.
 
@@ -1098,10 +1100,10 @@ def shift_value(xmltree: Union[etree._Element, etree._ElementTree],
     return xmltree
 
 
-def set_inpchanges(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
-                   change_dict: Dict[str, Any],
-                   path_spec: Dict[str, Any] = None) -> Union[etree._Element, etree._ElementTree]:
+def set_inpchanges(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
+                   change_dict: dict[str, Any],
+                   path_spec: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
     """
     This method sets all the attribute and texts provided in the change_dict.
 
@@ -1155,15 +1157,15 @@ def set_inpchanges(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_kpointlist(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def set_kpointlist(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
                    kpoints: Iterable[Iterable[float]],
                    weights: Iterable[float],
                    name: str = None,
                    kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
-                   special_labels: Dict[int, str] = None,
+                   special_labels: dict[int, str] = None,
                    switch: bool = False,
-                   overwrite: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                   overwrite: bool = False) -> etree._Element | etree._ElementTree:
     """
     Explicitely create a kPointList from the given kpoints and weights. This routine will add the
     specified kPointList with the given name.
@@ -1220,7 +1222,7 @@ def set_kpointlist(xmltree: Union[etree._Element, etree._ElementTree],
             new_k = etree.Element('kPoint', weight=weight, label=special_labels[indx])
         else:
             new_k = etree.Element('kPoint', weight=weight)
-        res: Tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
+        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
         text, _ = res
         new_k.text = text
         new_kpo.append(new_k)
@@ -1234,9 +1236,9 @@ def set_kpointlist(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @set_kpointlist.register(max_version='0.31')
-def set_kpointlist_max4(xmltree: Union[etree._Element, etree._ElementTree], schema_dict: 'fleur_schema.SchemaDict',
+def set_kpointlist_max4(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
                         kpoints: Iterable[Iterable[float]],
-                        weights: Iterable[float]) -> Union[etree._Element, etree._ElementTree]:
+                        weights: Iterable[float]) -> etree._Element | etree._ElementTree:
     """
     Explicitely create a kPointList from the given kpoints and weights. This
     routine is specific to input versions Max4 and before and will replace any
@@ -1271,7 +1273,7 @@ def set_kpointlist_max4(xmltree: Union[etree._Element, etree._ElementTree], sche
     for kpoint, weight in zip(kpoints, weights):
         weight, _ = convert_to_xml(weight, schema_dict, 'weight')
         new_k = etree.Element('kPoint', weight=weight)
-        res: Tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
+        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
         text, _ = res
         new_k.text = text
         new_kpo.append(new_k)
@@ -1282,8 +1284,8 @@ def set_kpointlist_max4(xmltree: Union[etree._Element, etree._ElementTree], sche
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def switch_kpointset(xmltree: Union[etree._Element, etree._ElementTree], schema_dict: 'fleur_schema.SchemaDict',
-                     list_name: str) -> Union[etree._Element, etree._ElementTree]:
+def switch_kpointset(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
+                     list_name: str) -> etree._Element | etree._ElementTree:
     """
     Switch the used k-point set
 
@@ -1308,8 +1310,8 @@ def switch_kpointset(xmltree: Union[etree._Element, etree._ElementTree], schema_
 
 
 @switch_kpointset.register(max_version='0.31')
-def switch_kpointset_max4(xmltree: Union[etree._Element, etree._ElementTree], schema_dict: 'fleur_schema.SchemaDict',
-                          list_name: str) -> Union[etree._Element, etree._ElementTree]:
+def switch_kpointset_max4(xmltree: etree._Element | etree._ElementTree, schema_dict: fleur_schema.SchemaDict,
+                          list_name: str) -> etree._Element | etree._ElementTree:
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
@@ -1327,10 +1329,10 @@ def switch_kpointset_max4(xmltree: Union[etree._Element, etree._ElementTree], sc
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
-              schema_dict: 'fleur_schema.SchemaDict',
+def set_nkpts(xmltree: etree._Element | etree._ElementTree,
+              schema_dict: fleur_schema.SchemaDict,
               count: int,
-              gamma: bool = False) -> Union[etree._Element, etree._ElementTree]:
+              gamma: bool = False) -> etree._Element | etree._ElementTree:
     """
     Sets a k-point mesh directly into inp.xml
 
@@ -1350,10 +1352,10 @@ def set_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @set_nkpts.register(max_version='0.31')
-def set_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def set_nkpts_max4(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
                    count: int,
-                   gamma: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                   gamma: bool = False) -> etree._Element | etree._ElementTree:
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
@@ -1383,11 +1385,11 @@ def set_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_kpath(xmltree: Union[etree._Element, etree._ElementTree],
-              schema_dict: 'fleur_schema.SchemaDict',
-              kpath: Dict[str, Iterable[float]],
+def set_kpath(xmltree: etree._Element | etree._ElementTree,
+              schema_dict: fleur_schema.SchemaDict,
+              kpath: dict[str, Iterable[float]],
               count: int,
-              gamma: bool = False) -> Union[etree._Element, etree._ElementTree]:
+              gamma: bool = False) -> etree._Element | etree._ElementTree:
     """
     Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
 
@@ -1410,11 +1412,11 @@ def set_kpath(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @set_kpath.register(max_version='0.31')
-def set_kpath_max4(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
-                   kpath: Dict[str, Iterable[float]],
+def set_kpath_max4(xmltree: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
+                   kpath: dict[str, Iterable[float]],
                    count: int,
-                   gamma: bool = False) -> Union[etree._Element, etree._ElementTree]:
+                   gamma: bool = False) -> etree._Element | etree._ElementTree:
     """
     Sets a k-path directly into inp.xml as a alternative kpoint set with purpose 'bands'
 
@@ -1440,7 +1442,7 @@ def set_kpath_max4(xmltree: Union[etree._Element, etree._ElementTree],
     new_kpo = etree.Element('kPointCount', count=f'{count}', gamma=f'{convert_to_fortran_bool(gamma)}')
     for label, coord in kpath.items():
         new_k = etree.Element('specialPoint', name=f'{label}')
-        res: Tuple[str, bool] = convert_to_xml(coord, schema_dict, 'kpoint', text=True)  #type:ignore
+        res: tuple[str, bool] = convert_to_xml(coord, schema_dict, 'kpoint', text=True)  #type:ignore
         text, _ = res
         new_k.text = text
         new_kpo.append(new_k)

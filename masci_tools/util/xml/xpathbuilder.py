@@ -13,10 +13,17 @@
 This module contains Classes for building complex XPath expressions based on
 general attribute conditions from simple XPath expressions
 """
-from typing import Dict, Any, Iterable, cast, Union, Tuple
+from __future__ import annotations
+
+from typing import Any, Iterable, cast
+try:
+    from typing import TypeAlias  #type: ignore[attr-defined]
+except ImportError:
+    from typing_extensions import TypeAlias
+
 from lxml import etree
 
-FilterType = Dict[str, Any]
+FilterType: TypeAlias = 'dict[str, Any]'
 
 
 class XPathBuilder:
@@ -103,8 +110,8 @@ class XPathBuilder:
     }
 
     def __init__(self,
-                 simple_path: 'etree._xpath',
-                 filters: Dict[str, FilterType] = None,
+                 simple_path: etree._xpath,
+                 filters: dict[str, FilterType] = None,
                  compile_path: bool = False,
                  strict: bool = False,
                  **kwargs) -> None:
@@ -123,14 +130,14 @@ class XPathBuilder:
             raise NotImplementedError('The given xpath has multiple tags with the same name')
 
         self.path_kwargs = kwargs
-        self.filters: Dict[str, FilterType] = {}
-        self.path_variables: Dict[str, 'etree._XPathObject'] = {}
+        self.filters: dict[str, FilterType] = {}
+        self.path_variables: dict[str, etree._XPathObject] = {}
         self.value_conditions: int = 0
         if filters is not None:
             for key, val in filters.items():
                 self.add_filter(key, val)
 
-    def add_filter(self, tag: str, conditions: Union[FilterType, Any]) -> None:
+    def add_filter(self, tag: str, conditions: FilterType | Any) -> None:
         """
         Add a filter to the filters dictionary
 
@@ -289,7 +296,7 @@ class XPathBuilder:
 
         return predicate
 
-    def _path_condition(self, path: Union[str, Tuple[str, ...]], prefix: str) -> str:
+    def _path_condition(self, path: str | tuple[str, ...], prefix: str) -> str:
         """
         Prepare conditions based on variables
 
@@ -315,7 +322,7 @@ class XPathBuilder:
         return '/'.join(path_variable)
 
     @property
-    def path(self) -> 'etree._xpath':
+    def path(self) -> etree._xpath:
         """
         Property for constructing the complex Xpath
         """
