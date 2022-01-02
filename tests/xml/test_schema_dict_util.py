@@ -722,3 +722,43 @@ def test_schema_dict_util_filters(load_inpxml):
                         filters={'species': {
                             'name': 'Pt-1'
                         }})
+
+def test_reverse_xinclude(load_inpxml):
+    """
+    Test of the reverse_xinclude function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+    from masci_tools.util.schema_dict_util import reverse_xinclude
+
+    xmltree, schema_dict = load_inpxml('fleur/test_clear.xml', absolute=False)
+
+    cleared_tree, all_include_tags = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
+    reexcluded_root = reexcluded_tree.getroot()
+
+    assert list(included_trees.keys()) == ['sym.xml']
+    sym_root = included_trees['sym.xml'].getroot()
+
+    include_tags = eval_xpath(cleared_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0
+
+    include_tags = eval_xpath(reexcluded_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 2
+    assert [tag.attrib['href'] for tag in include_tags] == ['sym.xml', 'relax.xml']
+
+    symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 16
+
+    symmetry_tags = eval_xpath(reexcluded_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 0
+
+    symmetry_tags = eval_xpath(sym_root, 'symOp', list_return=True)
+    assert len(symmetry_tags) == 16
