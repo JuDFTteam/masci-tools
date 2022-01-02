@@ -11,6 +11,9 @@ Custom Datatypes
 .. automodule:: masci_tools.util.case_insensitive_dict
    :members:
 
+.. automodule:: masci_tools.util.typing
+   :members:
+
 Common XML utility
 ------------------
 
@@ -49,6 +52,7 @@ Basic IO helper functions
 
 .. automodule:: masci_tools.io.common_functions
    :members:
+   :private-members: _TVectorType
 
 .. automodule:: masci_tools.io.hdf5_util
    :members:
