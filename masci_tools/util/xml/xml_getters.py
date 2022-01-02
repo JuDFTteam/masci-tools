@@ -22,10 +22,8 @@ from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from masci_tools.io.parsers import fleur_schema
+from typing import Any
+from masci_tools.io.parsers import fleur_schema
 
 
 def get_fleur_modes(xmltree: XMLLike,

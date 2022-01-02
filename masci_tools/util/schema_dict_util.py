@@ -630,7 +630,7 @@ def evaluate_single_value_tag(node: XMLLike,
     """
 
     only_required = kwargs.get('only_required', False)
-    ignore = kwargs.get('ignore', [])
+    ignore = kwargs.pop('ignore', ['comment'])
 
     value_dict = evaluate_tag(node,
                               schema_dict,
@@ -638,6 +638,7 @@ def evaluate_single_value_tag(node: XMLLike,
                               constants=constants,
                               logger=logger,
                               complex_xpath=complex_xpath,
+                              ignore=ignore,
                               **kwargs)
 
     if value_dict.get('value') is None:

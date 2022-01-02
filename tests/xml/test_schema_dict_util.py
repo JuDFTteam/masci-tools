@@ -723,6 +723,7 @@ def test_schema_dict_util_filters(load_inpxml):
                             'name': 'Pt-1'
                         }})
 
+
 def test_reverse_xinclude(load_inpxml):
     """
     Test of the reverse_xinclude function

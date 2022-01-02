@@ -93,7 +93,6 @@ def test_clear_xml(load_inpxml):
     assert len(symmetry_tags) == 16
 
 
-
 def test_get_xml_attribute(load_inpxml, caplog):
     """
     Test of the clear_xml function
