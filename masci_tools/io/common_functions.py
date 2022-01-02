@@ -18,9 +18,9 @@ from __future__ import annotations
 import io
 from typing import Any, Generator, Iterable, NamedTuple, TypeVar
 try:
-    from typing import TypeAlias, TypeGuard  #type:ignore
+    from typing import TypeAlias  #type:ignore
 except ImportError:
-    from typing_extensions import TypeAlias, TypeGuard
+    from typing_extensions import TypeAlias
 import numpy as np
 from collections.abc import Sequence
 import warnings
@@ -440,7 +440,7 @@ def convert_to_fortran_string(string: str) -> str:
     return string
 
 
-def is_sequence(arg: Any) -> TypeGuard[Sequence[Any]]:
+def is_sequence(arg: Any) -> bool:
     """
     Checks if arg is a sequence
     """

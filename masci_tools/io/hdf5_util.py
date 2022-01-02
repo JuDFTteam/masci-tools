@@ -15,11 +15,11 @@ complete file structure into a python dictionary
 """
 from __future__ import annotations
 
-from typing import IO, Any
+from typing import Any
 import h5py
 import numpy as np
-from pathlib import Path
-import os
+
+from masci_tools.util.typing import FileLike
 
 
 def hdfList(name: str, obj: h5py.HLObject) -> None:
@@ -45,7 +45,7 @@ def hdfList(name: str, obj: h5py.HLObject) -> None:
         print('')
 
 
-def h5dump(file: str | bytes | Path | os.PathLike | IO, group: str = '/') -> None:
+def h5dump(file: FileLike, group: str = '/') -> None:
     """
     Shows the overall filestructure of an hdf file
     Goes through all groups and subgroups and prints the attributes
@@ -61,7 +61,7 @@ def h5dump(file: str | bytes | Path | os.PathLike | IO, group: str = '/') -> Non
         file_hdf[group].visititems(hdfList)
 
 
-def read_hdf_simple(file: str | bytes | Path | os.PathLike | IO,
+def read_hdf_simple(file: FileLike,
                     flatten: bool = False) -> tuple[dict[str, Any], dict[str, Any]]:
     """
     Reads in an hdf file and returns its context in a nested dictionary
