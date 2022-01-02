@@ -272,7 +272,7 @@ def xml_set_text(xmltree: etree._Element | etree._ElementTree,
                  xpath: XPathLike,
                  base_xpath: str,
                  text: Any,
-                 occurrences: int | Iterable[int]  | None= None,
+                 occurrences: int | Iterable[int] | None = None,
                  create: bool = False) -> etree._Element | etree._ElementTree:
     """
     Sets the text on tags in a xmltree to a given value. By default the text will be set

@@ -13,6 +13,8 @@
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
+from __future__ import annotations
+
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
@@ -20,7 +22,7 @@ from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
 from collections import UserList
-from typing import AnyStr, List, TYPE_CHECKING, Union, Dict, Set, Callable
+from typing import AnyStr, TYPE_CHECKING, Callable
 try:
     from typing import TypedDict, Literal
 except ImportError:
@@ -38,22 +40,22 @@ class OutputSchemaData(TypedDict, total=False):
     iteration_tags: CaseInsensitiveFrozenSet[str]
     inp_version: str
     out_version: str
-    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
-    iteration_tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
-    attrib_types: CaseInsensitiveDict[str, List[AttributeType]]
-    text_types: CaseInsensitiveDict[str, List[AttributeType]]
+    tag_paths: CaseInsensitiveDict[str, list[str] | str]
+    iteration_tag_paths: CaseInsensitiveDict[str, list[str] | str]
+    attrib_types: CaseInsensitiveDict[str, list[AttributeType]]
+    text_types: CaseInsensitiveDict[str, list[AttributeType]]
     text_tags: CaseInsensitiveFrozenSet[str]
     unique_attribs: CaseInsensitiveDict[str, str]
-    unique_path_attribs: CaseInsensitiveDict[str, List[str]]
-    other_attribs: CaseInsensitiveDict[str, List[str]]
+    unique_path_attribs: CaseInsensitiveDict[str, list[str]]
+    other_attribs: CaseInsensitiveDict[str, list[str]]
     iteration_unique_attribs: CaseInsensitiveDict[str, str]
-    iteration_unique_path_attribs: CaseInsensitiveDict[str, List[str]]
-    iteration_other_attribs: CaseInsensitiveDict[str, List[str]]
+    iteration_unique_path_attribs: CaseInsensitiveDict[str, list[str]]
+    iteration_other_attribs: CaseInsensitiveDict[str, list[str]]
     omitt_contained_tags: LockableList[str]
     tag_info: LockableDict[str, TagInfo]
     iteration_tag_info: LockableDict[str, TagInfo]
-    _basic_types: LockableDict[str, List[AttributeType]]
-    _input_basic_types: LockableDict[str, List[AttributeType]]
+    _basic_types: LockableDict[str, list[AttributeType]]
+    _input_basic_types: LockableDict[str, list[AttributeType]]
 
 
 KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteration_tag_paths', '_basic_types',
@@ -62,7 +64,7 @@ KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteratio
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> OutputSchemaData:
+def create_outschema_dict(path: AnyStr, inpschema_dict: InputSchemaData) -> OutputSchemaData:
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -73,7 +75,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
     """
 
     #Add new functionality to this dictionary here
-    schema_actions: Dict[KEYS, Callable] = {
+    schema_actions: dict[KEYS, Callable] = {
         'input_tag': get_input_tag,
         'root_tag': get_root_tag,
         'iteration_tags': get_iteration_tags,
@@ -106,7 +108,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
     schema_dict: OutputSchemaData = {}
     schema_dict['out_version'] = out_version
     for key, action in schema_actions.items():
-        addargs: Dict[str, Union[Dict[str, List[AttributeType]], bool]] = {'input_basic_types': input_basic_types}
+        addargs: dict[str, dict[str, list[AttributeType]] | bool] = {'input_basic_types': input_basic_types}
         if key in ['unique_attribs', 'unique_path_attribs', 'other_attribs', 'tag_paths', 'tag_info']:
             addargs['stop_iteration'] = True
         elif key in [
@@ -122,7 +124,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: 'InputSchemaData') -> Ou
     return schema_dict
 
 
-def merge_schema_dicts(inputschema_dict: 'InputSchemaData', outputschema_dict: OutputSchemaData) -> OutputSchemaData:
+def merge_schema_dicts(inputschema_dict: InputSchemaData, outputschema_dict: OutputSchemaData) -> OutputSchemaData:
     """
     Merge the information from the input schema into the outputschema
     This combines the type information and adjusts the paths from the inputschema
@@ -146,13 +148,13 @@ def merge_schema_dicts(inputschema_dict: 'InputSchemaData', outputschema_dict: O
     #
     # 1. Merge path entries and modify the input paths
     #
-    path_entries: Set[Literal['tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs']] = {
+    path_entries: set[Literal['tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs']] = {
         'tag_paths', 'unique_attribs', 'unique_path_attribs', 'other_attribs'
     }
     for entry in path_entries:
         for key, val in inputschema_dict[entry].items():
 
-            paths: Union[List[str], str] = merged_outschema_dict[entry].get(key, UserList())
+            paths: list[str] | str = merged_outschema_dict[entry].get(key, UserList())
 
             if not isinstance(paths, (UserList, list)):
                 paths = [paths]

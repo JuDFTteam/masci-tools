@@ -21,6 +21,8 @@ for the following 3 cases:
        are known. Two options can be chosen apply the transformation to all keys in the dict
        or throw an error
 """
+from __future__ import annotations
+
 from typing import Callable
 import h5py
 import numpy as np

@@ -336,7 +336,7 @@ def set_attrib_value(xmltree: etree._Element | etree._ElementTree,
                      attribv: Any,
                      complex_xpath: XPathLike = None,
                      filters: FilterType = None,
-                     occurrences: int | Iterable[int]  | None = None,
+                     occurrences: int | Iterable[int] | None = None,
                      create: bool = False,
                      **kwargs: Any) -> etree._Element | etree._ElementTree:
     """

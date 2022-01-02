@@ -16,6 +16,8 @@ schema_dicts defined for the Fleur input/output
 Also provides convienient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
+from __future__ import annotations
+
 from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
@@ -181,9 +183,9 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root: Union[etree._Element, etree._ElementTree],
-                   schema_dict: 'fleur_schema.SchemaDict',
-                   logger: Logger = None) -> Dict[str, float]:
+def read_constants(root: etree._Element | etree._ElementTree,
+                   schema_dict: fleur_schema.SchemaDict,
+                   logger: Logger = None) -> dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -226,10 +228,10 @@ def read_constants(root: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
-                       schema_dict: 'fleur_schema.SchemaDict',
+def evaluate_attribute(node: etree._Element | etree._ElementTree,
+                       schema_dict: fleur_schema.SchemaDict,
                        name: str,
-                       constants: Dict[str, float] = None,
+                       constants: dict[str, float] = None,
                        logger: Logger = None,
                        complex_xpath: XPathLike = None,
                        filters: FilterType = None,
@@ -279,7 +281,7 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
             complex_xpath.add_filter(key, val)
     check_complex_xpath(node, attrib_xpath, complex_xpath)
 
-    stringattribute: List[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+    stringattribute: list[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
     if len(stringattribute) == 0:
         if logger is None:
@@ -308,10 +310,10 @@ def evaluate_attribute(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('text')
-def evaluate_text(node: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'fleur_schema.SchemaDict',
+def evaluate_text(node: etree._Element | etree._ElementTree,
+                  schema_dict: fleur_schema.SchemaDict,
                   name: str,
-                  constants: Dict[str, float] = None,
+                  constants: dict[str, float] = None,
                   logger: Logger = None,
                   complex_xpath: XPathLike = None,
                   iteration_path: bool = False,
@@ -358,7 +360,7 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    stringtext: List[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
+    stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
                                        list_return=True)  #type:ignore
 
     for text in stringtext.copy():
@@ -392,10 +394,10 @@ def evaluate_text(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
-                 schema_dict: 'fleur_schema.SchemaDict',
+def evaluate_tag(node: etree._Element | etree._ElementTree,
+                 schema_dict: fleur_schema.SchemaDict,
                  name: str,
-                 constants: Dict[str, float] = None,
+                 constants: dict[str, float] = None,
                  logger: Logger = None,
                  subtags: bool = False,
                  text: bool = True,
@@ -491,11 +493,11 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
             'exist or it has no attributes', name)
     attrib_list = sorted(list(attribs.original_case.values()))
 
-    out_dict: Dict[str, Any] = {}
+    out_dict: dict[str, Any] = {}
 
     for attrib in attrib_list:
 
-        stringattribute: List[str] = eval_xpath(node,
+        stringattribute: list[str] = eval_xpath(node,
                                                 add_tag(complex_xpath, f'@{attrib}'),
                                                 logger=logger,
                                                 list_return=True)  #type:ignore
@@ -527,7 +529,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext: List[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
+        stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
                                            list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
@@ -561,7 +563,7 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
                 logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
-        sub_nodes: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+        sub_nodes: list[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
         for sub_node in sub_nodes:
             for tag in tags:
                 if tag_exists(sub_node, schema_dict, tag):
@@ -595,10 +597,10 @@ def evaluate_tag(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
-                              schema_dict: 'fleur_schema.SchemaDict',
+def evaluate_single_value_tag(node: etree._Element | etree._ElementTree,
+                              schema_dict: fleur_schema.SchemaDict,
                               name: str,
-                              constants: Dict[str, float] = None,
+                              constants: dict[str, float] = None,
                               logger: Logger = None,
                               complex_xpath: XPathLike = None,
                               **kwargs: Any) -> Any:
@@ -653,10 +655,10 @@ def evaluate_single_value_tag(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
-                        schema_dict: 'fleur_schema.SchemaDict',
+def evaluate_parent_tag(node: etree._Element | etree._ElementTree,
+                        schema_dict: fleur_schema.SchemaDict,
                         name: str,
-                        constants: Dict[str, float] = None,
+                        constants: dict[str, float] = None,
                         logger: Logger = None,
                         complex_xpath: XPathLike = None,
                         iteration_path: bool = False,
@@ -741,9 +743,9 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
             'exist or it has no attributes', name)
     attrib_list = sorted(list(attribs.original_case.values()))
 
-    elems: List[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+    elems: list[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
 
-    out_dict: Dict[str, Any] = {}
+    out_dict: dict[str, Any] = {}
     for attrib in attrib_list:
         out_dict[attrib] = []
 
@@ -792,8 +794,8 @@ def evaluate_parent_tag(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node: Union[etree._Element, etree._ElementTree],
-                  schema_dict: 'fleur_schema.SchemaDict',
+def attrib_exists(node: etree._Element | etree._ElementTree,
+                  schema_dict: fleur_schema.SchemaDict,
                   name: str,
                   logger: Logger = None,
                   iteration_path: bool = False,
@@ -827,13 +829,13 @@ def attrib_exists(node: Union[etree._Element, etree._ElementTree],
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
     tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters, strict=True)
 
-    tags: List[etree._Element] = eval_xpath(node, tag_xpath_builder, logger=logger, list_return=True)  #type:ignore
+    tags: list[etree._Element] = eval_xpath(node, tag_xpath_builder, logger=logger, list_return=True)  #type:ignore
     return any(attrib_name in tag.attrib for tag in tags)
 
 
 @register_parsing_function('exists')
-def tag_exists(node: Union[etree._Element, etree._ElementTree],
-               schema_dict: 'fleur_schema.SchemaDict',
+def tag_exists(node: etree._Element | etree._ElementTree,
+               schema_dict: fleur_schema.SchemaDict,
                name: str,
                logger: Logger = None,
                **kwargs: Any) -> bool:
@@ -860,8 +862,8 @@ def tag_exists(node: Union[etree._Element, etree._ElementTree],
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
-                        schema_dict: 'fleur_schema.SchemaDict',
+def get_number_of_nodes(node: etree._Element | etree._ElementTree,
+                        schema_dict: fleur_schema.SchemaDict,
                         name: str,
                         logger: Logger = None,
                         **kwargs: Any) -> int:
@@ -891,37 +893,37 @@ def get_number_of_nodes(node: Union[etree._Element, etree._ElementTree],
 
 
 @overload
-def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'fleur_schema.SchemaDict',
+def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+                      schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
                       iteration_path: bool = False,
                       filters: FilterType = None,
                       list_return: Literal[True] = ...,
-                      **kwargs: Any) -> 'List[etree._Element]':
+                      **kwargs: Any) -> list[etree._Element]:
     ...
 
 
 @overload
-def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'fleur_schema.SchemaDict',
+def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+                      schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
                       iteration_path: bool = False,
                       filters: FilterType = None,
                       list_return: Literal[False] = ...,
-                      **kwargs: Any) -> 'Union[etree._Element, List[etree._Element]]':
+                      **kwargs: Any) -> etree._Element | list[etree._Element]:
     ...
 
 
-def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'fleur_schema.SchemaDict',
+def eval_simple_xpath(node: etree._Element | etree._ElementTree,
+                      schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger = None,
                       iteration_path: bool = False,
                       filters: FilterType = None,
                       list_return: bool = False,
-                      **kwargs: Any) -> 'Union[etree._Element, List[etree._Element]]':
+                      **kwargs: Any) -> etree._Element | list[etree._Element]:
     """
     Evaluates a simple xpath expression of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
@@ -950,8 +952,8 @@ def eval_simple_xpath(node: Union[etree._Element, etree._ElementTree],
     return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
 
 
-def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],
-                      schema_dict: 'fleur_schema.SchemaDict',
+def _select_tag_xpath(node: etree._Element | etree._ElementTree,
+                      schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       iteration_path: bool = False,
                       **kwargs: Any) -> str:
@@ -983,7 +985,7 @@ def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],
         if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
             raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
 
-    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    root_tags: tuple[str, ...] = (schema_dict['root_tag'],)
     if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
         root_tags += tuple(schema_dict['iteration_tags'])
 
@@ -1004,8 +1006,8 @@ def _select_tag_xpath(node: Union[etree._Element, etree._ElementTree],
     return xpath
 
 
-def _select_attrib_xpath(node: Union[etree._Element, etree._ElementTree],
-                         schema_dict: 'fleur_schema.SchemaDict',
+def _select_attrib_xpath(node: etree._Element | etree._ElementTree,
+                         schema_dict: fleur_schema.SchemaDict,
                          name: str,
                          iteration_path: bool = False,
                          **kwargs: Any) -> str:
@@ -1040,7 +1042,7 @@ def _select_attrib_xpath(node: Union[etree._Element, etree._ElementTree],
         if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
             raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
 
-    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    root_tags: tuple[str, ...] = (schema_dict['root_tag'],)
     if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
         root_tags += tuple(schema_dict['iteration_tags'])
 
@@ -1061,12 +1063,12 @@ def _select_attrib_xpath(node: Union[etree._Element, etree._ElementTree],
     return xpath
 
 
-def _select_tag_info(node: Union[etree._Element, etree._ElementTree],
-                     schema_dict: 'fleur_schema.SchemaDict',
+def _select_tag_info(node: etree._Element | etree._ElementTree,
+                     schema_dict: fleur_schema.SchemaDict,
                      name: str,
                      iteration_path: bool = False,
                      iteration_tag: str = 'iteration',
-                     contains: Union[str, Iterable[str]] = None,
+                     contains: str | Iterable[str] | None = None,
                      **kwargs: Any) -> fleur_schema.schema_dict.TagInfo:
     """
     Get the tag information used for the evaluation function in this module
@@ -1099,7 +1101,7 @@ def _select_tag_info(node: Union[etree._Element, etree._ElementTree],
         if not isinstance(schema_dict, fleur_schema.OutputSchemaDict):
             raise ValueError('iteration_path=True can only be used with OutputSchemaDict')
 
-    root_tags: Tuple[str, ...] = (schema_dict['root_tag'],)
+    root_tags: tuple[str, ...] = (schema_dict['root_tag'],)
     if isinstance(schema_dict, fleur_schema.OutputSchemaDict):
         root_tags += tuple(schema_dict['iteration_tags'])
 

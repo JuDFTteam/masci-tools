@@ -329,11 +329,12 @@ def xml_create_tag(xmltree: etree._Element | etree._ElementTree,
     return xmltree
 
 
-def xml_set_attrib_value_no_create(xmltree: etree._Element | etree._ElementTree,
-                                   xpath: XPathLike,
-                                   attributename: str,
-                                   attribv: Any,
-                                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+def xml_set_attrib_value_no_create(
+        xmltree: etree._Element | etree._ElementTree,
+        xpath: XPathLike,
+        attributename: str,
+        attribv: Any,
+        occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.

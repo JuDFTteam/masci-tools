@@ -13,18 +13,20 @@
 This module contains custom conversion functions for the outxml_parser, which
 cannot be handled by the standard parsing framework
 """
+from __future__ import annotations
+
 from datetime import date
 import numpy as np
 from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.util.parse_tasks_decorators import conversion_function
 from masci_tools.io.common_functions import convert_to_pystd
-from typing import Dict, Any
+from typing import Any
 from logging import Logger
 
 
 @conversion_function
-def convert_total_energy(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def convert_total_energy(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Convert total energy to eV
     """
@@ -56,7 +58,7 @@ def convert_total_energy(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, 
 
 
 @conversion_function
-def calculate_total_magnetic_moment(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def calculate_total_magnetic_moment(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Calculate the the total magnetic moment per cell
 
@@ -80,7 +82,7 @@ def calculate_total_magnetic_moment(out_dict: Dict[str, Any], logger: Logger) ->
 
 
 @conversion_function
-def calculate_walltime(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def calculate_walltime(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Calculate the walltime from start and end time
 
@@ -139,7 +141,7 @@ def calculate_walltime(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, An
 
 
 @conversion_function
-def convert_ldau_definitions(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def convert_ldau_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Convert the parsed information from LDA+U into a more readable dict
 
@@ -183,7 +185,7 @@ def convert_ldau_definitions(out_dict: Dict[str, Any], logger: Logger) -> Dict[s
 
 
 @conversion_function
-def convert_relax_info(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def convert_relax_info(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Convert the general relaxation information
 
@@ -211,7 +213,7 @@ def convert_relax_info(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, An
 
 
 @conversion_function
-def convert_forces(out_dict: Dict[str, Any], logger: Logger) -> Dict[str, Any]:
+def convert_forces(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
     Convert the parsed forces from a iteration
 
