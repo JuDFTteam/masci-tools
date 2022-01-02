@@ -154,12 +154,12 @@ def test_get_xml_attribute(load_inpxml, caplog):
     assert 'Tried to get attribute: "TEST" from element scfLoop.' in caplog.text
 
     with pytest.raises(TypeError,
-                       match='Can not get attributename: "TEST" from node of type <class \'etree._ElementTree\'>'):
+                       match='Can not get attributename: "TEST" from node of type <class \'lxml.etree._ElementTree\'>'):
         get_xml_attribute(xmltree, 'TEST')
 
     with caplog.at_level(logging.WARNING):
         assert get_xml_attribute(xmltree, 'TEST', logger=LOGGER) is None
-    assert 'Can not get attributename: "TEST" from node of type <class \'etree._ElementTree\'>' in caplog.text
+    assert 'Can not get attributename: "TEST" from node of type <class \'lxml.etree._ElementTree\'>' in caplog.text
 
 
 def test_split_off_tag():
