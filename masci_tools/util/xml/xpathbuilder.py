@@ -111,10 +111,10 @@ class XPathBuilder:
 
     def __init__(self,
                  simple_path: etree._xpath,
-                 filters: dict[str, FilterType] = None,
+                 filters: dict[str, FilterType] | None = None,
                  compile_path: bool = False,
                  strict: bool = False,
-                 **kwargs) -> None:
+                 **kwargs: Any) -> None:
         self.compile_path = compile_path
         self.strict = strict
         if not self.compile_path and kwargs:

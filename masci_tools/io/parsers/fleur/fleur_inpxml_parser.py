@@ -122,8 +122,8 @@ def inpxml_todict(parent: etree._Element,
                   schema_dict: InputSchemaDict,
                   constants: dict[str, float],
                   omitted_tags: bool = False,
-                  base_xpath: str = None,
-                  logger: logging.Logger = None) -> dict[str, Any]:
+                  base_xpath: str | None = None,
+                  logger: logging.Logger | None = None) -> dict[str, Any]:
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.

@@ -185,7 +185,9 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root: XMLLike, schema_dict: fleur_schema.SchemaDict, logger: Logger = None) -> dict[str, float]:
+def read_constants(root: XMLLike,
+                   schema_dict: fleur_schema.SchemaDict,
+                   logger: Logger | None = None) -> dict[str, float]:
     """
     Reads in the constants defined in the inp.xml
     and returns them combined with the predefined constants from
@@ -230,10 +232,10 @@ def read_constants(root: XMLLike, schema_dict: fleur_schema.SchemaDict, logger: 
 def evaluate_attribute(node: XMLLike,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
-                       constants: dict[str, float] = None,
-                       logger: Logger = None,
-                       complex_xpath: XPathLike = None,
-                       filters: FilterType = None,
+                       constants: dict[str, float] | None = None,
+                       logger: Logger | None = None,
+                       complex_xpath: XPathLike | None = None,
+                       filters: FilterType | None = None,
                        iteration_path: bool = False,
                        **kwargs: Any) -> Any:
     """
@@ -312,11 +314,11 @@ def evaluate_attribute(node: XMLLike,
 def evaluate_text(node: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
-                  constants: dict[str, float] = None,
-                  logger: Logger = None,
-                  complex_xpath: XPathLike = None,
+                  constants: dict[str, float] | None = None,
+                  logger: Logger | None = None,
+                  complex_xpath: XPathLike | None = None,
                   iteration_path: bool = False,
-                  filters: FilterType = None,
+                  filters: FilterType | None = None,
                   **kwargs: Any) -> Any:
     """
     Evaluates the text of the tag based on the given name
@@ -396,13 +398,13 @@ def evaluate_text(node: XMLLike,
 def evaluate_tag(node: XMLLike,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
-                 constants: dict[str, float] = None,
-                 logger: Logger = None,
+                 constants: dict[str, float] | None = None,
+                 logger: Logger | None = None,
                  subtags: bool = False,
                  text: bool = True,
-                 complex_xpath: XPathLike = None,
+                 complex_xpath: XPathLike | None = None,
                  iteration_path: bool = False,
-                 filters: FilterType = None,
+                 filters: FilterType | None = None,
                  **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the tag based on the given name
@@ -599,9 +601,9 @@ def evaluate_tag(node: XMLLike,
 def evaluate_single_value_tag(node: XMLLike,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
-                              constants: dict[str, float] = None,
-                              logger: Logger = None,
-                              complex_xpath: XPathLike = None,
+                              constants: dict[str, float] | None = None,
+                              logger: Logger | None = None,
+                              complex_xpath: XPathLike | None = None,
                               **kwargs: Any) -> Any:
     """
     Evaluates the value and unit attribute of the tag based on the given name
@@ -658,11 +660,11 @@ def evaluate_single_value_tag(node: XMLLike,
 def evaluate_parent_tag(node: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
-                        constants: dict[str, float] = None,
-                        logger: Logger = None,
-                        complex_xpath: XPathLike = None,
+                        constants: dict[str, float] | None = None,
+                        logger: Logger | None = None,
+                        complex_xpath: XPathLike | None = None,
                         iteration_path: bool = False,
-                        filters: FilterType = None,
+                        filters: FilterType | None = None,
                         **kwargs: Any) -> Any:
     """
     Evaluates all attributes of the parent tag based on the given name
@@ -797,9 +799,9 @@ def evaluate_parent_tag(node: XMLLike,
 def attrib_exists(node: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
-                  logger: Logger = None,
+                  logger: Logger | None = None,
                   iteration_path: bool = False,
-                  filters: FilterType = None,
+                  filters: FilterType | None = None,
                   **kwargs: Any) -> bool:
     """
     Evaluates whether the attribute exists in the xmltree based on the given name
@@ -837,7 +839,7 @@ def attrib_exists(node: XMLLike,
 def tag_exists(node: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
-               logger: Logger = None,
+               logger: Logger | None = None,
                **kwargs: Any) -> bool:
     """
     Evaluates whether the tag exists in the xmltree based on the given name
@@ -865,7 +867,7 @@ def tag_exists(node: XMLLike,
 def get_number_of_nodes(node: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
-                        logger: Logger = None,
+                        logger: Logger | None = None,
                         **kwargs: Any) -> int:
     """
     Evaluates the number of occurences of the tag in the xmltree based on the given name
@@ -896,9 +898,9 @@ def get_number_of_nodes(node: XMLLike,
 def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
-                      logger: Logger = None,
+                      logger: Logger | None = None,
                       iteration_path: bool = False,
-                      filters: FilterType = None,
+                      filters: FilterType | None = None,
                       list_return: Literal[True] = ...,
                       **kwargs: Any) -> list[etree._Element]:
     ...
@@ -908,9 +910,9 @@ def eval_simple_xpath(node: XMLLike,
 def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
-                      logger: Logger = None,
+                      logger: Logger | None = None,
                       iteration_path: bool = False,
-                      filters: FilterType = None,
+                      filters: FilterType | None = None,
                       list_return: Literal[False] = ...,
                       **kwargs: Any) -> etree._Element | list[etree._Element]:
     ...
@@ -919,9 +921,9 @@ def eval_simple_xpath(node: XMLLike,
 def eval_simple_xpath(node: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
-                      logger: Logger = None,
+                      logger: Logger | None = None,
                       iteration_path: bool = False,
-                      filters: FilterType = None,
+                      filters: FilterType | None = None,
                       list_return: bool = False,
                       **kwargs: Any) -> etree._Element | list[etree._Element]:
     """

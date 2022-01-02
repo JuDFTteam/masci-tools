@@ -79,11 +79,11 @@ class Kinds(TypedDict, total=False):
 def write_inpgen_file(cell: np.ndarray | list[list[float]],
                       atom_sites: (Sequence[AtomSiteProperties] | Sequence[tuple[list[float], str, str]] |
                                    Sequence[AtomDictProperties]),
-                      kinds: Iterable[Kinds] = None,
+                      kinds: Iterable[Kinds] | None = None,
                       return_contents: bool = False,
                       file: FileLike = 'inpgen.in',
                       pbc: tuple[bool, bool, bool] = (True, True, True),
-                      input_params: dict = None,
+                      input_params: dict | None = None,
                       significant_figures_cell: int = 9,
                       significant_figures_positions: int = 10,
                       convert_from_angstroem: bool = True) -> str | None:
@@ -380,7 +380,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     return inpgen_file_content_str
 
 
-def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str, Any] = None) -> str:
+def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str, Any] | None = None) -> str:
     """
     Given a key and a value, return a string (possibly multiline for arrays)
     with the text to be added to the input file.

@@ -153,8 +153,8 @@ class HDF5Reader:
     def _transform_dataset(self,
                            transforms: list[Transformation] | list[Transformation | AttribTransformation],
                            dataset: h5py.Dataset,
-                           attributes: dict[str, Any] = None,
-                           dataset_name: str = None) -> Any:
+                           attributes: dict[str, Any] | None = None,
+                           dataset_name: str | None = None) -> Any:
         """
         Transforms the given dataset with the given list of tasks
 
@@ -214,7 +214,7 @@ class HDF5Reader:
 
         return {**output_dict, **unpack_dict}
 
-    def read(self, recipe: HDF5Recipe = None) -> tuple[dict[str, Any], dict[str, Any]]:
+    def read(self, recipe: HDF5Recipe | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
         :param recipe: dict with the format given in :py:mod:`~masci_tools.io.parsers.hdf5.recipes`

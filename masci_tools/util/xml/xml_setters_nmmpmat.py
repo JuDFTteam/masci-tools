@@ -28,12 +28,12 @@ def set_nmmpmat(xmltree: XMLLike,
                 species_name: str,
                 orbital: int,
                 spin: int,
-                state_occupations: list[float] = None,
-                orbital_occupations: list[float] = None,
-                denmat: np.ndarray = None,
-                phi: float = None,
-                theta: float = None,
-                filters: FilterType = None) -> list[str]:
+                state_occupations: list[float] | None = None,
+                orbital_occupations: list[float] | None = None,
+                denmat: np.ndarray | None = None,
+                phi: float | None = None,
+                theta: float | None = None,
+                filters: FilterType | None = None) -> list[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 

@@ -48,9 +48,9 @@ class CaseInsensitiveDict(LockableDict[S, T]):
 
     """
 
-    def __init__(self, *args: Any, upper: bool = False, **kwargs: bool | object):
+    def __init__(self, *args: Any, upper: bool = False, recursive: bool = True, **kwargs: T):
         self._upper = upper
-        super().__init__(*args, **kwargs)  #type: ignore
+        super().__init__(*args, recursive=recursive, **kwargs)
 
     def _norm_key(self, key: object) -> object:
         if isinstance(key, str):
@@ -91,12 +91,12 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
 
     """
 
-    def __new__(cls, iterable: Iterable[T] = None, upper: bool = False) -> CaseInsensitiveFrozenSet[T]:
+    def __new__(cls, iterable: Iterable[T] | None = None, upper: bool = False) -> CaseInsensitiveFrozenSet[T]:
         if iterable is not None:
             return super().__new__(cls, [key.lower() for key in iterable])  #type: ignore
         return super().__new__(cls, [])  #type: ignore
 
-    def __init__(self, iterable: Iterable[T] = None, upper: bool = False) -> None:
+    def __init__(self, iterable: Iterable[T] | None = None, upper: bool = False) -> None:
         self._upper = upper
         if iterable is not None:
             self.original_case = self._get_new_original_case(iterable)

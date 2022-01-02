@@ -233,7 +233,7 @@ def _get_parent_fleur_type(elem: etree._Element,
 def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                     type_elem: etree._Element,
                     convert_to_base: bool = True,
-                    basic_types_mapping: dict[str, list[AttributeType]] = None) -> list[AttributeType]:
+                    basic_types_mapping: dict[str, list[AttributeType]] | None = None) -> list[AttributeType]:
     """
     Analyses the given type element to deduce its base_types and length restrictions
 
@@ -381,8 +381,8 @@ def _get_length(xmlschema_evaluator: etree.XPathDocumentEvaluator,
 @_cache_xpath_construction
 def _get_xpath(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                tag_name: str,
-               enforce_end_type: str = None,
-               ref: str = None,
+               enforce_end_type: str | None = None,
+               ref: str | None = None,
                stop_non_unique: bool = False,
                stop_iteration: bool = False,
                iteration_root: bool = False) -> set[str]:
@@ -595,7 +595,7 @@ def _is_simple(elem: etree._Element) -> bool:
 
 def _get_simple_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                      elem: etree._Element,
-                     input_mapping: dict[str, list[AttributeType]] = None) -> CaseInsensitiveFrozenSet[str]:
+                     input_mapping: dict[str, list[AttributeType]] | None = None) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can only contain attributes or text (no sub elements)

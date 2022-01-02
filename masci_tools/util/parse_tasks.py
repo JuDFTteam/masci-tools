@@ -116,7 +116,7 @@ class ParseTasks:
     _conversion_functions: dict[str, Callable] = {}
     _parse_functions: dict[str, Callable] = {}
 
-    def __init__(self, version: str, task_file: os.PathLike = None, validate_defaults: bool = False) -> None:
+    def __init__(self, version: str, task_file: os.PathLike | None = None, validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
@@ -328,7 +328,7 @@ class ParseTasks:
 
     def determine_tasks(self,
                         fleurmodes: dict[str, Any],
-                        optional_tasks: Iterable[str] = None,
+                        optional_tasks: Iterable[str] | None = None,
                         minimal: bool = False) -> None:
         """
         Determine, which tasks to perform based on the fleur_modes

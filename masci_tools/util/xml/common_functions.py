@@ -174,9 +174,9 @@ def validate_xml(xmltree: etree._ElementTree,
 
 def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
                xpath: XPathLike,
-               logger: logging.Logger = None,
+               logger: logging.Logger | None = None,
                list_return: bool = False,
-               namespaces: etree._DictAnyStr = None,
+               namespaces: etree._DictAnyStr | None = None,
                **variables: etree._XPathObject) -> etree._XPathObject:
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
@@ -238,7 +238,7 @@ def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
     return return_value
 
 
-def get_xml_attribute(node: etree._Element, attributename: str, logger: logging.Logger = None) -> str | None:
+def get_xml_attribute(node: etree._Element, attributename: str, logger: logging.Logger | None = None) -> str | None:
     """
     Get an attribute value from a node.
 

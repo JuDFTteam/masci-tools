@@ -64,7 +64,7 @@ class SchemaDictDispatch(Protocol[F]):
     """Protocol representing function decorated by the schema_dict_version_dispatch decorator"""
     registry: dict[Callable[[tuple[int, int]], bool] | Literal['default'], F]
 
-    def register(self, min_version: str = None, max_version: str = None) -> Callable[[F], F]:
+    def register(self, min_version: str | None = ..., max_version: str | None = ...) -> Callable[[F], F]:
         ...
 
     dispatch: Callable[[tuple[int, int]], F]
@@ -109,7 +109,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
 
             return matches[0]
 
-        def register(min_version: str = None, max_version: str = None) -> Callable[[F], F]:
+        def register(min_version: str | None = None, max_version: str | None = None) -> Callable[[F], F]:
 
             if min_version is not None:
                 min_version_tuple = convert_str_version_number(min_version)
@@ -231,7 +231,7 @@ class SchemaDict(LockableDict):
         """
         cls._schema_dict_cache.clear()
 
-    def __init__(self, *args: Any, xmlschema: etree.XMLSchema = None, **kwargs: Any):
+    def __init__(self, *args: Any, xmlschema: etree.XMLSchema | None = None, **kwargs: Any):
         if xmlschema is None:
             raise ValueError('xmlschema has to be supplied')
         self.xmlschema = xmlschema
@@ -625,7 +625,7 @@ class InputSchemaDict(SchemaDict):
     _info_entries = ('tag_info',)
 
     @classmethod
-    def fromVersion(cls, version: str, logger: Logger = None, no_cache: bool = False) -> InputSchemaDict:
+    def fromVersion(cls, version: str, logger: Logger | None = None, no_cache: bool = False) -> InputSchemaDict:
         """
         load the FleurInputSchema dict for the specified version
 
@@ -746,8 +746,8 @@ class OutputSchemaDict(SchemaDict):
     @classmethod
     def fromVersion(cls,
                     version: str,
-                    inp_version: str = None,
-                    logger: Logger = None,
+                    inp_version: str | None = None,
+                    logger: Logger | None = None,
                     no_cache: bool = False) -> OutputSchemaDict:
         """
         load the FleurOutputSchema dict for the specified version
@@ -814,8 +814,8 @@ class OutputSchemaDict(SchemaDict):
     @classmethod
     def fromPath(cls,
                  path: os.PathLike,
-                 inp_path: os.PathLike = None,
-                 inpschema_dict: InputSchemaDict = None) -> OutputSchemaDict:
+                 inp_path: os.PathLike | None = None,
+                 inpschema_dict: InputSchemaDict | None = None) -> OutputSchemaDict:
         """
         load the FleurOutputSchema dict for the specified paths
 

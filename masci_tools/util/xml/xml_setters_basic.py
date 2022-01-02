@@ -200,8 +200,8 @@ def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
 def xml_create_tag(xmltree: XMLLike,
                    xpath: XPathLike,
                    element: str | etree._Element,
-                   place_index: int = None,
-                   tag_order: list[str] = None,
+                   place_index: int | None = None,
+                   tag_order: list[str] | None = None,
                    occurrences: int | Iterable[int] | None = None,
                    correct_order: bool = True,
                    several: bool = True) -> etree._Element | etree._ElementTree:

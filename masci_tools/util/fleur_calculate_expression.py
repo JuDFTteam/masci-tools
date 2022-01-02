@@ -27,7 +27,7 @@ class MissingConstant(Exception):
     pass
 
 
-def calculate_expression(expression: str | float | int, constants: dict[str, float] = None) -> float | int:
+def calculate_expression(expression: str | float | int, constants: dict[str, float] | None = None) -> float | int:
     """
     Recursively evaluates the given expression string with the given defined constants
 

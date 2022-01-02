@@ -748,7 +748,7 @@ def clone_species(xmltree: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
                   species_name: str,
                   new_name: str,
-                  changes: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
+                  changes: dict[str, Any] | None = None) -> etree._Element | etree._ElementTree:
     """
     Method to create a new species from an existing one with evtl. modifications
 
@@ -961,7 +961,7 @@ def switch_species_label(xmltree: XMLLike,
                          atom_label: str,
                          new_species_name: str,
                          clone: bool = False,
-                         changes: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
+                         changes: dict[str, Any] | None = None) -> etree._Element | etree._ElementTree:
     """
     Method to switch the species of an atom group of the fleur inp.xml file based on a label
     of a contained atom
@@ -1066,7 +1066,7 @@ def shift_value(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 change_dict: dict[str, Any],
                 mode: Literal['abs', 'rel'] = 'abs',
-                path_spec: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
+                path_spec: dict[str, Any] | None = None) -> etree._Element | etree._ElementTree:
     """
     Shifts numerical values of attributes directly in the inp.xml file.
 
@@ -1103,7 +1103,7 @@ def shift_value(xmltree: XMLLike,
 def set_inpchanges(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    change_dict: dict[str, Any],
-                   path_spec: dict[str, Any] = None) -> etree._Element | etree._ElementTree:
+                   path_spec: dict[str, Any] | None = None) -> etree._Element | etree._ElementTree:
     """
     This method sets all the attribute and texts provided in the change_dict.
 
@@ -1161,9 +1161,9 @@ def set_kpointlist(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    kpoints: Iterable[Iterable[float]],
                    weights: Iterable[float],
-                   name: str = None,
+                   name: str | None = None,
                    kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
-                   special_labels: dict[int, str] = None,
+                   special_labels: dict[int, str] | None = None,
                    switch: bool = False,
                    overwrite: bool = False) -> etree._Element | etree._ElementTree:
     """
