@@ -1,8 +1,9 @@
 """
 Functions for expanding/splitting or converting electron configuration strings
 """
+from __future__ import annotations
+
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS
-from typing import Union, Optional
 
 all_econfig = [
     '1s2', '2s2', '2p6', '3s2', '3p6', '4s2', '3d10', '4p6', '5s2', '4d10', '5p6', '6s2', '4f14', '5d10', '6p6', '7s2',
@@ -14,7 +15,7 @@ max_state_occ_spin = {'1/2': 2., '3/2': 4., '5/2': 6., '7/2': 8.}
 ATOMIC_NAMES = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
 
 
-def get_econfig(element: Union[str, int], full: bool = False) -> Optional[str]:
+def get_econfig(element: str | int, full: bool = False) -> str | None:
     """
     returns the econfiguration as a string of an element.
 
@@ -23,7 +24,7 @@ def get_econfig(element: Union[str, int], full: bool = False) -> Optional[str]:
     :returns: a econfig string
     """
     if isinstance(element, int):
-        econ: Optional[str] = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')  #type:ignore
+        econ: str | None = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')  #type:ignore
     elif isinstance(element, str):
         element_num = ATOMIC_NAMES.get(element, None)
         if element_num is None:
@@ -38,7 +39,7 @@ def get_econfig(element: Union[str, int], full: bool = False) -> Optional[str]:
     return econ
 
 
-def get_coreconfig(element: Union[str, int], full: bool = False) -> Optional[str]:
+def get_coreconfig(element: str | int, full: bool = False) -> str | None:
     """
     returns the econfiguration as a string of an element.
 
@@ -50,7 +51,7 @@ def get_coreconfig(element: Union[str, int], full: bool = False) -> Optional[str
     return econ.split('|', maxsplit=1)[0].rstrip() if econ is not None else None
 
 
-def rek_econ(econfigstr: str) -> Optional[str]:
+def rek_econ(econfigstr: str) -> str | None:
     """
     recursive routine to return a full econfig
     '[Xe] 4f14 | 5d10 6s2 6p4' -> '1s 2s ... 4f14 | 5d10 6s2 6p4'
