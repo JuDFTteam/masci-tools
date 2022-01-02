@@ -12,19 +12,22 @@
 """
 This module contains functionality for writing input files for the input generator of fleur
 """
+from __future__ import annotations
+
 import io
 import numpy as np
 import os
 import copy
 import warnings
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Union, Tuple, Optional, IO, Any, cast
+from typing import Iterable, Sequence, IO, Any, cast
 try:
     from typing import TypedDict
 except ImportError:
     from typing_extensions import TypedDict
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
+from masci_tools.util.typing import FileLike
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
 from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, AtomSiteProperties
@@ -36,7 +39,7 @@ POSSIBLE_NAMELISTS = [
     'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'expert', 'film',
     'kpt', 'end'
 ]
-POSSIBLE_PARAMS: Dict[str, List[str]] = {
+POSSIBLE_PARAMS: dict[str, list[str]] = {
     'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
     'lattice': ['latsys', 'a0', 'a', 'b', 'c', 'alpha', 'beta', 'gamma'],
     'atom': ['id', 'z', 'rmt', 'dx', 'jri', 'lmax', 'lnonsph', 'ncst', 'econfig', 'bmu', 'lo', 'element', 'name'],
@@ -60,7 +63,7 @@ class AtomDictProperties(TypedDict, total=False):
     """
     TypedDict for the atom properties
     """
-    position: Union[List[float], Tuple[float, float, float], np.ndarray]
+    position: list[float] | tuple[float, float, float] | np.ndarray
     kind_name: str
 
 
@@ -73,20 +76,17 @@ class Kinds(TypedDict, total=False):
     weights: Sequence[float]
 
 
-FileInput = Union[str, Path, bytes, os.PathLike, IO]
-
-
-def write_inpgen_file(cell: Union[np.ndarray, List[List[float]]],
-                      atom_sites: Union[Sequence[AtomSiteProperties], Sequence[Tuple[List[float], str, str]],
-                                        Sequence[AtomDictProperties]],
+def write_inpgen_file(cell: np.ndarray | list[list[float]],
+                      atom_sites: (Sequence[AtomSiteProperties] | Sequence[tuple[list[float], str, str]] |
+                                   Sequence[AtomDictProperties]),
                       kinds: Iterable[Kinds] = None,
                       return_contents: bool = False,
-                      file: FileInput = 'inpgen.in',
-                      pbc: Tuple[bool, bool, bool] = (True, True, True),
-                      input_params: Dict = None,
+                      file: FileLike = 'inpgen.in',
+                      pbc: tuple[bool, bool, bool] = (True, True, True),
+                      input_params: dict = None,
                       significant_figures_cell: int = 9,
                       significant_figures_positions: int = 10,
-                      convert_from_angstroem: bool = True) -> Optional[str]:
+                      convert_from_angstroem: bool = True) -> str | None:
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
     :param cell: 3x3 arraylike. The bravais matrix of the structure, in Angstrom by default
@@ -374,13 +374,13 @@ def write_inpgen_file(cell: Union[np.ndarray, List[List[float]]],
         if isinstance(file, io.IOBase):
             file.write(inpgen_file_content_str)
         else:
-            with open(file, 'w', encoding='utf-8') as inpfile:  #type:ignore
+            with open(file, 'w', encoding='utf-8') as inpfile:
                 inpfile.write(inpgen_file_content_str)
 
     return inpgen_file_content_str
 
 
-def get_input_data_text(key: str, val: Any, value_only: bool, mapping: Dict[str, Any] = None) -> str:
+def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str, Any] = None) -> str:
     """
     Given a key and a value, return a string (possibly multiline for arrays)
     with the text to be added to the input file.
@@ -471,9 +471,9 @@ def conv_to_fortran(val: Any, quote_strings: bool = True) -> str:
 
 
 def read_inpgen_file(
-    file: FileInput,
+    file: FileLike,
     convert_to_angstroem: bool = True
-) -> Tuple[Optional[np.ndarray], List[AtomSiteProperties], Tuple[bool, bool, bool], Dict[str, Any]]:
+) -> tuple[np.ndarray | None, list[AtomSiteProperties], tuple[bool, bool, bool], dict[str, Any]]:
     """
     Method which reads in an inpgen input file and parses the structure and name lists information.
 
@@ -486,14 +486,14 @@ def read_inpgen_file(
     input_params = {}
     namelists_raw = {}
     atom_sites = []
-    cell: Optional[np.ndarray] = np.zeros((3, 3))
+    cell: np.ndarray | None = np.zeros((3, 3))
     lattice_information = []
 
     if isinstance(file, io.IOBase):
         contents = file.read()
     else:
-        if os.path.exists(file):  #type:ignore
-            with open(file, encoding='utf-8') as f:  #type:ignore
+        if os.path.exists(file):
+            with open(file, encoding='utf-8') as f:
                 contents = f.read()
         else:
             contents = file

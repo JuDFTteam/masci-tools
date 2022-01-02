@@ -61,8 +61,7 @@ def h5dump(file: FileLike, group: str = '/') -> None:
         file_hdf[group].visititems(hdfList)
 
 
-def read_hdf_simple(file: FileLike,
-                    flatten: bool = False) -> tuple[dict[str, Any], dict[str, Any]]:
+def read_hdf_simple(file: FileLike, flatten: bool = False) -> tuple[dict[str, Any], dict[str, Any]]:
     """
     Reads in an hdf file and returns its context in a nested dictionary
 
