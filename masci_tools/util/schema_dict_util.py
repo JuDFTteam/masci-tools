@@ -28,8 +28,8 @@ from lxml import etree
 from logging import Logger
 import warnings
 import copy
-from typing import Iterable, Any, overload
 import os
+from typing import Iterable, Any, overload
 try:
     from typing import Literal
 except ImportError:
@@ -198,7 +198,6 @@ def read_constants(root: XMLLike, schema_dict: fleur_schema.SchemaDict, logger: 
     :return: a python dictionary with all defined constants
     """
     from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-    import copy
 
     defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
 

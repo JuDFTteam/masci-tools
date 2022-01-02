@@ -11,8 +11,10 @@
 """
 This module defines useful utility for logging related functionality
 """
+from __future__ import annotations
+
 from logging import Handler, LoggerAdapter, LogRecord
-from typing import Dict, Tuple, Any, Union, cast, List
+from typing import Any, cast
 
 
 class DictHandler(Handler):
@@ -24,7 +26,7 @@ class DictHandler(Handler):
     Keyword arguments can be used to modify the keys for the different levels
     """
 
-    def __init__(self, log_dict: Dict[str, List[str]], ignore_unknown_levels: bool = False, **kwargs: Union[int, str]):
+    def __init__(self, log_dict: dict[str, list[str]], ignore_unknown_levels: bool = False, **kwargs: int | str):
         from logging import _levelToName
         import copy
 
@@ -33,7 +35,7 @@ class DictHandler(Handler):
         levels = copy.copy(list(_levelToName.values()))
         levels.remove('NOTSET')
 
-        self.level_names: Dict[str, str] = {name: cast(str, kwargs[name]) for name in levels if name in kwargs}
+        self.level_names: dict[str, str] = {name: cast(str, kwargs[name]) for name in levels if name in kwargs}
 
         if not ignore_unknown_levels:
             for name in levels:
@@ -71,5 +73,5 @@ class OutParserLogAdapter(LoggerAdapter):
     'iteration' key, whose value is prepended as [Iteration i] to the message
     """
 
-    def process(self, msg: str, kwargs: Any) -> Tuple[str, Dict]:
+    def process(self, msg: str, kwargs: Any) -> tuple[str, dict]:
         return f"[Iteration {self.extra['iteration']}] {msg}", kwargs

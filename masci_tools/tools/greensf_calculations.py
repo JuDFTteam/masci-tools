@@ -6,12 +6,13 @@ calculated by Fleur. At the moment the following are implemented:
    * Calculating Heisenberg J_ij exchange constants from intersite Green's functions
    * Calculating the hybridization function from onsite Greens functions
 """
+from __future__ import annotations
+
 from .greensfunction import intersite_shells, intersite_shells_from_file
 
 import numpy as np
 from scipy import constants
 from collections import defaultdict
-from typing import Dict, List
 
 
 def calculate_heisenberg_jij(hdffileORgreensfunctions, reference_atom, onsite_delta, show=False):
@@ -34,7 +35,7 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions, reference_atom, onsite_de
     else:
         shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, show=show)
 
-    jij_constants: Dict[float, List[float]] = defaultdict(list)
+    jij_constants: dict[float, list[float]] = defaultdict(list)
 
     for dist, g1, g2 in shells:
 

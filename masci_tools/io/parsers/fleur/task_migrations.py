@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import copy
 from masci_tools.util.parse_tasks_decorators import register_migration
-from typing import Dict, Any
+from typing import Any
 
 
 @register_migration(base_version='0.33', target_version=['0.31', '0.30', '0.29'])
