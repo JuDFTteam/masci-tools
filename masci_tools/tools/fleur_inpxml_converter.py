@@ -2,8 +2,10 @@
 This module implements a commandline tool available with ``masci-tools inpxml`` to
 convert inp.xml files between different file versions
 """
+from __future__ import annotations
+
 from collections import defaultdict
-from typing import Iterable, List, NamedTuple, Tuple, Union
+from typing import Iterable, NamedTuple
 import json
 from pathlib import Path
 import os
@@ -37,7 +39,7 @@ class MoveAction(NamedTuple):
     attrib: bool = False
 
     @classmethod
-    def from_path(cls, old: str, new: str) -> 'MoveAction':
+    def from_path(cls, old: str, new: str) -> MoveAction:
         """
         Construct a MoveAction from two given xpaths
 
@@ -57,7 +59,7 @@ class MoveAction(NamedTuple):
         return cls(old_name=old_name, new_name=new_name, old_path=old_path, new_path=new_path, attrib=attrib)
 
     @classmethod
-    def from_remove_and_create(cls, remove: 'RemoveAction', create: 'CreateAction') -> 'MoveAction':
+    def from_remove_and_create(cls, remove: RemoveAction, create: CreateAction) -> MoveAction:
         """
         Construct a MoveAction from a remove and create action, merging them together
 
@@ -91,7 +93,7 @@ class NormalizedMoveAction(NamedTuple):
     attrib: bool = False
 
     @classmethod
-    def from_move(cls, move_action: MoveAction, actual_path: str) -> 'NormalizedMoveAction':
+    def from_move(cls, move_action: MoveAction, actual_path: str) -> NormalizedMoveAction:
         """
         Construct a NormalizedMoveAction from a given move and the additional actual xpath to use
 
@@ -107,12 +109,12 @@ class AmbiguousAction(NamedTuple):
     NamedTuple representing a change in paths that cannot be resolved automatically
     """
     name: str
-    old_paths: Tuple[str]
-    new_paths: Tuple[str]
+    old_paths: tuple[str]
+    new_paths: tuple[str]
     attrib: bool
 
     @classmethod
-    def from_paths(cls, old: Iterable[str], new: Iterable[str]) -> 'AmbiguousAction':
+    def from_paths(cls, old: Iterable[str], new: Iterable[str]) -> AmbiguousAction:
         """
         Construct AmbiguousAction from given paths
 
@@ -139,7 +141,7 @@ class RemoveAction(NamedTuple):
     attrib: bool = False
 
     @classmethod
-    def from_path(cls, xpath: str) -> 'RemoveAction':
+    def from_path(cls, xpath: str) -> RemoveAction:
         """
         Construct a RemoveAction from a given xpath
 
@@ -166,7 +168,7 @@ class CreateAction(NamedTuple):
     element: str = None
 
     @classmethod
-    def from_path(cls, xpath: str, element: str = None) -> 'RemoveAction':
+    def from_path(cls, xpath: str, element: str = None) -> RemoveAction:
         """
         Construct a CreateAction from a given xpath
 
@@ -184,8 +186,8 @@ class CreateAction(NamedTuple):
 
 
 def analyse_paths(
-    schema_start: 'InputSchemaDict', schema_target: 'InputSchemaDict', path_entries: Union[str, List[str]]
-) -> Tuple[List[RemoveAction], List[CreateAction], List[MoveAction], List[AmbiguousAction]]:
+    schema_start: InputSchemaDict, schema_target: InputSchemaDict, path_entries: str | list[str]
+) -> tuple[list[RemoveAction], list[CreateAction], list[MoveAction], list[AmbiguousAction]]:
     """
     Gather the initial path differences between the two given input schema dictionaries
     fro the given entries. If multiple enetries are given they are first merged together
@@ -505,7 +507,7 @@ def dump_conversion(conversion):
         json.dump(conversion, f, indent=2, sort_keys=False)
 
 
-def _rename_elements(remove: List[RemoveAction], create: List[CreateAction], move: List[MoveAction], from_version: str,
+def _rename_elements(remove: list[RemoveAction], create: list[CreateAction], move: list[MoveAction], from_version: str,
                      to_version: str, name: str) -> None:
     """
     Get user input on tags that were renamed
@@ -636,8 +638,8 @@ def _create_attrib_elements(create, to_schema):
     return create
 
 
-def _manual_resolution(ambiguous: List[AmbiguousAction], remove: List[RemoveAction], create: List[CreateAction],
-                       move: List[MoveAction], name: str):
+def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveAction], create: list[CreateAction],
+                       move: list[MoveAction], name: str):
     """
     Prompt the user for input on actions that cannot be determined automagically
     """
