@@ -415,6 +415,8 @@ nitpick_ignore = [
     ('py:class', 'etree._ElementTree'),
     ('py:class', 'TypeAlias'),
     ('py:class', 'TypeGuard'),
+    ('py:class', 'Logger'),
+    ('py:class', 'FilterType'),
 ]
 
 
