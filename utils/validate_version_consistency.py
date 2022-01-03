@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A simple script that checks the consistency between the version number specified in
 setup.json, and the version in the __init__.py file.

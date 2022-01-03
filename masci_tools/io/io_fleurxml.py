@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,6 +13,8 @@
 This module provides easy functions for loading a input/output xml file of
 fleur and providing a parsed xml etree together with its corresponding schema dict
 """
+from __future__ import annotations
+
 from lxml import etree
 import warnings
 import io
@@ -21,16 +22,15 @@ import os
 from pathlib import Path
 from functools import partial
 from logging import Logger
-from typing import Callable, Tuple, Union, Any, IO
+from typing import Callable, Any
 from masci_tools.io.parsers import fleur_schema
+from masci_tools.util.typing import XMLFileLike
 
-XMLInput = Union[etree._ElementTree, str, Path, bytes, os.PathLike, IO]
 
-
-def load_inpxml(inpxmlfile: XMLInput,
-                logger: Logger = None,
-                base_url: str = None,
-                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.InputSchemaDict']:
+def load_inpxml(inpxmlfile: XMLFileLike,
+                logger: Logger | None = None,
+                base_url: str | None = None,
+                **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.InputSchemaDict]:
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
 
@@ -97,10 +97,10 @@ def load_inpxml(inpxmlfile: XMLInput,
     return xmltree, schema_dict
 
 
-def load_outxml(outxmlfile: XMLInput,
-                logger: Logger = None,
-                base_url: str = None,
-                **kwargs: Any) -> Tuple[etree._ElementTree, 'fleur_schema.OutputSchemaDict']:
+def load_outxml(outxmlfile: XMLFileLike,
+                logger: Logger | None = None,
+                base_url: str | None = None,
+                **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.OutputSchemaDict]:
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary
 

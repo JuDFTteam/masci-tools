@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,6 +13,7 @@
 This module contains a class which organizes the known parsing tasks for outxml files
 and provides fuctionality for adding custom tasks easily
 """
+from __future__ import annotations
 
 from pprint import pprint
 import importlib.util
@@ -21,26 +21,30 @@ from importlib import import_module
 import copy
 import os
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Set, Any, Union
+from typing import Callable, Iterable, Any
 try:
-    from typing import Literal
+    from typing import Literal, TypeAlias  #type: ignore
 except ImportError:
-    from typing_extensions import Literal  #type:ignore
+    from typing_extensions import Literal, TypeAlias  #type:ignore
 import warnings
 from lxml import etree
 from logging import Logger, LoggerAdapter
 from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
+from masci_tools.util.typing import XMLLike
 import masci_tools
 
 PACKAGE_DIRECTORY = Path(masci_tools.__file__).parent.resolve()
 DEFAULT_TASK_FILE = PACKAGE_DIRECTORY / Path('io/parsers/fleur/default_parse_tasks.py')
 
-MIGRATION_DICT = Dict[str, Dict[str, Union[Literal['compatible'], Callable]]]
+MigrationDict: TypeAlias = "dict[str, dict[str, Literal['compatible'] | Callable]]"
+"""
+Type describing the dictionary defining the migration pathways
+"""
 
 
-def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union[List[Callable], None]:
+def find_migration(start: str, target: str, migrations: MigrationDict) -> list[Callable] | None:
     """
     Tries to find a migration path from the start to the target version
     via the defined migration functions
@@ -63,7 +67,7 @@ def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union
             if migrations[start][target] == 'compatible':
                 return []
             return None
-        return [migrations[start][target]]  #type:ignore
+        return [migrations[start][target]]
 
     for possible_stop in migrations[start].keys():
         new_call_list = find_migration(possible_stop, target, migrations)
@@ -77,7 +81,7 @@ def find_migration(start: str, target: str, migrations: MIGRATION_DICT) -> Union
         else:
             call_list = [migrations[start][possible_stop]]
         call_list += new_call_list
-        return call_list  #type:ignore
+        return call_list
     return None
 
 
@@ -107,12 +111,12 @@ class ParseTasks:
     }
 
     _version = '0.2.0'
-    _migrations: MIGRATION_DICT = {}
-    _all_attribs_function: Set[str] = set()
-    _conversion_functions: Dict[str, Callable] = {}
-    _parse_functions: Dict[str, Callable] = {}
+    _migrations: MigrationDict = {}
+    _all_attribs_function: set[str] = set()
+    _conversion_functions: dict[str, Callable] = {}
+    _parse_functions: dict[str, Callable] = {}
 
-    def __init__(self, version: str, task_file: os.PathLike = None, validate_defaults: bool = False) -> None:
+    def __init__(self, version: str, task_file: os.PathLike | None = None, validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
@@ -134,11 +138,11 @@ class ParseTasks:
         tasks = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(tasks)  #type:ignore
 
-        self._iteration_tasks: List[str] = []
-        self._general_tasks: List[str] = []
+        self._iteration_tasks: list[str] = []
+        self._general_tasks: list[str] = []
         self.version = convert_str_version_number(version)
 
-        tasks_dict: Dict[str, Dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)
+        tasks_dict: dict[str, dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)
         if validate_defaults:
             #Manually add each task to make sure that there are no typos/inconsitencies in the keys
             self.tasks = {}
@@ -147,7 +151,7 @@ class ParseTasks:
         else:
             self.tasks = tasks_dict
 
-        working: Set[str] = tasks.__working_out_versions__
+        working: set[str] = tasks.__working_out_versions__
         #Look if the base version is compatible if not look for a migration
         if version not in working:
 
@@ -171,35 +175,35 @@ class ParseTasks:
                     self.tasks = migration(self.tasks)
 
     @property
-    def iteration_tasks(self) -> List[str]:
+    def iteration_tasks(self) -> list[str]:
         """
         Tasks to perform for each iteration
         """
         return self._iteration_tasks
 
     @iteration_tasks.setter
-    def iteration_tasks(self, val: List[str]) -> None:
+    def iteration_tasks(self, val: list[str]) -> None:
         """
         Setter for iteration_tasks
         """
         self._iteration_tasks = val
 
     @property
-    def general_tasks(self) -> List[str]:
+    def general_tasks(self) -> list[str]:
         """
         Tasks to perform for the root node
         """
         return self._general_tasks
 
     @general_tasks.setter
-    def general_tasks(self, val: List[str]) -> None:
+    def general_tasks(self, val: list[str]) -> None:
         """
         Setter for general_tasks
         """
         self._general_tasks = val
 
     @property
-    def migrations(self) -> MIGRATION_DICT:
+    def migrations(self) -> MigrationDict:
         """
         Return the registered migrations
         """
@@ -208,7 +212,7 @@ class ParseTasks:
         return self._migrations
 
     @property
-    def conversion_functions(self) -> Dict[str, Callable]:
+    def conversion_functions(self) -> dict[str, Callable]:
         """
         Return the registered conversion functions
         """
@@ -217,7 +221,7 @@ class ParseTasks:
         return self._conversion_functions
 
     @property
-    def parse_functions(self) -> Dict[str, Callable]:
+    def parse_functions(self) -> dict[str, Callable]:
         """
         Return the registered parse functions
         """
@@ -226,7 +230,7 @@ class ParseTasks:
         return self._parse_functions
 
     @property
-    def all_attribs_function(self) -> Set[str]:
+    def all_attribs_function(self) -> set[str]:
         """
         Return the registered parse functions for parsing multipl attributes
         """
@@ -235,7 +239,7 @@ class ParseTasks:
         return self._all_attribs_function
 
     @property
-    def optional_tasks(self) -> Set[str]:
+    def optional_tasks(self) -> set[str]:
         """
         Return a set of the available optional defined tasks
         """
@@ -243,7 +247,7 @@ class ParseTasks:
 
     def add_task(self,
                  task_name: str,
-                 task_definition: Dict[str, Any],
+                 task_definition: dict[str, Any],
                  append: bool = False,
                  overwrite: bool = False) -> None:
         """
@@ -323,8 +327,8 @@ class ParseTasks:
             self.tasks[task_name] = task_definition
 
     def determine_tasks(self,
-                        fleurmodes: Dict[str, Any],
-                        optional_tasks: Iterable[str] = None,
+                        fleurmodes: dict[str, Any],
+                        optional_tasks: Iterable[str] | None = None,
                         minimal: bool = False) -> None:
         """
         Determine, which tasks to perform based on the fleur_modes
@@ -378,12 +382,12 @@ class ParseTasks:
 
     def perform_task(self,
                      task_name: str,
-                     node: Union[etree._Element, etree._ElementTree],
-                     out_dict: Dict,
-                     schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                     constants: Dict[str, float],
-                     logger: Union[Logger, LoggerAdapter] = None,
-                     use_lists: bool = True) -> Dict:
+                     node: XMLLike,
+                     out_dict: dict,
+                     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                     constants: dict[str, float],
+                     logger: Logger | LoggerAdapter | None = None,
+                     use_lists: bool = True) -> dict:
         """
         Evaluates the task given in the tasks_definition dict
 

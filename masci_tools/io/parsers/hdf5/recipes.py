@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -59,7 +58,8 @@ Entries in the `attributes` section are read and transformed first and can subse
 for the `datasets`. These correpsond to the transforms created with the :py:class:`~masci_tools.io.parsers.hdf5.reader.AttribTransformation`
 namedtuple instead of :py:class:`~masci_tools.io.parsers.hdf5.reader.Transformation`.
 """
-from typing import Union, List
+from __future__ import annotations
+
 try:
     from typing import Literal
 except ImportError:
@@ -323,7 +323,7 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
     return recipe
 
 
-def get_fleur_bands_specific_weights(weight_name: Union[str, List[str]],
+def get_fleur_bands_specific_weights(weight_name: str | list[str],
                                      group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'] = 'Local') -> HDF5Recipe:
     """
     Recipe for bandstructure calculations only retrieving one

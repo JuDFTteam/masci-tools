@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,21 +13,23 @@
 This module provides functions to extract distinct parts of the fleur xml files
 for easy versioning and reuse
 """
+from __future__ import annotations
+
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
+from masci_tools.util.typing import XMLLike
+from masci_tools.io.parsers import fleur_schema
+
 from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
-from typing import TYPE_CHECKING, Iterable, List, Tuple, Union, Dict, Any, Optional
-
-if TYPE_CHECKING:
-    from masci_tools.io.parsers import fleur_schema
+from typing import Any
 
 
-def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
-                    schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                    logger: Logger = None) -> Dict[str, Any]:
+def get_fleur_modes(xmltree: XMLLike,
+                    schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                    logger: Logger | None = None) -> dict[str, Any]:
     """
     Determine the calculation modes of fleur for the given xml file. Calculation modes
     are things that change the produced files or output in the out.xml files
@@ -167,9 +168,9 @@ def get_fleur_modes(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
-              schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-              logger: Logger = None) -> int:
+def get_nkpts(xmltree: XMLLike,
+              schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+              logger: Logger | None = None) -> int:
     """
     Get the number of kpoints that will be used in the calculation specified in the given
     fleur XMl file.
@@ -224,9 +225,9 @@ def get_nkpts(xmltree: Union[etree._Element, etree._ElementTree],
 
 
 @get_nkpts.register(max_version='0.31')
-def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
-                   schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                   logger: Logger = None) -> int:
+def get_nkpts_max4(xmltree: XMLLike,
+                   schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                   logger: Logger | None = None) -> int:
     """
     Get the number of kpoints that will be used in the calculation specified in the given
     fleur XMl file. Version specific for Max4 versions or older
@@ -263,7 +264,7 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
                 alt_kpt_set = kpt_set
                 break
 
-    kpt_tag: List[etree._Element] = []
+    kpt_tag: list[etree._Element] = []
     if alt_kpt_set is not None:
         kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True, logger=logger)
         if len(kpt_tag) == 0:
@@ -301,10 +302,10 @@ def get_nkpts_max4(xmltree: Union[etree._Element, etree._ElementTree],
     return nkpts
 
 
-def get_cell(xmltree: Union[etree._Element, etree._ElementTree],
-             schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-             logger: Logger = None,
-             convert_to_angstroem: bool = True) -> Tuple[np.ndarray, Tuple[bool, bool, bool]]:
+def get_cell(xmltree: XMLLike,
+             schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+             logger: Logger | None = None,
+             convert_to_angstroem: bool = True) -> tuple[np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the Bravais matrix from the given fleur xml file. In addition a list
     determining in, which directions there are periodic boundary conditions
@@ -335,8 +336,8 @@ def get_cell(xmltree: Union[etree._Element, etree._ElementTree],
         root = xmltree
     constants = read_constants(root, schema_dict, logger=logger)
 
-    cell: Optional[np.ndarray] = None
-    lattice_tag: Optional[etree._Element] = None
+    cell: np.ndarray | None = None
+    lattice_tag: etree._Element | None = None
     if tag_exists(root, schema_dict, 'bulkLattice', logger=logger):
         lattice_tag = eval_simple_xpath(root, schema_dict, 'bulkLattice', logger=logger)  #type: ignore
         pbc = (True, True, True)
@@ -387,9 +388,9 @@ def get_cell(xmltree: Union[etree._Element, etree._ElementTree],
     return cell, pbc
 
 
-def _get_species_info(xmltree: Union[etree._Element, etree._ElementTree],
-                      schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                      logger: Logger = None) -> Dict[str, Dict[str, str]]:
+def _get_species_info(xmltree: XMLLike,
+                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                      logger: Logger | None = None) -> dict[str, dict[str, str]]:
     """
     Gets the species identifiers and information.
     Used to keep species information consistent between
@@ -433,7 +434,7 @@ def _get_species_info(xmltree: Union[etree._Element, etree._ElementTree],
         raise ValueError(
             f'Failed to read in species names and elements. Got {len(names)} names and {len(elements)} elements')
 
-    species_info: Dict[str, Dict[str, str]] = {}
+    species_info: dict[str, dict[str, str]] = {}
     for name, element in zip(names, elements):
         #Check if the species name has a numerical id at the end (separated by - or .)
         #And add all of them first
@@ -459,12 +460,12 @@ def _get_species_info(xmltree: Union[etree._Element, etree._ElementTree],
     return species_info
 
 
-def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
-                       schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
+def get_parameter_data(xmltree: XMLLike,
+                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                        inpgen_ready: bool = True,
                        write_ids: bool = True,
                        extract_econfig: bool = False,
-                       logger: Logger = None) -> Dict[str, Any]:
+                       logger: Logger | None = None) -> dict[str, Any]:
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -654,13 +655,14 @@ def get_parameter_data(xmltree: Union[etree._Element, etree._ElementTree],
     return parameters
 
 
-def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
-                       schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                       include_relaxations: bool = True,
-                       site_namedtuple: bool = True,
-                       convert_to_angstroem: bool = True,
-                       normalize_kind_name: bool = True,
-                       logger: Logger = None) -> Tuple[List[AtomSiteProperties], np.ndarray, Tuple[bool, bool, bool]]:
+def get_structure_data(
+        xmltree: XMLLike,
+        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+        include_relaxations: bool = True,
+        site_namedtuple: bool = True,
+        convert_to_angstroem: bool = True,
+        normalize_kind_name: bool = True,
+        logger: Logger | None = None) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
@@ -723,7 +725,7 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
 
     species_info = _get_species_info(xmltree, schema_dict, logger=None)
 
-    atom_data: List[AtomSiteProperties] = []
+    atom_data: list[AtomSiteProperties] = []
     atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
 
     #Read relaxation information if available
@@ -746,7 +748,7 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
 
     for indx, group in enumerate(atom_groups):
 
-        atom_positions: List[List[float]] = []
+        atom_positions: list[list[float]] = []
 
         absolute_positions = evaluate_text(group,
                                            schema_dict,
@@ -850,15 +852,15 @@ def get_structure_data(xmltree: Union[etree._Element, etree._ElementTree],
 
 @schema_dict_version_dispatch(output_schema=False)
 def get_kpoints_data(
-    xmltree: Union[etree._Element, etree._ElementTree],
-    schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-    name: str = None,
-    index: int = None,
+    xmltree: XMLLike,
+    schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+    name: str | None = None,
+    index: int | None = None,
     only_used: bool = False,
-    logger: Logger = None,
+    logger: Logger | None = None,
     convert_to_angstroem: bool = True
-) -> Tuple[Union[List[List[float]], Dict[str, List[List[float]]]], Union[List[float], Dict[str, List[float]]],
-           np.ndarray, Tuple[bool, bool, bool]]:
+) -> tuple[list[list[float]] | dict[str, list[list[float]]], list[float] | dict[str, list[float]], np.ndarray, tuple[
+        bool, bool, bool]]:
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -968,11 +970,11 @@ def get_kpoints_data(
 
 @get_kpoints_data.register(max_version='0.31')
 def get_kpoints_data_max4(
-        xmltree: Union[etree._Element, etree._ElementTree],
-        schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-        logger: Logger = None,
+        xmltree: XMLLike,
+        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+        logger: Logger | None = None,
         convert_to_angstroem: bool = True,
-        only_used: bool = False) -> Tuple[List[List[float]], List[float], np.ndarray, Tuple[bool, bool, bool]]:
+        only_used: bool = False) -> tuple[list[list[float]], list[float], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -1048,9 +1050,9 @@ def get_kpoints_data_max4(
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_relaxation_information(xmltree: Union[etree._Element, etree._ElementTree],
-                               schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                               logger: Logger = None) -> Dict[str, Any]:
+def get_relaxation_information(xmltree: XMLLike,
+                               schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                               logger: Logger | None = None) -> dict[str, Any]:
     """
     Get the relaxation information from the given fleur XML file. This includes the current
     displacements, energy and posforce evolution
@@ -1105,10 +1107,9 @@ def get_relaxation_information(xmltree: Union[etree._Element, etree._ElementTree
 
 
 @get_relaxation_information.register(max_version='0.28')
-def get_relaxation_information_pre029(xmltree: Union[etree._Element, etree._ElementTree],
-                                      schema_dict: Union['fleur_schema.InputSchemaDict',
-                                                         'fleur_schema.OutputSchemaDict'],
-                                      logger: Logger = None) -> None:
+def get_relaxation_information_pre029(xmltree: XMLLike,
+                                      schema_dict: (fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict),
+                                      logger: Logger | None = None) -> None:
     """
     Get the relaxation information from the given fleur XML file. This includes the current
     displacements, energy and posforce evolution
@@ -1126,9 +1127,9 @@ def get_relaxation_information_pre029(xmltree: Union[etree._Element, etree._Elem
         f"'get_relaxation_information' is not implemented for inputs of version '{schema_dict['inp_version']}'")
 
 
-def get_symmetry_information(xmltree: Union[etree._Element, etree._ElementTree],
-                             schema_dict: Union['fleur_schema.InputSchemaDict', 'fleur_schema.OutputSchemaDict'],
-                             logger: Logger = None) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+def get_symmetry_information(xmltree: XMLLike,
+                             schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                             logger: Logger | None = None) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """
     Get the symmetry information from the given fleur XML file. This includes the
     rotation matrices and shifts defined in the ``symmetryOperations`` tag.

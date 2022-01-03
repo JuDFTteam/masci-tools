@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for the load functions in io_fleurxml
 """
@@ -25,7 +24,7 @@ def test_load_inpxml(test_file):
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file handle
-    with open(TEST_INPXML_PATH, 'r', encoding='utf-8') as inpfile:
+    with open(TEST_INPXML_PATH, encoding='utf-8') as inpfile:
         xmltree, schema_dict = load_inpxml(inpfile)
 
     assert xmltree is not None
@@ -53,7 +52,7 @@ def test_load_outxml(test_file):
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file handle
-    with open(TEST_OUTXML_PATH, 'r', encoding='utf-8') as inpfile:
+    with open(TEST_OUTXML_PATH, encoding='utf-8') as inpfile:
         xmltree, schema_dict = load_outxml(inpfile)
 
     assert xmltree is not None

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -13,13 +12,17 @@
 """
 This module contains a generic HDF5 reader
 """
+from __future__ import annotations
+
 import io
 import os
+from types import TracebackType
 import h5py
 import warnings
 import logging
 from pathlib import Path
-from typing import IO, Callable, Dict, List, Optional, Set, NamedTuple, Tuple, Any, Union, cast
+from typing import Callable, NamedTuple, Any, cast
+from masci_tools.util.typing import FileLike
 try:
     from typing import TypedDict
 except ImportError:
@@ -28,34 +31,34 @@ except ImportError:
 
 class Transformation(NamedTuple):
     name: str
-    args: Tuple[Any, ...] = ()
-    kwargs: Dict[str, Any] = {}
+    args: tuple[Any, ...] = ()
+    kwargs: dict[str, Any] = {}
 
 
 class AttribTransformation(NamedTuple):
     name: str
     attrib_name: str
-    args: Tuple[Any, ...] = ()
-    kwargs: Dict[str, Any] = {}
+    args: tuple[Any, ...] = ()
+    kwargs: dict[str, Any] = {}
 
 
 class HDF5Transformation(TypedDict, total=False):
     h5path: str  #This should strictly be marked as required when it's possible
-    transforms: List[Union[Transformation, AttribTransformation]]
+    transforms: list[Transformation | AttribTransformation]
     unpack_dict: bool
     description: str
 
 
 class HDF5LimitedTransformation(TypedDict, total=False):
     h5path: str  #This should strictly be marked as required when it's possible
-    transforms: List[Transformation]
+    transforms: list[Transformation]
     unpack_dict: bool
     description: str
 
 
 class HDF5Recipe(TypedDict, total=False):
-    datasets: Dict[str, HDF5Transformation]
-    attributes: Dict[str, HDF5LimitedTransformation]
+    datasets: dict[str, HDF5Transformation]
+    attributes: dict[str, HDF5LimitedTransformation]
 
 
 logger = logging.getLogger(__name__)
@@ -91,16 +94,16 @@ class HDF5Reader:
 
     """
 
-    _transforms: Dict[str, Callable] = {}
-    _attribute_transforms: Set[str] = set()
+    _transforms: dict[str, Callable] = {}
+    _attribute_transforms: set[str] = set()
 
-    def __init__(self, file: Union[str, bytes, Path, os.PathLike, IO], move_to_memory: bool = True) -> None:
+    def __init__(self, file: FileLike, move_to_memory: bool = True) -> None:
 
         self._original_file = file
         self.file: h5py.File = None
 
         if isinstance(self._original_file, (io.IOBase, Path)):
-            self.filename = self._original_file.name
+            self.filename = self._original_file.name  # type: ignore
         elif isinstance(self._original_file, bytes):
             self.filename = os.fsdecode(self._original_file)
         else:
@@ -114,16 +117,17 @@ class HDF5Reader:
 
         self._move_to_memory = move_to_memory
 
-    def __enter__(self) -> 'HDF5Reader':
+    def __enter__(self) -> HDF5Reader:
         self.file = h5py.File(self._original_file, 'r')
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None,
+                 exc_traceback: TracebackType | None) -> None:
         self.file.close()
         logger.debug('Closed h5py.File with id %s', self.file.id)
 
-    def _read_dataset(self, h5path: str, strict: bool = True) -> Optional[h5py.Dataset]:
+    def _read_dataset(self, h5path: str, strict: bool = True) -> h5py.Dataset | None:
         """Return in the dataset specified by the given h5path
 
         :param h5path : str, HDF5 group path in file.
@@ -149,10 +153,10 @@ class HDF5Reader:
         return None
 
     def _transform_dataset(self,
-                           transforms: Union[List[Transformation], List[Union[Transformation, AttribTransformation]]],
+                           transforms: list[Transformation] | list[Transformation | AttribTransformation],
                            dataset: h5py.Dataset,
-                           attributes: Dict[str, Any] = None,
-                           dataset_name: str = None) -> Any:
+                           attributes: dict[str, Any] | None = None,
+                           dataset_name: str | None = None) -> Any:
         """
         Transforms the given dataset with the given list of tasks
 
@@ -188,7 +192,7 @@ class HDF5Reader:
         return transformed_dset
 
     @staticmethod
-    def _unpack_dataset(output_dict: Dict[str, Any], dataset_name: str) -> Dict[str, Any]:
+    def _unpack_dataset(output_dict: dict[str, Any], dataset_name: str) -> dict[str, Any]:
         """
         Unpack the entires of the dictionary dataset in the entry dataset_name into the
         output_dict
@@ -212,7 +216,7 @@ class HDF5Reader:
 
         return {**output_dict, **unpack_dict}
 
-    def read(self, recipe: HDF5Recipe = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    def read(self, recipe: HDF5Recipe | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
         """Extracts datasets from HDF5 file, transforms them and puts all into a namedtuple.
 
         :param recipe: dict with the format given in :py:mod:`~masci_tools.io.parsers.hdf5.recipes`

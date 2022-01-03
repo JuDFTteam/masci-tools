@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -164,10 +163,9 @@ class Plotter:
     Base class for handling parameters for plotting methods. For different plotting backends
     a subclass can be created to represent the specific parameters of the backend.
 
-    Args:
-        :param default_parameters: dict with hardcoded default parameters
-        :param general_keys: set of str optional, defines parameters which are
-                             not allowed to change for each entry in the plot data
+    :param default_parameters: dict with hardcoded default parameters
+    :param general_keys: set of str optional, defines parameters which are
+                            not allowed to change for each entry in the plot data
 
     Kwargs in the __init__ method are forwarded to :py:func:`Plotter.set_defaults()`
     to change the current defaults away from the hardcoded parameters.
@@ -630,7 +628,7 @@ class Plotter:
 
         :param filename: filename,from  where the defaults should be taken
         """
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)

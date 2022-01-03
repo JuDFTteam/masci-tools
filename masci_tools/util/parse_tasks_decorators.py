@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -27,7 +26,7 @@ from masci_tools.util.parse_tasks import ParseTasks
 from functools import wraps
 
 F = TypeVar('F', bound=Callable[..., Any])
-"""Generic Type variable for callable"""
+"""Generic Callable type"""
 
 
 def register_migration(base_version: str, target_version: Union[str, List[str]]) -> Callable[[F], F]:

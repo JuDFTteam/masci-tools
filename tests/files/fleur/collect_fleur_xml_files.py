@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Function to collect input files from a specfied folder and subfolders and copy them to
 the tests/files/fleur folder

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test of the utility functions for the schema dictionaries
 both path finding and easy information extraction
@@ -321,7 +320,6 @@ def test_single_value_tag(caplog, load_outxml):
     """
     Test of the evaluate_single_value_tag function
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import evaluate_single_value_tag
     from masci_tools.util.xml.common_functions import eval_xpath
 
@@ -331,7 +329,7 @@ def test_single_value_tag(caplog, load_outxml):
     iteration_xpath = schema_dict.tag_xpath('iteration')
     iteration = eval_xpath(root, iteration_xpath, list_return=True)[0]
 
-    expected = {'comment': None, 'units': 'Htr', 'value': -4204.714048254}
+    expected = {'units': 'Htr', 'value': -4204.714048254}
     totalEnergy = evaluate_single_value_tag(iteration, schema_dict, 'totalEnergy', FLEUR_DEFINED_CONSTANTS)
     assert totalEnergy == expected
 
@@ -501,7 +499,6 @@ def test_schema_dict_util_abs_to_rel_path(load_inpxml):
     """
     Test of the absolute to relative xpath conversion in schema_dict_util functions
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import eval_simple_xpath, get_number_of_nodes, tag_exists, \
                                                   evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
                                                   evaluate_text
@@ -723,3 +720,44 @@ def test_schema_dict_util_filters(load_inpxml):
                         filters={'species': {
                             'name': 'Pt-1'
                         }})
+
+
+def test_reverse_xinclude(load_inpxml):
+    """
+    Test of the reverse_xinclude function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+    from masci_tools.util.schema_dict_util import reverse_xinclude
+
+    xmltree, schema_dict = load_inpxml('fleur/test_clear.xml', absolute=False)
+
+    cleared_tree, all_include_tags = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
+    reexcluded_root = reexcluded_tree.getroot()
+
+    assert list(included_trees.keys()) == ['sym.xml']
+    sym_root = included_trees['sym.xml'].getroot()
+
+    include_tags = eval_xpath(cleared_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0
+
+    include_tags = eval_xpath(reexcluded_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 2
+    assert [tag.attrib['href'] for tag in include_tags] == ['sym.xml', 'relax.xml']
+
+    symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 16
+
+    symmetry_tags = eval_xpath(reexcluded_root, '//symOp', list_return=True)
+    assert len(symmetry_tags) == 0
+
+    symmetry_tags = eval_xpath(sym_root, 'symOp', list_return=True)
+    assert len(symmetry_tags) == 16

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,12 +13,13 @@
 This module provides the functionality to create/load the schema_dict for the
 FleurInputSchema.xsd
 """
+from __future__ import annotations
+
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
-from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
-from typing import Tuple, List, AnyStr, Union, Callable, Dict, Set
+from typing import AnyStr, Callable
 try:
     from typing import TypedDict, Literal
 except ImportError:
@@ -33,16 +33,16 @@ class InputSchemaData(TypedDict, total=False):
     """
     root_tag: str
     inp_version: str
-    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]]
-    attrib_types: CaseInsensitiveDict[str, List[AttributeType]]
-    text_types: CaseInsensitiveDict[str, List[AttributeType]]
+    tag_paths: CaseInsensitiveDict[str, list[str] | str]
+    attrib_types: CaseInsensitiveDict[str, list[AttributeType]]
+    text_types: CaseInsensitiveDict[str, list[AttributeType]]
     text_tags: CaseInsensitiveFrozenSet[str]
     unique_attribs: CaseInsensitiveDict[str, str]
-    unique_path_attribs: CaseInsensitiveDict[str, List[str]]
-    other_attribs: CaseInsensitiveDict[str, List[str]]
+    unique_path_attribs: CaseInsensitiveDict[str, list[str]]
+    other_attribs: CaseInsensitiveDict[str, list[str]]
     omitt_contained_tags: LockableList[str]
     tag_info: LockableDict[str, TagInfo]
-    _basic_types: LockableDict[str, List[AttributeType]]
+    _basic_types: LockableDict[str, list[AttributeType]]
 
 
 KEYS = Literal['root_tag', 'tag_paths', '_basic_types', 'attrib_types', 'text_types', 'text_tags', 'unique_attribs',
@@ -61,7 +61,7 @@ def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSche
     """
 
     #Add new functionality to this dictionary here
-    schema_actions: Dict[KEYS, Callable] = {
+    schema_actions: dict[KEYS, Callable] = {
         'root_tag': get_root_tag,
         'tag_paths': get_tag_paths,
         '_basic_types': get_basic_types,
@@ -99,7 +99,7 @@ def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSche
     return schema_dict
 
 
-def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
+def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: tuple[int, int]) -> None:
     """
     Converts specified string attributes to float_expression for schema_dicts of versions
     0.32 and before.
@@ -141,8 +141,8 @@ def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: Tupl
         #After this version the issue was solved
         return
 
-    replace_set: Set[str] = set()
-    add_set: Set[str] = set()
+    replace_set: set[str] = set()
+    add_set: set[str] = set()
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
@@ -175,7 +175,7 @@ def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: Tupl
         schema_dict[TYPES_ENTRY][name].insert(0, EXPR_NAME)
 
 
-def patch_forcetheorem_attributes(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
+def patch_forcetheorem_attributes(schema_dict: InputSchemaData, inp_version: tuple[int, int]) -> None:
     """
     Special patch for theta, phi and ef_shift attributes on forceTheorem tags
     In Max5/5.1 They are entered as FleurDouble but can be a list.
@@ -194,8 +194,8 @@ def patch_forcetheorem_attributes(schema_dict: InputSchemaData, inp_version: Tup
                                                   [AttributeType(base_type='float_expression', length='unbounded')], key=type_order)
 
 
-def patch_basic_types(basic_types: LockableDict[str, List[AttributeType]],
-                      inp_version: Tuple[int, int]) -> LockableDict[str, List[AttributeType]]:
+def patch_basic_types(basic_types: LockableDict[str, list[AttributeType]],
+                      inp_version: tuple[int, int]) -> LockableDict[str, list[AttributeType]]:
     """
     Patch the _basic_types entry to correct ambigouities
 
@@ -222,7 +222,7 @@ def patch_basic_types(basic_types: LockableDict[str, List[AttributeType]],
         },
     }
 
-    all_changes: Dict[str, List[AttributeType]] = {}
+    all_changes: dict[str, list[AttributeType]] = {}
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 
@@ -230,7 +230,7 @@ def patch_basic_types(basic_types: LockableDict[str, List[AttributeType]],
             continue
 
         version_add = changes.get('add', {})
-        version_remove: Set[str] = changes.get('remove', set())  #type: ignore
+        version_remove: set[str] = changes.get('remove', set())  #type: ignore
 
         all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
 
@@ -242,7 +242,7 @@ def patch_basic_types(basic_types: LockableDict[str, List[AttributeType]],
     return basic_types
 
 
-def patch_text_types(schema_dict: InputSchemaData, inp_version: Tuple[int, int]) -> None:
+def patch_text_types(schema_dict: InputSchemaData, inp_version: tuple[int, int]) -> None:
     """
     Patch the simple_elememnts entry to correct ambigouities
 
@@ -294,7 +294,7 @@ def patch_text_types(schema_dict: InputSchemaData, inp_version: Tuple[int, int])
         }
     }
 
-    all_changes: Dict[str, List[AttributeType]] = {}
+    all_changes: dict[str, list[AttributeType]] = {}
 
     for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
 

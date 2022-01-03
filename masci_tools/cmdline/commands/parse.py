@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Commands for parsing information from KKR/Fleur files
 """
@@ -6,7 +5,6 @@ from .root import cli
 
 import click
 from masci_tools.cmdline.utils import echo
-import numpy as np
 
 
 @cli.group('parse')

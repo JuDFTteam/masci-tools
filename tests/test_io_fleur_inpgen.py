@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the fleur_inpgen module
 """
@@ -333,7 +332,7 @@ def test_read_inpgen_file_contents(datadir, data_regression):
 
     TESTFILE = datadir / 'test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r', encoding='utf-8') as f:
+    with open(TESTFILE, encoding='utf-8') as f:
         content = f.read()
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(content)
@@ -351,7 +350,7 @@ def test_read_inpgen_file_handle(datadir, data_regression):
 
     TESTFILE = datadir / 'test_write_inpgen_file_defaults_dict.txt'
 
-    with open(TESTFILE, 'r', encoding='utf-8') as f:
+    with open(TESTFILE, encoding='utf-8') as f:
         cell, atom_sites, pbc, input_params = read_inpgen_file(f)
 
     data_regression.check({

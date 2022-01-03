@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -97,7 +96,7 @@ class modify_potential:
 
         order = list(range(len(index1)))
 
-        with open(scoefpath, 'r') as f:
+        with open(scoefpath) as f:
             lines = f.readlines()
             natomtemp = int(lines[0])
             filedata = lines[1:natomtemp + 1]

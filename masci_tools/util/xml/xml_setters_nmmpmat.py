@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,25 +13,27 @@
 This module contains useful methods for initializing or modifying a n_mmp_mat file
 for LDA+U
 """
-from typing import Union, List, Optional
+from __future__ import annotations
+
 import numpy as np
 from lxml import etree
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
+from masci_tools.util.typing import XMLLike
 
 
-def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
-                nmmplines: List[str],
-                schema_dict: 'fleur_schema.SchemaDict',
+def set_nmmpmat(xmltree: XMLLike,
+                nmmplines: list[str],
+                schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
                 orbital: int,
                 spin: int,
-                state_occupations: List[float] = None,
-                orbital_occupations: List[float] = None,
-                denmat: np.ndarray = None,
-                phi: float = None,
-                theta: float = None,
-                filters: FilterType = None) -> List[str]:
+                state_occupations: list[float] | None = None,
+                orbital_occupations: list[float] | None = None,
+                denmat: np.ndarray | None = None,
+                phi: float | None = None,
+                theta: float | None = None,
+                filters: FilterType | None = None) -> list[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
 
@@ -68,7 +69,7 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     elif species_name != 'all':
         species_xpath.add_filter('species', {'name': species_name})
 
-    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
+    all_species: list[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -136,14 +137,14 @@ def set_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     return nmmplines
 
 
-def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
-                   nmmplines: List[str],
-                   schema_dict: 'fleur_schema.SchemaDict',
+def rotate_nmmpmat(xmltree: XMLLike,
+                   nmmplines: list[str],
+                   schema_dict: fleur_schema.SchemaDict,
                    species_name: str,
                    orbital: int,
                    phi: float,
                    theta: float,
-                   filters: FilterType = None) -> List[str]:
+                   filters: FilterType = None) -> list[str]:
     """
     Rotate the density matrix with the given angles phi and theta
 
@@ -174,7 +175,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     elif species_name != 'all':
         species_xpath.add_filter('species', {'name': species_name})
 
-    all_species: List[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
+    all_species: list[etree._Element] = eval_xpath(xmltree, species_xpath, list_return=True)  #type:ignore
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -228,8 +229,7 @@ def rotate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree],
     return nmmplines
 
 
-def validate_nmmpmat(xmltree: Union[etree._Element, etree._ElementTree], nmmplines: Optional[List[str]],
-                     schema_dict: 'fleur_schema.SchemaDict') -> None:
+def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict: fleur_schema.SchemaDict) -> None:
     """
     Checks that the given nmmp_lines is valid with the given xmltree
 

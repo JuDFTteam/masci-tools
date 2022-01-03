@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the commands in the fleur-schema subgroup of the masci-tools cli
 """

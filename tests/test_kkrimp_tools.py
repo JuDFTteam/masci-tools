@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Test of kkrimp tools
 """
@@ -21,7 +20,7 @@ class Test_modify_potential:
         atom2shapes = [1]
         shapefun_new = os.fspath(DIR / Path('files/mod_pot/test2/shapefun_new'))
         modify_potential().shapefun_from_scoef(scoefpath, shapefun_path, atom2shapes, shapefun_new)
-        with open(shapefun_new, 'r', encoding='utf-8') as f:
+        with open(shapefun_new, encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -32,7 +31,7 @@ class Test_modify_potential:
         neworder = [0, 1, 2]
         # test 1: neworder_potential standard
         modify_potential().neworder_potential(pot, out_pot, neworder)
-        with open(out_pot, 'r', encoding='utf-8') as f:
+        with open(out_pot, encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -45,7 +44,7 @@ class Test_modify_potential:
         # test 2: neworder_potential with replace from second potential
         replace_newpos = [[0, 0], [2, 0]]
         modify_potential().neworder_potential(pot1, out_pot, neworder, potfile_2=pot2, replace_from_pot2=replace_newpos)
-        with open(out_pot, 'r', encoding='utf-8') as f:
+        with open(out_pot, encoding='utf-8') as f:
             txt = f.read().strip()
         file_regression.check(txt)
 
@@ -124,7 +123,7 @@ class Test_KkrimpParserFunctions:
         print(f'\nmessages?\n{m}\n')
         print(f'\nout_dict?\n{o}\n')
         assert not s
-        assert set(m) == set([
+        assert set(m) == {
             'Error parsing output of KKRimp: Version Info', 'Error parsing output of KKRimp: rms-error',
             'Error parsing output of KKRimp: nspin/natom', 'Error parsing output of KKRimp: total magnetic moment',
             'Error parsing output of KKRimp: spin moment per atom', 'Error parsing output of KKRimp: orbital moment',
@@ -133,5 +132,5 @@ class Test_KkrimpParserFunctions:
             'Error parsing output of KKRimp: single particle energies', 'Error parsing output of KKRimp: charges',
             'Error parsing output of KKRimp: energy contour', 'Error parsing output of KKRimp: core_states',
             'Error parsing output of KKRimp: scfinfo'
-        ])
+        }
         assert o == {'convergence_group': {}}

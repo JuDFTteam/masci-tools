@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,24 +13,27 @@
 This module contains functions to load an fleur inp.xml file, parse it with a schema
 and convert its content to a dict
 """
+from __future__ import annotations
+
 from lxml import etree
 from pprint import pprint
 
-from masci_tools.io.io_fleurxml import load_inpxml, XMLInput
+from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
 from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
+from masci_tools.util.typing import XMLFileLike
 import logging
-from typing import Dict, Any, Optional
+from typing import Any
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
 
-def inpxml_parser(inpxmlfile: XMLInput,
-                  parser_info_out: Dict[str, Any] = None,
+def inpxml_parser(inpxmlfile: XMLFileLike,
+                  parser_info_out: dict[str, Any] | None = None,
                   strict: bool = False,
                   debug: bool = False,
-                  base_url: str = None) -> Dict[str, Any]:
+                  base_url: str | None = None) -> dict[str, Any]:
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and corretly convert to the dictionary
@@ -49,7 +51,7 @@ def inpxml_parser(inpxmlfile: XMLInput,
     """
 
     __parser_version__ = '0.3.0'
-    logger: Optional[logging.Logger] = logging.getLogger(__name__)
+    logger: logging.Logger | None = logging.getLogger(__name__)
 
     if strict:
         logger = None
@@ -117,11 +119,11 @@ def inpxml_parser(inpxmlfile: XMLInput,
 
 
 def inpxml_todict(parent: etree._Element,
-                  schema_dict: 'InputSchemaDict',
-                  constants: Dict[str, float],
+                  schema_dict: InputSchemaDict,
+                  constants: dict[str, float],
                   omitted_tags: bool = False,
-                  base_xpath: str = None,
-                  logger: logging.Logger = None) -> Dict[str, Any]:
+                  base_xpath: str | None = None,
+                  logger: logging.Logger | None = None) -> dict[str, Any]:
     """
     Recursive operation which transforms an xml etree to
     python nested dictionaries and lists.
@@ -143,7 +145,7 @@ def inpxml_todict(parent: etree._Element,
     if base_xpath is None:
         base_xpath = f'/{parent.tag}'
 
-    return_dict: Dict[str, Any] = {}
+    return_dict: dict[str, Any] = {}
     if list(parent.items()):
         return_dict = {str(key): val for key, val in parent.items()}
         # Now we have to convert lazy fortan style into pretty things for the Database

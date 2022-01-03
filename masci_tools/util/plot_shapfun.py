@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), 2018 Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.    #
 #                All rights reserved.                                         #
@@ -18,9 +17,7 @@ Plotting utility to visualize the output of the voronoi code.
 Reads files 'vertices.dat' to extract the vertices of the shapefunctions and 'positions.dat' (done in 'read_shapefun' function)
 Then creates a simple matplotlib image to show the shapefunctions using the 'plot_shapefun' function.
 """
-from __future__ import print_function
 
-from __future__ import absolute_import
 from numpy import array, shape
 import sys
 from sys import argv

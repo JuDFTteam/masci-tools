@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,16 +13,20 @@
 This module contains the functions necessary to parse mathematical expressions
 with predefined constants given in the inp.xml file of Fleur
 """
-from typing import Callable, Dict, Union, Tuple
+from __future__ import annotations
+
+from typing import Callable
 import numpy as np
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
 
 
 class MissingConstant(Exception):
-    pass
+    """
+    Exception raised when a constant appearing in a expression is not defined
+    """
 
 
-def calculate_expression(expression: Union[str, float, int], constants: Dict[str, float] = None) -> float:
+def calculate_expression(expression: str | float | int, constants: dict[str, float] | None = None) -> float | int:
     """
     Recursively evaluates the given expression string with the given defined constants
 
@@ -36,9 +39,9 @@ def calculate_expression(expression: Union[str, float, int], constants: Dict[str
     return value
 
 
-def calculate_expression_partial(expression: Union[str, float, int],
-                                 constants: Dict[str, float] = None,
-                                 prevCommand: str = None) -> Tuple[float, str]:
+def calculate_expression_partial(expression: str | float | int,
+                                 constants: dict[str, float] | None = None,
+                                 prevCommand: str | None = None) -> tuple[float | int, str]:
     """
     Recursively evaluates the given expression string with the given defined constants
     and returns the unevaluated part of the expression
@@ -53,7 +56,7 @@ def calculate_expression_partial(expression: Union[str, float, int],
     """
 
     #Map the keywords recognized by fleur to the corresponding numpy function
-    functions_dict: Dict[str, Callable] = {
+    functions_dict: dict[str, Callable] = {
         'sin': np.sin,
         'cos': np.cos,
         'tan': np.tan,
@@ -173,7 +176,7 @@ def calculate_expression_partial(expression: Union[str, float, int],
     return value, expression
 
 
-def get_first_number(expression: str) -> Tuple[float, str]:
+def get_first_number(expression: str) -> tuple[float, str]:
     """
     Reads the number in the beginning of the expression string.
     This number can begin with a sign +-, a number or the decimal point
@@ -203,7 +206,7 @@ def get_first_number(expression: str) -> Tuple[float, str]:
     return float(numberstring), expression[len(numberstring):]
 
 
-def get_first_string(expression: str) -> Tuple[str, str]:
+def get_first_string(expression: str) -> tuple[str, str]:
     """
     Reads the letter string in the beginning of the expression string.
 
@@ -222,7 +225,7 @@ def get_first_string(expression: str) -> Tuple[str, str]:
     return found_string, expression[len(found_string):]
 
 
-def evaluate_bracket(expression: str, constants: Dict[str, float]) -> Tuple[Union[float, int], str]:
+def evaluate_bracket(expression: str, constants: dict[str, float]) -> tuple[float | int, str]:
     """
     Evaluates the bracket opened at the start of the expression
 
