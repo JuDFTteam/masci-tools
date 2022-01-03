@@ -118,9 +118,7 @@ def xml_delete_att(xmltree: XMLLike,
     return xmltree
 
 
-def xml_delete_tag(xmltree: XMLLike,
-                   xpath: XPathLike,
-                   occurrences: int | Iterable[int] | None = None) -> XMLLike:
+def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Deletes a xml tag in an xmletree.
 
@@ -329,12 +327,11 @@ def xml_create_tag(xmltree: XMLLike,
     return xmltree
 
 
-def xml_set_attrib_value_no_create(
-        xmltree: XMLLike,
-        xpath: XPathLike,
-        attributename: str,
-        attribv: Any,
-        occurrences: int | Iterable[int] | None = None) -> XMLLike:
+def xml_set_attrib_value_no_create(xmltree: XMLLike,
+                                   xpath: XPathLike,
+                                   attributename: str,
+                                   attribv: Any,
+                                   occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.

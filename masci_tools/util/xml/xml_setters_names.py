@@ -1283,8 +1283,7 @@ def set_kpointlist_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, 
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict,
-                     list_name: str) -> XMLLike:
+def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, list_name: str) -> XMLLike:
     """
     Switch the used k-point set
 
@@ -1309,8 +1308,7 @@ def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict,
 
 
 @switch_kpointset.register(max_version='0.31')
-def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict,
-                          list_name: str) -> XMLLike:
+def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, list_name: str) -> XMLLike:
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
@@ -1328,10 +1326,7 @@ def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict
 
 
 @schema_dict_version_dispatch(output_schema=False)
-def set_nkpts(xmltree: XMLLike,
-              schema_dict: fleur_schema.SchemaDict,
-              count: int,
-              gamma: bool = False) -> XMLLike:
+def set_nkpts(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int, gamma: bool = False) -> XMLLike:
     """
     Sets a k-point mesh directly into inp.xml
 
@@ -1351,10 +1346,7 @@ def set_nkpts(xmltree: XMLLike,
 
 
 @set_nkpts.register(max_version='0.31')
-def set_nkpts_max4(xmltree: XMLLike,
-                   schema_dict: fleur_schema.SchemaDict,
-                   count: int,
-                   gamma: bool = False) -> XMLLike:
+def set_nkpts_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int, gamma: bool = False) -> XMLLike:
     """
     Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
 
