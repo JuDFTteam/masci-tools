@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import io
 import os
+from types import TracebackType
 import h5py
 import warnings
 import logging
@@ -121,7 +122,8 @@ class HDF5Reader:
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 
-    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
+    def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None,
+                 exc_traceback: TracebackType | None) -> None:
         self.file.close()
         logger.debug('Closed h5py.File with id %s', self.file.id)
 

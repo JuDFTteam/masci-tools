@@ -56,6 +56,9 @@ warn_unused_ignores=true
 warn_redundant_casts=true
 no_implicit_optional=true
 show_error_codes = true
+warn_no_return = true
+disallow_incomplete_defs=true
+disallow_subclassing_any=true
 
 [[tool.mypy.overrides]]
 module = 'h5py'
