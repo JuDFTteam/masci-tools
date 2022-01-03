@@ -929,13 +929,15 @@ def get_kpoints_data(
             raise ValueError(f'Found no Kpoint list with the name: {name}'
                              f'Available list names: {labels}'
                              'The listName attribute is not consistent with the rest of the input')
-        raise ValueError(f'Found no Kpoint list with the name: {name}' f'Available list names: {labels}')
+        raise ValueError(f'Found no Kpoint list with the name: {name}'
+                         f'Available list names: {labels}')
 
     if index is not None:
         try:
             kpointlists = [kpointlists[index]]
         except IndexError as exc:
-            raise ValueError(f'No kPointList with index {index} found.' f' Only {len(kpointlists)} available') from exc
+            raise ValueError(f'No kPointList with index {index} found.'
+                             f' Only {len(kpointlists)} available') from exc
 
     kpoints_data = {}
     weights_data = {}

@@ -446,7 +446,8 @@ def convert_from_fortran_bool(stringbool: str | bool) -> bool:
     if isinstance(stringbool, bool):
         return stringbool  # no conversion needed...
 
-    raise TypeError(f"Could not convert: '{stringbool}' to boolean, " 'only accepts str or boolean')
+    raise TypeError(f"Could not convert: '{stringbool}' to boolean, "
+                    'only accepts str or boolean')
 
 
 def convert_to_fortran_bool(boolean: bool | str) -> Literal['T', 'F']:
@@ -470,7 +471,8 @@ def convert_to_fortran_bool(boolean: bool | str) -> Literal['T', 'F']:
         raise ValueError(f"A string: {boolean} for a boolean was given, which is not 'True',"
                          "'False', 't', 'T', 'F' or 'f'")
 
-    raise TypeError('convert_to_fortran_bool accepts only a string or ' f'bool as argument, given {boolean} ')
+    raise TypeError('convert_to_fortran_bool accepts only a string or '
+                    f'bool as argument, given {boolean} ')
 
 
 def convert_fleur_lo(loelements: list[etree._Element]) -> str:

@@ -264,7 +264,9 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     if own_lattice:
         # TODO with own lattice atomic positions have to come from somewhere
         # else.... User input?
-        raise ValueError('fleur lattice needs also the atom ' ' position as input,' ' not implemented yet, sorry!')
+        raise ValueError('fleur lattice needs also the atom '
+                         ' position as input,'
+                         ' not implemented yet, sorry!')
 
     atom_positions_text = []
     natoms = len(atom_sites)
@@ -402,7 +404,8 @@ def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str,
     # hasattr(__iter__)
     if isinstance(val, dict):
         if mapping is None:
-            raise ValueError("If 'val' is a dictionary, you must provide also " "the 'mapping' parameter")
+            raise ValueError("If 'val' is a dictionary, you must provide also "
+                             "the 'mapping' parameter")
 
         # At difference with the case of a list, at the beginning
         # list_of_strings

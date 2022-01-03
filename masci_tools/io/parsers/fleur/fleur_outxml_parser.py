@@ -129,7 +129,8 @@ def outxml_parser(outxmlfile: XMLFileLike,
             if 'Failed to parse output file' in str(err):
                 if logger is None:
                     raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
-                logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
+                logger.exception('Skipping the parsing of the xml file. '
+                                 'Repairing was not possible.')
                 return {}
             if logger is not None:
                 logger.error(str(err))

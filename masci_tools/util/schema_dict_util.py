@@ -560,8 +560,10 @@ def evaluate_tag(node: XMLLike,
         for tag in tags:
             if tag in out_dict:
                 if logger is None:
-                    raise ValueError(f'Conflicting key {tag}: ' 'Key is already in the output dictionary')
-                logger.error('Conflicting key %s: ' 'Key is already in the output dictionary', tag)
+                    raise ValueError(f'Conflicting key {tag}: '
+                                     'Key is already in the output dictionary')
+                logger.error('Conflicting key %s: '
+                             'Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
         sub_nodes: list[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
@@ -645,13 +647,17 @@ def evaluate_single_value_tag(node: XMLLike,
 
     if value_dict.get('value') is None:
         if logger is None:
-            raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'value' attribute")
-        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'value' attribute", name)
+            raise ValueError(f'Failed to evaluate singleValue from tag {name}: '
+                             "Has no 'value' attribute")
+        logger.warning('Failed to evaluate singleValue from tag %s: '
+                       "Has no 'value' attribute", name)
 
     if value_dict.get('units') is None and not only_required and 'units' not in ignore:
         if logger is None:
-            raise ValueError(f'Failed to evaluate singleValue from tag {name}: ' "Has no 'units' attribute")
-        logger.warning('Failed to evaluate singleValue from tag %s: ' "Has no 'units' attribute", name)
+            raise ValueError(f'Failed to evaluate singleValue from tag {name}: '
+                             "Has no 'units' attribute")
+        logger.warning('Failed to evaluate singleValue from tag %s: '
+                       "Has no 'units' attribute", name)
 
     return value_dict
 
