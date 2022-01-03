@@ -36,7 +36,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
                                element: str | etree._Element,
                                create_parents: bool = False,
                                number_nodes: int = 1,
-                               occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                               occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -163,7 +163,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
                          attributename: str,
                          attribv: Any,
                          occurrences: int | Iterable[int] | None = None,
-                         create: bool = False) -> etree._Element | etree._ElementTree:
+                         create: bool = False) -> XMLLike:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -234,7 +234,7 @@ def xml_set_first_attrib_value(xmltree: XMLLike,
                                base_xpath: str,
                                attributename: str,
                                attribv: Any,
-                               create: bool = False) -> etree._Element | etree._ElementTree:
+                               create: bool = False) -> XMLLike:
     """
     Sets the first occurrence attribute in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
@@ -273,7 +273,7 @@ def xml_set_text(xmltree: XMLLike,
                  base_xpath: str,
                  text: Any,
                  occurrences: int | Iterable[int] | None = None,
-                 create: bool = False) -> etree._Element | etree._ElementTree:
+                 create: bool = False) -> XMLLike:
     """
     Sets the text on tags in a xmltree to a given value. By default the text will be set
     on all nodes returned for the specified xpath.
@@ -332,7 +332,7 @@ def xml_set_first_text(xmltree: XMLLike,
                        xpath: XPathLike,
                        base_xpath: str,
                        text: Any,
-                       create: bool = False) -> etree._Element | etree._ElementTree:
+                       create: bool = False) -> XMLLike:
     """
     Sets the text on the first occurrence of a tag in a xmltree to a given value.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
@@ -362,7 +362,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
                              attributename: str,
                              add_number: Any,
                              mode: Literal['abs', 'rel'] = 'abs',
-                             occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                             occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Adds a given number to the attribute value in a xmltree. By default the attribute will be shifted
     on all nodes returned for the specified xpath.
@@ -475,7 +475,7 @@ def xml_add_number_to_first_attrib(xmltree: XMLLike,
                                    base_xpath: str,
                                    attributename: str,
                                    add_number: Any,
-                                   mode: Literal['abs', 'rel'] = 'abs') -> etree._Element | etree._ElementTree:
+                                   mode: Literal['abs', 'rel'] = 'abs') -> XMLLike:
     """
     Adds a given number to the first occurrence of a attribute value in a xmltree.
     If there are no nodes under the specified xpath an error is raised
@@ -512,7 +512,7 @@ def xml_set_simple_tag(xmltree: XMLLike,
                        base_xpath: str,
                        tag_name: str,
                        changes: list[dict[str, Any]] | dict[str, Any],
-                       create_parents: bool = False) -> etree._Element | etree._ElementTree:
+                       create_parents: bool = False) -> XMLLike:
     """
     Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
     subtags.
@@ -589,7 +589,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
                         xpath: XPathLike,
                         base_xpath: str,
                         attributedict: dict[str, Any],
-                        create: bool = False) -> etree._Element | etree._ElementTree:
+                        create: bool = False) -> XMLLike:
     """
     Recursive Function to correctly set tags/attributes for a given tag.
     Goes through the attributedict and decides based on the schema_dict, how the corresponding

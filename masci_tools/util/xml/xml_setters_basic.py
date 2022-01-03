@@ -29,7 +29,7 @@ from masci_tools.util.xml.xpathbuilder import XPathBuilder
 def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
                     newelement: etree._Element,
-                    occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     replaces xml tags by another tag on an xmletree in place
 
@@ -78,7 +78,7 @@ def xml_replace_tag(xmltree: XMLLike,
 def xml_delete_att(xmltree: XMLLike,
                    xpath: XPathLike,
                    attrib: str,
-                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                   occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Deletes an xml attribute in an xmletree.
 
@@ -120,7 +120,7 @@ def xml_delete_att(xmltree: XMLLike,
 
 def xml_delete_tag(xmltree: XMLLike,
                    xpath: XPathLike,
-                   occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                   occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Deletes a xml tag in an xmletree.
 
@@ -204,7 +204,7 @@ def xml_create_tag(xmltree: XMLLike,
                    tag_order: list[str] | None = None,
                    occurrences: int | Iterable[int] | None = None,
                    correct_order: bool = True,
-                   several: bool = True) -> etree._Element | etree._ElementTree:
+                   several: bool = True) -> XMLLike:
     """
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
@@ -334,7 +334,7 @@ def xml_set_attrib_value_no_create(
         xpath: XPathLike,
         attributename: str,
         attribv: Any,
-        occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+        occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
     on all nodes returned for the specified xpath.
@@ -389,7 +389,7 @@ def xml_set_attrib_value_no_create(
 def xml_set_text_no_create(xmltree: XMLLike,
                            xpath: XPathLike,
                            text: Any,
-                           occurrences: int | Iterable[int] | None = None) -> etree._Element | etree._ElementTree:
+                           occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Sets the text of a tag in a xmltree to a given value.
     By default the text will be set on all nodes returned for the specified xpath.
