@@ -332,10 +332,6 @@ def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, ta
             ambiguous.append(AmbiguousAction.from_paths(old=old_paths, new=new_paths))
 
 
-def trim_path_actions(actions):
-    pass
-
-
 def trim_paths(paths):
 
     path_copy = paths.copy()
@@ -788,7 +784,6 @@ def inpxml():
     """
     Tool for converting inp.xml files to different versions
     """
-    pass
 
 
 @inpxml.command('convert')

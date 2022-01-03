@@ -5,7 +5,6 @@ from .root import cli
 
 import click
 from masci_tools.cmdline.utils import echo
-import numpy as np
 
 
 @cli.group('parse')

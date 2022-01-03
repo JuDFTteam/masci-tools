@@ -6,7 +6,7 @@ tests for the underlying functions in xml_setters_xpaths and xml_setters_basic
 """
 from lxml import etree
 import pytest
-from masci_tools.io.parsers.fleur_schema import NoUniquePathFound, NoPathFound
+from masci_tools.io.parsers.fleur_schema import NoUniquePathFound
 
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 TEST_MAX4_INPXML_PATH = 'fleur/aiida_fleur/inpxml/FePt/inp.xml'

@@ -46,14 +46,12 @@ class NoPathFound(ValueError):
     """
     Exception raised when no path is found for a given tag/attribute
     """
-    pass
 
 
 class NoUniquePathFound(ValueError):
     """
     Exception raised when no unique path is found for a given tag/attribute
     """
-    pass
 
 
 F = TypeVar('F', bound=Callable[..., Any])

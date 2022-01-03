@@ -66,6 +66,7 @@ def test_case_insensitive_frozenset_difference(test_set, exp_diff, exp_case):
 
     assert isinstance(actual, CaseInsensitiveFrozenSet)
     assert s - test_set == actual
+    assert actual == exp_diff
     assert actual.original_case == exp_case
 
 
@@ -153,5 +154,6 @@ def test_case_insensitive_frozenset_intersection(test_set, exp_intersect, exp_ca
     actual = s.intersection(test_set)
     print(actual.original_case)
     assert isinstance(actual, CaseInsensitiveFrozenSet)
+    assert actual == exp_intersect
     assert s & test_set == actual
     assert actual.original_case == exp_case

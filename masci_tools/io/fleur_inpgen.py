@@ -19,8 +19,7 @@ import numpy as np
 import os
 import copy
 import warnings
-from pathlib import Path
-from typing import Iterable, Sequence, IO, Any, cast
+from typing import Iterable, Sequence, Any, cast
 try:
     from typing import TypedDict
 except ImportError:

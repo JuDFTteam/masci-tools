@@ -1,6 +1,5 @@
 """Contains tests for the set_nmmpmat routine used for modifying the
    density matrix for LDA+U calculations."""
-import os
 import pytest
 import numpy as np
 

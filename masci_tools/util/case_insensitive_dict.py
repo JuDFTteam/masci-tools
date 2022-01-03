@@ -18,7 +18,7 @@ from __future__ import annotations
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 import pprint
 
-from typing import Any, Union, Iterable, Generator, TypeVar, FrozenSet, cast, AbstractSet
+from typing import Any, Iterable, Generator, TypeVar, FrozenSet, cast, AbstractSet
 
 S = TypeVar('S')
 """ Generic Type """

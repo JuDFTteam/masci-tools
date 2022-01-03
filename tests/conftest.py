@@ -2,7 +2,6 @@
 Configurations for masci_tools tests
 """
 import pytest
-from pprint import pprint
 from pathlib import Path
 import os
 

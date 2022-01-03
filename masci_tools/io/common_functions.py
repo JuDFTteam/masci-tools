@@ -23,7 +23,6 @@ except ImportError:
     from typing_extensions import TypeAlias
 import numpy as np
 from collections.abc import Sequence
-import warnings
 ####################################################################################
 
 #helper functions used in calculation, parser etc.

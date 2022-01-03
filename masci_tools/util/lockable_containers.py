@@ -100,7 +100,7 @@ class LockableDict(UserDict, Generic[S, T]):
         Freezes the object. This prevents further modifications
         """
         if self._recursive:
-            for key, val in self.items():
+            for val in self.values():
                 if isinstance(val, (LockableDict, LockableList)):
                     val.freeze()
 
@@ -109,7 +109,7 @@ class LockableDict(UserDict, Generic[S, T]):
     def _unfreeze(self) -> None:
 
         if self._recursive:
-            for key, val in self.items():
+            for val in self.values():
                 if isinstance(val, (LockableList, LockableDict)):
                     val._unfreeze()  #pylint: disable=protected-access
 

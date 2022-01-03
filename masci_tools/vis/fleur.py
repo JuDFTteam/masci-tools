@@ -412,7 +412,7 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
             continue
         if isinstance(value, dict):
             new_dict = value.copy()
-            for plot_label, val in value.items():
+            for plot_label in value:
                 if not isinstance(plot_label, int):
                     if plot_label in ordered_keys:
                         new_dict[ordered_keys.index(plot_label)] = new_dict.pop(plot_label)
@@ -446,7 +446,7 @@ def _dos_order(key):
     if key in general:
         return (spin, general.index(key))
     if ':' in key:
-        before, after = key.split(':', maxsplit=1)
+        _, after = key.split(':', maxsplit=1)
         tail = after.lstrip('0123456789')
         index = int(after[:-len(tail)]) if len(tail) > 0 else int(after)
 

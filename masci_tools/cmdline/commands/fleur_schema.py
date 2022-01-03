@@ -1,7 +1,6 @@
 """
 CLI commands for interacting with the fleur schemas in the masci-tools repository
 """
-from masci_tools.io.parsers import fleur
 from .root import cli
 import click
 
@@ -14,7 +13,6 @@ from masci_tools.io.parsers.fleur import inpxml_parser, outxml_parser
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, list_available_versions
 
 from pathlib import Path
-from itertools import chain
 import os
 import sys
 import shutil
@@ -146,7 +144,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
 
         echo.echo_info(f'Testing Schema for file: {test_xml_file}')
         if input_schema:
-            xmltree, schema_dict = load_inpxml(test_xml_file)
+            _, schema_dict = load_inpxml(test_xml_file)
 
             if schema_dict['inp_version'] != schema_version:
                 echo.echo_error(

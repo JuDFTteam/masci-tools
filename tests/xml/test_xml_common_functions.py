@@ -2,7 +2,6 @@
 Test of the functions in masci_tools.util.xml.common_functions
 """
 import pytest
-import os
 import logging
 from lxml import etree
 

@@ -499,7 +499,6 @@ def test_schema_dict_util_abs_to_rel_path(load_inpxml):
     """
     Test of the absolute to relative xpath conversion in schema_dict_util functions
     """
-    from lxml import etree
     from masci_tools.util.schema_dict_util import eval_simple_xpath, get_number_of_nodes, tag_exists, \
                                                   evaluate_attribute, evaluate_tag, evaluate_parent_tag, \
                                                   evaluate_text

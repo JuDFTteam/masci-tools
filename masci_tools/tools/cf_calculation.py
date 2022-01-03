@@ -133,7 +133,7 @@ class CFCalculation:
         #Reads in the filenames given in args as potentials
         for index, file in enumerate(args):
             if isinstance(file, (str, Path)):
-                basename, extension = os.path.splitext(file)
+                _, extension = os.path.splitext(file)
                 if extension == '.hdf':
                     with h5py.File(file, 'r') as hdffile:
                         self.__readpotHDF(hdffile, atomType=atomType)
@@ -163,7 +163,7 @@ class CFCalculation:
         header = kwargs.get('header', 0)
 
         if isinstance(file, (str, Path)):
-            basename, extension = os.path.splitext(file)
+            _, extension = os.path.splitext(file)
             if extension == '.hdf':
                 with h5py.File(file, 'r') as hdffile:
                     self.__readcdnHDF(hdffile, atomType=atomType)

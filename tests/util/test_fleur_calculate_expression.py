@@ -4,7 +4,6 @@ Tests of the calculator of mathematical expressions in the inp.xml files
 import pytest
 from masci_tools.util.fleur_calculate_expression import calculate_expression, MissingConstant
 from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-import numpy as np
 
 
 def test_calculate_expression():

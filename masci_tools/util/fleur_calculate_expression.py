@@ -24,7 +24,6 @@ class MissingConstant(Exception):
     """
     Exception raised when a constant appearing in a expression is not defined
     """
-    pass
 
 
 def calculate_expression(expression: str | float | int, constants: dict[str, float] | None = None) -> float | int:

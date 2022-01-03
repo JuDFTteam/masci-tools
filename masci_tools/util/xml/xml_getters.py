@@ -18,12 +18,13 @@ from __future__ import annotations
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
 from masci_tools.util.typing import XMLLike
+from masci_tools.io.parsers import fleur_schema
+
 from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
 from typing import Any
-from masci_tools.io.parsers import fleur_schema
 
 
 def get_fleur_modes(xmltree: XMLLike,

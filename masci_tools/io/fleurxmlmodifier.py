@@ -23,7 +23,6 @@ from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
-import lxml
 from lxml import etree
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
