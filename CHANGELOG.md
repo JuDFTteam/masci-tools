@@ -9,6 +9,9 @@
 Nothing here yet
 ### Bugfixes
 - Fixed issue with ``MANIFEST.in``, where non-python files from the ``tools`` subpackage were not included in the built packages
+### For developers
+- More strict ``mypy`` configuration and moved a lot of the annotations to modern syntax with ``from __future__ import annotations``
+- Added ``pyupgrade`` hook to automatically do some easy refactoring, i.e. removing compatibility workarounds move ot modern syntax. Set to apply changes compatible with ``3.7`` and later
 
 ## v.0.7.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.7.0)
