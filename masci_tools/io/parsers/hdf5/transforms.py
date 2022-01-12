@@ -527,7 +527,7 @@ def flatten_array(dataset, order='C'):
     Copies the array !!
 
     :param dataset: dataset to transform
-    :param order: str {‘C’, ‘F’, ‘A’, ‘K’} flatten in column major
+    :param order: str {`C`, `F`, `A`, `K`} flatten in column major
                   or row-major order (see numpy.flatten documentation)
 
     :returns: flattened dataset
@@ -794,9 +794,11 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, r
 
     if make_set:
         attribute_value = set(attribute_value)
+    sum_patterns = [
+        pattern_format(val) for val in attribute_value if any(pattern_format(val) in key for key in dataset.keys())
+    ]
 
-    return add_partial_sums_fixed(dataset, [pattern_format(val) for val in attribute_value],
-                                  replace_entries=replace_entries)
+    return add_partial_sums_fixed(dataset, sum_patterns, replace_entries=replace_entries)
 
 
 @hdf5_transformation(attribute_needed=True)
