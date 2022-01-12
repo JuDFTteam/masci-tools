@@ -9,6 +9,7 @@
 Nothing here yet
 ### Bugfixes
 - Fixed issue with ``MANIFEST.in``, where non-python files from the ``tools`` subpackage were not included in the built packages
+- Fixed bug not correctly processing the plot limits in ``plot_fleur_bands`` in excluding points outside the plot area for better performance
 ### For developers
 - More strict ``mypy`` configuration and moved a lot of the annotations to modern syntax with ``from __future__ import annotations``
 - Added ``pyupgrade`` hook to automatically do some easy refactoring, i.e. removing compatibility workarounds move ot modern syntax. Set to apply changes compatible with ``3.7`` and later
