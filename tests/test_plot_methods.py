@@ -745,79 +745,73 @@ def test_multi_scatter_param_change():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+@pytest.mark.mpl_image_compare
+def test_multi_plot_moved_defaults():
+    """
+    Mulitplot_moved with default parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiplot_moved
 
-class TestMultiPlotMoved:
-    """Test of the multiplot_moved function"""
+    x = [np.linspace(-10, 10, 100)] * 3
+    y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
-                                   filename='defaults.png')
-    def test_default(self):
-        """
-        Mulitplot_moved with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiplot_moved
+    gcf().clear()
 
-        x = [np.linspace(-10, 10, 100)] * 3
-        y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
+    multiplot_moved(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        gcf().clear()
+@pytest.mark.mpl_image_compare
+def test_multi_plot_moved_param_change():
+    """
+    Multiplot moved with changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiplot_moved
 
-        multiplot_moved(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    x = [np.linspace(-10, 10, 100)] * 3
+    y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/',
-                                   filename='param_change.png')
-    def test_param_change(self):
-        """
-        Mulitplot_moved with changed parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiplot_moved
+    gcf().clear()
 
-        x = [np.linspace(-10, 10, 100)] * 3
-        y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
+    multiplot_moved(x,
+                    y,
+                    xlabel='X',
+                    ylabel='Y',
+                    title='Plot Test',
+                    plot_label=['Line', None, 'cosine'],
+                    legend=True,
+                    min_add=20,
+                    color=['darkred', 'darkblue', 'darkorange'],
+                    scale_move=2.0,
+                    show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        gcf().clear()
+@pytest.mark.mpl_image_compare
+def test_multi_plot_moved_area():
+    """
+    Mulitplot_moved with changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiplot_moved
 
-        multiplot_moved(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        plot_label=['Line', None, 'cosine'],
-                        legend=True,
-                        min_add=20,
-                        color=['darkred', 'darkblue', 'darkorange'],
-                        scale_move=2.0,
-                        show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    x = [np.linspace(-10, 10, 100)] * 3
+    y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiplot_moved/', filename='area.png')
-    def test_area(self):
-        """
-        Mulitplot_moved with changed parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiplot_moved
+    gcf().clear()
 
-        x = [np.linspace(-10, 10, 100)] * 3
-        y = [x[0] * 5 + 30, 50 * np.sin(x[1]), 50 * np.cos(x[2])]
-
-        gcf().clear()
-
-        multiplot_moved(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        area_plot={2: True},
-                        area_linecolor='k',
-                        show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    multiplot_moved(x,
+                    y,
+                    xlabel='X',
+                    ylabel='Y',
+                    title='Plot Test',
+                    area_plot={2: True},
+                    area_linecolor='k',
+                    show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestWaterFallPlot:  #pylint: disable=missing-class-docstring
