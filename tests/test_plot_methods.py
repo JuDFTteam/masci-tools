@@ -1318,128 +1318,124 @@ def test_barchart_independent_horizontal_defaults():
     return gcf()
 
 
-class TestResiduenPlot:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare
+def test_residuen_defaults():
+    """
+    Test of residuen plot with default values
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import plot_residuen
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/', filename='defaults.png')
-    def test_defaults(self):
-        """
-        Test of residuen plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import plot_residuen
+    np.random.seed(19680801)
+    N_points = 100
 
-        np.random.seed(19680801)
-        N_points = 100
+    # Generate a normal distribution, center at x=0 and y=5
+    rand = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        rand = np.random.randn(N_points)
+    x = np.linspace(-10, 10, N_points)
+    fit = x**2
+    real = fit + rand
 
-        x = np.linspace(-10, 10, N_points)
-        fit = x**2
-        real = fit + rand
+    gcf().clear()
 
-        gcf().clear()
+    plot_residuen(x, fit, real, show=False)
 
-        plot_residuen(x, fit, real, show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_residuen_no_hist():
+    """
+    Test of residuen plot without histogram
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import plot_residuen
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/', filename='no_hist.png')
-    def test_no_hist(self):
-        """
-        Test of residuen plot without histogram
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import plot_residuen
+    np.random.seed(19680801)
+    N_points = 100
 
-        np.random.seed(19680801)
-        N_points = 100
+    # Generate a normal distribution, center at x=0 and y=5
+    rand = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        rand = np.random.randn(N_points)
+    x = np.linspace(-10, 10, N_points)
+    fit = x**2
+    real = fit + rand
 
-        x = np.linspace(-10, 10, N_points)
-        fit = x**2
-        real = fit + rand
+    gcf().clear()
 
-        gcf().clear()
+    plot_residuen(x, fit, real, hist=False, show=False)
 
-        plot_residuen(x, fit, real, hist=False, show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_residuen_param_change_residue_plot():
+    """
+    Test of residuen plot with changed parameters on residue plot
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import plot_residuen
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/',
-                                   filename='param_change_residue.png')
-    def test_param_change_residue_plot(self):
-        """
-        Test of residuen plot without histogram
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import plot_residuen
+    np.random.seed(19680801)
+    N_points = 100
 
-        np.random.seed(19680801)
-        N_points = 100
+    # Generate a normal distribution, center at x=0 and y=5
+    rand = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        rand = np.random.randn(N_points)
+    x = np.linspace(-10, 10, N_points)
+    fit = x**2
+    real = fit + rand
 
-        x = np.linspace(-10, 10, N_points)
-        fit = x**2
-        real = fit + rand
+    gcf().clear()
 
-        gcf().clear()
+    plot_residuen(x,
+                    fit,
+                    real,
+                    show=False,
+                    marker='^',
+                    color='darkblue',
+                    xlabel='X',
+                    ylabel='Test Label',
+                    labelfontsize=30)
 
-        plot_residuen(x,
-                      fit,
-                      real,
-                      show=False,
-                      marker='^',
-                      color='darkblue',
-                      xlabel='X',
-                      ylabel='Test Label',
-                      labelfontsize=30)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_residuen_param_change_hist_plot():
+    """
+    Test of residuen plot with changed parameters on histogram
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import plot_residuen
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/residuen/',
-                                   filename='param_change_hist.png')
-    def test_param_change_hist_plot(self):
-        """
-        Test of residuen plot without histogram
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import plot_residuen
+    np.random.seed(19680801)
+    N_points = 100
 
-        np.random.seed(19680801)
-        N_points = 100
+    # Generate a normal distribution, center at x=0 and y=5
+    rand = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        rand = np.random.randn(N_points)
+    x = np.linspace(-10, 10, N_points)
+    fit = x**2
+    real = fit + rand
 
-        x = np.linspace(-10, 10, N_points)
-        fit = x**2
-        real = fit + rand
+    gcf().clear()
 
-        gcf().clear()
+    plot_residuen(x,
+                    fit,
+                    real,
+                    show=False,
+                    hist_kwargs={
+                        'color': 'darkblue',
+                        'xlabel': 'X',
+                        'ylabel': 'Test Label',
+                        'labelfontsize': 30,
+                        'plot_label': 'Residue',
+                        'legend': True
+                    })
 
-        plot_residuen(x,
-                      fit,
-                      real,
-                      show=False,
-                      hist_kwargs={
-                          'color': 'darkblue',
-                          'xlabel': 'X',
-                          'ylabel': 'Test Label',
-                          'labelfontsize': 30,
-                          'plot_label': 'Residue',
-                          'legend': True
-                      })
-
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestPlotConvergenceResults:  #pylint: disable=missing-class-docstring
