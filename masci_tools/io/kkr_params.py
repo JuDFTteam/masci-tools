@@ -15,7 +15,8 @@ Also some defaults for the parameters are defined.
 """
 from masci_tools.io.common_functions import open_general
 
-__copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
+                 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __version__ = '1.8.7'
 __contributors__ = 'Philipp Rüßmann'

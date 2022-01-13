@@ -18,7 +18,8 @@ from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, g
 import traceback
 from masci_tools.io.common_functions import get_Ry2eV
 
-__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
+                 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __version__ = '0.7'
 __contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo')

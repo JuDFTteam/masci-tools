@@ -5,7 +5,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
     - id: double-quote-string-fixer
       types: [python]
@@ -19,7 +19,7 @@ repos:
     - id: forbid-new-submodules
 
 - repo: git://github.com/pre-commit/mirrors-yapf
-  rev: v0.31.0
+  rev: v0.32.0
   hooks:
   - id: yapf
     name: yapf
@@ -41,7 +41,7 @@ repos:
       ]
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.30.0
+    rev: v2.31.0
     hooks:
     -   id: pyupgrade
         args: [
