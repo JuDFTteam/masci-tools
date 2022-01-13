@@ -45,7 +45,8 @@ def fleur_schema():
               type=click.Path(exists=True, path_type=Path, resolve_path=True),
               default=None,
               help='Example xmlfile for this schema version to test the file parser against')
-def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
+@click.option('--from-git', is_flag=True, help='Add the schema from the fleur git repository')
+def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, from_git):
     """
     Adds a new xml schema file to the folder in
     `masci_tools/io/parsers/fleur_schema`
@@ -65,9 +66,11 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key):
             "The Fleur file schema has to be named either 'FleurInputSchema.xsd' or 'FleurOutputSchema.xsd'")
 
     tmp_dir = None
-    if not schema_file.is_file():
-        echo.echo_warning(f'{schema_file} does not exist')
-        if not click.confirm(f'Do you want to download from the fleur git ({branch})'):
+    if not schema_file.is_file() or from_git:
+        if not schema_file.is_file():
+            echo.echo_warning(f'{schema_file} does not exist')
+
+        if not from_git and not click.confirm(f'Do you want to download from the fleur git ({branch})'):
             echo.echo_critical('Cannot add Schema file')
         if gitlab is None:
             echo.echo_critical(
