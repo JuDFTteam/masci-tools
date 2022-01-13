@@ -813,55 +813,48 @@ def test_multi_plot_moved_area():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+@pytest.mark.mpl_image_compare
+def test_waterfall_plot_defaults():
+    """
+    Waterfall plot with default parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import waterfall_plot
 
-class TestWaterFallPlot:  #pylint: disable=missing-class-docstring
+    x = np.linspace(-1, 1, 100)
+    y = np.linspace(-1, 1, 100)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/waterfall_plot/',
-                                   filename='defaults.png')
-    def test_default(self):
-        """
-        Mulitplot_moved with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import waterfall_plot
+    xv, yv = np.meshgrid(x, y)
+    z = 10 * np.exp(-xv**2 - yv**2)
+    xv, yv, z = xv.flatten(), yv.flatten(), z.flatten()
 
-        x = np.linspace(-1, 1, 100)
-        y = np.linspace(-1, 1, 100)
+    gcf().clear()
 
-        xv, yv = np.meshgrid(x, y)
-        z = 10 * np.exp(-xv**2 - yv**2)
-        xv, yv, z = xv.flatten(), yv.flatten(), z.flatten()
+    waterfall_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
+    # need to return the figure in order for mpl checks to work
 
-        gcf().clear()
+    return gcf()
 
-        waterfall_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
-        # need to return the figure in order for mpl checks to work
+@pytest.mark.mpl_image_compare
+def test_surface_plot_defaults():
+    """
+    Surface plot with default parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import surface_plot
 
-        return gcf()
+    x = np.linspace(-1, 1, 100)
+    y = np.linspace(-1, 1, 100)
 
+    xv, yv = np.meshgrid(x, y)
+    z = 10 * np.exp(-xv**2 - yv**2)
 
-class TestSurfacePlot:  #pylint: disable=missing-class-docstring
+    gcf().clear()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/surface_plot/', filename='defaults.png')
-    def test_default(self):
-        """
-        Mulitplot_moved with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import surface_plot
+    surface_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
+    # need to return the figure in order for mpl checks to work
 
-        x = np.linspace(-1, 1, 100)
-        y = np.linspace(-1, 1, 100)
-
-        xv, yv = np.meshgrid(x, y)
-        z = 10 * np.exp(-xv**2 - yv**2)
-
-        gcf().clear()
-
-        surface_plot(xv, yv, z, xlabel='X', ylabel='Y', zlabel='Z', title='Plot Test', show=False)
-        # need to return the figure in order for mpl checks to work
-
-        return gcf()
+    return gcf()
 
 
 class TestMultiAxisScatterPlot:  #pylint: disable=missing-class-docstring
