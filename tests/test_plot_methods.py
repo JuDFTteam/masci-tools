@@ -857,135 +857,130 @@ def test_surface_plot_defaults():
     return gcf()
 
 
-class TestMultiAxisScatterPlot:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare
+def test_multiaxis_defaults():
+    """
+    Test of multiaxis_scatterplot with default values
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiaxis_scatterplot
+    x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/', filename='defaults.png')
-    def test_defaults(self):
-        """
-        Test of multiaxis_scatterplot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiaxis_scatterplot
-        x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
+    gcf().clear()
 
-        gcf().clear()
+    multiaxis_scatterplot(x,
+                            y,
+                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                            xlabel='X',
+                            ylabel='Y',
+                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                            num_rows=2,
+                            num_cols=2,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
 
-        multiaxis_scatterplot(x,
-                              y,
-                              axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                              xlabel='X',
-                              ylabel='Y',
-                              title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                              num_rows=2,
-                              num_cols=2,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_multiaxis_non_standard_layout():
+    """
+    Test of multiaxis_scatterplot with non standard layout
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiaxis_scatterplot
+    x = [np.linspace(-10, 10, 100)] + [[np.linspace(-10, 10, 100)] * 2] * 2
+    y = [x[0]**2, [-5 * x[1][0] + 30, x[1][1] * 5 + 30], [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])]]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
-                                   filename='non_standard_layout.png')
-    def test_non_standard_layout(self):
-        """
-        Test of multiaxis_scatterplot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiaxis_scatterplot
-        x = [np.linspace(-10, 10, 100)] + [[np.linspace(-10, 10, 100)] * 2] * 2
-        y = [x[0]**2, [-5 * x[1][0] + 30, x[1][1] * 5 + 30], [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])]]
+    gcf().clear()
 
-        gcf().clear()
+    multiaxis_scatterplot(x,
+                            y,
+                            axes_loc=[(0, 0), (0, 1), (1, 0)],
+                            axes_kwargs={1: {
+                                'rowspan': 2
+                            }},
+                            xlabel='X',
+                            ylabel='Y',
+                            title=['Parabola', 'Lines', 'sin/cos'],
+                            num_rows=2,
+                            num_cols=2,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
 
-        multiaxis_scatterplot(x,
-                              y,
-                              axes_loc=[(0, 0), (0, 1), (1, 0)],
-                              axes_kwargs={1: {
-                                  'rowspan': 2
-                              }},
-                              xlabel='X',
-                              ylabel='Y',
-                              title=['Parabola', 'Lines', 'sin/cos'],
-                              num_rows=2,
-                              num_cols=2,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_multiaxis_overall_param_change():
+    """
+    Test of multiaxis_scatterplot with a variety of parameters changed for all subplots
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiaxis_scatterplot
+    x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
-                                   filename='overall_param_change.png')
-    def test_overall_param_change(self):
-        """
-        Test of multiaxis_scatterplot with a variety of parameters changed
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiaxis_scatterplot
-        x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
+    gcf().clear()
 
-        gcf().clear()
+    multiaxis_scatterplot(x,
+                            y,
+                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                            xlabel='X',
+                            ylabel='Y',
+                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                            marker='^',
+                            color={0: 'darkred'},
+                            linewidth=10,
+                            title_fontsize=30,
+                            markersize=15,
+                            num_rows=2,
+                            num_cols=2,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
 
-        multiaxis_scatterplot(x,
-                              y,
-                              axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                              xlabel='X',
-                              ylabel='Y',
-                              title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                              marker='^',
-                              color={0: 'darkred'},
-                              linewidth=10,
-                              title_fontsize=30,
-                              markersize=15,
-                              num_rows=2,
-                              num_cols=2,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_multiaxis_single_subplot_param_change():
+    """
+    Test of multiaxis_scatterplot with a variety of parameters changed for a specific subplot
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiaxis_scatterplot
+    x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiaxis/',
-                                   filename='single_subplot_param_change.png')
-    def test_single_subplot_param_change(self):
-        """
-        Test of multiaxis_scatterplot with a variety of parameters changed
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiaxis_scatterplot
-        x = [np.linspace(-10, 10, 100)] * 2 + [[np.linspace(-10, 10, 100)] * 2] + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, [50 * np.sin(x[2][0]), 50 * np.cos(x[2][1])], -5 * x[3] + 30]
+    gcf().clear()
 
-        gcf().clear()
-
-        multiaxis_scatterplot(x,
-                              y,
-                              axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                              xlabel='X',
-                              ylabel='Y',
-                              title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                              subplot_params={
-                                  0: {
-                                      'color': 'limegreen',
-                                      'scale': {
-                                          'y': 'log'
-                                      }
-                                  },
-                                  2: {
-                                      'limits': {
-                                          'x': (0, 10)
-                                      },
-                                      'color': {
-                                          0: 'darkorange'
-                                      },
-                                      'plot_label': ['sin', 'cos'],
-                                      'legend': True
-                                  }
-                              },
-                              num_rows=2,
-                              num_cols=2,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    multiaxis_scatterplot(x,
+                            y,
+                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                            xlabel='X',
+                            ylabel='Y',
+                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                            subplot_params={
+                                0: {
+                                    'color': 'limegreen',
+                                    'scale': {
+                                        'y': 'log'
+                                    }
+                                },
+                                2: {
+                                    'limits': {
+                                        'x': (0, 10)
+                                    },
+                                    'color': {
+                                        0: 'darkorange'
+                                    },
+                                    'plot_label': ['sin', 'cos'],
+                                    'legend': True
+                                }
+                            },
+                            num_rows=2,
+                            num_cols=2,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestColormeshPlot:  #pylint: disable=missing-class-docstring
