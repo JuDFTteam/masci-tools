@@ -78,7 +78,7 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
         #so what should have been included
         included_tag_names = new_tags.difference(old_tags)
 
-        #Check for emtpy set (relax.xml include may not insert something)
+        #Check for empty set (relax.xml include may not insert something)
         if not included_tag_names:
             continue
 
@@ -129,7 +129,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
               to the excluded trees
 
-    :raises ValueError: if the tag can not be found in teh given xmltree
+    :raises ValueError: if the tag can not be found in the given xmltree
     """
     from masci_tools.util.schema_dict_util import reverse_xinclude
     warnings.warn('DEPRECATED: reverse_xinclude moved to masci_tools.util.schema_dict_util', DeprecationWarning)
@@ -163,7 +163,7 @@ def validate_xml(xmltree: etree._ElementTree,
             error_message = f'Line {err_occurences[0].line}: {message}'
             error_lines = ''
             if len(err_occurences) > 1:
-                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
+                error_lines = f"; This error also occurred on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
             error_output.append(f'{error_message}{error_lines} \n')
             first_occurence.append(err_occurences[0].line)
 

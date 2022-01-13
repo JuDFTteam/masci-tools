@@ -164,7 +164,7 @@ def sort_lists_by_list(lists: _typing.List[_typing.List],
     # line1: convert (zip(a,b,c,...)) lists into list of tuples, and
     #        sort elements of this list by key_list elements, i.e. key_list-th
     #        element in each tuple.
-    # line2: unpack tuple list back into orignal, sorted, lists using
+    # line2: unpack tuple list back into original, sorted, lists using
     #        nested list comprehensions and tuple unpacking.
     # sorted_lists = sorted(zip(*lists), reverse=desc, key=lambda x: x[key_list])
     # return [[x[i] for x in sorted_lists] for i in range(len(lists))]
@@ -299,7 +299,7 @@ class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
 
     To deserialize back from isoformat string to datetime object, write a method which
     when meeting such a value, turns it into a datetime object, and pass it to the used JSON
-    load function as `object_hook` arguemnt.
+    load function as `object_hook` argument.
 
     >>> import datetime
     >>> import json

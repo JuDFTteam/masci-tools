@@ -11,7 +11,7 @@
 ###############################################################################
 """
 In this module are plot routines collected to create default plots out of certain
-ouput nodes from certain workflows with matplot lib.
+output nodes from certain workflows with matplot lib.
 
 Comment: Do not use any aiida methods, otherwise the methods in here can become
 tricky to use inside a virtual environment. Make the user extract thing out of
@@ -78,7 +78,7 @@ def show_mpl_plot_defaults():
 
 def get_mpl_help(key):
     """
-    Print the decription of the given key in the matplotlib backend
+    Print the description of the given key in the matplotlib backend
 
     Available defaults can be seen in :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`
     """
@@ -100,7 +100,7 @@ def save_mpl_defaults(filename='plot_mpl_defaults.json', save_complete=False):
 
     :param filename: filename, where the defaults should be stored
     :param save_complete: bool if True not only the overwritten user defaults
-                          but also the unmodified harcoded defaults are stored
+                          but also the unmodified hardcoded defaults are stored
     """
     plot_params.save_defaults(filename, save_complete=save_complete)
 
@@ -321,7 +321,7 @@ def multiple_scatterplots(xdata,
     if 'xticks' in kwargs:
         xticks = kwargs.get('xticks')
         if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
@@ -480,7 +480,7 @@ def multi_scatter_plot(xdata,
     if 'xticks' in kwargs:
         xticks = kwargs.get('xticks')
         if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
@@ -959,7 +959,7 @@ def barchart(positions,
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib function `bar`
 
-    TODO: grouped barchart (meaing not stacked)
+    TODO: grouped barchart (meaning not stacked)
     """
 
     plot_data = process_data_arguments(data=data,
@@ -1022,7 +1022,7 @@ def barchart(positions,
     if 'xticks' in kwargs:
         xticks = kwargs.get('xticks')
         if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels seperately as two lists', DeprecationWarning)
+            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
             kwargs['xticklabels'] = xticks[0]
             kwargs['xticks'] = xticks[1]
 
@@ -1182,7 +1182,7 @@ def plot_convex_hull2d(hull,
                        axis=None,
                        **kwargs):
     """
-    Plot method for a 2d convex hull diagramm
+    Plot method for a 2d convex hull diagram
 
     :param hull: pyhull.Convexhull #scipy.spatial.ConvexHull
     :param axis: Axes object where to add the plot
@@ -1672,7 +1672,7 @@ def plot_relaxation_results():
     Plot from the result node of a relaxation workflow,
     All forces of every atom type versus relaxation cycle.
     Average force of all atom types versus relaxation cycle.
-    Absolut relaxation in Angstroem of every atom type.
+    Absolute relaxation in Angstroem of every atom type.
     Relative realxation of every atom type to a reference structure.
     (if none given use the structure from first relaxation cycle as reference)
     """
@@ -2085,7 +2085,7 @@ def plot_spinpol_bands(kpath,
                             and mark them on the x-axis with the given label
     :param markersize_min: minimum value used in scaling points for weight
     :param markersize_scaling: factor used in scaling points for weight
-    :param show_spin_pol: bool, if True (default) the two different spin channles will be shown in blue
+    :param show_spin_pol: bool, if True (default) the two different spin channels will be shown in blue
                           and red by default
     :param scale_color: bool, if True (default) the weight will be additionally shown via a colormapping
     :param line_plot: bool, if True the bandstructure will be plotted with lines
@@ -2321,7 +2321,7 @@ def plot_bands_and_dos():
 
 def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
-    Ploting function to visualize corelevels and corelevel shifts
+    Plotting function to visualize corelevels and corelevel shifts
     """
 
     for elem, corelevel_dict in coreleveldict.items():
@@ -2335,7 +2335,7 @@ def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot',
 def plot_one_element_corelv(corelevel_dict, element, compound='', axis=None, saveas='scatterplot', **kwargs):
     """
     This routine creates a plot which visualizes all the binding energies of one
-    element (and currenlty one corelevel) for different atomtypes.
+    element (and currently one corelevel) for different atomtypes.
 
     example:
         corelevels = {'W' : {'4f7/2' : [123, 123.3, 123.4 ,123.1], '4f5/2' : [103, 103.3, 103.4, 103.1]}, 'Be' : {'1s': [118, 118.2, 118.4, 118.1, 118.3]}}
@@ -2506,7 +2506,7 @@ def construct_corelevel_spectrum(coreleveldict,
 
         # sometimes we get a point to much if constructed from new mesh..
         if len(ydata_spec) < len(data_f):
-            # TODO: further adjustements? we assume only one point difference
+            # TODO: further adjustments? we assume only one point difference
             data_f = data_f[:-1]
         #print('length', len(ydata_spec), len(data_f))
         #gaus_f = lorentzian(xdata_spec, xpoint, 0.6, 100.0)
@@ -2517,7 +2517,7 @@ def construct_corelevel_spectrum(coreleveldict,
             ydata_spec = ydata_spec + ydata_all[i] * data_f
             ydata_single_all.append(ydata_all[i] * data_f)
 
-    # we scale after and not before, because the max intensity is not neccesary
+    # we scale after and not before, because the max intensity is not necessary
     # the number of electrons.
     if scale_to > 0.0:
         y_valmax = max(ydata_spec)
@@ -2558,14 +2558,14 @@ def plot_corelevel_spectra(coreleveldict,
     """
     Plotting function of corelevel in the form of a spectrum.
 
-    Convention: Binding energies are positiv!
+    Convention: Binding energies are positive!
 
     Args:
         coreleveldict: dict of corelevels with a list of corelevel energy of atomstypes
         # (The given corelevel accounts for a weight (number of electrons for full occupied corelevel) in the plot.)
         natom_typesdict: dict with number of atom types for each entry
     Kwargs:
-        exp_references: dict with experimental refereces, will be ploted as vertical lines
+        exp_references: dict with experimental references, will be ploted as vertical lines
         show_single (bool): plot all single peaks.
         scale_to float: the maximum 'intensity' will be scaled to this value (useful for experimental comparisons)
         title (string): something for labeling
@@ -2737,13 +2737,13 @@ def plot_corelevel_spectra(coreleveldict,
     '''
     plot_params.save_plot(saveas1)
 
-    # for plotting or file writting
+    # for plotting or file writing
     return [xdata_spec, ydata_spec, ydata_single_all, xdata_all, ydata_all, xdatalabel, ax, ax2]
 
 
 def asymmetric_lorentz(x, fwhm, mu, alpha=1.0, beta=1.5):
     """
-    asymetric lorentz function
+    asymmetric lorentz function
 
     L^alpha for x<=mu
     L^beta for x>mu
@@ -2800,7 +2800,7 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     from scipy.signal import fftconvolve
     #from scipy import signal
     # only one function has to be translated
-    # gaus has to be symmetric arround 0 for convolution
+    # gaus has to be symmetric around 0 for convolution
     # and on the same equidistant grid
     xstep = abs(round(x[-1] - x[-2], 6))
     rangex = abs(x[-1] - x[0])
@@ -2826,7 +2826,7 @@ def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
     """
     import numpy as np
     from scipy.interpolate import interp1d
-    # convolution has to be symmetric arround 0
+    # convolution has to be symmetric around 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then interpolate at original mesh points
@@ -2855,7 +2855,7 @@ def asymmetric_lorentz_gauss_conv_interp(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
     ylorentz = np.array(asymmetric_lorentz(xtrans,fwhm_l, mu=0.0, alpha=alpha, beta=beta), dtype=np.float64)
     ydata = np.convolve(ylorentz,ygaus,mode='same')
 
-    # iterpolate function and evalutate at original xdata
+    # iterpolate function and evaluate at original xdata
     f = interp1d(xtrans+xmu, ydata, assume_sorted=True)
     ydata_return = f(x)
 
@@ -2890,12 +2890,12 @@ def asymmetric_lorentz_gauss_conv_linear(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
     import numpy as np
     #from scipy import signal
 
-    # convolution has to be symmetric arround 0
+    # convolution has to be symmetric around 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then shift back and cut off the rest
 
-    # we asume equidistant mesh
+    # we assume equidistant mesh
     x = np.array(x, dtype=np.float64)
 
 
@@ -2916,7 +2916,7 @@ def asymmetric_lorentz_gauss_conv_linear(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.
     else:
         xtrans = np.arange(x[0]-xmu, -x[0]+xmu,xstep)
 
-    # To keep mu continous we parse the exact mu to the lorentz and gauss...
+    # To keep mu continuous we parse the exact mu to the lorentz and gauss...
     # the convolution will not be totally correct...
     # todo maybe combine with gridfactor...
     ygaus = np.array(gauss_one(xtrans, fwhm_g, mu=(xmu-mu)/2.0), dtype=np.float64)
@@ -2939,7 +2939,7 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid
     import numpy as np
     #from scipy import signal
 
-    # convolution has to be symmetric arround 0
+    # convolution has to be symmetric around 0
     # check if xmu is right or left,
     # double longest side, shift xmu to 0.0
     # then shift back and cut off the rest
@@ -2950,7 +2950,7 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l,fwhm_g,alpha=1.0, beta=1.5, grid
     # this way npoints is len(x)+gridfactor and not len(x)*gridfoctor
     # logic becomes harder...
     # convolution is n^2
-    # we asume equidistant mesh
+    # we assume equidistant mesh
     # we increase the mesh by a factor of grid_factor
     # because mu can only vary by the meshstep...
     x = np.array(x, dtype=np.float64)

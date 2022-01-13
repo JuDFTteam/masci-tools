@@ -205,7 +205,7 @@ def _get_parent_fleur_type(elem: etree._Element,
     in the parent chain
 
     :param elem: etree element, starting element
-    :param stop_sequence: If a sequence is encountered in the loop it alos terminates
+    :param stop_sequence: If a sequence is encountered in the loop it also terminates
 
     :return: the element of the parent type and the tag of the parent type with the namespaces removed
     """
@@ -1164,7 +1164,7 @@ def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: A
     :param xmlschema: xmltree representing the schema
 
     :return: dictionary with tags and their corresponding type_definition
-             meaning a dicationary with possible base types and evtl. length restriction
+             meaning a dictionary with possible base types and evtl. length restriction
     """
 
     elements = _xpath_eval(xmlschema_evaluator, '//xsd:element')
@@ -1192,7 +1192,7 @@ def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs:
     :param xmlschema_evaluator: etree.XPathEvaluator for the schema
 
     :return: dictionary with type names and their corresponding type_definition
-             meaning a dicationary with possible base types and evtl. length restriction
+             meaning a dictionary with possible base types and evtl. length restriction
     """
     basic_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name]')
     complex_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:complexType/xsd:simpleContent')

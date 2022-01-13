@@ -794,7 +794,7 @@ def listElements(hdffile: Any, show: bool = False) -> list[GreensfElement]:
 
 def select_elements_from_file(hdffile: Any, show: bool = False, **selection_params) -> Iterator[GreensFunction]:
     """
-    Construct the green's function mathcing specified criteria from a given ``greensf.hdf`` file
+    Construct the green's function matching specified criteria from a given ``greensf.hdf`` file
 
     :param hdffile: file or file path to the ``greensf.hdf`` file
     :param show: bool if True the found elements will be printed

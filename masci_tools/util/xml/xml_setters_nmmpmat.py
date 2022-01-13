@@ -45,7 +45,7 @@ def set_nmmpmat(xmltree: XMLLike,
     :param spin: integer, specifies which spin block should be modified
     :param state_occupations: list, sets the diagonal elements of the density matrix and everything
                               else to zero
-    :param denmat: matrix, specify the density matrix explicitely
+    :param denmat: matrix, specify the density matrix explicitly
     :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
     :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
     :param filters: Dict specifying constraints to apply on the xpath.

@@ -72,7 +72,7 @@ class HDF5Reader:
                            all leftover h5py.Datasets are moved into np.arrays
 
     The recipe is passed to the :py:meth:`HDF5Reader.read()` method and consists
-    of a dict specifiying which attributes and datasets to read in and how to transform them
+    of a dict specifying which attributes and datasets to read in and how to transform them
 
     Each attribute/dataset entry corresponds to one entry point in the given `.hdf` file
     Available transformations can either be found in :py:mod:`~masci_tools.io.parsers.hdf5.transforms`
@@ -194,7 +194,7 @@ class HDF5Reader:
     @staticmethod
     def _unpack_dataset(output_dict: dict[str, Any], dataset_name: str) -> dict[str, Any]:
         """
-        Unpack the entires of the dictionary dataset in the entry dataset_name into the
+        Unpack the entries of the dictionary dataset in the entry dataset_name into the
         output_dict
 
         :param output_dict: dict with the dataset entries

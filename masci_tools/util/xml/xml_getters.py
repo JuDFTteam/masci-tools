@@ -474,7 +474,7 @@ def get_parameter_data(xmltree: XMLLike,
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
                         of the xmltree
-    :param inpgen_ready: Bool, return a dict which can be inputed into inpgen while setting atoms
+    :param inpgen_ready: Bool, return a dict which can be inputted into inpgen while setting atoms
     :param write_ids: Bool, if True the atom ids are added to the atom namelists
     :param logger: logger object for logging warnings, errors
 

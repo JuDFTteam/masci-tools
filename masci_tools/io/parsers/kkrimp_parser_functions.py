@@ -40,7 +40,7 @@ class KkrimpParserFunctions:
         """
         extract energy contour information from out_log file
         :param out_log: file that is parsed
-        :retuns: econt (dict), dictionary containing the energy contour info
+        :returns: econt (dict), dictionary containing the energy contour info
         :note: econt contains the following keys
             * 'emin', bottom of energy contour
             * 'Nepts', number of points in energy contour

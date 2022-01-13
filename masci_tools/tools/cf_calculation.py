@@ -53,7 +53,7 @@ class CFCalculation:
                                 IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
     :param pot_cutoff: float Defines minimum value that has to appear in potentials to not be omitted (Only HDF)
     :param only_m0: bool, Ignores coefficients with m!=0 if True
-    :param quiet: bool, supresses print statements if True
+    :param quiet: bool, suppresses print statements if True
 
     """
 
@@ -223,7 +223,7 @@ class CFCalculation:
 
     def __readpottxt(self, file, index, header=0, complexData=True):
         """Read in the potential for the (l,m) tuple 'index' from a txt file
-        The muffin-tin radius is infered from the biggest argument in the rmesh
+        The muffin-tin radius is inferred from the biggest argument in the rmesh
         """
 
         with open(file, newline='', encoding='utf-8') as csvfile:
@@ -293,7 +293,7 @@ class CFCalculation:
 
     def __readcdntxt(self, file, header=0):
         """Read in the charge density from a txt file
-        The muffin-tin radius is infered from the biggest argument in the rmesh
+        The muffin-tin radius is inferred from the biggest argument in the rmesh
         """
 
         with open(file, newline='', encoding='utf-8') as csvfile:

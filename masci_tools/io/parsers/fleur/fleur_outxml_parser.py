@@ -72,7 +72,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     :return: python dictionary with the information parsed from the out.xml
 
     :raises ValueError: If the validation against the schema failed, or an irrecoverable error
-                        occured during parsing
+                        occurred during parsing
     :raises FileNotFoundError: If no Schema file for the given version was found
     :raises KeyError: If an unknown task is encountered
     """

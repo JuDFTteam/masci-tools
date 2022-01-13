@@ -51,7 +51,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
     :param element: a tag name or etree Element to be created
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
     :param number_nodes: how many identical nodes to create
 
@@ -99,7 +99,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
                                                  parent_name,
                                                  create_parents=create_parents)
         else:
-            raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
+            raise ValueError(f"Could not create tag '{element_name}' because at least one subtag is missing. "
                              'Use create=True to create the subtags')
 
     for _ in range(number_nodes):
@@ -124,7 +124,7 @@ def eval_xpath_create(xmltree: XMLLike,
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param create_parents: bool optional (default False), if True also the parents of the tag are created
                            if they are missing
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag if the tag is missing.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag if the tag is missing.
                         By default all nodes are used.
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
     :param number_nodes: how many identical nodes to create
@@ -178,7 +178,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
     :raises ValueError: If the conversion to string failed
@@ -222,7 +222,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
     if len(nodes) == 0:
         raise ValueError(
             f"Could not set attribute '{attributename}' on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' "
-            'because atleast one subtag is missing. '
+            'because at least one subtag is missing. '
             'Use create=True to create the subtags')
 
     return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
@@ -287,7 +287,7 @@ def xml_set_text(xmltree: XMLLike,
     :param xpath: a path where to set the text
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param text: value or list of values to set
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
     :raises ValueError: If the conversion to string failed
@@ -321,7 +321,7 @@ def xml_set_text(xmltree: XMLLike,
 
     if len(nodes) == 0:
         raise ValueError(
-            f"Could not set text on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' because atleast one subtag is missing. "
+            f"Could not set text on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' because at least one subtag is missing. "
             'Use create=True to create the subtags')
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
@@ -377,7 +377,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     :param mode: str (either `rel` or `abs`).
                  `rel` multiplies the old value with `add_number`
                  `abs` adds the old value and `add_number`
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     :raises ValueError: If the attribute is unknown or cannot be float or int
     :raises ValueError: If the evaluation of the old values failed

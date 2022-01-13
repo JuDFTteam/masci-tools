@@ -58,7 +58,7 @@ def show_bokeh_plot_defaults():
 
 def get_bokeh_help(key):
     """
-    Print the decription of the given key in the bokeh backend
+    Print the description of the given key in the bokeh backend
 
     Available defaults can be seen in :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter`
     """
@@ -80,7 +80,7 @@ def save_bokeh_defaults(filename='plot_bokeh_defaults.json', save_complete=False
 
     :param filename: filename, where the defaults should be stored
     :param save_complete: bool if True not only the overwritten user defaults
-                          but also the unmodified harcoded defaults are stored
+                          but also the unmodified hardcoded defaults are stored
     """
     plot_params.save_defaults(filename, save_complete=save_complete)
 

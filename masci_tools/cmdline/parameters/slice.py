@@ -10,7 +10,7 @@ import click
 
 class IntegerSlice(click.ParamType):
     """
-    Click parameter for specifiying a range of numbers
+    Click parameter for specifying a range of numbers
     """
     name = 'integer-range'
 

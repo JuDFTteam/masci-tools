@@ -524,7 +524,7 @@ def rel_to_abs(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _T
 
     :param vector: list or np.array of length 3, vector to be converted
     :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
-    :return: list of legth 3 of scaled vector, or False if vector was not lenth 3
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
     """
     if not isinstance(vector, np.ndarray):
         vector_np = np.array(vector)

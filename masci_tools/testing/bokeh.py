@@ -61,7 +61,7 @@ def fixture_bokeh_basename(request):
             import bokeh
             current_bokeh_version = bokeh.__version__
         except ImportError:
-            pytest.skip('Bokeh regression tests are skipped only exectued if bokeh is installed')
+            pytest.skip('Bokeh regression tests are skipped only executed if bokeh is installed')
 
         #Copied from pytest-regressions
         basename = re.sub(r'[\W]', '_', request.node.name)

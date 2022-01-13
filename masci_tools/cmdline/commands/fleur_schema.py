@@ -35,7 +35,7 @@ def fleur_schema():
 
 @fleur_schema.command('add')
 @click.argument('schema-file', type=click.Path(path_type=Path, resolve_path=True))
-@click.option('--overwrite', is_flag=True, help='Overwrite any exisiting schema-file')
+@click.option('--overwrite', is_flag=True, help='Overwrite any existing schema-file')
 @click.option('--branch',
               type=str,
               help='If the file does not exist the branch can be specified in the fleur git',

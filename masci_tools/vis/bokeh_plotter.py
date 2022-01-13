@@ -265,7 +265,7 @@ class BokehPlotter(Plotter):
         for the plotting calls fo matplotlib
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
-        :param extra_keys: optional set for addtional keys to retrieve
+        :param extra_keys: optional set for additional keys to retrieve
         :param post_process: bool, if True the parameters are cleaned up for inserting them directly into bokeh plotting functions
 
         Kwargs are used to replace values by custom parameters:

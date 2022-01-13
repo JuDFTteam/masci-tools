@@ -214,7 +214,7 @@ def load_outxml(outxmlfile: XMLFileLike,
             if logger is not None:
                 logger.warning("Found version before MaX3.1 release falling back to file version '0.29'")
             warnings.warn(
-                'out.xml files before the MaX3.1 release are not explicitely supported.'
+                'out.xml files before the MaX3.1 release are not explicitly supported.'
                 ' No guarantee is given that the parser will work without error', UserWarning)
         else:
             if logger is not None:

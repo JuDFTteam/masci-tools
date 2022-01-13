@@ -221,7 +221,7 @@ def get_plotter(backend=None):
     Get the instance of the :py:class:`~masci_tools.vis.parameters.Plotter` subclass
     used for the given plotting backend
 
-    :param backend: For which backend to get the Plotter instace
+    :param backend: For which backend to get the Plotter instance
     """
     import masci_tools.vis.plot_methods as mpl
     import masci_tools.vis.bokeh_plots as bok

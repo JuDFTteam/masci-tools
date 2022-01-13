@@ -92,7 +92,7 @@ class ParseTasks:
     When set up it will initialize the known default tasks and check if they work
     for the given output version
 
-    Accesing definition of task example
+    Accessing definition of task example
 
     .. code-block:: python
 
@@ -121,7 +121,7 @@ class ParseTasks:
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
 
-        :param version: str of the wanted ouput version
+        :param version: str of the wanted output version
         :param task_file: optional, file to override default_parse_tasks
         :param validate_defaults: bool, if True all tasks from the default tasks
                                   are added one by one and are checked for
@@ -160,7 +160,7 @@ class ParseTasks:
 
             if all(working_version < version_tuple for working_version in working_version_tuples):
                 warnings.warn(
-                    f"Output version '{version}' is not explicitely stated as 'working'\n"
+                    f"Output version '{version}' is not explicitly stated as 'working'\n"
                     'with the current version of the outxml_parser.\n'
                     'Since the given version is newer than the latest working version\n'
                     'I will continue. Errors and warnings can occur!', UserWarning)
@@ -259,7 +259,7 @@ class ParseTasks:
         :param task_definition: dict with the defined tasks
         :param overwrite: bool (optional), if True and the key is present in the dictionary it will be
                           overwritten with the new definition
-        :param append: bool (optional), if True and the key is present in the dictionary the new defintions
+        :param append: bool (optional), if True and the key is present in the dictionary the new definitions
                        will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN). Additionally
                        if an inner key is overwritten with an empty dict the inner key will be removed
 
@@ -501,7 +501,7 @@ class ParseTasks:
     def show_available_tasks(self, show_definitions: bool = False) -> None:
         """
         Print all currently available task keys.
-        If show_definitions is True also the corresponding defintions will be printed
+        If show_definitions is True also the corresponding definitions will be printed
         """
         if show_definitions:
             pprint(self.tasks)

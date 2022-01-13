@@ -170,10 +170,10 @@ class Plotter:
     Kwargs in the __init__ method are forwarded to :py:func:`Plotter.set_defaults()`
     to change the current defaults away from the hardcoded parameters.
 
-    The Plotter class creates a hierachy of dictionaries for lookups on this object
+    The Plotter class creates a hierarchy of dictionaries for lookups on this object
     utilizing the `ChainMap` from the `collections` module.
 
-    The hierachy is as follows (First entries take precedence over later entries):
+    The hierarchy is as follows (First entries take precedence over later entries):
         - `parameters`: set by :py:func:`~Plotter.set_parameters()` (usually arguments passed into function)
         - `user defaults`: set by :py:func:`~Plotter.set_defaults()`
         - `function defaults`: set by :py:func:`~Plotter.set_defaults()` with `default_type='function'`
@@ -256,7 +256,7 @@ class Plotter:
                         tuple of str and int (specifies the key and index to access)
 
         :returns: the current parameter for the given specification. If tuple is given
-                  and the paramter is a list the second item is used for the list index
+                  and the parameter is a list the second item is used for the list index
         """
         if isinstance(indices, tuple):
             if len(indices) != 2:
@@ -588,14 +588,14 @@ class Plotter:
         Add a new parameter to the parameters dictionary.
 
         :param name: str name of the parameter
-        :param default_from: str (optional), if given a entry is created in the curent defaults
+        :param default_from: str (optional), if given a entry is created in the current defaults
                              with the name and the default value of the key `default_from`
 
         """
 
         if default_val is not None:
             if default_from is not None:
-                raise ValueError('Default value speciefied via default_val and default_from. Please choose one option')
+                raise ValueError('Default value specified via default_val and default_from. Please choose one option')
         elif default_from is not None:
             default_val = self._params.parents[default_from]
             if isinstance(default_val, (dict, list)):
@@ -610,7 +610,7 @@ class Plotter:
 
         :param filename: filename, where the defaults should be stored
         :param save_complete: bool if True not only the overwritten user defaults
-                              but also the unmodified harcoded defaults are stored
+                              but also the unmodified hardcoded defaults are stored
         """
         if save_complete:
             if self._function_defaults != {}:

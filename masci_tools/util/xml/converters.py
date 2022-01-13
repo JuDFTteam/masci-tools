@@ -59,7 +59,7 @@ def convert_to_xml(value: Any | list[Any],
         float_format = '16.13'
     else:
         if name not in schema_dict['attrib_types']:
-            raise KeyError(f'Unknown attibute name: {name}')
+            raise KeyError(f'Unknown attribute name: {name}')
         definitions = schema_dict['attrib_types'][name]
         float_format = '.10'
 
@@ -108,7 +108,7 @@ def convert_from_xml(
         xmlstring = [string.strip() for string in xmlstring]
     else:
         if name not in schema_dict['attrib_types']:
-            raise KeyError(f'Unknown attibute name: {name}')
+            raise KeyError(f'Unknown attribute name: {name}')
         definitions = schema_dict['attrib_types'][name]
 
     return convert_from_xml_explicit(xmlstring,
@@ -212,7 +212,7 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
                    otherwise a error is raised, when the first conversion fails
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
-    :return: The converted value of the first succesful conversion
+    :return: The converted value of the first successful conversion
     """
     import numpy as np
 
@@ -372,7 +372,7 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
                    otherwise a error is raised, when the first conversion fails
     :param list_return: if True, the returned quantity is always a list even if only one element is in it
 
-    :return: The converted str of the value of the first succesful conversion
+    :return: The converted str of the value of the first successful conversion
     """
     import numpy as np
 

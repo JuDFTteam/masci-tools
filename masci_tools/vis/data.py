@@ -278,7 +278,7 @@ class PlotData:
         :param data_key: name of the data key to determine the minimum
         :param separate: bool if True the minimum will be determined and returned
                          for all entries separately
-        :param mask: optional mask to select specifc rows from the data entries
+        :param mask: optional mask to select specific rows from the data entries
         :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: minimum value for all entries either combined or as a list
@@ -317,7 +317,7 @@ class PlotData:
         :param data_key: name of the data key to determine the maximum
         :param separate: bool if True the maximum will be determined and returned
                          for all entries separately
-        :param mask: optional mask to select specifc rows from the data entries
+        :param mask: optional mask to select specific rows from the data entries
         :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: maximum value for all entries either combined or as a list
@@ -773,7 +773,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
 
     :param data: The (array-like) data to be normalized
     :param key: key under which to enter the new data
-    :param out_data: dict containining previously normalized data
+    :param out_data: dict containing previously normalized data
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened
     :param forbid_split_up: bool, if True multidimensional arrays are not split up
 

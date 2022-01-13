@@ -13,7 +13,7 @@
 This module contains helper functions for extracting information easily from the
 schema_dicts defined for the Fleur input/output
 
-Also provides convienient functions to use just a attribute name for extracting the
+Also provides convenient functions to use just a attribute name for extracting the
 attribute from the right place in the given etree
 """
 from __future__ import annotations
@@ -167,8 +167,8 @@ def get_tag_info(schema_dict,
     :param not_contains: str or list of str, this string has to NOT be in the final path
     :param path_return: bool, if True the found path will be returned alongside the tag_info
     :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
-                               with the rigth case of the attributes
-    :param multiple_paths: bool, if True mulitple paths are allowed to match as long as they have the same tag_info
+                               with the right case of the attributes
+    :param multiple_paths: bool, if True multiple paths are allowed to match as long as they have the same tag_info
     :param parent: bool, if True the tag_info for the parent of the tag is returned
 
     :returns: dict, tag_info for the found xpath
@@ -870,7 +870,7 @@ def get_number_of_nodes(node: XMLLike,
                         logger: Logger | None = None,
                         **kwargs: Any) -> int:
     """
-    Evaluates the number of occurences of the tag in the xmltree based on the given name
+    Evaluates the number of occurrences of the tag in the xmltree based on the given name
     and additional further specifications with the available type information
 
     :param node: etree Element, on which to execute the xpath evaluations
@@ -980,7 +980,7 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
     :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
               to the excluded trees
 
-    :raises ValueError: if the tag can not be found in teh given xmltree
+    :raises ValueError: if the tag can not be found in the given xmltree
     """
     from masci_tools.util.xml.common_functions import eval_xpath
 

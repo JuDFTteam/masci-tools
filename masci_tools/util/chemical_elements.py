@@ -634,7 +634,7 @@ class ChemicalElements:
         are applied to them, they behave as if not flat (nested). This function makes all involved hidden group names
         equal, so that they truly behave as flat instances under set operations.
 
-        :param other_elements: other flat ``ChemicalElement`` isntances.
+        :param other_elements: other flat ``ChemicalElement`` instances.
         :param group_name: Hidden group name to apply to all. Default hidden group name is empty string.
         """
         msg_prefix = f'Warning: {self.__class__.__name__}.adjust_flat_elements():'
@@ -917,7 +917,7 @@ class ChemicalElements:
         complement = list(set(self._pte.keys()) - set(all_elmts))
         complement = self._chemical_element_list_to_dict(complement)
         if not complement:
-            # neeed this since supplying 'nothing' to constructor fills whole table by default
+            # need this since supplying 'nothing' to constructor fills whole table by default
             return ChemicalElements(empty=True, distinct=self.distinct)
 
         return ChemicalElements(list(complement.keys()), distinct=self.distinct)
@@ -1269,7 +1269,7 @@ class ChemicalElements:
         # # let pandas convert values to most sensible types
         # # Example use case: when group names are integer, legend would display them as floats without this.
         # ptable[title] = ptable[title].convert_dtypes()
-        # DEVnote: Commented out, cause this also converts NaN into pandas.NA, and mendeleev ploting method
+        # DEVnote: Commented out, cause this also converts NaN into pandas.NA, and mendeleev plotting method
         # can't deal with the latter. And seems like legend int problem above solved itself without this.
 
         # for the title column, either use specified colormap, or create custom one from given name

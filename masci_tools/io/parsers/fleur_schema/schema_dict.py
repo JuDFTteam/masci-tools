@@ -10,7 +10,7 @@
 #                                                                             #
 ###############################################################################
 """
-This module provides the classes for easy acces to information
+This module provides the classes for easy access to information
 from the fleur input and output xsd schema files
 """
 from __future__ import annotations
@@ -103,7 +103,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
             matches.append(default_match)
 
             if len(matches) > 2:
-                raise ValueError('Ambiguous possibilites for schema_dict_version_dispatch for version {version}')
+                raise ValueError('Ambiguous possibilities for schema_dict_version_dispatch for version {version}')
 
             return matches[0]
 

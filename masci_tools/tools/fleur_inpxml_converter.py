@@ -267,7 +267,7 @@ def analyse_paths(
 
 def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, tag_remove=None, tag_move=None):
     """
-    Try to resolve ambuouities by using additional inforamtion from moved/created removed tags/attributes
+    Try to resolve ambuouities by using additional information from moved/created removed tags/attributes
     """
 
     for action in ambiguous.copy():
@@ -451,7 +451,7 @@ def load_conversion(from_version, to_version):
     """
     Load the conversion between the given versions from a stored json file
 
-    :param from_version: str of the intitial version
+    :param from_version: str of the initial version
     :param to_version: str of the final version
 
     :returns: a dict with the actions to perform

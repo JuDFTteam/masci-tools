@@ -51,7 +51,7 @@ in separate python dictionaries by the :py:class:`~masci_tools.io.parsers.hdf5.r
 
 Each entry in those sections has to have a `h5path` entry, which will specify the dataset to initially
 read from the hdf file. Then each entry can define a entry `transforms` with a list of the namedtuples
-imported at the top of the code example. These correponds to function calls to functions in
+imported at the top of the code example. These corresponds to function calls to functions in
 :py:mod:`~masci_tools.io.parsers.hdf5.transforms` to transform the read in data
 
 Entries in the `attributes` section are read and transformed first and can subsequently be used in transformations
