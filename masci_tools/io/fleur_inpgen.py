@@ -264,8 +264,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     if own_lattice:
         # TODO with own lattice atomic positions have to come from somewhere
         # else.... User input?
-        raise ValueError('fleur lattice needs also the atom '
-                         ' position as input,'
+        raise ValueError('fleur lattice needs also the atom position as input,'
                          ' not implemented yet, sorry!')
 
     atom_positions_text = []

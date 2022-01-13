@@ -1204,8 +1204,7 @@ def periodic_table_plot(source,
     elif log_scale == 1:
         for datum in data:
             if datum < 0:
-                raise ValueError('Entry for element ' + datum + ' is negative but'
-                                 ' log-scale is selected')
+                raise ValueError(f'Entry for element {datum} is negative but log-scale is selected')
         color_mapper = LogColorMapper(palette=bokeh_palette, low=mind, high=maxd)
         norm = LogNorm(vmin=mind, vmax=maxd)
     color_scale = ScalarMappable(norm=norm, cmap=color_map).to_rgba(data, alpha=None)

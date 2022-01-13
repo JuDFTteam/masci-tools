@@ -936,8 +936,7 @@ def get_kpoints_data(
         try:
             kpointlists = [kpointlists[index]]
         except IndexError as exc:
-            raise ValueError(f'No kPointList with index {index} found.'
-                             f' Only {len(kpointlists)} available') from exc
+            raise ValueError(f'No kPointList with index {index} found. Only {len(kpointlists)} available') from exc
 
     kpoints_data = {}
     weights_data = {}
