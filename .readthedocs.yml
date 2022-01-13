@@ -11,3 +11,6 @@ python:
       path: .
       extra_requirements:
         - docs
+
+build:
+  image: testing
