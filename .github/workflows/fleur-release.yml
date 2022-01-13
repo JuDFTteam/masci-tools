@@ -20,7 +20,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install -e .[cmdline-extras, testing]
+        pip install -e .[cmdline-extras,testing]
     
     - name: Add Fleur schemas
       env:
