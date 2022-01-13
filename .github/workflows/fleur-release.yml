@@ -1,7 +1,7 @@
 name: Fleur Release workflow
 on:
   workflow_dispatch:  
-  repository-dispatch:
+  repository_dispatch:
     types: ['fleur-release']
 
 jobs:
