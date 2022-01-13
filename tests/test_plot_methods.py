@@ -983,27 +983,25 @@ def test_multiaxis_single_subplot_param_change():
     return gcf()
 
 
-class TestColormeshPlot:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare
+def test_colormesh_defaults():
+    """
+    Test of colormesh plot with default values
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import colormesh_plot
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/colormesh/', filename='defaults.png')
-    def test_defaults(self):
-        """
-        Test of colormesh plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import colormesh_plot
+    x = np.linspace(0, np.pi, 100)
+    y = np.linspace(0, np.pi, 100)
+    x, y = np.meshgrid(x, y)
+    data = np.sin(x + y)
 
-        x = np.linspace(0, np.pi, 100)
-        y = np.linspace(0, np.pi, 100)
-        x, y = np.meshgrid(x, y)
-        data = np.sin(x + y)
+    gcf().clear()
 
-        gcf().clear()
+    colormesh_plot(x, y, data, xlabel='X', ylabel='Y', title='sin', show=False)
 
-        colormesh_plot(x, y, data, xlabel='X', ylabel='Y', title='sin', show=False)
-
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestHistogramPlot:  #pylint: disable=missing-class-docstring
