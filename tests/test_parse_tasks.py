@@ -6,7 +6,7 @@ import pytest
 
 def test_default_parse_tasks():
     """
-    Test the default parsing tasks fro inconsitencies/typos
+    Test the default parsing tasks for inconsitencies/typos
     """
     from masci_tools.util.parse_tasks import ParseTasks
 

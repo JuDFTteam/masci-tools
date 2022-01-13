@@ -232,7 +232,7 @@ class ParseTasks:
     @property
     def all_attribs_function(self) -> set[str]:
         """
-        Return the registered parse functions for parsing multipl attributes
+        Return the registered parse functions for parsing multiple attributes
         """
         if getattr(self, '_all_attribs_function', None) is None:
             import_module('masci_tools.util.schema_dict_util')

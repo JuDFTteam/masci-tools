@@ -41,7 +41,7 @@ Standard bandstructure
 
 To plot a simple bandstructure without any weighting we just have to pass the data, that the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` provided to the :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()`
 
-The two exmaples below show the resulting plots for a non-psinpolarized system (bulk Si) and a spin-polarized system (Fe fcc). For both systems the necessary code is exactly the same and is shown above the plots. The shown plots are the ones for the matplotlib plotting backend:
+The two examples below show the resulting plots for a non-psinpolarized system (bulk Si) and a spin-polarized system (Fe fcc). For both systems the necessary code is exactly the same and is shown above the plots. The shown plots are the ones for the matplotlib plotting backend:
 
 .. code-block:: python
 
@@ -80,7 +80,7 @@ To plot a simple bandstructure with weighting we do the same procedure as above,
 
 The weights will be used to change the size and color (according to a colormap) to indicate regions of high weight.
 
-The two exmaples below show the resulting plots for a non-psinpolarized system (bulk Si) weighted for the s-orbital on the first atom and a spin-polarized system (Fe fcc) with weights for the d-orbital on the first atom type. For both systems the necessary code is exactly the same and is shown above the plots. The shown plots are the ones for the matplotlib plotting backend:
+The two examples below show the resulting plots for a non-psinpolarized system (bulk Si) weighted for the s-orbital on the first atom and a spin-polarized system (Fe fcc) with weights for the d-orbital on the first atom type. For both systems the necessary code is exactly the same and is shown above the plots. The shown plots are the ones for the matplotlib plotting backend:
 
 .. code-block:: python
 
@@ -182,7 +182,7 @@ Selecting specific DOS components
 
 The DOS is made up of a lot of contributions that can be displayed separately.
 
-Here we list the options that are available and show exmaple plots for only selecting the atom projected compinents of the density of states
+Here we list the options that are available and show example plots for only selecting the atom projected compinents of the density of states
 
    - :plot_keys: Can be used to provide a explicit list of keys you want to display (Same format as in the ``banddos.hdf``)
    - :show_total: Control, whether to show the total density of states (default ``True``)

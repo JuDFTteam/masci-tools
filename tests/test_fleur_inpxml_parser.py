@@ -18,7 +18,7 @@ inpxmlfilefolder_valid = [
     os.path.abspath(os.path.join(inpxmlfilefolder, file_path2))
 ]
 
-#Thes inputs are currently broken in the fleur tests
+#These inputs are currently broken in the fleur tests
 broken_inputs = [
     'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
     'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT', 'Max-R5/NiO_ldauXML', 'Max-R5/Bi2Te3XML'

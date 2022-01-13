@@ -2569,7 +2569,7 @@ def plot_corelevel_spectra(coreleveldict,
         show_single (bool): plot all single peaks.
         scale_to float: the maximum 'intensity' will be scaled to this value (useful for experimental comparisons)
         title (string): something for labeling
-        fwhm (float): full width half maximum of peaks (gaus, lorentz or voigt_profile)
+        fwhm (float): full width half maximum of peaks (gauss, lorentz or voigt_profile)
         energy_grid (float): energy resolution
         linetyp_spec : linetype for spectrum
         peakfunction (string): what the peakfunction should be {'voigt', 'pseudo-voigt', 'lorentz', 'gaus'}
@@ -2800,7 +2800,7 @@ def asymmetric_lorentz_gauss_conv(x, mu, fwhm_l, fwhm_g, alpha=1.0, beta=1.5):
     from scipy.signal import fftconvolve
     #from scipy import signal
     # only one function has to be translated
-    # gaus has to be symmetric around 0 for convolution
+    # gauss has to be symmetric around 0 for convolution
     # and on the same equidistant grid
     xstep = abs(round(x[-1] - x[-2], 6))
     rangex = abs(x[-1] - x[0])
@@ -3104,16 +3104,16 @@ def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
         fwhm_g: FWHM of gaussian
         fwhm_l: FWHM of Lorentzian
         mu: Mean
-        mix: ratio of gaus to lorentz, mix* gaus, (1-mix)*Lorentz
+        mix: ratio of gauss to lorentz, mix* gauss, (1-mix)*Lorentz
 
     """
     #pseudo_voigt = []
     if mix > 1:
         print('mix has to be smaller than 1.')
         return []
-    gaus = gaussian(x, fwhm_g, mu)
+    gauss = gaussian(x, fwhm_g, mu)
     lorentz = lorentzian(x, fwhm_l, mu)
-    return mix * gaus + (1 - mix) * lorentz
+    return mix * gauss + (1 - mix) * lorentz
 
 
 class PDF:

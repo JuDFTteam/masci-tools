@@ -1,5 +1,5 @@
 """
-Test for the FleurXMLModifier calss
+Test for the FleurXMLModifier class
 """
 import os
 import pytest

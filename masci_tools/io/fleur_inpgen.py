@@ -347,7 +347,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     inpgen_file_content.append(scaling_factor_card)
     inpgen_file_content.append('\n')
 
-    # Write Atomic positons
+    # Write Atomic positions
     inpgen_file_content.append(atom_positions_str)
 
     # Write namelists after atomic positions

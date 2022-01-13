@@ -195,7 +195,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
 
-    # parse only last stable interation
+    # parse only last stable iteration
     # (if modes (dos and co) maybe parse anyway if broken?)
     if outfile_broken and (n_iters >= 2):
         iteration_nodes = iteration_nodes[:-2]

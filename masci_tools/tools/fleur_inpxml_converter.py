@@ -190,7 +190,7 @@ def analyse_paths(
 ) -> tuple[list[RemoveAction], list[CreateAction], list[MoveAction], list[AmbiguousAction]]:
     """
     Gather the initial path differences between the two given input schema dictionaries
-    fro the given entries. If multiple enetries are given they are first merged together
+    for the given entries. If multiple enetries are given they are first merged together
 
     :param schema_start: InputSchemaDict to start from
     :param schema_start: InputSchemaDict to end up at

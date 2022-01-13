@@ -327,7 +327,7 @@ class MatplotlibPlotter(Plotter):
                     **kwargs):
         """
         Creates a dict or list of dicts (for multiple plots) with the defined parameters
-        for the plotting calls fo matplotlib
+        for the plotting calls of matplotlib
 
         :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
         :param extra_keys: optional set for additional keys to retrieve

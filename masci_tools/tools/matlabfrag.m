@@ -403,7 +403,7 @@ end
     end
   end
 
-% Get all fo the text object's positions.
+% Get all of the text object's positions.
   function TextPos = GetTextPos(texthandles)
     TextPos = cell(1,length(texthandles));
     for jj=1:length(texthandles)

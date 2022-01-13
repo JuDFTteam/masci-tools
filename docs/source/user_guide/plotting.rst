@@ -8,7 +8,7 @@ General Plotting routines
 
 The plotting of data is always a common task that needs to be performed. However, there is a lot of variation in how someone might want plots to look or be arranged. Some plots might also need to be interactive to be of a real use.
 
-For these reasons the ``masci_tools`` library provides utility for general plotting and template functions for common plots made wehn working with DFT methods. There are two plotting backends available:
+For these reasons the ``masci_tools`` library provides utility for general plotting and template functions for common plots made when working with DFT methods. There are two plotting backends available:
 
    - :`matplotlib`_: Mainly used for non-interactive plots
    - :`bokeh`_: Mainly used for interactive plots
@@ -28,7 +28,7 @@ For both of these there are a lot of plotting routines available (both general o
    - `matplotlib`:
       - :py:func:`~masci_tools.vis.plot_methods.single_scatterplot()`: Make a scatterplot with lines for a single set of data
       - :py:func:`~masci_tools.vis.plot_methods.multiple_scatterplots()`: Make a scatterplot with lines for multiple sets of data
-      - :py:func:`~masci_tools.vis.plot_methods.multi_scatter_plot()`: Make a scatterplot with varying size and color fo the points for multiple sets of data
+      - :py:func:`~masci_tools.vis.plot_methods.multi_scatter_plot()`: Make a scatterplot with varying size and color of the points for multiple sets of data
       - :py:func:`~masci_tools.vis.plot_methods.colormesh_plot()`: Make 2D plot with the data represented as color
       - :py:func:`~masci_tools.vis.plot_methods.waterfall_plot()`: Make 3D plot with the `scatter3D` function of matplotlib
       - :py:func:`~masci_tools.vis.plot_methods.surface_plot()`: Make 3D plot with the `plot_surface` function of matplotlib
@@ -55,14 +55,14 @@ For both of these there are a lot of plotting routines available (both general o
       - :py:func:`~masci_tools.vis.bokeh_plots.bokeh_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
       - :py:func:`~masci_tools.vis.bokeh_plots.periodic_table_plot()`: Make a interactive plot of data for the periodic table
 
-If you have ideas for new useful and beatiful plotting routines you are welcome to contribute. Refer to the sections :ref:`devguideplotting` and :ref:`devguideplotdata` for a guide on how to get started.
+If you have ideas for new useful and beautiful plotting routines you are welcome to contribute. Refer to the sections :ref:`devguideplotting` and :ref:`devguideplotdata` for a guide on how to get started.
 
 Providing Data
 --------------
 
 Data can be provided to plotting functions in two main ways:
 
-   1. The first arguments and data arguments are given the keys in a mapping, which should be used. The correspinding mapping is provided via the ``data`` keyword argument
+   1. The first arguments and data arguments are given the keys in a mapping, which should be used. The corresponding mapping is provided via the ``data`` keyword argument
    2. The first arguments and data arguments are given the data that should be plotted against each other.
 
 The following two code blocks are equivalent in terms of the provided data.
