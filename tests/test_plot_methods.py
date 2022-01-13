@@ -390,324 +390,312 @@ class TestMultipleScatterPlot:
     Test of the multiple_scatterplots function
     """
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='defaults.png')
-    def test_default(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_defaults():
+    """
+    Scatterplot with default parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
+    gcf().clear()
 
-        multiple_scatterplots(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    multiple_scatterplots(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='param_change.png')
-    def test_param_change(self):
-        """
-        Scatterplot with a variety of changed parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_param_change():
+    """
+    Scatterplot with a variety of changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
+    gcf().clear()
 
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            title_fontsize=30,
+                            plot_label=['Parabola', 'Line', None, 'cosine'],
+                            marker='^',
+                            linewidth=[1, 3],
+                            color=['darkred', 'darkblue', 'limegreen'],
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_legend():
+    """
+    Scatterplot with setting the legend
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            plot_label=['Parabola', 'Line', None, 'cosine'],
+                            legend=True,
+                            legend_options={'fontsize': 20},
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_scale_limits():
+    """
+    Scatterplot with setting scales and limits
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            scale={'y': 'log'},
+                            limits={
+                                'y': (0.01, 100),
+                                'x': (0, 10)
+                            },
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_xticks():
+    """
+    Scatterplot with setting custom xticks
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            xticks=[-10, 3, 3, 10, 20],
+                            xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_dict_selection():
+    """
+    Test the partial setting of values via integer indexed dict
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            marker='^',
+                            color={4: 'k'},
+                            plot_label={
+                                0: 'Parabola',
+                                1: 'Line',
+                                3: 'cosine'
+                            },
+                            linewidth={2: 5},
+                            legend=True,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_area():
+    """
+    Test multiple scatter plot with one plot as an area plot
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+
+    multiple_scatterplots(x,
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            marker='^',
+                            color={
+                                4: 'k',
+                                3: 'darkorange'
+                            },
+                            area_plot={3: True},
+                            plot_label={
+                                0: 'Parabola',
+                                1: 'Line',
+                                3: 'cosine'
+                            },
+                            linewidth={2: 5},
+                            legend=True,
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_scale_limits.png') #Same as non-deprecated test
+def test_multiple_scatter_scale_limits_deprecated():
+    """
+    Scatterplot with deprecated options for setting scales and limits
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
+
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+
+    gcf().clear()
+    with pytest.deprecated_call():
         multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              title_fontsize=30,
-                              plot_label=['Parabola', 'Line', None, 'cosine'],
-                              marker='^',
-                              linewidth=[1, 3],
-                              color=['darkred', 'darkblue', 'limegreen'],
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                                y,
+                                xlabel='X',
+                                ylabel='Y',
+                                title='Plot Test',
+                                scale=[None, 'log'],
+                                limits=[(0, 10), (0.01, 100)],
+                                show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='legend.png')
-    def test_legend(self):
-        """
-        Scatterplot with setting the legend
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_xticks.png')
+def test_multiple_scatter_xticks_deprecated():
+    """
+    Scatterplot with deprecated option for setting custom xticks
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
-
+    gcf().clear()
+    with pytest.deprecated_call():
         multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              plot_label=['Parabola', 'Line', None, 'cosine'],
-                              legend=True,
-                              legend_options={'fontsize': 20},
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                                y,
+                                xlabel='X',
+                                ylabel='Y',
+                                title='Plot Test',
+                                xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
+                                        [-10, 3, 3, 10, 20]],
+                                show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='scale_limits.png')
-    def test_scale_limits(self):
-        """
-        Scatterplot with setting scales and limits
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
+def test_multiple_scatter_plot_labels_deprecated():
+    """
+    Scatterplot with deprecated option for setting custom plot labels
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
-
+    gcf().clear()
+    with pytest.deprecated_call():
         multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              scale={'y': 'log'},
-                              limits={
-                                  'y': (0.01, 100),
-                                  'x': (0, 10)
-                              },
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                                y,
+                                xlabel='X',
+                                ylabel='Y',
+                                title='Plot Test',
+                                plot_labels=['Parabola', 'Line', None, 'cosine'],
+                                legend=True,
+                                legend_options={'fontsize': 20},
+                                show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='xticks.png')
-    def test_xticks(self):
-        """
-        Scatterplot with setting custom xticks
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
+def test_multiple_scatter_legend_option_deprecated():
+    """
+    Scatterplot with deprecated option for setting legend parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
-
+    gcf().clear()
+    with pytest.deprecated_call():
         multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              xticks=[-10, 3, 3, 10, 20],
-                              xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                                y,
+                                xlabel='X',
+                                ylabel='Y',
+                                title='Plot Test',
+                                plot_label=['Parabola', 'Line', None, 'cosine'],
+                                legend=True,
+                                legend_option={'fontsize': 20},
+                                show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='dict_selection.png')
-    def test_dict_selection(self):
-        """
-        Test the partial setting of values via integer indexed dict
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
+@pytest.mark.mpl_image_compare
+def test_multiple_scatter_colors_deprecated():
+    """
+    Scatterplot with setting colors via deprecated option
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        gcf().clear()
-
+    gcf().clear()
+    with pytest.deprecated_call():
         multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              marker='^',
-                              color={4: 'k'},
-                              plot_label={
-                                  0: 'Parabola',
-                                  1: 'Line',
-                                  3: 'cosine'
-                              },
-                              linewidth={2: 5},
-                              legend=True,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='area.png')
-    def test_area(self):
-        """
-        Test the partial setting of values via integer indexed dict
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              marker='^',
-                              color={
-                                  4: 'k',
-                                  3: 'darkorange'
-                              },
-                              area_plot={3: True},
-                              plot_label={
-                                  0: 'Parabola',
-                                  1: 'Line',
-                                  3: 'cosine'
-                              },
-                              linewidth={2: 5},
-                              legend=True,
-                              show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='scale_limits.png')
-    def test_scale_limits_deprecated(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            multiple_scatterplots(x,
-                                  y,
-                                  xlabel='X',
-                                  ylabel='Y',
-                                  title='Plot Test',
-                                  scale=[None, 'log'],
-                                  limits=[(0, 10), (0.01, 100)],
-                                  show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='xticks.png')
-    def test_xticks_deprecated(self):
-        """
-        Scatterplot with setting custom xticks
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            multiple_scatterplots(x,
-                                  y,
-                                  xlabel='X',
-                                  ylabel='Y',
-                                  title='Plot Test',
-                                  xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
-                                          [-10, 3, 3, 10, 20]],
-                                  show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='legend.png')
-    def test_plot_labels_deprecated(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            multiple_scatterplots(x,
-                                  y,
-                                  xlabel='X',
-                                  ylabel='Y',
-                                  title='Plot Test',
-                                  plot_labels=['Parabola', 'Line', None, 'cosine'],
-                                  legend=True,
-                                  legend_options={'fontsize': 20},
-                                  show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='legend.png')
-    def test_legend_option_deprecated(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            multiple_scatterplots(x,
-                                  y,
-                                  xlabel='X',
-                                  ylabel='Y',
-                                  title='Plot Test',
-                                  plot_label=['Parabola', 'Line', None, 'cosine'],
-                                  legend=True,
-                                  legend_option={'fontsize': 20},
-                                  show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multiple_scatterplots/',
-                                   filename='colors.png')
-    def test_colors_deprecated(self):
-        """
-        Scatterplot with setting colors via deprecated option
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multiple_scatterplots
-
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            multiple_scatterplots(x,
-                                  y,
-                                  xlabel='X',
-                                  ylabel='Y',
-                                  title='Plot Test',
-                                  colors=['darkred', 'darkblue', 'limegreen'],
-                                  show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                                y,
+                                xlabel='X',
+                                ylabel='Y',
+                                title='Plot Test',
+                                colors=['darkred', 'darkblue', 'limegreen'],
+                                show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestMultiScatterPlot:
