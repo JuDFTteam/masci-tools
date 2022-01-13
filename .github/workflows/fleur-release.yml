@@ -26,8 +26,8 @@ jobs:
       env:
         IFFGIT_API_KEY: ${{ secrets.IFFGIT_API_KEY }}
       run: |
-        masci-tools fleur-schema add FleurInputSchema.xsd --branch release
-        masci-tools fleur-schema add FleurOutputSchema.xsd --branch release
+        masci-tools fleur-schema add FleurInputSchema.xsd --branch release --from-git
+        masci-tools fleur-schema add FleurOutputSchema.xsd --branch release --from-git
         masci-tools fleur-schema list
     
     - name: Run tests (Generate schema test files)
