@@ -1,12 +1,10 @@
 # Changelog
 
-# latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...develop)
+# v.0.7.1
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.7.1)
 
 ### Added
 - ``XPathBuilder`` class for specifying complex conditions on xpaths with a dictionary. Added ``filters`` argument to ``schema_dict_util`` and ``xml_setters`` functions for this dictionary [[#96]](https://github.com/JuDFTteam/masci-tools/pull/96)
-### Improved
-Nothing here yet
 ### Bugfixes
 - Fixed issue with ``MANIFEST.in``, where non-python files from the ``tools`` subpackage were not included in the built packages
 - Fixed bug not correctly processing the plot limits in ``plot_fleur_bands`` in excluding points outside the plot area for better performance
