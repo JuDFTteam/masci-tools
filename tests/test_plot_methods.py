@@ -156,243 +156,233 @@ class TestSingleScatterPlot:
     Test of the single_scatterplot function
     """
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='defaults.png')
-    def test_default(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
+@pytest.mark.mpl_image_compare
+def test_single_scatter_defaults():
+    """
+    Scatterplot with default parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
 
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        gcf().clear()
+    gcf().clear()
 
-        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='param_change.png')
-    def test_params_changed(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
+@pytest.mark.mpl_image_compare
+def test_single_scatter_param_change():
+    """
+    Scatterplot with changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
 
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        gcf().clear()
+    gcf().clear()
 
+    single_scatterplot(x,
+                        y,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        title_fontsize=30,
+                        plot_label='Test',
+                        color='darkred',
+                        marker='^',
+                        markersize=10,
+                        linestyle='',
+                        show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_single_scatter_scale():
+    """
+    Scatterplot with different axis scales
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+
+    single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale={'y': 'log'}, show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_single_scatter_limits():
+    """
+    Scatterplot with modified plot limits
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+
+    single_scatterplot(x,
+                        y,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        limits={
+                            'y': (-100, 100),
+                            'x': (0, 10)
+                        },
+                        show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_single_scatter_area():
+    """
+    Scatterplot with an area plot
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+
+    single_scatterplot(x,
+                        y,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        show=False,
+                        area_plot=True,
+                        area_alpha=0.3,
+                        marker=None,
+                        color='darkblue')
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_single_scatter_lines():
+    """
+    Scatterplot with added straight lines
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+
+    single_scatterplot(x,
+                        y,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        lines={
+                            'horizontal': 50,
+                            'vertical': [-5, 5]
+                        },
+                        show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare
+def test_single_scatter_lines_param_change():
+    """
+    Scatterplot with added straight lines and changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+
+    single_scatterplot(x,
+                        y,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        lines={
+                            'horizontal': 50,
+                            'vertical': [-5, {
+                                'pos': 5,
+                                'color': 'darkred',
+                                'linestyle': ':',
+                                'linewidth': 10
+                            }]
+                        },
+                        show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
+
+@pytest.mark.mpl_image_compare(filename='test_single_scatter_limits.png') #Same as the normal limits test
+def test_single_scatter_limits_deprecated():
+    """
+    Scatterplot with deprecated parameter for modifying plot limits
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
+
+    x = np.linspace(-10, 10, 100)
+    y = x**2
+
+    gcf().clear()
+    with pytest.deprecated_call():
         single_scatterplot(x,
-                           y,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           title_fontsize=30,
-                           plot_label='Test',
-                           color='darkred',
-                           marker='^',
-                           markersize=10,
-                           linestyle='',
-                           show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+                            y,
+                            xlabel='X',
+                            ylabel='Y',
+                            title='Plot Test',
+                            limits=[(0, 10), (-100, 100)],
+                            show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='scale.png')
-    def test_scale(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
+@pytest.mark.mpl_image_compare(filename='test_single_scatter_scale.png') #same as the normal scale test
+def test_single_scatter_scale_deprecated():
+    """
+    Scatterplot with deprectated option for modifying axis scales
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
 
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        gcf().clear()
+    gcf().clear()
+    with pytest.deprecated_call():
+        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale={'y': 'log'}, show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare(filename='test_single_scatter_defaults.png')
+def test_single_scatter_deprecated_label():
+    """
+    Scatterplot with deprectated option for changing plot label
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import single_scatterplot
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='limits.png')
-    def test_limits(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-
-        single_scatterplot(x,
-                           y,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           limits={
-                               'y': (-100, 100),
-                               'x': (0, 10)
-                           },
-                           show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='area.png')
-    def test_area(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-
-        single_scatterplot(x,
-                           y,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           show=False,
-                           area_plot=True,
-                           area_alpha=0.3,
-                           marker=None,
-                           color='darkblue')
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='lines.png')
-    def test_lines(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-
-        single_scatterplot(x,
-                           y,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           lines={
-                               'horizontal': 50,
-                               'vertical': [-5, 5]
-                           },
-                           show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='lines_param_change.png')
-    def test_lines_param_change(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-
-        single_scatterplot(x,
-                           y,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           lines={
-                               'horizontal': 50,
-                               'vertical': [-5, {
-                                   'pos': 5,
-                                   'color': 'darkred',
-                                   'linestyle': ':',
-                                   'linewidth': 10
-                               }]
-                           },
-                           show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='limits.png')
-    def test_limits_deprecated(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            single_scatterplot(x,
-                               y,
-                               xlabel='X',
-                               ylabel='Y',
-                               title='Plot Test',
-                               limits=[(0, 10), (-100, 100)],
-                               show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='scale.png')
-    def test_scale_deprecated(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/single_scatterplot/',
-                                   filename='defaults.png')
-    def test_deprecated_label(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import single_scatterplot
-
-        x = np.linspace(-10, 10, 100)
-        y = x**2
-
-        gcf().clear()
-        with pytest.deprecated_call():
-            single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    gcf().clear()
+    with pytest.deprecated_call():
+        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestMultipleScatterPlot:
