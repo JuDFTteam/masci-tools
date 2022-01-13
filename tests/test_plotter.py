@@ -10,7 +10,7 @@ TEST_DICT = {'A': {'test1': 12, 'test2': 4}, 'B': 3.0, 'C': 'title'}
 
 def test_plotter_access():
     """
-   Test basic item acces and make sure the right structure was created
+   Test basic item access and make sure the right structure was created
    """
     p = Plotter(TEST_DICT)
 
@@ -197,7 +197,7 @@ def test_plotter_decorator_working():
 
 def test_plotter_decorator_raised_error():
     """
-    Test the ensure_plotter_consistency decorator for a function with an error occuring durin execution
+    Test the ensure_plotter_consistency decorator for a function with an error occurring durin execution
     """
 
     p = Plotter(TEST_DICT)
@@ -250,7 +250,7 @@ def test_plotter_decorator_add_parameter():
 
 def test_plotter_decorator_add_parameter_raised_error():
     """
-    Test the ensure_plotter_consistency decorator for a function adding custom parameters with an exception occuring
+    Test the ensure_plotter_consistency decorator for a function adding custom parameters with an exception occurring
     """
 
     p = Plotter(TEST_DICT)

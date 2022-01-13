@@ -89,7 +89,7 @@ def test_create_tag_create_parents(load_inpxml):
     tags = [child.tag for child in node.iterdescendants()]
     tags.extend(['greensFunction', 'realAxis'])
 
-    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because atleast one subtag is missing."):
+    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because at least one subtag is missing."):
         create_tag(xmltree, schema_dict, 'realAxis')
 
     create_tag(xmltree, schema_dict, 'realAxis', create_parents=True)
@@ -674,7 +674,7 @@ def test_set_attrib_value_create(load_inpxml):
     with pytest.raises(
             ValueError,
             match=
-            "Could not set attribute 'ne' on path '/fleurInput/calculationSetup/greensFunction/realAxis' because atleast one subtag is missing."
+            "Could not set attribute 'ne' on path '/fleurInput/calculationSetup/greensFunction/realAxis' because at least one subtag is missing."
     ):
         set_attrib_value(xmltree, schema_dict, 'ne', 1000, contains='realAxis')
 
@@ -869,7 +869,7 @@ def test_set_first_attrib_value_create(load_inpxml):
     with pytest.raises(
             ValueError,
             match=
-            "Could not set attribute 'U' on path '/fleurInput/atomSpecies/species/ldaU' because atleast one subtag is missing."
+            "Could not set attribute 'U' on path '/fleurInput/atomSpecies/species/ldaU' because at least one subtag is missing."
     ):
         set_first_attrib_value(xmltree, schema_dict, 'U', 42, contains={'species', 'ldaU'})
 
@@ -909,7 +909,7 @@ def test_set_text_specification_create(load_inpxml):
     with pytest.raises(
             ValueError,
             match=
-            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because atleast one subtag is missing."
+            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because at least one subtag is missing."
     ):
         set_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
 
@@ -1092,7 +1092,7 @@ def test_set_first_text_create(load_inpxml):
     with pytest.raises(
             ValueError,
             match=
-            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because atleast one subtag is missing."
+            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because at least one subtag is missing."
     ):
         set_first_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
 
@@ -1433,7 +1433,7 @@ def test_set_simple_tag_create(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because atleast one subtag is missing."):
+    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because at least one subtag is missing."):
         set_simple_tag(xmltree, schema_dict, 'realAxis', {'ne': 100000, 'ellow': -13})
 
     set_simple_tag(xmltree, schema_dict, 'realAxis', {'ne': 100000, 'ellow': -13}, create_parents=True)
@@ -1452,7 +1452,7 @@ def test_set_simple_tag_create_multiple(load_inpxml):
     root = xmltree.getroot()
 
     with pytest.raises(ValueError,
-                       match="Could not create tag 'contourSemicircle' because atleast one subtag is missing."):
+                       match="Could not create tag 'contourSemicircle' because at least one subtag is missing."):
         set_simple_tag(xmltree, schema_dict, 'contourSemicircle', [{'n': 12, 'eb': -13}, {'n': 12, 'eb': 55}])
 
     set_simple_tag(xmltree,
@@ -1632,7 +1632,7 @@ def test_set_complex_tag_create_specification(load_inpxml):
     with pytest.raises(
             ValueError,
             match=
-            "Could not set attribute 'kkintgrCutoff' on path '/fleurInput/atomSpecies/species/torgueCalculation' because atleast one subtag is missing."
+            "Could not set attribute 'kkintgrCutoff' on path '/fleurInput/atomSpecies/species/torgueCalculation' because at least one subtag is missing."
     ):
         set_complex_tag(xmltree, schema_dict, 'torgueCalculation', changes, not_contains='Group')
 

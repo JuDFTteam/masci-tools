@@ -562,7 +562,7 @@ def test_plot_data_apply(inputs, data):
 
     TEST_FUNCTION = lambda x: -x
 
-    #Get the values before doing anything to make sure that nothing was addtionally modified
+    #Get the values before doing anything to make sure that nothing was additionally modified
     values_before = {}
     for key in entries:
         values_before[key] = copy.deepcopy(p.get_values(key))
@@ -640,7 +640,7 @@ def test_plot_data_copy_data(inputs, data):
 
     p = PlotData(data, **entries, use_column_source=True, copy_data=True)
 
-    #Get the values before doing anything to make sure that nothing was addtionally modified
+    #Get the values before doing anything to make sure that nothing was additionally modified
     values_before = {}
     for key in entries:
         values_before[key] = p.get_values(key)
@@ -672,7 +672,7 @@ def test_plot_data_copy_data_prefix(inputs, data):
 
     p = PlotData(data, **entries, use_column_source=True, copy_data=True)
 
-    #Get the values before doing anything to make sure that nothing was addtionally modified
+    #Get the values before doing anything to make sure that nothing was additionally modified
     values_before = {}
     for key in entries:
         values_before[key] = p.get_values(key)
@@ -704,7 +704,7 @@ def test_plot_data_copy_data_rename_original(inputs, data):
 
     p = PlotData(data, **entries, use_column_source=True, copy_data=True)
 
-    #Get the values before doing anything to make sure that nothing was addtionally modified
+    #Get the values before doing anything to make sure that nothing was additionally modified
     values_before = {}
     for key in entries:
         values_before[key] = p.get_values(key)

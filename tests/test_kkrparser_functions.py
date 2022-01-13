@@ -210,7 +210,7 @@ class Test_kkr_parser_functions:
 
     def test_parse_dosout(self, data_regression):
         """
-        Parse output of dos calculation since ouput changes slightly (e.g. no ewald sum)
+        Parse output of dos calculation since output changes slightly (e.g. no ewald sum)
         """
         path0 = DIR / Path('files/kkr/kkr_run_dos_output/')
         outfile = os.fspath(path0 / 'out_kkr')

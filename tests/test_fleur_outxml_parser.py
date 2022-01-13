@@ -124,7 +124,7 @@ def test_outxml_broken_firstiter(data_regression, clean_parser_log):
 
 def test_outxml_garbage_values(data_regression, clean_parser_log):
     """
-    Test the behaviour of the ouput parser when encountering NaN, Inf or fortran formatting errors ****
+    Test the behaviour of the output parser when encountering NaN, Inf or fortran formatting errors ****
     """
     OUTXML_FILEPATH = os.path.join(outxmlfilefolder, 'files/fleur/broken_out_xml/garbage_values.xml')
 
@@ -159,7 +159,7 @@ def test_outxml_incompatible_versions():
 
 def test_outxml_invalid_iteration():
     """
-    Test the output parser with invaid iteration to parse arguments
+    Test the output parser with invalid iteration to parse arguments
     """
 
     #output version does not exist (InputSchema is loaded first so this is the raised error)
@@ -284,7 +284,7 @@ def test_outxml_add_tasks_append(data_regression):
 
     #Move the number_of_atom_types from general_out_info to general_inp_info
     #and write the comment from the inp.xml into it
-    #This tests both the correct insertin in general_inp_info and that inner keys can be
+    #This tests both the correct inserting in general_inp_info and that inner keys can be
     #overwritten in general_out_info
 
     REPLACE_DICT = {

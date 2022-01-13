@@ -56,7 +56,7 @@ def test_fleurxmlmodifier_facade_methods_validation():
 
 
 def test_fleurxml_modifier_modify_xmlfile_simple():
-    """Tests if fleurinp_modifier with various modifations on species"""
+    """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
     fm = FleurXMLModifier()
@@ -103,7 +103,7 @@ def test_fleurxml_modifier_modify_xmlfile_simple():
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo():
-    """Tests if fleurinp_modifier with various modifations on species"""
+    """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
     fm = FleurXMLModifier()
@@ -139,7 +139,7 @@ def test_fleurxml_modifier_modify_xmlfile_undo():
 
 
 def test_fleurxml_modifier_from_list():
-    """Tests if fleurinp_modifier with various modifations on species"""
+    """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
     fm = FleurXMLModifier.fromList([('set_inpchanges', {
@@ -214,7 +214,7 @@ def test_fleurxml_modifier_from_list():
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
-    """Tests if fleurinp_modifier with various modifations on species"""
+    """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
