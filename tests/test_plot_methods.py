@@ -1004,109 +1004,106 @@ def test_colormesh_defaults():
     return gcf()
 
 
-class TestHistogramPlot:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare
+def test_histogram_defaults():
+    """
+    Test of histogram plot with default values
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import histogram
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='defaults.png')
-    def test_defaults(self):
-        """
-        Test of histogram plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import histogram
+    np.random.seed(19680801)
+    N_points = 10000
 
-        np.random.seed(19680801)
-        N_points = 10000
+    # Generate a normal distribution, center at x=0 and y=5
+    x = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        x = np.random.randn(N_points)
+    gcf().clear()
 
-        gcf().clear()
+    histogram(x, show=False)
 
-        histogram(x, show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_histogram_param_change():
+    """
+    Test of histogram plot with various parameters changed
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import histogram
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='param_change.png')
-    def test_param_change(self):
-        """
-        Test of histogram plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import histogram
+    np.random.seed(19680801)
+    N_points = 10000
 
-        np.random.seed(19680801)
-        N_points = 10000
+    # Generate a normal distribution, center at x=0 and y=5
+    x = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        x = np.random.randn(N_points)
+    gcf().clear()
 
-        gcf().clear()
+    histogram(x,
+                color='darkred',
+                linewidth=2,
+                plot_alpha=0.3,
+                plot_label='Normal',
+                density=True,
+                legend=True,
+                orientation='horizontal',
+                log=True,
+                show=False)
 
-        histogram(x,
-                  color='darkred',
-                  linewidth=2,
-                  plot_alpha=0.3,
-                  plot_label='Normal',
-                  density=True,
-                  legend=True,
-                  orientation='horizontal',
-                  log=True,
-                  show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_histogram_stacked_defaults():
+    """
+    Test of stacked histogram plot with default values
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import histogram
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/', filename='stacked.png')
-    def test_defaults_stacked(self):
-        """
-        Test of histogram plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import histogram
+    np.random.seed(19680801)
+    N_points = 10000
 
-        np.random.seed(19680801)
-        N_points = 10000
+    # Generate a normal distribution, center at x=0 and y=5
+    x = np.random.randn(N_points)
+    x2 = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        x = np.random.randn(N_points)
-        x2 = np.random.randn(N_points)
+    gcf().clear()
 
-        gcf().clear()
+    histogram([x, x2], show=False, histtype='barstacked')
 
-        histogram([x, x2], show=False, histtype='barstacked')
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_histogram_stacked_param_change():
+    """
+    Test of stacked histogram plot with various parameters changed
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import histogram
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/histogram/',
-                                   filename='stacked_param_change.png')
-    def test_param_changed_stacked(self):
-        """
-        Test of histogram plot with default values
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import histogram
+    np.random.seed(19680801)
+    N_points = 10000
 
-        np.random.seed(19680801)
-        N_points = 10000
+    # Generate a normal distribution, center at x=0 and y=5
+    x = np.random.randn(N_points)
+    x2 = np.random.randn(N_points)
 
-        # Generate a normal distribution, center at x=0 and y=5
-        x = np.random.randn(N_points)
-        x2 = np.random.randn(N_points)
+    gcf().clear()
 
-        gcf().clear()
+    histogram([x, x2],
+                color=['darkblue', 'darkred'],
+                histtype='barstacked',
+                linewidth=2,
+                legend=True,
+                plot_label={1: 'This is on top'},
+                show=False)
 
-        histogram([x, x2],
-                  color=['darkblue', 'darkred'],
-                  histtype='barstacked',
-                  linewidth=2,
-                  legend=True,
-                  plot_label={1: 'This is on top'},
-                  show=False)
-
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestBarchartPlot:  #pylint: disable=missing-class-docstring
