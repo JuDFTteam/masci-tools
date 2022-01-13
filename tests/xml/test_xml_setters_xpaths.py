@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the functions xml_setter_xpaths
 """

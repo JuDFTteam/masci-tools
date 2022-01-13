@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Main module defining the CLI for parts of the masci-tools repository
 """

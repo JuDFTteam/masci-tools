@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -13,6 +12,6 @@ masci-tools
 '''
 import logging
 
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())

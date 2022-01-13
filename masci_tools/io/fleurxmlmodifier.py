@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -16,21 +15,23 @@ of fleur in a robust way.
 
 Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 """
-from typing import Any, Callable, Dict, List, NamedTuple, Tuple, Union, IO
+from __future__ import annotations
+
+from typing import Any, Callable, NamedTuple
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
-from masci_tools.io.io_fleurxml import load_inpxml, XMLInput
+from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
 from lxml import etree
-import os
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
 
 class ModifierTask(NamedTuple):
     name: str
-    args: Tuple[Any, ...]
-    kwargs: Dict[str, Any]
+    args: tuple[Any, ...]
+    kwargs: dict[str, Any]
 
 
 class FleurXMLModifier:
@@ -70,11 +71,11 @@ class FleurXMLModifier:
 
     """
 
-    _xpath_functions: Dict[str, Callable] = XPATH_SETTERS
-    _schema_dict_functions: Dict[str, Callable] = SCHEMA_DICT_SETTERS
-    _nmmpmat_functions: Dict[str, Callable] = NMMPMAT_SETTERS
+    _xpath_functions: dict[str, Callable] = XPATH_SETTERS
+    _schema_dict_functions: dict[str, Callable] = SCHEMA_DICT_SETTERS
+    _nmmpmat_functions: dict[str, Callable] = NMMPMAT_SETTERS
 
-    _extra_functions: Dict[str, Callable] = {}
+    _extra_functions: dict[str, Callable] = {}
 
     def __new__(cls, validate_signatures=True):
 
@@ -87,11 +88,11 @@ class FleurXMLModifier:
 
     def __init__(self, validate_signatures: bool = True) -> None:
 
-        self._tasks: List[ModifierTask] = []
+        self._tasks: list[ModifierTask] = []
         self.validate_signatures = validate_signatures
 
     @classmethod
-    def fromList(cls, task_list: List[Tuple[str, Dict[str, Any]]], *args: Any, **kwargs: Any) -> 'FleurXMLModifier':
+    def fromList(cls, task_list: list[tuple[str, dict[str, Any]]], *args: Any, **kwargs: Any) -> FleurXMLModifier:
         """
         Instantiate the FleurXMLModifier from a list of tasks to be added immediately
 
@@ -107,7 +108,7 @@ class FleurXMLModifier:
         fm.add_task_list(task_list)
         return fm
 
-    def add_task_list(self, task_list: List[Tuple[str, Dict[str, Any]]]) -> None:
+    def add_task_list(self, task_list: list[tuple[str, dict[str, Any]]]) -> None:
         """
         Add a list of tasks to be added
 
@@ -134,7 +135,7 @@ class FleurXMLModifier:
 
             if name in self.xpath_functions:
                 func = self.xpath_functions[name]
-                prefix: Tuple[str, ...] = ('xmltree',)
+                prefix: tuple[str, ...] = ('xmltree',)
             elif name in self.schema_dict_functions:
                 func = self.schema_dict_functions[name]
                 prefix = ('xmltree', 'schema_dict')
@@ -162,9 +163,9 @@ class FleurXMLModifier:
     @classmethod
     def apply_modifications(cls,
                             xmltree: etree._ElementTree,
-                            nmmp_lines: List[str],
-                            modification_tasks: List[ModifierTask],
-                            validate_changes: bool = True) -> Tuple[etree._ElementTree, List[str]]:
+                            nmmp_lines: list[str] | None,
+                            modification_tasks: list[ModifierTask],
+                            validate_changes: bool = True) -> tuple[etree._ElementTree, list[str] | None]:
         """
         Applies given modifications to the fleurinp lxml tree.
         It also checks if a new lxml tree is validated against schema.
@@ -216,7 +217,7 @@ class FleurXMLModifier:
 
         return xmltree, nmmp_lines
 
-    def get_avail_actions(self) -> Dict[str, Callable]:
+    def get_avail_actions(self) -> dict[str, Callable]:
         """
         Returns the allowed functions from FleurXMLModifier
         """
@@ -258,7 +259,7 @@ class FleurXMLModifier:
         }
         return outside_actions
 
-    def undo(self, revert_all: bool = False) -> List[ModifierTask]:
+    def undo(self, revert_all: bool = False) -> list[ModifierTask]:
         """
         Cancels the last change or all of them
 
@@ -273,7 +274,7 @@ class FleurXMLModifier:
                 #del self._tasks[-1]
         return self._tasks
 
-    def changes(self) -> List[ModifierTask]:
+    def changes(self) -> list[ModifierTask]:
         """
         Prints out all changes currently registered on this instance
         """
@@ -282,9 +283,9 @@ class FleurXMLModifier:
         return self._tasks
 
     def modify_xmlfile(self,
-                       original_inpxmlfile: XMLInput,
-                       original_nmmp_file: Union[str, Path, bytes, os.PathLike, List[str]] = None,
-                       validate_changes: bool = True) -> Tuple[etree._ElementTree, List[str]]:
+                       original_inpxmlfile: XMLFileLike,
+                       original_nmmp_file: FileLike | list[str] | None = None,
+                       validate_changes: bool = True) -> tuple[etree._ElementTree, list[str]] | etree._ElementTree:
         """
         Applies the registered modifications to a given inputfile
 
@@ -301,12 +302,12 @@ class FleurXMLModifier:
 
         if original_nmmp_file is not None:
             if isinstance(original_nmmp_file, (str, Path)):
-                with open(original_nmmp_file, mode='r', encoding='utf-8') as n_mmp_file:
+                with open(original_nmmp_file, encoding='utf-8') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
-                original_nmmp_lines = original_nmmp_file  #type:ignore
+                original_nmmp_lines = original_nmmp_file
         else:
-            original_nmmp_lines = None  #type:ignore
+            original_nmmp_lines = None
 
         new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
                                                                original_nmmp_lines,
@@ -359,6 +360,8 @@ class FleurXMLModifier:
         :param species_name: string, name of the specie you want to change
                              Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
         :param attributedict: a python dict specifying what you want to change.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         :param create: bool, if species does not exist create it and all subtags?
 
         **attributedict** is a python dictionary containing dictionaries that specify attributes
@@ -412,6 +415,11 @@ class FleurXMLModifier:
         :param new_species_name: name of the species to switch to
         :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
         :param species: atom groups, corresponding to the given species will be changed
+        :param clone: if True and the new species name does not exist and it corresponds to changing
+                  from one species the species will be cloned with :py:func:`clone_species()`
+        :param changes: changes to do if the species is cloned
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details`
         """
         self._validate_signature('switch_species', *args, **kwargs)
         self._tasks.append(ModifierTask('switch_species', args, kwargs))
@@ -423,6 +431,9 @@ class FleurXMLModifier:
 
         :param atom_label: string, a label of the atom which group will be changed. 'all' to change all the groups
         :param new_species_name: name of the species to switch to
+        :param clone: if True and the new species name does not exist and it corresponds to changing
+                  from one species the species will be cloned with :py:func:`clone_species()`
+        :param changes: changes to do if the species is cloned
         """
         self._validate_signature('switch_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('switch_species_label', args, kwargs))
@@ -454,6 +465,8 @@ class FleurXMLModifier:
         :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
         :param species: atom groups, corresponding to the given species will be changed
         :param create: bool, if species does not exist create it and all subtags?
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
         **attributedict** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
@@ -495,6 +508,9 @@ class FleurXMLModifier:
                                the parent tags are created recursively
         :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
                             By default all nodes are used.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -512,6 +528,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
                             By default all nodes are used.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -529,6 +548,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
                             By default all nodes are used.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param tag_name: str, name of the tag where the attribute should be parsed
@@ -550,6 +572,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
                             By default all nodes are used.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -569,6 +594,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create: bool optional (default False), if True and the path, where the complex tag is
                        set does not exist it is created
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -589,6 +617,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create_parents: bool optional (default False), if True and the path, where the simple tags are
                                set does not exist it is created
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -607,6 +638,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         :param create: bool optional (default False), if True the tag is created if is missing
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -625,6 +659,9 @@ class FleurXMLModifier:
         :param text: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create: bool optional (default False), if True the tag is created if is missing
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param contains: str, this string has to be in the final path
@@ -644,6 +681,9 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
         :param create: bool optional (default False), if True the tag is created if is missing
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param tag_name: str, name of the tag where the attribute should be parsed
@@ -665,6 +705,9 @@ class FleurXMLModifier:
         :param attribv: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create: bool optional (default False), if True the tag is created if is missing
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param tag_name: str, name of the tag where the attribute should be parsed
@@ -689,6 +732,9 @@ class FleurXMLModifier:
                      `rel` multiplies the old value with `add_number`
                      `abs` adds the old value and `add_number`
         :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param tag_name: str, name of the tag where the attribute should be parsed
@@ -712,6 +758,9 @@ class FleurXMLModifier:
         :param mode: str (either `rel` or `abs`).
                      `rel` multiplies the old value with `add_number`
                      `abs` adds the old value and `add_number`
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
 
         Kwargs:
             :param tag_name: str, name of the tag where the attribute should be parsed
@@ -815,6 +864,8 @@ class FleurXMLModifier:
         :param denmat: matrix, specify the density matrix explicitely
         :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
         :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         """
         self._validate_signature('set_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
@@ -828,6 +879,8 @@ class FleurXMLModifier:
         :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         """
         self._validate_signature('rotate_nmmpmat', *args, **kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))

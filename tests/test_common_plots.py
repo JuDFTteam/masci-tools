@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the vis.common module Only the general routines are tested here (e.g. dos and bands routines are tested via the higher level fleur tests)
 """

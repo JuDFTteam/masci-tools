@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,14 +13,16 @@
 Here commonly used functions that do not need aiida-stuff (i.e. can be tested
 without a database) are collected.
 """
+from __future__ import annotations
+
 import io
-from typing import Any, Dict, Generator, Iterable, NamedTuple, Tuple, List, TypeVar, Union
+from typing import Any, Generator, Iterable, NamedTuple, TypeVar
 try:
     from typing import TypeAlias  #type:ignore
 except ImportError:
     from typing_extensions import TypeAlias
 import numpy as np
-import warnings
+from collections.abc import Sequence
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
@@ -73,7 +74,7 @@ def skipHeader(seq: Iterable[Any], n: int) -> Generator[Any, None, None]:
             yield item
 
 
-def filter_out_empty_dict_entries(dict_to_filter: Dict) -> Dict:
+def filter_out_empty_dict_entries(dict_to_filter: dict) -> dict:
     """
     Filter out entries in a given dict that correspond to empty values.
     At the moment this is empty lists, dicts and None
@@ -83,7 +84,7 @@ def filter_out_empty_dict_entries(dict_to_filter: Dict) -> Dict:
     :returns: dict without empty entries
     """
 
-    EMPTY_VALUES: Tuple[None, List, Dict] = (None, [], {})
+    EMPTY_VALUES: tuple[None, list, dict] = (None, [], {})
 
     return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
 
@@ -442,16 +443,15 @@ def is_sequence(arg: Any) -> bool:
     """
     Checks if arg is a sequence
     """
-    from collections.abc import Sequence
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-_TVectorType = TypeVar('_TVectorType', Tuple[float, float, float], List[float], np.ndarray)
+_TVectorType = TypeVar('_TVectorType', 'tuple[float, float, float]', 'list[float]', np.ndarray)
 """Generic type variable for atom position types"""
-VectorType: TypeAlias = Union[Tuple[float, float, float], List[float], np.ndarray]
+VectorType: TypeAlias = 'tuple[float, float, float] | list[float] |  np.ndarray'
 
 
-def abs_to_rel(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
+def abs_to_rel(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
     """
     Converts a position vector in absolute coordinates to relative coordinates.
 
@@ -479,8 +479,8 @@ def abs_to_rel(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray])
     return relative_vector
 
 
-def abs_to_rel_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray], pbc: Tuple[bool, bool,
-                                                                                              bool]) -> _TVectorType:
+def abs_to_rel_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray, pbc: tuple[bool, bool,
+                                                                                        bool]) -> _TVectorType:
     """
     Converts a position vector in absolute coordinates to relative coordinates
     for a film system.
@@ -517,7 +517,7 @@ def abs_to_rel_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray
     return relative_vector
 
 
-def rel_to_abs(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
+def rel_to_abs(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
     """
     Converts a position vector in internal coordinates to absolute coordinates
     in Angstrom.
@@ -546,7 +546,7 @@ def rel_to_abs(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray])
     return absolute_vector
 
 
-def rel_to_abs_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray]) -> _TVectorType:
+def rel_to_abs_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
     """
     Converts a position vector in internal coordinates to absolute coordinates
     in Angstrom for a film structure (2D).
@@ -572,16 +572,16 @@ def rel_to_abs_f(vector: _TVectorType, cell: Union[List[List[float]], np.ndarray
         return absolute_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(absolute_vector)  #type:ignore
-    return absolute_vector  #type:ignore
+    return absolute_vector
 
 
 def find_symmetry_relation(from_pos: VectorType,
                            to_pos: VectorType,
-                           rotations: List[np.ndarray],
-                           shifts: List[np.ndarray],
-                           cell: Union[List[List[float]], np.ndarray],
+                           rotations: list[np.ndarray],
+                           shifts: list[np.ndarray],
+                           cell: list[list[float]] | np.ndarray,
                            relative_pos: bool = False,
-                           film: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+                           film: bool = False) -> tuple[np.ndarray, np.ndarray]:
     """
     Find symmetry relation between the given vectors. This functions assumes
     that a symmetry relation exists otherwise an error is raised
@@ -631,7 +631,7 @@ class AtomSiteProperties(NamedTuple):
     """
     namedtuple used for input output of atom sites
     """
-    position: List[float]  #TODO could be made generic with VectorType
+    position: list[float]  #TODO could be made generic with VectorType
     symbol: str
     kind: str
 

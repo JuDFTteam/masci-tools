@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Test of the plot commands in the cli
 

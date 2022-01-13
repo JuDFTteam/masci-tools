@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Collect all functions that should be exposed to the :py:class:`~masci_tools.io.io_fleurxmlmodifier.FleurXMLModifier`
 and classify them according to their interface. This makes extending functionality for the Modifier relatively easy

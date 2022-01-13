@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Click parameters for easily selecting multiple elements from a list via indices
 """

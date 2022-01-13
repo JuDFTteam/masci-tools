@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Fleur plugin documentation build configuration file, created by
 # sphinx-quickstart on Wed Dec  7 16:39:12 2016.
@@ -37,6 +36,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
+              'sphinx_toolbox.more_autodoc.typehints',
+              'sphinx_toolbox.more_autodoc.overloads',
+              'sphinx_autodoc_typehints',
               'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
@@ -264,6 +266,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 
 autodoc_mock_imports = ['bokeh']
 
+
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -401,23 +404,19 @@ nitpick_ignore = [
     ('py:obj', 'bool'),
     ('py:obj', 'Mapping'),
     ('py:obj', 'plum'),
-    ('py:class', 'T'),
-    ('py:class', 'S'),
-    ('py:class', 'masci_tools.io.parsers.fleur_schema.schema_dict.F'),
-    ('py:class', 'masci_tools.io.parsers.fleur_schema.schema_dict.SchemaDictDispatch'),
-    ('py:class', '_S'),
     ('py:class', 'etree._xpath'),
     ('py:class', 'etree._DictAnyStr'),
     ('py:class', 'etree._XPathObject'),
     ('py:class', 'etree._XPathEvaluatorBase'),
-    ('py:class', 'fleur_schema.SchemaDict'),
-    ('py:class', 'fleur_schema.InputSchemaDict'),
-    ('py:class', 'fleur_schema.OutputSchemaDict'),
-    ('py:class', 'fleur_schema.AttributeType'),
     ('py:class', 'IO'),
     ('py:class', 'h5py._hl.base.HLObject'),
     ('py:class', 'h5py._hl.group.Group'),
-    ('py:class', 'masci_tools.io.common_functions._TVectorType'),
+    ('py:class', 'etree._Element'),
+    ('py:class', 'etree._ElementTree'),
+    ('py:class', 'TypeAlias'),
+    ('py:class', 'TypeGuard'),
+    ('py:class', 'Logger'),
+    ('py:class', 'FilterType'),
 ]
 
 

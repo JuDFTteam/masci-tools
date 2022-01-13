@@ -1,7 +1,20 @@
 # Changelog
 
+# v.0.7.1
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.7.1)
+
+### Added
+- ``XPathBuilder`` class for specifying complex conditions on xpaths with a dictionary. Added ``filters`` argument to ``schema_dict_util`` and ``xml_setters`` functions for this dictionary [[#96]](https://github.com/JuDFTteam/masci-tools/pull/96)
+### Bugfixes
+- Fixed issue with ``MANIFEST.in``, where non-python files from the ``tools`` subpackage were not included in the built packages
+- Fixed bug not correctly processing the plot limits in ``plot_fleur_bands`` in excluding points outside the plot area for better performance
+- Fix for HDF5 transformation ``add_partial_sums`` if not all formatted patterns are present in the dataset, e.g. if a bandstructure/DOS is calculated for only selected atoms
+### For developers
+- More strict ``mypy`` configuration and moved a lot of the annotations to modern syntax with ``from __future__ import annotations``
+- Added ``pyupgrade`` hook to automatically do some easy refactoring, i.e. removing compatibility workarounds move ot modern syntax. Set to apply changes compatible with ``3.7`` and later
+
 ## v.0.7.0
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.6.2)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.7.0)
 
 Commandline interface, refactoring of SchemaDict/XML functions and major improvements for package configuration/tooling for developers. Added support for python ``3.10``. Dropped testing for python ``3.6``.
 ### Added
@@ -42,7 +55,7 @@ Commandline interface, refactoring of SchemaDict/XML functions and major improve
 - Dropped testing for python ``3.6`` in CI
 
 ## v.0.6.2
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.6.1)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.1...v0.6.2)
 
 Small bugfixes and refactoring for plotting routines
 ### Added

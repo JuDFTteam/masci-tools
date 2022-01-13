@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,36 +13,39 @@
 This module contains functions to load an fleur out.xml file, parse it with a schema
 and convert its content to a dict, based on the tasks given
 """
+from __future__ import annotations
+
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
-from masci_tools.io.io_fleurxml import load_outxml, XMLInput
+from masci_tools.io.io_fleurxml import load_outxml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
+from masci_tools.util.typing import XMLFileLike
 from lxml import etree
 import copy
 import warnings
 import logging
-from typing import Dict, Any, Iterable, Optional, Tuple, Union, List
+from typing import Any, Iterable
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 
-def outxml_parser(outxmlfile: XMLInput,
-                  parser_info_out: Dict[str, Any] = None,
-                  iteration_to_parse: Union[Literal['all', 'last', 'first'], int] = 'last',
+def outxml_parser(outxmlfile: XMLFileLike,
+                  parser_info_out: dict[str, Any] | None = None,
+                  iteration_to_parse: Literal['all', 'last', 'first'] | int = 'last',
                   minimal_mode: bool = False,
-                  additional_tasks: Dict[str, Dict[str, Any]] = None,
-                  optional_tasks: Iterable[str] = None,
+                  additional_tasks: dict[str, dict[str, Any]] | None = None,
+                  optional_tasks: Iterable[str] | None = None,
                   overwrite: bool = False,
                   append: bool = False,
                   list_return: bool = False,
                   strict: bool = False,
                   debug: bool = False,
                   ignore_validation: bool = False,
-                  base_url: str = None) -> Dict[str, Any]:
+                  base_url: str | None = None) -> dict[str, Any]:
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
@@ -77,7 +79,7 @@ def outxml_parser(outxmlfile: XMLInput,
 
     __parser_version__ = '0.6.0'
 
-    logger: Optional[logging.Logger] = logging.getLogger(__name__)
+    logger: logging.Logger | None = logging.getLogger(__name__)
     if strict:
         logger = None
 
@@ -127,7 +129,7 @@ def outxml_parser(outxmlfile: XMLInput,
             if 'Failed to parse output file' in str(err):
                 if logger is None:
                     raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
-                logger.exception('Skipping the parsing of the xml file. ' 'Repairing was not possible.')
+                logger.exception('Skipping the parsing of the xml file. Repairing was not possible.')
                 return {}
             if logger is not None:
                 logger.error(str(err))
@@ -190,11 +192,7 @@ def outxml_parser(outxmlfile: XMLInput,
 
     out_dict['input_file_version'] = outschema_dict['inp_version']
     # get all iterations in out.xml file
-    iteration_nodes: List[etree._Element] = eval_simple_xpath(root,
-                                                              outschema_dict,
-                                                              'iteration',
-                                                              logger=logger,
-                                                              list_return=True)  #type:ignore
+    iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
 
     # parse only last stable interation
@@ -240,7 +238,7 @@ def outxml_parser(outxmlfile: XMLInput,
                          "Valid values are: 'first', 'last', 'all', or int")
 
     logger_info = {'iteration': 'unknown'}
-    iteration_logger: Optional[logging.LoggerAdapter] = None
+    iteration_logger: logging.LoggerAdapter | None = None
     if logger is not None:
         iteration_logger = OutParserLogAdapter(logger, logger_info)
 
@@ -279,11 +277,10 @@ def outxml_parser(outxmlfile: XMLInput,
     return out_dict
 
 
-def parse_general_information(root: etree._Element, parser: ParseTasks, outschema_dict: 'OutputSchemaDict',
-                              logger: Optional[logging.Logger], iteration_to_parse: Union[Literal['all', 'last',
-                                                                                                  'first'],
-                                                                                          int], minimal_mode: bool,
-                              optional_tasks: Optional[Iterable[str]]) -> Tuple[Dict[str, Any], Dict[str, float]]:
+def parse_general_information(root: etree._Element, parser: ParseTasks, outschema_dict: OutputSchemaDict,
+                              logger: logging.Logger | None,
+                              iteration_to_parse: (Literal['all', 'last', 'first'] | int), minimal_mode: bool,
+                              optional_tasks: Iterable[str] | None) -> tuple[dict[str, Any], dict[str, float]]:
     """
     Parses the information from the out.xml outside scf iterations
 
@@ -341,9 +338,9 @@ def parse_general_information(root: etree._Element, parser: ParseTasks, outschem
     return out_dict, constants
 
 
-def parse_iteration(iteration_node: etree._Element, parser: ParseTasks, outschema_dict: 'OutputSchemaDict',
-                    out_dict: Dict[str, Any], constants: Dict[str, float], logger: Optional[logging.LoggerAdapter],
-                    minimal_mode: bool) -> Dict[str, Any]:
+def parse_iteration(iteration_node: etree._Element, parser: ParseTasks, outschema_dict: OutputSchemaDict,
+                    out_dict: dict[str, Any], constants: dict[str, float], logger: logging.LoggerAdapter | None,
+                    minimal_mode: bool) -> dict[str, Any]:
     """
     Parses an scf iteration node. Which tasks to perform is stored in parser.iteration_tasks
 

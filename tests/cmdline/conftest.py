@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fixtures used for testing the cli commands
 """

@@ -109,7 +109,7 @@ Functions for modifying the input file
 Functions/Classes for loading/validating fleur XML files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: masci_tools.io.parsers.fleur_schema.schema_dict.SchemaDict
+.. automodule:: masci_tools.io.parsers.fleur_schema.schema_dict
    :members:
 
 .. automodule:: masci_tools.io.io_fleurxml

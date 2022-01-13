@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -14,17 +13,19 @@
 This module defines a small helper class to make case insensitive dictionary
 lookups available naturally
 """
+from __future__ import annotations
+
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 import pprint
 
-from typing import Mapping, Any, Union, Iterable, Generator, TypeVar, FrozenSet, cast, AbstractSet
+from typing import Any, Iterable, Generator, TypeVar, FrozenSet, cast, AbstractSet
 
 S = TypeVar('S')
-"""Generic Type"""
+""" Generic Type """
 T = TypeVar('T', covariant=True)
-"""Generic Type"""
+""" Generic Type """
 _S = TypeVar('_S')
-"""Generic Type"""
+""" Generic Type """
 
 
 class CaseInsensitiveDict(LockableDict[S, T]):
@@ -47,9 +48,9 @@ class CaseInsensitiveDict(LockableDict[S, T]):
 
     """
 
-    def __init__(self, *args: Any, upper: bool = False, **kwargs: Union[bool, object]):
+    def __init__(self, *args: Any, upper: bool = False, recursive: bool = True, **kwargs: T):
         self._upper = upper
-        super().__init__(*args, **kwargs)  #type: ignore
+        super().__init__(*args, recursive=recursive, **kwargs)
 
     def _norm_key(self, key: object) -> object:
         if isinstance(key, str):
@@ -63,7 +64,7 @@ class CaseInsensitiveDict(LockableDict[S, T]):
     def __delitem__(self, key: S) -> None:
         super().__delitem__(cast(S, self._norm_key(key)))
 
-    def __setitem__(self, key: S, value: Union[T, LockableDict[S, T], LockableList[T]]) -> None:
+    def __setitem__(self, key: S, value: T | LockableDict[S, T] | LockableList[T]) -> None:
         super().__setitem__(cast(S, self._norm_key(key)), value)
 
     def __getitem__(self, key: S) -> T:
@@ -90,12 +91,12 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
 
     """
 
-    def __new__(cls, iterable: Iterable[T] = None, upper: bool = False) -> 'CaseInsensitiveFrozenSet[T]':
+    def __new__(cls, iterable: Iterable[T] | None = None, upper: bool = False) -> CaseInsensitiveFrozenSet[T]:
         if iterable is not None:
             return super().__new__(cls, [key.lower() for key in iterable])  #type: ignore
         return super().__new__(cls, [])  #type: ignore
 
-    def __init__(self, iterable: Iterable[T] = None, upper: bool = False) -> None:
+    def __init__(self, iterable: Iterable[T] | None = None, upper: bool = False) -> None:
         self._upper = upper
         if iterable is not None:
             self.original_case = self._get_new_original_case(iterable)
@@ -103,7 +104,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
             self.original_case = CaseInsensitiveDict(upper=self._upper)
         super().__init__()
 
-    def _get_new_original_case(self, *iterables: Iterable[object]) -> 'CaseInsensitiveDict[T,T]':
+    def _get_new_original_case(self, *iterables: Iterable[object]) -> CaseInsensitiveDict[T, T]:
         new_dict: CaseInsensitiveDict[T, T] = CaseInsensitiveDict(upper=self._upper)
         for iterable in iterables:
             for key in iterable:
@@ -132,17 +133,17 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
             return f'{self.__class__.__name__}({set(self.original_case.values())})'
         return f'{self.__class__.__name__}()'
 
-    def __sub__(self, other: AbstractSet[T]) -> 'CaseInsensitiveFrozenSet[T]':
+    def __sub__(self, other: AbstractSet[T]) -> CaseInsensitiveFrozenSet[T]:
         return self.difference(other)
 
-    def __and__(self, other: AbstractSet[T]) -> 'CaseInsensitiveFrozenSet[T]':
+    def __and__(self, other: AbstractSet[T]) -> CaseInsensitiveFrozenSet[T]:
         return self.intersection(other)
 
-    def __xor__(self, other: AbstractSet[_S]) -> 'CaseInsensitiveFrozenSet[Union[_S,T]]':
+    def __xor__(self, other: AbstractSet[_S]) -> CaseInsensitiveFrozenSet[_S | T]:
         return self.symmetric_difference(other)  #type: ignore[arg-type]
 
-    def __or__(self, other: AbstractSet[_S]) -> 'CaseInsensitiveFrozenSet[Union[_S,T]]':
-        return self.union(other)  #type: ignore[arg-type]
+    def __or__(self, other: AbstractSet[_S]) -> CaseInsensitiveFrozenSet[_S | T]:
+        return self.union(other)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Iterable):
@@ -158,22 +159,22 @@ class CaseInsensitiveFrozenSet(FrozenSet[T]):
         for item in super().__iter__():
             yield self.original_case[item]
 
-    def difference(self, *others: Iterable[object]) -> 'CaseInsensitiveFrozenSet[T]':
+    def difference(self, *others: Iterable[object]) -> CaseInsensitiveFrozenSet[T]:
         new_frozenset = super().difference(*[{cast(T, self._norm_key(key)) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def symmetric_difference(self, other: Iterable[T]) -> 'CaseInsensitiveFrozenSet[T]':
+    def symmetric_difference(self, other: Iterable[T]) -> CaseInsensitiveFrozenSet[T]:
         new_frozenset = super().symmetric_difference({cast(T, self._norm_key(key)) for key in other})
         new_case_dict = self._get_new_original_case(self.original_case.values(), other)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def union(self, *others: Iterable[T]) -> 'CaseInsensitiveFrozenSet[T]':
+    def union(self, *others: Iterable[_S]) -> CaseInsensitiveFrozenSet[T]:
         new_frozenset = super().union(*[{cast(T, self._norm_key(key)) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def intersection(self, *others: Iterable[object]) -> 'CaseInsensitiveFrozenSet[T]':
+    def intersection(self, *others: Iterable[object]) -> CaseInsensitiveFrozenSet[T]:
         new_frozenset = super().intersection(*[{cast(T, self._norm_key(key)) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)

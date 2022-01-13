@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -20,7 +19,8 @@ if version_info[0] >= 3:
         return eval(eval(input(msg)))
 
 
-__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,' 'IAS-1/PGI-1, Germany. All rights reserved.')
+__copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
+                 'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __version__ = '0.3'
 __contributors__ = 'Philipp Rüßmann'
@@ -97,7 +97,7 @@ class modify_potential:
 
         order = list(range(len(index1)))
 
-        with open(scoefpath, 'r') as f:
+        with open(scoefpath) as f:
             lines = f.readlines()
             natomtemp = int(lines[0])
             filedata = lines[1:natomtemp + 1]

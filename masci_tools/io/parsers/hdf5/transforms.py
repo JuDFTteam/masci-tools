@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -22,6 +21,8 @@ for the following 3 cases:
        are known. Two options can be chosen apply the transformation to all keys in the dict
        or throw an error
 """
+from __future__ import annotations
+
 from typing import Callable
 import h5py
 import numpy as np
@@ -214,7 +215,7 @@ def get_all_child_datasets(group, ignore=None, contains=None):
         ignore = set()
 
     if isinstance(ignore, str):
-        ignore = set([ignore])
+        ignore = {ignore}
 
     transformed = {}
     for key, val in group.items():
@@ -255,7 +256,7 @@ def merge_subgroup_datasets(group,
         ignore_group = set()
 
     if isinstance(ignore_group, str):
-        ignore_group = set([ignore_group])
+        ignore_group = {ignore_group}
 
     transformed = defaultdict(list)
 
@@ -526,7 +527,7 @@ def flatten_array(dataset, order='C'):
     Copies the array !!
 
     :param dataset: dataset to transform
-    :param order: str {‘C’, ‘F’, ‘A’, ‘K’} flatten in column major
+    :param order: str {`C`, `F`, `A`, `K`} flatten in column major
                   or row-major order (see numpy.flatten documentation)
 
     :returns: flattened dataset
@@ -793,9 +794,11 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, r
 
     if make_set:
         attribute_value = set(attribute_value)
+    sum_patterns = [
+        pattern_format(val) for val in attribute_value if any(pattern_format(val) in key for key in dataset.keys())
+    ]
 
-    return add_partial_sums_fixed(dataset, [pattern_format(val) for val in attribute_value],
-                                  replace_entries=replace_entries)
+    return add_partial_sums_fixed(dataset, sum_patterns, replace_entries=replace_entries)
 
 
 @hdf5_transformation(attribute_needed=True)

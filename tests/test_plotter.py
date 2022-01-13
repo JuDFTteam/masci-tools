@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the plotter base class
 """
@@ -157,7 +156,7 @@ def test_plotter_save_defaults_complete(file_regression):
         file_regression.check(txt)
 
 
-def test_plotter_load_defaults(file_regression):
+def test_plotter_load_defaults():
     """
     Test adding of custom parameters
     """

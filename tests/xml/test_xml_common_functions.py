@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 Test of the functions in masci_tools.util.xml.common_functions
 """
 import pytest
-import os
 import logging
 from lxml import etree
 
@@ -94,46 +92,6 @@ def test_clear_xml(load_inpxml):
     assert len(symmetry_tags) == 16
 
 
-def test_reverse_xinclude(load_inpxml):
-    """
-    Test of the reverse_xinclude function
-    """
-    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml, reverse_xinclude
-
-    xmltree, schema_dict = load_inpxml('fleur/test_clear.xml', absolute=False)
-
-    cleared_tree, all_include_tags = clear_xml(xmltree)
-    cleared_root = cleared_tree.getroot()
-
-    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
-    reexcluded_root = reexcluded_tree.getroot()
-
-    assert list(included_trees.keys()) == ['sym.xml']
-    sym_root = included_trees['sym.xml'].getroot()
-
-    include_tags = eval_xpath(cleared_root,
-                              '//xi:include',
-                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
-                              list_return=True)
-    assert len(include_tags) == 0
-
-    include_tags = eval_xpath(reexcluded_root,
-                              '//xi:include',
-                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
-                              list_return=True)
-    assert len(include_tags) == 2
-    assert [tag.attrib['href'] for tag in include_tags] == ['sym.xml', 'relax.xml']
-
-    symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
-    assert len(symmetry_tags) == 16
-
-    symmetry_tags = eval_xpath(reexcluded_root, '//symOp', list_return=True)
-    assert len(symmetry_tags) == 0
-
-    symmetry_tags = eval_xpath(sym_root, 'symOp', list_return=True)
-    assert len(symmetry_tags) == 16
-
-
 def test_get_xml_attribute(load_inpxml, caplog):
     """
     Test of the clear_xml function
@@ -168,10 +126,37 @@ def test_split_off_tag():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs') == ('/fleurInput/calculationSetup', 'cutoffs')
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs/') == ('/fleurInput/calculationSetup', 'cutoffs')
     assert split_off_tag('./calculationSetup/cutoffs') == ('./calculationSetup', 'cutoffs')
+
+    path, tag = split_off_tag(XPathBuilder('/fleurInput/calculationSetup/cutoffs'))
+    assert str(path) == '/fleurInput/calculationSetup'
+    assert tag == 'cutoffs'
+
+    path, tag = split_off_tag(etree.XPath('/fleurInput/calculationSetup/cutoffs'))
+    assert str(path) == '/fleurInput/calculationSetup'
+    assert tag == 'cutoffs'
+
+
+def test_add_tag():
+    """
+    Test of the add_tag function
+    """
+    from masci_tools.util.xml.common_functions import add_tag
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
+
+    assert add_tag('/fleurInput/calculationSetup', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
+    assert add_tag('/fleurInput/calculationSetup/', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
+    assert add_tag('./calculationSetup', 'cutoffs') == './calculationSetup/cutoffs'
+
+    path = add_tag(XPathBuilder('/fleurInput/calculationSetup/'), 'cutoffs')
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+
+    path = add_tag(etree.XPath('/fleurInput/calculationSetup'), 'cutoffs')
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
 
 
 def test_split_off_attrib():
@@ -179,11 +164,24 @@ def test_split_off_attrib():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_attrib
+    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
                                                                               'Kmax')
+    path, attrib = split_off_attrib(XPathBuilder('/fleurInput/calculationSetup/cutoffs/@Kmax'))
+
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+    assert attrib == 'Kmax'
+
+    path, attrib = split_off_attrib(etree.XPath('/fleurInput/calculationSetup/cutoffs/@Kmax'))
+
+    assert str(path) == '/fleurInput/calculationSetup/cutoffs'
+    assert attrib == 'Kmax'
+
     with pytest.raises(ValueError):
         split_off_attrib('/fleurInput/calculationSetup/cutoffs')
+    with pytest.raises(ValueError):
+        split_off_attrib(XPathBuilder('/fleurInput/calculationSetup/cutoffs'))
     with pytest.raises(ValueError):
         split_off_attrib("/fleurInput/atomSpecies/species[@name='TEST']")
     assert split_off_attrib('./calculationSetup/cutoffs/@Kmax') == ('./calculationSetup/cutoffs', 'Kmax')

@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 setup: usage: pip install -e .[graphs]
 """
 
-from __future__ import absolute_import
 from setuptools import setup, find_packages
 import io  # needed to have `open` with encoding option
 
@@ -11,13 +9,13 @@ import io  # needed to have `open` with encoding option
 from os import path
 
 this_directory = path.abspath(path.dirname(__file__))
-with io.open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
+with open(path.join(this_directory, 'README.md'), encoding='utf8') as f:
     long_description = f.read()
 
 if __name__ == '__main__':
     setup(
         name='masci_tools',
-        version='0.7.0',
+        version='0.7.1',
         description=
         'Tools for Materials science. Vis contains wrappers of matplotlib functionality to visualize common material science data. Plus wrappers of visualisation for aiida-fleur workflow nodes',
         # add long_description from readme.md:
@@ -49,8 +47,11 @@ if __name__ == '__main__':
         ],
         extras_require={
             'pre-commit':
-            ['mypy==0.910', 'pre-commit>=2.6.0', 'yapf>=0.30.0', 'pylint~=2.11.1', 'pytest~=6.0', 'lxml-stubs'],
-            'docs': ['Sphinx', 'docutils', 'sphinx_rtd_theme', 'sphinx-click'],
+            ['mypy==0.930', 'pre-commit>=2.6.0', 'yapf>=0.30.0', 'pylint~=2.11.1', 'pytest~=6.0', 'lxml-stubs'],
+            'docs': [
+                'Sphinx', 'docutils', 'sphinx_rtd_theme', 'sphinx-click', 'sphinx-toolbox<=2.15.2',
+                'sphinx-autodoc-typehints'
+            ],
             'testing': ['pytest~=6.0', 'pytest-cov', 'pytest-mpl>=0.12', 'pytest-regressions>=1.0'],
             'bokeh-plots': [
                 'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus

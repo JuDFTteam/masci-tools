@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This module provides a place for registering click commands from the tools subpackage
 into the main cli

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -13,14 +12,16 @@
 """
 functions to extract information about the fleur schema input or output
 """
+from __future__ import annotations
+
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from functools import wraps
-from typing import Callable, List, NamedTuple, Set, Union, Dict, Any, Tuple, Optional
+from typing import Callable, NamedTuple, Any
 from lxml import etree
 try:
     from typing import Literal, TypedDict
 except ImportError:
-    from typing_extensions import Literal, TypedDict  #type: ignore
+    from typing_extensions import Literal, TypedDict  #type: ignore[misc]
 import warnings
 import math
 
@@ -47,9 +48,27 @@ BASE_TYPES = {
 NAMESPACES = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
 
+def convert_str_version_number(version_str: str) -> tuple[int, int]:
+    """
+    Convert the version number as a integer for easy comparisons
+
+    :param version_str: str of the version number, e.g. '0.33'
+
+    :returns: tuple of ints representing the version str
+    """
+
+    version_numbers = version_str.split('.')
+
+    if len(version_numbers) != 2:
+        raise ValueError(f"Version number is malformed: '{version_str}'")
+
+    return tuple(int(part) for part in version_numbers)  #type: ignore[return-value]
+
+
 class AttributeType(NamedTuple):
+    """Type for describing the types of attributes/text"""
     base_type: str
-    length: Union[int, Literal['unbounded'], None]
+    length: int | Literal['unbounded'] | None
 
 
 class TagInfo(TypedDict):
@@ -59,7 +78,7 @@ class TagInfo(TypedDict):
     optional_attribs: CaseInsensitiveDict[str, str]
     optional: CaseInsensitiveFrozenSet[str]
     several: CaseInsensitiveFrozenSet[str]
-    order: List[str]
+    order: list[str]
     simple: CaseInsensitiveFrozenSet[str]
     complex: CaseInsensitiveFrozenSet[str]
     text: CaseInsensitiveFrozenSet[str]
@@ -74,10 +93,10 @@ def _cache_xpath_construction(func: Callable) -> Callable:
     xml schemas by caching results
     """
 
-    results: Dict[str, Dict[int, Set[str]]] = {}
+    results: dict[str, dict[int, set[str]]] = {}
 
     @wraps(func)
-    def wrapper(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', name: str, **kwargs: Any) -> Set[str]:
+    def wrapper(xmlschema_evaluator: etree.XPathDocumentEvaluator, name: str, **kwargs: Any) -> set[str]:
         """
         This function produces a hash from all the arguments modifying the behaviour of the wrapped function
         and looks up results in dict based on this hash. If the version of the schema
@@ -112,11 +131,11 @@ def _cache_xpath_eval(func: Callable) -> Callable:
     Decorator for the `_xpath_eval` function to speed up concrete xpath calls on the schema
     by caching the results
     """
-    results: Dict[str, Dict[int, 'etree._XPathObject']] = {}
+    results: dict[str, dict[int, etree._XPathObject]] = {}
 
     @wraps(func)
-    def wrapper(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', xpath: str,
-                **variables: 'etree._XPathObject') -> 'etree._XPathObject':
+    def wrapper(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str,
+                **variables: etree._XPathObject) -> etree._XPathObject:
         """
         This function produces a hash from all the arguments modifying the behaviour of the wrapped function
         and looks up results in dict based on this hash. If the version of the schema
@@ -139,15 +158,17 @@ def _cache_xpath_eval(func: Callable) -> Callable:
                 results[version].clear()
                 return res
             results[version][hash_args] = res
+        else:
+            res = results[version][hash_args]
 
-        return results[version][hash_args].copy()  #type:ignore
+        return res.copy() if getattr(res, 'copy', None) is not None else res
 
     return wrapper
 
 
 @_cache_xpath_eval
-def _xpath_eval(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', xpath: str,
-                **variables: 'etree._XPathObject') -> 'etree._XPathObject':
+def _xpath_eval(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str,
+                **variables: etree._XPathObject) -> etree._XPathObject:
     """
     Wrapper around the xpath calls in this module. Used for caching the
     results
@@ -177,7 +198,7 @@ def _is_base_type(type_name: str) -> bool:
 
 
 def _get_parent_fleur_type(elem: etree._Element,
-                           stop_non_unique: bool = False) -> Tuple[Optional[etree._Element], Optional[str]]:
+                           stop_non_unique: bool = False) -> tuple[etree._Element | None, str | None]:
     """
     Returns the parent simple or complexType to the given element
     If stop_sequence is given and True None is returned when a sequence is encountered
@@ -209,10 +230,10 @@ def _get_parent_fleur_type(elem: etree._Element,
     return parent, parent_type
 
 
-def _get_base_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                     type_elem: etree._Element,
                     convert_to_base: bool = True,
-                    basic_types_mapping: Dict[str, List[AttributeType]] = None) -> List[AttributeType]:
+                    basic_types_mapping: dict[str, list[AttributeType]] | None = None) -> list[AttributeType]:
     """
     Analyses the given type element to deduce its base_types and length restrictions
 
@@ -300,8 +321,8 @@ def _get_base_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return list(possible_types)
 
 
-def _get_length(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                type_elem: etree._Element) -> Union[int, Literal['unbounded'], None]:
+def _get_length(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                type_elem: etree._Element) -> int | Literal['unbounded'] | None:
     """
     Analyse the given type to determine, whether there is a length restriction
 
@@ -317,10 +338,10 @@ def _get_length(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
     if type_tag == 'simpleType':
 
-        child = type_elem.getchildren()  #type:ignore
-        if len(child) != 1:
+        children = list(type_elem)
+        if len(children) != 1:
             return 1
-        child = child[0]
+        child = children[0]
 
         child_type = _normalized_name(child.tag)
         if child_type == 'restriction':
@@ -358,13 +379,13 @@ def _get_length(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
 
 @_cache_xpath_construction
-def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_xpath(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                tag_name: str,
-               enforce_end_type: str = None,
-               ref: str = None,
+               enforce_end_type: str | None = None,
+               ref: str | None = None,
                stop_non_unique: bool = False,
                stop_iteration: bool = False,
-               iteration_root: bool = False) -> Set[str]:
+               iteration_root: bool = False) -> set[str]:
     """
     construct all possible simple xpaths to a given tag
 
@@ -380,7 +401,7 @@ def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
              otherwise a list with all possible paths is returned
     """
 
-    possible_paths: Set[str] = set()
+    possible_paths: set[str] = set()
     if enforce_end_type in _RECURSIVE_TYPES:
         return possible_paths
     root_tag = get_root_tag(xmlschema_evaluator)
@@ -457,7 +478,7 @@ def _get_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return possible_paths
 
 
-def _get_contained_optional_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_contained_optional_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                                     elem: etree._Element) -> CaseInsensitiveDict[str, str]:
     """
     Get all defined attributes contained in the given etree Element of the schema
@@ -488,7 +509,7 @@ def _get_contained_optional_attribs(xmlschema_evaluator: 'etree.XPathDocumentEva
     return CaseInsensitiveDict(attrib_list)
 
 
-def _get_contained_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_contained_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                            elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined attributes contained in the given etree Element of the schema
@@ -516,7 +537,7 @@ def _get_contained_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return attrib_res
 
 
-def _get_optional_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_optional_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                        elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
@@ -572,9 +593,9 @@ def _is_simple(elem: etree._Element) -> bool:
     return simple
 
 
-def _get_simple_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_simple_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                      elem: etree._Element,
-                     input_mapping: Dict[str, List[AttributeType]] = None) -> CaseInsensitiveFrozenSet[str]:
+                     input_mapping: dict[str, list[AttributeType]] | None = None) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can only contain attributes or text (no sub elements)
@@ -623,7 +644,7 @@ def _get_simple_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return simple_set
 
 
-def _get_several_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_several_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                       elem: etree._Element) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
@@ -661,8 +682,8 @@ def _get_several_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return several_set
 
 
-def _get_contained_text_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', elem: etree._Element,
-                             text_tags: Set[str]) -> CaseInsensitiveFrozenSet[str]:
+def _get_contained_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, elem: etree._Element,
+                             text_tags: set[str]) -> CaseInsensitiveFrozenSet[str]:
     """
     Get all defined tags contained in the given etree Element of the schema
     which can contain text
@@ -694,11 +715,11 @@ def _get_contained_text_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator'
 
 
 @_cache_xpath_construction
-def _get_attrib_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def _get_attrib_xpath(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                       attrib_name: str,
                       stop_non_unique: bool = False,
                       stop_iteration: bool = False,
-                      iteration_root: bool = False) -> Set[str]:
+                      iteration_root: bool = False) -> set[str]:
     """
     construct all possible simple xpaths to a given attribute
 
@@ -746,8 +767,7 @@ def _get_attrib_xpath(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return possible_paths
 
 
-def _get_sequence_order(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                        sequence_elem: etree._Element) -> List[str]:
+def _get_sequence_order(xmlschema_evaluator: etree.XPathDocumentEvaluator, sequence_elem: etree._Element) -> list[str]:
     """
     Extract the enforced order of elements in the given sequence element
 
@@ -779,7 +799,7 @@ def _get_sequence_order(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return elem_order
 
 
-def _get_valid_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', sequence_elem: etree._Element) -> List[str]:
+def _get_valid_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, sequence_elem: etree._Element) -> list[str]:
     """
     Extract all allowed elements in the given sequence element
 
@@ -811,9 +831,9 @@ def _get_valid_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', sequenc
     return elems
 
 
-def _extract_all_types(elems: List[etree._Element],
+def _extract_all_types(elems: list[etree._Element],
                        ignore_unknown: bool = False,
-                       **kwargs: Any) -> CaseInsensitiveDict[str, Set[AttributeType]]:
+                       **kwargs: Any) -> CaseInsensitiveDict[str, set[AttributeType]]:
     """
     Determine the required type of all given attributes/elements
 
@@ -825,7 +845,7 @@ def _extract_all_types(elems: List[etree._Element],
              types are possible a list is inserted for the tag
     """
 
-    types_dict: CaseInsensitiveDict[str, Set[AttributeType]] = CaseInsensitiveDict()
+    types_dict: CaseInsensitiveDict[str, set[AttributeType]] = CaseInsensitiveDict()
     for elem in elems:
         name = str(elem.attrib['name'])
         type_name = str(elem.attrib['type'])
@@ -852,7 +872,7 @@ def _extract_all_types(elems: List[etree._Element],
     return types_dict
 
 
-def type_order(type_def: AttributeType) -> Tuple[int, float]:
+def type_order(type_def: AttributeType) -> tuple[int, float]:
     """
     Key function for sorting the type definitions to avoid conflicts
 
@@ -878,8 +898,8 @@ def type_order(type_def: AttributeType) -> Tuple[int, float]:
     return type_index, length
 
 
-def extract_attribute_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                            **kwargs: Any) -> CaseInsensitiveDict[str, List[AttributeType]]:
+def extract_attribute_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                            **kwargs: Any) -> CaseInsensitiveDict[str, list[AttributeType]]:
     """
     Determine the required type of all attributes
 
@@ -892,15 +912,15 @@ def extract_attribute_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
     types_dict = _extract_all_types(possible_attrib, **kwargs)
 
-    types_dict_sorted: CaseInsensitiveDict[str, List[AttributeType]] = CaseInsensitiveDict()
+    types_dict_sorted: CaseInsensitiveDict[str, list[AttributeType]] = CaseInsensitiveDict()
     for name, types in types_dict.items():
         types_dict_sorted[name] = sorted(types, key=type_order)
 
     return types_dict_sorted
 
 
-def extract_text_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                       **kwargs: Any) -> CaseInsensitiveDict[str, List[AttributeType]]:
+def extract_text_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                       **kwargs: Any) -> CaseInsensitiveDict[str, list[AttributeType]]:
     """
     Determine the required type of all elements with text
 
@@ -913,15 +933,15 @@ def extract_text_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
     types_dict = _extract_all_types(possible_elems, ignore_unknown=True, **kwargs)
 
-    types_dict_sorted: CaseInsensitiveDict[str, List[AttributeType]] = CaseInsensitiveDict()
+    types_dict_sorted: CaseInsensitiveDict[str, list[AttributeType]] = CaseInsensitiveDict()
     for name, types in types_dict.items():
         types_dict_sorted[name] = sorted(types, key=type_order)
 
     return types_dict_sorted
 
 
-def get_tag_paths(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                  **kwargs: Any) -> CaseInsensitiveDict[str, Union[List[str], str]]:
+def get_tag_paths(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                  **kwargs: Any) -> CaseInsensitiveDict[str, list[str] | str]:
     """
     Determine simple xpaths to all possible tags
 
@@ -935,7 +955,7 @@ def get_tag_paths(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     iteration_root = kwargs.get('iteration_root', False)
 
     possible_tags = set(_xpath_eval(xmlschema_evaluator, '//xsd:element/@name'))
-    tag_paths: CaseInsensitiveDict[str, Union[List[str], str]] = CaseInsensitiveDict()
+    tag_paths: CaseInsensitiveDict[str, list[str] | str] = CaseInsensitiveDict()
     for tag in sorted(possible_tags):
         paths = _get_xpath(xmlschema_evaluator, tag, stop_iteration=stop_iteration, iteration_root=iteration_root)
         if len(paths) == 1:
@@ -945,7 +965,7 @@ def get_tag_paths(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return tag_paths
 
 
-def get_unique_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def get_unique_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                        **kwargs: Any) -> CaseInsensitiveDict[str, str]:
     """
     Determine all attributes, which can be set through set_inpchanges in aiida_fleur
@@ -989,8 +1009,8 @@ def get_unique_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return settable
 
 
-def get_unique_path_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                            **kwargs: Any) -> CaseInsensitiveDict[str, List[str]]:
+def get_unique_path_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                            **kwargs: Any) -> CaseInsensitiveDict[str, list[str]]:
     """
     Determine all attributes, with multiple possible path that do have at
     least one path with all contained tags maxOccurs!=1
@@ -1011,7 +1031,7 @@ def get_unique_path_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    settable: CaseInsensitiveDict[str, List[str]] = CaseInsensitiveDict()
+    settable: CaseInsensitiveDict[str, list[str]] = CaseInsensitiveDict()
     possible_attrib = set(_xpath_eval(xmlschema_evaluator, '//xsd:attribute/@name'))
     for attrib in sorted(possible_attrib):
         if attrib in kwargs[settable_key]:
@@ -1038,8 +1058,8 @@ def get_unique_path_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return settable
 
 
-def get_other_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                      **kwargs: Any) -> CaseInsensitiveDict[str, List[str]]:
+def get_other_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                      **kwargs: Any) -> CaseInsensitiveDict[str, list[str]]:
     """
     Determine all other attributes not contained in settable or settable_contains
 
@@ -1059,7 +1079,7 @@ def get_other_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
         settable_key = 'unique_attribs'
         settable_contains_key = 'unique_path_attribs'
 
-    other: CaseInsensitiveDict[str, List[str]] = CaseInsensitiveDict()
+    other: CaseInsensitiveDict[str, list[str]] = CaseInsensitiveDict()
     possible_attrib = set(_xpath_eval(xmlschema_evaluator, '//xsd:attribute/@name'))
     for attrib in sorted(possible_attrib):
         path = _get_attrib_xpath(xmlschema_evaluator,
@@ -1092,7 +1112,7 @@ def get_other_attribs(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return other
 
 
-def get_omittable_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: Any) -> List[str]:
+def get_omittable_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> list[str]:
     """
     find tags with no attributes and, which are only used to mask a list of one other possible tag (e.g. atomSpecies)
 
@@ -1137,7 +1157,7 @@ def get_omittable_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kw
     return omittable_tags
 
 
-def get_text_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: Any) -> CaseInsensitiveFrozenSet[str]:
+def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> CaseInsensitiveFrozenSet[str]:
     """
     find all elements, who can contain text
 
@@ -1165,8 +1185,7 @@ def get_text_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs:
     return text_tags
 
 
-def get_basic_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
-                    **kwargs: Any) -> Dict[str, List[AttributeType]]:
+def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> dict[str, list[AttributeType]]:
     """
     find all types, which can be traced back directly to a base_type
 
@@ -1204,7 +1223,7 @@ def get_basic_types(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
     return basic_types
 
 
-def get_tag_info(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: Any) -> Dict[str, TagInfo]:
+def get_tag_info(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> dict[str, TagInfo]:
     """
     Get all important information about the tags
         - allowed attributes
@@ -1262,7 +1281,7 @@ def get_tag_info(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: 
     return tag_info
 
 
-def get_root_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: Any) -> str:
+def get_root_tag(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> str:
     """
     Returns the tag for the root element of the xmlschema
 
@@ -1273,7 +1292,7 @@ def get_root_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: 
     return str(_xpath_eval(xmlschema_evaluator, '/xsd:schema/xsd:element/@name')[0])
 
 
-def get_input_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs: Any) -> str:
+def get_input_tag(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> str:
     """
     Returns the tag for the input type element of the outxmlschema
 
@@ -1284,7 +1303,7 @@ def get_input_tag(xmlschema_evaluator: 'etree.XPathDocumentEvaluator', **kwargs:
     return str(_xpath_eval(xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=_INPUT_TYPE)[0])
 
 
-def get_iteration_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
+def get_iteration_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                        **kwargs: Any) -> CaseInsensitiveFrozenSet[str]:
     """
     Returns the tags that can contain the information from a SCF iteration
@@ -1293,7 +1312,7 @@ def get_iteration_tags(xmlschema_evaluator: 'etree.XPathDocumentEvaluator',
 
     :return: set of tag names that contain elements from the group 'GeneralIterationType'
     """
-    tag_names: Set[str] = set()
+    tag_names: set[str] = set()
     group_nodes = _xpath_eval(xmlschema_evaluator, '//xsd:group[@ref=$ref]', ref=_ITERATION_GROUP_TYPE)
 
     for node in group_nodes:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -555,7 +554,7 @@ class PlotData:
         expand_data = not isinstance(self.data, list) and len(self) > 1
 
         data = []
-        for indx, ((entry, source), mask_indx) in enumerate(zip(self.items(mappable=True), mask)):
+        for indx, ((_, source), mask_indx) in enumerate(zip(self.items(mappable=True), mask)):
 
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)

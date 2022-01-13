@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests of the out.xml parser for Fleur
 """
@@ -46,7 +45,7 @@ def test_outxml_valid_outxml(outxmlfilepath):
     assert out_dict != {}
 
     #call with contextmanager
-    with open(outxmlfilepath, 'r', encoding='utf-8') as outfile:
+    with open(outxmlfilepath, encoding='utf-8') as outfile:
         out_dict = outxml_parser(outfile)
 
     assert out_dict is not None

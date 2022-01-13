@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tests for fleur outxml_parser specific conversion functions
 """

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 # Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany.         #
 #                All rights reserved.                                         #
@@ -488,9 +487,9 @@ def bokeh_spinpol_dos(energy_grid,
         spin_up_data, spin_dn_data = spin_up_data[:len(spin_up_data) // 2], spin_up_data[len(spin_up_data) // 2:]
 
     if spin_up_data is None and data is not None:
-        spin_up_data = set(key for key in data.keys() if '_up' in key)
+        spin_up_data = {key for key in data.keys() if '_up' in key}
         spin_up_data = sorted(spin_up_data)
-        spin_dn_data = set(key for key in data.keys() if '_dn' in key)
+        spin_dn_data = {key for key in data.keys() if '_dn' in key}
         spin_dn_data = sorted(spin_dn_data)
 
     plot_data = process_data_arguments(data=data,
@@ -1205,7 +1204,7 @@ def periodic_table_plot(source,
     elif log_scale == 1:
         for datum in data:
             if datum < 0:
-                raise ValueError('Entry for element ' + datum + ' is negative but' ' log-scale is selected')
+                raise ValueError(f'Entry for element {datum} is negative but log-scale is selected')
         color_mapper = LogColorMapper(palette=bokeh_palette, low=mind, high=maxd)
         norm = LogNorm(vmin=mind, vmax=maxd)
     color_scale = ScalarMappable(norm=norm, cmap=color_map).to_rgba(data, alpha=None)

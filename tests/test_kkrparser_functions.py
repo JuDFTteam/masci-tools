@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 @author: ruess
 """
@@ -113,14 +112,14 @@ class Test_kkr_parser_functions:
                                                            self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
-        assert set(msg_list) == set([
+        assert set(msg_list) == {
             'Error parsing output of KKR: Version Info', 'Error parsing output of KKR: rms-error',
             'Error parsing output of KKR: charge neutrality', 'Error parsing output of KKR: total magnetic moment',
             'Error parsing output of KKR: spin moment per atom', 'Error parsing output of KKR: orbital moment',
             'Error parsing output of KKR: EF', 'Error parsing output of KKR: DOS@EF',
             'Error parsing output of KKR: total energy', 'Error parsing output of KKR: search for warnings',
             'Error parsing output of KKR: charges', 'Error parsing output of KKR: scfinfo'
-        ])
+        }
 
     def test_missing_outfile0init(self):
         """
@@ -131,7 +130,7 @@ class Test_kkr_parser_functions:
                                                            self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
-        assert set(msg_list) == set([
+        assert set(msg_list) == {
             'Error parsing output of KKR: nspin/natom',
             'Error parsing output of KKR: spin moment per atom',
             'Error parsing output of KKR: orbital moment',
@@ -144,7 +143,7 @@ class Test_kkr_parser_functions:
             'Error parsing output of KKR: lattice vectors (direct/reciprocal)',
             'Error parsing output of KKR: noco angles rms value',
             'Error parsing output of KKR: BdG',
-        ])
+        }
 
     def test_missing_outfile000(self):
         """
@@ -155,11 +154,11 @@ class Test_kkr_parser_functions:
                                                            self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert not success
-        assert set(msg_list) == set([
+        assert set(msg_list) == {
             'Error parsing output of KKR: rms-error', 'Error parsing output of KKR: single particle energies',
             'Error parsing output of KKR: charges', 'Error parsing output of KKR: scfinfo',
             'Error parsing output of KKR: kmesh'
-        ])
+        }
 
     def test_missing_timingfile(self):
         """
