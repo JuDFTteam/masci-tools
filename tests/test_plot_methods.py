@@ -698,59 +698,52 @@ def test_multiple_scatter_colors_deprecated():
     return gcf()
 
 
-class TestMultiScatterPlot:
+@pytest.mark.mpl_image_compare
+def test_multi_scatter_defaults():
     """
-    Test of the multi_scatter_plot function
+    Scatterplot with default parameters
     """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multi_scatter_plot
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
-                                   filename='defaults.png')
-    def test_default(self):
-        """
-        Scatterplot with default parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multi_scatter_plot
+    x = [np.linspace(-10, 10, 50)] * 2
+    y = [x[0]**2, x[1] * 5 + 30]
+    s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
 
-        x = [np.linspace(-10, 10, 50)] * 2
-        y = [x[0]**2, x[1] * 5 + 30]
-        s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
+    gcf().clear()
 
-        gcf().clear()
+    multi_scatter_plot(x, y, size_data=s, xlabel='X', ylabel='Y', title='Plot Test', show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
-        multi_scatter_plot(x, y, size_data=s, xlabel='X', ylabel='Y', title='Plot Test', show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_multi_scatter_param_change():
+    """
+    Scatterplot with changed parameters
+    """
+    import numpy as np
+    from masci_tools.vis.plot_methods import multi_scatter_plot
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/multi_scatter_plot/',
-                                   filename='param_change.png')
-    def test_param_change(self):
-        """
-        Scatterplot with changed parameters
-        """
-        import numpy as np
-        from masci_tools.vis.plot_methods import multi_scatter_plot
+    x = [np.linspace(-10, 10, 50)] * 2
+    y = [x[0]**2, x[1] * 5 + 30]
+    s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
 
-        x = [np.linspace(-10, 10, 50)] * 2
-        y = [x[0]**2, x[1] * 5 + 30]
-        s = [100 * np.exp(-0.1 * x[0]**2), abs(x[1])]
+    gcf().clear()
 
-        gcf().clear()
-
-        multi_scatter_plot(x,
-                           y,
-                           size_data=s,
-                           xlabel='X',
-                           ylabel='Y',
-                           title='Plot Test',
-                           color=['darkred', 'darkorange'],
-                           marker='^',
-                           plot_alpha=0.6,
-                           plot_label=['Parabola', 'Line'],
-                           legend=True,
-                           show=False)
-        # need to return the figure in order for mpl checks to work
-        return gcf()
+    multi_scatter_plot(x,
+                        y,
+                        size_data=s,
+                        xlabel='X',
+                        ylabel='Y',
+                        title='Plot Test',
+                        color=['darkred', 'darkorange'],
+                        marker='^',
+                        plot_alpha=0.6,
+                        plot_label=['Parabola', 'Line'],
+                        legend=True,
+                        show=False)
+    # need to return the figure in order for mpl checks to work
+    return gcf()
 
 
 class TestMultiPlotMoved:
