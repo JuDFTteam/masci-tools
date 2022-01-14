@@ -124,330 +124,249 @@ def test_bokeh_load_defaults(file_regression):
 
     reset_bokeh_plot_defaults()
 
+def test_scatter_default(check_bokeh_plot):
+    """
+    Test with default values
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-class TestBokehScatter:  #pylint: disable=missing-class-docstring
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_default(self, check_bokeh_plot):
-        """
-        Test with default values
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    p = bokeh_scatter('x', 'y', data=source, show=False)
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        p = bokeh_scatter('x', 'y', data=source, show=False)
+def test_scatter_deprecated_signature(check_bokeh_plot):
+    """
+    Test with default values and old signature
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        check_bokeh_plot(p)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_deprecated_signature(self, check_bokeh_plot):
-        """
-        Test with default values and old signature
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    with pytest.deprecated_call():
+        p = bokeh_scatter(source, show=False)
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        with pytest.deprecated_call():
-            p = bokeh_scatter(source, show=False)
+def test_scatter_param_change(check_bokeh_plot):
+    """
+    Test with parameters changed
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        check_bokeh_plot(p)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_param_change(self, check_bokeh_plot):
-        """
-        Test with parameters changed
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    p = bokeh_scatter('x',
+                        'y',
+                        data=source,
+                        show=False,
+                        color='darkred',
+                        label_fontsize='24pt',
+                        marker='square',
+                        marker_size=12,
+                        alpha=0.8)
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        p = bokeh_scatter('x',
-                          'y',
-                          data=source,
-                          show=False,
-                          color='darkred',
-                          label_fontsize='24pt',
-                          marker='square',
-                          marker_size=12,
-                          alpha=0.8)
+def test_scatter_limits(check_bokeh_plot):
+    """
+    Test with setting limits
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        check_bokeh_plot(p)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_limits(self, check_bokeh_plot):
-        """
-        Test with setting limits
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    p = bokeh_scatter('x', 'y', data=source, show=False, limits={'x': (0, 10), 'y': (-50, 50)})
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        p = bokeh_scatter('x', 'y', data=source, show=False, limits={'x': (0, 10), 'y': (-50, 50)})
+def test_scatter_straight_lines(check_bokeh_plot):
+    """
+    Test with straight lines
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        check_bokeh_plot(p)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_straight_lines(self, check_bokeh_plot):
-        """
-        Test with straight lines
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    p = bokeh_scatter('x', 'y', data=source, show=False, straight_lines={'vertical': 0, 'horizontal': [10, 20, 30]})
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        p = bokeh_scatter('x', 'y', data=source, show=False, straight_lines={'vertical': 0, 'horizontal': [10, 20, 30]})
+def test_scatter_legend(check_bokeh_plot):
+    """
+    Test with straight lines
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        check_bokeh_plot(p)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-    def test_legend(self, check_bokeh_plot):
-        """
-        Test with straight lines
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    p = bokeh_scatter('x', 'y', data=source, show=False, legend_label='Test Data')
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    check_bokeh_plot(p)
 
-        p = bokeh_scatter('x', 'y', data=source, show=False, legend_label='Test Data')
 
-        check_bokeh_plot(p)
+def test_multi_scatter_default_no_data(check_bokeh_plot):
+    """
+    Test with default values
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
 
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-class TestBokehMultiScatter:  #pylint: disable=missing-class-docstring
+    p = bokeh_multi_scatter(x, y, show=False)
 
-    def test_default_no_data(self, check_bokeh_plot):
-        """
-        Test with default values
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
+    check_bokeh_plot(p)
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+def test_multi_scatter_deprecated_signature(check_bokeh_plot):
+    """
+    Test with default values and old signature
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-        p = bokeh_multi_scatter(x, y, show=False)
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-        check_bokeh_plot(p)
+    with pytest.deprecated_call():
+        p = bokeh_multi_scatter(source, show=False)
 
-    def test_multi_deprecated_signature(self, check_bokeh_plot):
-        """
-        Test with default values and old signature
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_multi_scatter
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+    check_bokeh_plot(p)
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+def test_line_default_no_data_line(check_bokeh_plot):
+    """
+    Test with default values
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_line
 
-        with pytest.deprecated_call():
-            p = bokeh_multi_scatter(source, show=False)
+    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
+    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
 
-        check_bokeh_plot(p)
+    p = bokeh_line(x, y, show=False)
 
+    check_bokeh_plot(p)
 
-class TestBokehLine:  #pylint: disable=missing-class-docstring
+def test_line_multi_deprecated_signature_line(check_bokeh_plot):
+    """
+    Test with default values and old signature
+    """
+    from masci_tools.vis.bokeh_plots import bokeh_line
+    x = np.linspace(-10, 10, 100)
+    y = x**2
 
-    def test_default_no_data_line(self, check_bokeh_plot):
-        """
-        Test with default values
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_line
+    source = pd.DataFrame(data={'x': x, 'y': y})
 
-        x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-        y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
+    with pytest.deprecated_call():
+        p = bokeh_line(source, show=False)
 
-        p = bokeh_line(x, y, show=False)
+    check_bokeh_plot(p)
 
-        check_bokeh_plot(p)
 
-    def test_multi_deprecated_signature_line(self, check_bokeh_plot):
-        """
-        Test with default values and old signature
-        """
-        from masci_tools.vis.bokeh_plots import bokeh_line
-        x = np.linspace(-10, 10, 100)
-        y = x**2
+def test_convergence_defaults(check_bokeh_plot, convergence_plot_data):
+    """
+    Test of convergence plot with default values
+    """
+    from masci_tools.vis.bokeh_plots import plot_convergence_results
 
-        source = pd.DataFrame(data={'x': x, 'y': y})
+    iteration, distance, energy = convergence_plot_data(1)
+    with pytest.deprecated_call():
+        p = plot_convergence_results(iteration, distance, energy, show=False)
 
-        with pytest.deprecated_call():
-            p = bokeh_line(source, show=False)
+    check_bokeh_plot(p)
 
-        check_bokeh_plot(p)
+def test_convergence_param_change(check_bokeh_plot, convergence_plot_data):
+    """
+    Test of convergence plot with changed parameters
+    """
+    from masci_tools.vis.bokeh_plots import plot_convergence_results
 
+    iteration, distance, energy = convergence_plot_data(1)
 
-class TestPlotConvergenceResults:  #pylint: disable=missing-class-docstring
+    with pytest.deprecated_call():
+        p = plot_convergence_results(iteration,
+                                        distance,
+                                        energy,
+                                        show=False,
+                                        color='darkred',
+                                        label_fontsize='24pt',
+                                        marker='square',
+                                        marker_size=12,
+                                        alpha=0.8)
 
-    energies = [
-        -69269.46134019217, -69269.42108466873, -69269.35509388152, -69269.62486438647, -69269.51102655893,
-        -69269.48862754989, -69269.48874847183, -69269.48459145911, -69269.47327003669, -69269.47248623992,
-        -69269.47244891679, -69269.47645687914, -69269.47922946361, -69269.4793222245, -69269.47901836311,
-        -69269.47895198638, -69269.47886053707, -69269.47875692157, -69269.47890881824, -69269.47887586526
-    ]
+    check_bokeh_plot(p)
 
-    distances = [
-        11.6508412231, 10.5637525546, 7.1938351319, 2.6117836621, 2.4735288205, 2.9455389405, 1.8364080301,
-        1.4740568937, 1.8542068593, 0.9186745766, 0.900191025, 0.5290019787, 0.0979035892, 0.1098240811, 0.0717916768,
-        0.0258508395, 0.0300810883, 0.0067904499, 0.0085097364, 0.0073435947
-    ]
+def test_convergence_multi_defaults(check_bokeh_plot, convergence_plot_data):
+    """
+    Test of multiple convergence plot with default values
+    """
+    from masci_tools.vis.bokeh_plots import plot_convergence_results_m
 
-    iteration = range(len(distances))
+    iteration, distance, energy = convergence_plot_data(15)
 
-    def test_convergence_defaults(self, check_bokeh_plot):
-        """
-        Test of convergence plot with default values
-        """
-        from masci_tools.vis.bokeh_plots import plot_convergence_results
+    with pytest.deprecated_call():
+        p = plot_convergence_results_m(iteration, distance, energy, show=False)
 
-        with pytest.deprecated_call():
-            p = plot_convergence_results(self.iteration, self.distances, self.energies, show=False)
+    # need to return the figure in order for mpl checks to work
+    check_bokeh_plot(p)
 
-        check_bokeh_plot(p)
 
-    def test_convergence_param_change(self, check_bokeh_plot):
-        """
-        Test of convergence plot with changed parameters
-        """
-        from masci_tools.vis.bokeh_plots import plot_convergence_results
+def test_lattice_constant_defaults_single(check_bokeh_plot, lattice_constant_data):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import plot_lattice_constant
 
-        with pytest.deprecated_call():
-            p = plot_convergence_results(self.iteration,
-                                         self.distances,
-                                         self.energies,
-                                         show=False,
-                                         color='darkred',
-                                         label_fontsize='24pt',
-                                         marker='square',
-                                         marker_size=12,
-                                         alpha=0.8)
+    scaling, _, energy = lattice_constant_data(1)
 
-        check_bokeh_plot(p)
+    p = plot_lattice_constant(scaling, energy, show=False)
 
+    check_bokeh_plot(p)
 
-class TestPlotConvergenceMulti:  #pylint: disable=missing-class-docstring
+def test_lattice_constant_defaults_single_fit(check_bokeh_plot, lattice_constant_data):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import plot_lattice_constant
 
-    def test_convergence_multi_defaults(self, check_bokeh_plot):
-        """
-        Test of multiple convergence plot with default values
-        """
-        from masci_tools.vis.bokeh_plots import plot_convergence_results_m
+    scaling, energy_data, fit = lattice_constant_data(1)
 
-        np.random.seed(19680801)
-        number_iterations = np.random.randint(15, high=50, size=15)
-        iteration = [np.array(range(iters)) for iters in number_iterations]
+    p = plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
-        noise_arr = [0.1 * np.random.randn(iters) + 1.0 for iters in number_iterations]
+    check_bokeh_plot(p)
 
-        distance_decay = np.random.rand(15)
-        distance_offset = 100 * np.random.rand(15)
+def test_lattice_constant_defaults_multi(check_bokeh_plot, lattice_constant_data):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import plot_lattice_constant
 
-        energy_decay = np.random.rand(15)
-        energy_offset = 20000 + 500 * np.random.rand(15)
-        energy_offset2 = 1000 * np.random.rand(15)
+    scaling, _, energy = lattice_constant_data(5)
 
-        distances = [
-            noise * offset * np.exp(-decay * iters)
-            for iters, noise, decay, offset in zip(iteration, noise_arr, distance_decay, distance_offset)
-        ]
-        energies = [
-            noise * offset2 * np.exp(-decay * iters) + offset for iters, noise, decay, offset, offset2 in zip(
-                iteration, noise_arr, energy_decay, energy_offset, energy_offset2)
-        ]
+    p = plot_lattice_constant(scaling, energy, show=False)
 
-        with pytest.deprecated_call():
-            p = plot_convergence_results_m(iteration, distances, energies, show=False)
+    check_bokeh_plot(p)
 
-        # need to return the figure in order for mpl checks to work
-        check_bokeh_plot(p)
+def test_lattice_constant_defaults_multi_fit(check_bokeh_plot, lattice_constant_data):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import plot_lattice_constant
 
+    scaling, energy_data, fit = lattice_constant_data(5)
 
-class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
+    p = plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
-    def test_lattice_defaults_single(self, check_bokeh_plot):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.bokeh_plots import plot_lattice_constant
-
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = -500.0 + 500.0 * (0.99 - scaling)**2
-
-        p = plot_lattice_constant(scaling, energy, show=False)
-
-        check_bokeh_plot(p)
-
-    def test_defaults_single_fity(self, check_bokeh_plot):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.bokeh_plots import plot_lattice_constant
-
-        np.random.seed(19680801)
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = -500.0 + 500 * (0.99 - scaling)**2
-
-        noise = 0.5 * (np.random.rand(10) - 0.5)
-
-        p = plot_lattice_constant(scaling, energy + noise, fit_data=energy, show=False)
-
-        check_bokeh_plot(p)
-
-    def test_defaults_multi(self, check_bokeh_plot):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.bokeh_plots import plot_lattice_constant
-
-        np.random.seed(19680801)
-
-        energy_offset = np.random.rand(5)
-        energy_offset = -500.0 + energy_offset
-
-        energy_scaling = np.random.rand(5) * 50
-        energy_groundstate = np.random.rand(5)
-        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
-
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = [
-            offset + const * (ground - scaling)**2
-            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
-        ]
-        scaling = [scaling] * 5
-
-        p = plot_lattice_constant(scaling, energy, show=False)
-
-        check_bokeh_plot(p)
-
-    def test_defaults_multi_fity(self, check_bokeh_plot):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.bokeh_plots import plot_lattice_constant
-
-        np.random.seed(19680801)
-
-        energy_offset = np.random.rand(5)
-        energy_offset = -500.0 + energy_offset
-
-        energy_scaling = np.random.rand(5) * 50
-        energy_groundstate = np.random.rand(5)
-        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
-
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy_fit = [
-            offset + const * (ground - scaling)**2
-            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
-        ]
-        energy_noise = [energy + (np.random.rand(10) - 0.5) * 0.05 for energy in energy_fit]
-        scaling = [scaling] * 5
-
-        p = plot_lattice_constant(scaling, energy_noise, fit_data=energy_fit, show=False)
-
-        check_bokeh_plot(p)
+    check_bokeh_plot(p)
