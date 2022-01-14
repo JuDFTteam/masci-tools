@@ -1545,106 +1545,64 @@ def test_convex_hull_defaults_pyhull():
     return gcf()
 
 
-class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare
+def test_lattice_constant_defaults_single(lattice_constant_data):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.plot_methods import plot_lattice_constant
+    import numpy as np
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
-                                   filename='defaults_single.png')
-    def test_defaults_single(self):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.plot_methods import plot_lattice_constant
-        import numpy as np
+    scaling, _, energy = lattice_constant_data(1)
 
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = -500.0 + 500.0 * (0.99 - scaling)**2
+    gcf().clear()
 
-        gcf().clear()
+    plot_lattice_constant(scaling, energy, show=False)
 
-        plot_lattice_constant(scaling, energy, show=False)
+    return gcf()
 
-        return gcf()
+@pytest.mark.mpl_image_compare
+def test_lattice_constant_defaults_single_fit(lattice_constant_data):
+    """
+    Test with default parameters and fit data
+    """
+    from masci_tools.vis.plot_methods import plot_lattice_constant
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
-                                   filename='fit_single.png')
-    def test_defaults_single_fity(self):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.plot_methods import plot_lattice_constant
-        import numpy as np
+    scaling, energy_data, fit = lattice_constant_data(1)
 
-        np.random.seed(19680801)
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = -500.0 + 500 * (0.99 - scaling)**2
+    gcf().clear()
 
-        noise = 0.5 * (np.random.rand(10) - 0.5)
+    plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
-        gcf().clear()
+    return gcf()
 
-        plot_lattice_constant(scaling, energy + noise, fit_data=energy, show=False)
+@pytest.mark.mpl_image_compare
+def test_lattice_constant_defaults_multi(lattice_constant_data):
+    """
+    Test with default parameters and multiple sets of data
+    """
+    from masci_tools.vis.plot_methods import plot_lattice_constant
+    import numpy as np
 
-        return gcf()
+    scaling, _, energy = lattice_constant_data(5)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
-                                   filename='defaults_multi.png')
-    def test_defaults_multi(self):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.plot_methods import plot_lattice_constant
-        import numpy as np
+    gcf().clear()
 
-        np.random.seed(19680801)
+    plot_lattice_constant(scaling, energy, show=False)
 
-        energy_offset = np.random.rand(5)
-        energy_offset = -500.0 + energy_offset
+    return gcf()
 
-        energy_scaling = np.random.rand(5) * 50
-        energy_groundstate = np.random.rand(5)
-        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
+@pytest.mark.mpl_image_compare
+def test_lattice_constant_defaults_multi_fit(lattice_constant_data):
+    """
+    Test with default parameters and multiple sets of data and fit data
+    """
+    from masci_tools.vis.plot_methods import plot_lattice_constant
+    
+    scaling, energy_data, fit = lattice_constant_data(5)
 
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy = [
-            offset + const * (ground - scaling)**2
-            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
-        ]
-        scaling = [scaling] * 5
+    gcf().clear()
 
-        gcf().clear()
+    plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
-        plot_lattice_constant(scaling, energy, show=False)
-
-        return gcf()
-
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/lattice_constant/',
-                                   filename='fit_multi.png')
-    def test_defaults_multi_fity(self):
-        """
-        Test with default parameters
-        """
-        from masci_tools.vis.plot_methods import plot_lattice_constant
-        import numpy as np
-
-        np.random.seed(19680801)
-
-        energy_offset = np.random.rand(5)
-        energy_offset = -500.0 + energy_offset
-
-        energy_scaling = np.random.rand(5) * 50
-        energy_groundstate = np.random.rand(5)
-        energy_groundstate = 1.0 + (energy_groundstate - 0.5) * 0.05
-
-        scaling = np.linspace(0.95, 1.04, 10)
-        energy_fit = [
-            offset + const * (ground - scaling)**2
-            for offset, const, ground in zip(energy_offset, energy_scaling, energy_groundstate)
-        ]
-        energy_noise = [energy + (np.random.rand(10) - 0.5) * 0.05 for energy in energy_fit]
-        scaling = [scaling] * 5
-
-        gcf().clear()
-
-        plot_lattice_constant(scaling, energy_noise, fit_data=energy_fit, show=False)
-
-        return gcf()
+    return gcf()
