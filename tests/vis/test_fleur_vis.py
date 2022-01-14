@@ -6,10 +6,11 @@ import pytest
 from matplotlib.pyplot import gcf
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-HDFTEST_DIR = os.path.join(CURRENT_DIR, 'files/hdf5_reader')
+HDFTEST_DIR = os.path.join(CURRENT_DIR, '../files/hdf5_reader')
+MPL_BASELINE_DIR = os.path.join(CURRENT_DIR, '../files/fleur_vis')
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_defaults.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_defaults.png')
 def test_plot_bands_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -42,7 +43,7 @@ def test_plot_bands_defaults_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_weighted_non_spinpol.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_weighted_non_spinpol.png')
 def test_plot_bands_weighted_non_spinpol_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -75,7 +76,7 @@ def test_plot_bands_weighted_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_line.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_line.png')
 def test_plot_bands_line_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -108,7 +109,7 @@ def test_plot_bands_line_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_separate.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_separate.png')
 def test_plot_bands_separate_bands_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -150,7 +151,7 @@ def test_plot_bands_separate_bands_bokeh(check_bokeh_plot):
     check_bokeh_plot(p)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_defaults_spinpol.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_defaults_spinpol.png')
 def test_plot_bands_spinpol_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -183,7 +184,7 @@ def test_plot_bands_spinpol_defaults_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_weighted_spinpol.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_weighted_spinpol.png')
 def test_plot_bands_weighted_spinpol_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -216,7 +217,7 @@ def test_plot_bands_spinpol_weighted_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_line.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_spinpol_line.png')
 def test_plot_bands_spinpol_line_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -249,7 +250,7 @@ def test_plot_bands_spinpol_line_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_separate.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_spinpol_separate.png')
 def test_plot_bands_spinpol_separate_bands_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -307,7 +308,7 @@ def test_plot_bands_spinpol_separate_bands_bokeh(check_bokeh_plot):
     check_bokeh_plot(p)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_spinpol_hide.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_spinpol_hide.png')
 def test_plot_bands_spinpol_no_spinpol_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -340,7 +341,7 @@ def test_plot_bands_spinpol_no_spinpol_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_only_spin.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_only_spin.png')
 def test_plot_bands_spinpol_only_spin_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
@@ -373,7 +374,7 @@ def test_plot_bands_spinpol_only_spin_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_defaults.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='dos_defaults.png')
 def test_plot_dos_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -406,7 +407,7 @@ def test_plot_dos_defaults_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_param_by_label.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='dos_param_by_label.png')
 def test_plot_dos_param_change_by_label_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -424,7 +425,7 @@ def test_plot_dos_param_change_by_label_mpl():
     return gcf()
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_param_by_label_with_general_params.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='dos_param_by_label_with_general_params.png')
 def test_plot_dos_param_change_by_label_general_dicts_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -448,7 +449,7 @@ def test_plot_dos_param_change_by_label_general_dicts_mpl():
     return gcf()
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='spinpol_dos_defaults.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='spinpol_dos_defaults.png')
 def test_plot_spinpol_dos_defaults_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -466,7 +467,7 @@ def test_plot_spinpol_dos_defaults_mpl():
     return gcf()
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='spinpol_dos_param_changes.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='spinpol_dos_param_changes.png')
 def test_plot_spinpol_dos_param_changes_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -499,7 +500,7 @@ def test_plot_spinpol_dos_defaults_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='dos_selection.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='dos_selection.png')
 def test_plot_dos_selection_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurDOS
@@ -547,7 +548,7 @@ def test_plot_dos_selection_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
-@pytest.mark.mpl_image_compare(baseline_dir='files/fleur_vis/', filename='bands_character.png')
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_character.png')
 def test_plot_bands_characterize_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
     from masci_tools.io.parsers.hdf5.recipes import FleurBands
