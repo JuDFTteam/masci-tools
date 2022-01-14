@@ -7,6 +7,7 @@ TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
 TEST_NMMPMAT_PATH = 'fleur/input_nmmpmat.txt'
 
+
 def test_fleurxmlmodifier_facade_methods():
     """
     Make sure that adding all facade methods results in the right task list
