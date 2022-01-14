@@ -1,14 +1,11 @@
 """
 Test for the FleurXMLModifier class
 """
-import os
 import pytest
 
-FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-TEST_INPXML_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
-TEST_INPXML_LDAU_PATH = os.path.join(FILE_PATH, 'files/fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml')
-TEST_NMMPMAT_PATH = os.path.join(FILE_PATH, 'files/fleur/input_nmmpmat.txt')
-
+TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
+TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
+TEST_NMMPMAT_PATH = 'fleur/input_nmmpmat.txt'
 
 def test_fleurxmlmodifier_facade_methods():
     """
@@ -55,7 +52,7 @@ def test_fleurxmlmodifier_facade_methods_validation():
             action('TEST_ARG', random_kwarg='TEST2')
 
 
-def test_fleurxml_modifier_modify_xmlfile_simple():
+def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
@@ -97,12 +94,12 @@ def test_fleurxml_modifier_modify_xmlfile_simple():
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
+    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
 
 
-def test_fleurxml_modifier_modify_xmlfile_undo():
+def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
@@ -133,12 +130,12 @@ def test_fleurxml_modifier_modify_xmlfile_undo():
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
+    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
 
 
-def test_fleurxml_modifier_from_list():
+def test_fleurxml_modifier_from_list(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
@@ -208,12 +205,12 @@ def test_fleurxml_modifier_from_list():
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
+    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
 
 
-def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
+def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
@@ -229,12 +226,12 @@ def test_fleurxml_modifier_modify_xmlfile_undo_revert_all():
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(TEST_INPXML_PATH)
+    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
 
 
-def test_fleurxmlmodifier_nmmpmat():
+def test_fleurxmlmodifier_nmmpmat(test_file):
     """Tests if set_nmmpmat works on fleurinp modifier works, with right interface"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
@@ -245,14 +242,14 @@ def test_fleurxmlmodifier_nmmpmat():
     # Does not validate
     # Found invalid diagonal element for species Ga-1, spin 1 and l=2
     with pytest.raises(ValueError, match=r'Changes were not valid \(n_mmp_mat file is not compatible\)'):
-        fm.modify_xmlfile(TEST_INPXML_LDAU_PATH)
-    xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH, validate_changes=False)
+        fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH))
+    xmltree, nmmpmat = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH), validate_changes=False)
 
     assert xmltree is not None
     assert nmmpmat is not None
 
-    xmltree, nmmpmat = fm.modify_xmlfile(TEST_INPXML_LDAU_PATH,
-                                         original_nmmp_file=TEST_NMMPMAT_PATH,
+    xmltree, nmmpmat = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH),
+                                         original_nmmp_file=test_file(TEST_NMMPMAT_PATH),
                                          validate_changes=False)
 
     assert xmltree is not None
