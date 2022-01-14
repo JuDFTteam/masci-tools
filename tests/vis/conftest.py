@@ -4,6 +4,7 @@ Fixtures for testing visualzation functions
 import pytest
 import numpy as np
 
+
 @pytest.fixture
 def convergence_plot_data():
     """
@@ -25,8 +26,8 @@ def convergence_plot_data():
 
             distances = [
                 11.6508412231, 10.5637525546, 7.1938351319, 2.6117836621, 2.4735288205, 2.9455389405, 1.8364080301,
-                1.4740568937, 1.8542068593, 0.9186745766, 0.900191025, 0.5290019787, 0.0979035892, 0.1098240811, 0.0717916768,
-                0.0258508395, 0.0300810883, 0.0067904499, 0.0085097364, 0.0073435947
+                1.4740568937, 1.8542068593, 0.9186745766, 0.900191025, 0.5290019787, 0.0979035892, 0.1098240811,
+                0.0717916768, 0.0258508395, 0.0300810883, 0.0067904499, 0.0085097364, 0.0073435947
             ]
 
             iteration = range(len(distances))
@@ -55,26 +56,28 @@ def convergence_plot_data():
             ]
 
         return iteration, distances, energies
-    
+
     return _convergence_plot_data
+
 
 @pytest.fixture
 def lattice_constant_data():
     """
     FIcture returning smaple data for EOS plots
     """
+
     def _lattice_plot_data(n):
-        
+
         np.random.seed(19680801)
-        
-        if n==1:
+
+        if n == 1:
 
             scaling = np.linspace(0.95, 1.04, 10)
             energy = -500.0 + 500 * (0.99 - scaling)**2
 
             noise = 0.5 * (np.random.rand(10) - 0.5)
 
-            return scaling, energy+noise, energy
+            return scaling, energy + noise, energy
 
         energy_offset = np.random.rand(n)
         energy_offset = -500.0 + energy_offset
@@ -92,5 +95,5 @@ def lattice_constant_data():
         scaling = [scaling] * n
 
         return scaling, energy_noise, energy_fit
-    
+
     return _lattice_plot_data

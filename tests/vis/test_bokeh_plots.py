@@ -124,6 +124,7 @@ def test_bokeh_load_defaults(file_regression):
 
     reset_bokeh_plot_defaults()
 
+
 def test_scatter_default(check_bokeh_plot):
     """
     Test with default values
@@ -137,6 +138,7 @@ def test_scatter_default(check_bokeh_plot):
     p = bokeh_scatter('x', 'y', data=source, show=False)
 
     check_bokeh_plot(p)
+
 
 def test_scatter_deprecated_signature(check_bokeh_plot):
     """
@@ -153,6 +155,7 @@ def test_scatter_deprecated_signature(check_bokeh_plot):
 
     check_bokeh_plot(p)
 
+
 def test_scatter_param_change(check_bokeh_plot):
     """
     Test with parameters changed
@@ -164,16 +167,17 @@ def test_scatter_param_change(check_bokeh_plot):
     source = pd.DataFrame(data={'x': x, 'y': y})
 
     p = bokeh_scatter('x',
-                        'y',
-                        data=source,
-                        show=False,
-                        color='darkred',
-                        label_fontsize='24pt',
-                        marker='square',
-                        marker_size=12,
-                        alpha=0.8)
+                      'y',
+                      data=source,
+                      show=False,
+                      color='darkred',
+                      label_fontsize='24pt',
+                      marker='square',
+                      marker_size=12,
+                      alpha=0.8)
 
     check_bokeh_plot(p)
+
 
 def test_scatter_limits(check_bokeh_plot):
     """
@@ -189,6 +193,7 @@ def test_scatter_limits(check_bokeh_plot):
 
     check_bokeh_plot(p)
 
+
 def test_scatter_straight_lines(check_bokeh_plot):
     """
     Test with straight lines
@@ -202,6 +207,7 @@ def test_scatter_straight_lines(check_bokeh_plot):
     p = bokeh_scatter('x', 'y', data=source, show=False, straight_lines={'vertical': 0, 'horizontal': [10, 20, 30]})
 
     check_bokeh_plot(p)
+
 
 def test_scatter_legend(check_bokeh_plot):
     """
@@ -231,6 +237,7 @@ def test_multi_scatter_default_no_data(check_bokeh_plot):
 
     check_bokeh_plot(p)
 
+
 def test_multi_scatter_deprecated_signature(check_bokeh_plot):
     """
     Test with default values and old signature
@@ -246,6 +253,7 @@ def test_multi_scatter_deprecated_signature(check_bokeh_plot):
 
     check_bokeh_plot(p)
 
+
 def test_line_default_no_data_line(check_bokeh_plot):
     """
     Test with default values
@@ -258,6 +266,7 @@ def test_line_default_no_data_line(check_bokeh_plot):
     p = bokeh_line(x, y, show=False)
 
     check_bokeh_plot(p)
+
 
 def test_line_multi_deprecated_signature_line(check_bokeh_plot):
     """
@@ -287,6 +296,7 @@ def test_convergence_defaults(check_bokeh_plot, convergence_plot_data):
 
     check_bokeh_plot(p)
 
+
 def test_convergence_param_change(check_bokeh_plot, convergence_plot_data):
     """
     Test of convergence plot with changed parameters
@@ -297,16 +307,17 @@ def test_convergence_param_change(check_bokeh_plot, convergence_plot_data):
 
     with pytest.deprecated_call():
         p = plot_convergence_results(iteration,
-                                        distance,
-                                        energy,
-                                        show=False,
-                                        color='darkred',
-                                        label_fontsize='24pt',
-                                        marker='square',
-                                        marker_size=12,
-                                        alpha=0.8)
+                                     distance,
+                                     energy,
+                                     show=False,
+                                     color='darkred',
+                                     label_fontsize='24pt',
+                                     marker='square',
+                                     marker_size=12,
+                                     alpha=0.8)
 
     check_bokeh_plot(p)
+
 
 def test_convergence_multi_defaults(check_bokeh_plot, convergence_plot_data):
     """
@@ -335,6 +346,7 @@ def test_lattice_constant_defaults_single(check_bokeh_plot, lattice_constant_dat
 
     check_bokeh_plot(p)
 
+
 def test_lattice_constant_defaults_single_fit(check_bokeh_plot, lattice_constant_data):
     """
     Test with default parameters
@@ -347,6 +359,7 @@ def test_lattice_constant_defaults_single_fit(check_bokeh_plot, lattice_constant
 
     check_bokeh_plot(p)
 
+
 def test_lattice_constant_defaults_multi(check_bokeh_plot, lattice_constant_data):
     """
     Test with default parameters
@@ -358,6 +371,7 @@ def test_lattice_constant_defaults_multi(check_bokeh_plot, lattice_constant_data
     p = plot_lattice_constant(scaling, energy, show=False)
 
     check_bokeh_plot(p)
+
 
 def test_lattice_constant_defaults_multi_fit(check_bokeh_plot, lattice_constant_data):
     """

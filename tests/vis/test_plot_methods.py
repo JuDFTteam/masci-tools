@@ -156,6 +156,7 @@ class TestSingleScatterPlot:
     Test of the single_scatterplot function
     """
 
+
 @pytest.mark.mpl_image_compare
 def test_single_scatter_defaults():
     """
@@ -173,6 +174,7 @@ def test_single_scatter_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_single_scatter_param_change():
     """
@@ -187,19 +189,20 @@ def test_single_scatter_param_change():
     gcf().clear()
 
     single_scatterplot(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        title_fontsize=30,
-                        plot_label='Test',
-                        color='darkred',
-                        marker='^',
-                        markersize=10,
-                        linestyle='',
-                        show=False)
+                       y,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       title_fontsize=30,
+                       plot_label='Test',
+                       color='darkred',
+                       marker='^',
+                       markersize=10,
+                       linestyle='',
+                       show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_single_scatter_scale():
@@ -218,6 +221,7 @@ def test_single_scatter_scale():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_single_scatter_limits():
     """
@@ -232,17 +236,18 @@ def test_single_scatter_limits():
     gcf().clear()
 
     single_scatterplot(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        limits={
-                            'y': (-100, 100),
-                            'x': (0, 10)
-                        },
-                        show=False)
+                       y,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       limits={
+                           'y': (-100, 100),
+                           'x': (0, 10)
+                       },
+                       show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_single_scatter_area():
@@ -258,17 +263,18 @@ def test_single_scatter_area():
     gcf().clear()
 
     single_scatterplot(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        show=False,
-                        area_plot=True,
-                        area_alpha=0.3,
-                        marker=None,
-                        color='darkblue')
+                       y,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       show=False,
+                       area_plot=True,
+                       area_alpha=0.3,
+                       marker=None,
+                       color='darkblue')
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_single_scatter_lines():
@@ -284,17 +290,18 @@ def test_single_scatter_lines():
     gcf().clear()
 
     single_scatterplot(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        lines={
-                            'horizontal': 50,
-                            'vertical': [-5, 5]
-                        },
-                        show=False)
+                       y,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       lines={
+                           'horizontal': 50,
+                           'vertical': [-5, 5]
+                       },
+                       show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_single_scatter_lines_param_change():
@@ -310,24 +317,25 @@ def test_single_scatter_lines_param_change():
     gcf().clear()
 
     single_scatterplot(x,
-                        y,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        lines={
-                            'horizontal': 50,
-                            'vertical': [-5, {
-                                'pos': 5,
-                                'color': 'darkred',
-                                'linestyle': ':',
-                                'linewidth': 10
-                            }]
-                        },
-                        show=False)
+                       y,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       lines={
+                           'horizontal': 50,
+                           'vertical': [-5, {
+                               'pos': 5,
+                               'color': 'darkred',
+                               'linestyle': ':',
+                               'linewidth': 10
+                           }]
+                       },
+                       show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
-@pytest.mark.mpl_image_compare(filename='test_single_scatter_limits.png') #Same as the normal limits test
+
+@pytest.mark.mpl_image_compare(filename='test_single_scatter_limits.png')  #Same as the normal limits test
 def test_single_scatter_limits_deprecated():
     """
     Scatterplot with deprecated parameter for modifying plot limits
@@ -340,17 +348,12 @@ def test_single_scatter_limits_deprecated():
 
     gcf().clear()
     with pytest.deprecated_call():
-        single_scatterplot(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            limits=[(0, 10), (-100, 100)],
-                            show=False)
+        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', limits=[(0, 10), (-100, 100)], show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
-@pytest.mark.mpl_image_compare(filename='test_single_scatter_scale.png') #same as the normal scale test
+
+@pytest.mark.mpl_image_compare(filename='test_single_scatter_scale.png')  #same as the normal scale test
 def test_single_scatter_scale_deprecated():
     """
     Scatterplot with deprectated option for modifying axis scales
@@ -366,6 +369,7 @@ def test_single_scatter_scale_deprecated():
         single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare(filename='test_single_scatter_defaults.png')
 def test_single_scatter_deprecated_label():
@@ -390,6 +394,7 @@ class TestMultipleScatterPlot:
     Test of the multiple_scatterplots function
     """
 
+
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_defaults():
     """
@@ -407,6 +412,7 @@ def test_multiple_scatter_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_param_change():
     """
@@ -421,18 +427,19 @@ def test_multiple_scatter_param_change():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            title_fontsize=30,
-                            plot_label=['Parabola', 'Line', None, 'cosine'],
-                            marker='^',
-                            linewidth=[1, 3],
-                            color=['darkred', 'darkblue', 'limegreen'],
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          title_fontsize=30,
+                          plot_label=['Parabola', 'Line', None, 'cosine'],
+                          marker='^',
+                          linewidth=[1, 3],
+                          color=['darkred', 'darkblue', 'limegreen'],
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_legend():
@@ -448,16 +455,17 @@ def test_multiple_scatter_legend():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            plot_label=['Parabola', 'Line', None, 'cosine'],
-                            legend=True,
-                            legend_options={'fontsize': 20},
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          plot_label=['Parabola', 'Line', None, 'cosine'],
+                          legend=True,
+                          legend_options={'fontsize': 20},
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_scale_limits():
@@ -473,18 +481,19 @@ def test_multiple_scatter_scale_limits():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            scale={'y': 'log'},
-                            limits={
-                                'y': (0.01, 100),
-                                'x': (0, 10)
-                            },
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          scale={'y': 'log'},
+                          limits={
+                              'y': (0.01, 100),
+                              'x': (0, 10)
+                          },
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_xticks():
@@ -500,15 +509,16 @@ def test_multiple_scatter_xticks():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            xticks=[-10, 3, 3, 10, 20],
-                            xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          xticks=[-10, 3, 3, 10, 20],
+                          xticklabels=[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_dict_selection():
@@ -524,22 +534,23 @@ def test_multiple_scatter_dict_selection():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            marker='^',
-                            color={4: 'k'},
-                            plot_label={
-                                0: 'Parabola',
-                                1: 'Line',
-                                3: 'cosine'
-                            },
-                            linewidth={2: 5},
-                            legend=True,
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          marker='^',
+                          color={4: 'k'},
+                          plot_label={
+                              0: 'Parabola',
+                              1: 'Line',
+                              3: 'cosine'
+                          },
+                          linewidth={2: 5},
+                          legend=True,
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_area():
@@ -555,28 +566,29 @@ def test_multiple_scatter_area():
     gcf().clear()
 
     multiple_scatterplots(x,
-                            y,
-                            xlabel='X',
-                            ylabel='Y',
-                            title='Plot Test',
-                            marker='^',
-                            color={
-                                4: 'k',
-                                3: 'darkorange'
-                            },
-                            area_plot={3: True},
-                            plot_label={
-                                0: 'Parabola',
-                                1: 'Line',
-                                3: 'cosine'
-                            },
-                            linewidth={2: 5},
-                            legend=True,
-                            show=False)
+                          y,
+                          xlabel='X',
+                          ylabel='Y',
+                          title='Plot Test',
+                          marker='^',
+                          color={
+                              4: 'k',
+                              3: 'darkorange'
+                          },
+                          area_plot={3: True},
+                          plot_label={
+                              0: 'Parabola',
+                              1: 'Line',
+                              3: 'cosine'
+                          },
+                          linewidth={2: 5},
+                          legend=True,
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
-@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_scale_limits.png') #Same as non-deprecated test
+
+@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_scale_limits.png')  #Same as non-deprecated test
 def test_multiple_scatter_scale_limits_deprecated():
     """
     Scatterplot with deprecated options for setting scales and limits
@@ -590,15 +602,16 @@ def test_multiple_scatter_scale_limits_deprecated():
     gcf().clear()
     with pytest.deprecated_call():
         multiple_scatterplots(x,
-                                y,
-                                xlabel='X',
-                                ylabel='Y',
-                                title='Plot Test',
-                                scale=[None, 'log'],
-                                limits=[(0, 10), (0.01, 100)],
-                                show=False)
+                              y,
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
+                              scale=[None, 'log'],
+                              limits=[(0, 10), (0.01, 100)],
+                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare(filename='test_multiple_scatter_xticks.png')
 def test_multiple_scatter_xticks_deprecated():
@@ -614,15 +627,15 @@ def test_multiple_scatter_xticks_deprecated():
     gcf().clear()
     with pytest.deprecated_call():
         multiple_scatterplots(x,
-                                y,
-                                xlabel='X',
-                                ylabel='Y',
-                                title='Plot Test',
-                                xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'],
-                                        [-10, 3, 3, 10, 20]],
-                                show=False)
+                              y,
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
+                              xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'], [-10, 3, 3, 10, 20]],
+                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
 def test_multiple_scatter_plot_labels_deprecated():
@@ -638,16 +651,17 @@ def test_multiple_scatter_plot_labels_deprecated():
     gcf().clear()
     with pytest.deprecated_call():
         multiple_scatterplots(x,
-                                y,
-                                xlabel='X',
-                                ylabel='Y',
-                                title='Plot Test',
-                                plot_labels=['Parabola', 'Line', None, 'cosine'],
-                                legend=True,
-                                legend_options={'fontsize': 20},
-                                show=False)
+                              y,
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
+                              plot_labels=['Parabola', 'Line', None, 'cosine'],
+                              legend=True,
+                              legend_options={'fontsize': 20},
+                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
 def test_multiple_scatter_legend_option_deprecated():
@@ -663,16 +677,17 @@ def test_multiple_scatter_legend_option_deprecated():
     gcf().clear()
     with pytest.deprecated_call():
         multiple_scatterplots(x,
-                                y,
-                                xlabel='X',
-                                ylabel='Y',
-                                title='Plot Test',
-                                plot_label=['Parabola', 'Line', None, 'cosine'],
-                                legend=True,
-                                legend_option={'fontsize': 20},
-                                show=False)
+                              y,
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
+                              plot_label=['Parabola', 'Line', None, 'cosine'],
+                              legend=True,
+                              legend_option={'fontsize': 20},
+                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_colors_deprecated():
@@ -688,12 +703,12 @@ def test_multiple_scatter_colors_deprecated():
     gcf().clear()
     with pytest.deprecated_call():
         multiple_scatterplots(x,
-                                y,
-                                xlabel='X',
-                                ylabel='Y',
-                                title='Plot Test',
-                                colors=['darkred', 'darkblue', 'limegreen'],
-                                show=False)
+                              y,
+                              xlabel='X',
+                              ylabel='Y',
+                              title='Plot Test',
+                              colors=['darkred', 'darkblue', 'limegreen'],
+                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
@@ -716,6 +731,7 @@ def test_multi_scatter_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_multi_scatter_param_change():
     """
@@ -731,19 +747,20 @@ def test_multi_scatter_param_change():
     gcf().clear()
 
     multi_scatter_plot(x,
-                        y,
-                        size_data=s,
-                        xlabel='X',
-                        ylabel='Y',
-                        title='Plot Test',
-                        color=['darkred', 'darkorange'],
-                        marker='^',
-                        plot_alpha=0.6,
-                        plot_label=['Parabola', 'Line'],
-                        legend=True,
-                        show=False)
+                       y,
+                       size_data=s,
+                       xlabel='X',
+                       ylabel='Y',
+                       title='Plot Test',
+                       color=['darkred', 'darkorange'],
+                       marker='^',
+                       plot_alpha=0.6,
+                       plot_label=['Parabola', 'Line'],
+                       legend=True,
+                       show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multi_plot_moved_defaults():
@@ -761,6 +778,7 @@ def test_multi_plot_moved_defaults():
     multiplot_moved(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale_move=2.0, show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multi_plot_moved_param_change():
@@ -789,6 +807,7 @@ def test_multi_plot_moved_param_change():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_multi_plot_moved_area():
     """
@@ -813,6 +832,7 @@ def test_multi_plot_moved_area():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_waterfall_plot_defaults():
     """
@@ -834,6 +854,7 @@ def test_waterfall_plot_defaults():
     # need to return the figure in order for mpl checks to work
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_surface_plot_defaults():
@@ -870,17 +891,18 @@ def test_multiaxis_defaults():
     gcf().clear()
 
     multiaxis_scatterplot(x,
-                            y,
-                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                            xlabel='X',
-                            ylabel='Y',
-                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                            num_rows=2,
-                            num_cols=2,
-                            show=False)
+                          y,
+                          axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                          xlabel='X',
+                          ylabel='Y',
+                          title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                          num_rows=2,
+                          num_cols=2,
+                          show=False)
     # need to return the figure in order for mpl checks to work
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiaxis_non_standard_layout():
@@ -895,20 +917,21 @@ def test_multiaxis_non_standard_layout():
     gcf().clear()
 
     multiaxis_scatterplot(x,
-                            y,
-                            axes_loc=[(0, 0), (0, 1), (1, 0)],
-                            axes_kwargs={1: {
-                                'rowspan': 2
-                            }},
-                            xlabel='X',
-                            ylabel='Y',
-                            title=['Parabola', 'Lines', 'sin/cos'],
-                            num_rows=2,
-                            num_cols=2,
-                            show=False)
+                          y,
+                          axes_loc=[(0, 0), (0, 1), (1, 0)],
+                          axes_kwargs={1: {
+                              'rowspan': 2
+                          }},
+                          xlabel='X',
+                          ylabel='Y',
+                          title=['Parabola', 'Lines', 'sin/cos'],
+                          num_rows=2,
+                          num_cols=2,
+                          show=False)
     # need to return the figure in order for mpl checks to work
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiaxis_overall_param_change():
@@ -923,22 +946,23 @@ def test_multiaxis_overall_param_change():
     gcf().clear()
 
     multiaxis_scatterplot(x,
-                            y,
-                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                            xlabel='X',
-                            ylabel='Y',
-                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                            marker='^',
-                            color={0: 'darkred'},
-                            linewidth=10,
-                            title_fontsize=30,
-                            markersize=15,
-                            num_rows=2,
-                            num_cols=2,
-                            show=False)
+                          y,
+                          axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                          xlabel='X',
+                          ylabel='Y',
+                          title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                          marker='^',
+                          color={0: 'darkred'},
+                          linewidth=10,
+                          title_fontsize=30,
+                          markersize=15,
+                          num_rows=2,
+                          num_cols=2,
+                          show=False)
     # need to return the figure in order for mpl checks to work
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_multiaxis_single_subplot_param_change():
@@ -953,32 +977,32 @@ def test_multiaxis_single_subplot_param_change():
     gcf().clear()
 
     multiaxis_scatterplot(x,
-                            y,
-                            axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
-                            xlabel='X',
-                            ylabel='Y',
-                            title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
-                            subplot_params={
-                                0: {
-                                    'color': 'limegreen',
-                                    'scale': {
-                                        'y': 'log'
-                                    }
-                                },
-                                2: {
-                                    'limits': {
-                                        'x': (0, 10)
-                                    },
-                                    'color': {
-                                        0: 'darkorange'
-                                    },
-                                    'plot_label': ['sin', 'cos'],
-                                    'legend': True
-                                }
-                            },
-                            num_rows=2,
-                            num_cols=2,
-                            show=False)
+                          y,
+                          axes_loc=[(0, 0), (0, 1), (1, 0), (1, 1)],
+                          xlabel='X',
+                          ylabel='Y',
+                          title=['Parabola', 'Line1', 'sin/cos', 'Line2'],
+                          subplot_params={
+                              0: {
+                                  'color': 'limegreen',
+                                  'scale': {
+                                      'y': 'log'
+                                  }
+                              },
+                              2: {
+                                  'limits': {
+                                      'x': (0, 10)
+                                  },
+                                  'color': {
+                                      0: 'darkorange'
+                                  },
+                                  'plot_label': ['sin', 'cos'],
+                                  'legend': True
+                              }
+                          },
+                          num_rows=2,
+                          num_cols=2,
+                          show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
@@ -1025,6 +1049,7 @@ def test_histogram_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_histogram_param_change():
     """
@@ -1042,18 +1067,19 @@ def test_histogram_param_change():
     gcf().clear()
 
     histogram(x,
-                color='darkred',
-                linewidth=2,
-                plot_alpha=0.3,
-                plot_label='Normal',
-                density=True,
-                legend=True,
-                orientation='horizontal',
-                log=True,
-                show=False)
+              color='darkred',
+              linewidth=2,
+              plot_alpha=0.3,
+              plot_label='Normal',
+              density=True,
+              legend=True,
+              orientation='horizontal',
+              log=True,
+              show=False)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_histogram_stacked_defaults():
@@ -1077,6 +1103,7 @@ def test_histogram_stacked_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_histogram_stacked_param_change():
     """
@@ -1095,12 +1122,12 @@ def test_histogram_stacked_param_change():
     gcf().clear()
 
     histogram([x, x2],
-                color=['darkblue', 'darkred'],
-                histtype='barstacked',
-                linewidth=2,
-                legend=True,
-                plot_label={1: 'This is on top'},
-                show=False)
+              color=['darkblue', 'darkred'],
+              histtype='barstacked',
+              linewidth=2,
+              legend=True,
+              plot_label={1: 'This is on top'},
+              show=False)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
@@ -1123,6 +1150,7 @@ def test_barchart_stacked_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_barchart_stacked_param_change():
     """
@@ -1136,17 +1164,18 @@ def test_barchart_stacked_param_change():
     gcf().clear()
 
     barchart(x,
-                y,
-                show=False,
-                width=0.7,
-                align='edge',
-                limits={'x': (-2, 15)},
-                color={1: 'darkred'},
-                plot_label=['Bottom', 'Top'],
-                legend=True)
+             y,
+             show=False,
+             width=0.7,
+             align='edge',
+             limits={'x': (-2, 15)},
+             color={1: 'darkred'},
+             plot_label=['Bottom', 'Top'],
+             legend=True)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_barchart_stacked_horizontal_param_change():
@@ -1161,18 +1190,19 @@ def test_barchart_stacked_horizontal_param_change():
     gcf().clear()
 
     barchart(x,
-                y,
-                show=False,
-                alignment='horizontal',
-                width=0.7,
-                align='edge',
-                limits={'y': (-2, 15)},
-                color={1: 'darkred'},
-                plot_label=['Bottom', 'Top'],
-                legend=True)
+             y,
+             show=False,
+             alignment='horizontal',
+             width=0.7,
+             align='edge',
+             limits={'y': (-2, 15)},
+             color={1: 'darkred'},
+             plot_label=['Bottom', 'Top'],
+             legend=True)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_barchart_grouped_even_defaults():
@@ -1191,6 +1221,7 @@ def test_barchart_grouped_even_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_barchart_grouped_odd_defaults():
     """
@@ -1208,6 +1239,7 @@ def test_barchart_grouped_odd_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_barchart_grouped_param_change():
     """
@@ -1221,17 +1253,18 @@ def test_barchart_grouped_param_change():
     gcf().clear()
 
     barchart(x,
-                y,
-                show=False,
-                bar_type='grouped',
-                width=0.5,
-                align='edge',
-                color={2: 'darkred'},
-                plot_label=['One Set', 'Another Set', 'And another one'],
-                legend=True)
+             y,
+             show=False,
+             bar_type='grouped',
+             width=0.5,
+             align='edge',
+             color={2: 'darkred'},
+             plot_label=['One Set', 'Another Set', 'And another one'],
+             legend=True)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_barchart_grouped_horizontal_param_change():
@@ -1246,18 +1279,19 @@ def test_barchart_grouped_horizontal_param_change():
     gcf().clear()
 
     barchart(x,
-                y,
-                show=False,
-                alignment='horizontal',
-                bar_type='grouped',
-                width=0.5,
-                align='edge',
-                color={2: 'darkred'},
-                plot_label=['One Set', 'Another Set', 'And another one'],
-                legend=True)
+             y,
+             show=False,
+             alignment='horizontal',
+             bar_type='grouped',
+             width=0.5,
+             align='edge',
+             color={2: 'darkred'},
+             plot_label=['One Set', 'Another Set', 'And another one'],
+             legend=True)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_barchart_independent_defaults():
@@ -1276,6 +1310,7 @@ def test_barchart_independent_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_barchart_independent_param_change():
     """
@@ -1289,16 +1324,17 @@ def test_barchart_independent_param_change():
     gcf().clear()
 
     barchart(x,
-                y,
-                show=False,
-                bar_type='independent',
-                width=0.5,
-                color={1: 'darkred'},
-                plot_label=['Left', 'Right'],
-                legend=True)
+             y,
+             show=False,
+             bar_type='independent',
+             width=0.5,
+             color={1: 'darkred'},
+             plot_label=['Left', 'Right'],
+             legend=True)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_barchart_independent_horizontal_defaults():
@@ -1343,6 +1379,7 @@ def test_residuen_defaults():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_residuen_no_hist():
     """
@@ -1368,6 +1405,7 @@ def test_residuen_no_hist():
     # need to return the figure in order for mpl checks to work
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_residuen_param_change_residue_plot():
     """
@@ -1389,17 +1427,18 @@ def test_residuen_param_change_residue_plot():
     gcf().clear()
 
     plot_residuen(x,
-                    fit,
-                    real,
-                    show=False,
-                    marker='^',
-                    color='darkblue',
-                    xlabel='X',
-                    ylabel='Test Label',
-                    labelfontsize=30)
+                  fit,
+                  real,
+                  show=False,
+                  marker='^',
+                  color='darkblue',
+                  xlabel='X',
+                  ylabel='Test Label',
+                  labelfontsize=30)
 
     # need to return the figure in order for mpl checks to work
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_residuen_param_change_hist_plot():
@@ -1422,17 +1461,17 @@ def test_residuen_param_change_hist_plot():
     gcf().clear()
 
     plot_residuen(x,
-                    fit,
-                    real,
-                    show=False,
-                    hist_kwargs={
-                        'color': 'darkblue',
-                        'xlabel': 'X',
-                        'ylabel': 'Test Label',
-                        'labelfontsize': 30,
-                        'plot_label': 'Residue',
-                        'legend': True
-                    })
+                  fit,
+                  real,
+                  show=False,
+                  hist_kwargs={
+                      'color': 'darkblue',
+                      'xlabel': 'X',
+                      'ylabel': 'Test Label',
+                      'labelfontsize': 30,
+                      'plot_label': 'Residue',
+                      'legend': True
+                  })
 
     # need to return the figure in order for mpl checks to work
     return gcf()
@@ -1458,6 +1497,7 @@ def test_convergence_defaults(convergence_plot_data):
     # need to return the figure in order for mpl checks to work
     return fig
 
+
 @pytest.mark.mpl_image_compare
 def test_convergence_param_change(convergence_plot_data):
     """
@@ -1476,17 +1516,18 @@ def test_convergence_param_change(convergence_plot_data):
         plot_convergence_results(iteration,
                                  distance,
                                  energy,
-                                    show=False,
-                                    axis1=ax1,
-                                    axis2=ax2,
-                                    linestyle='--',
-                                    color='darkred',
-                                    marker='s',
-                                    linewidth=10,
-                                    title_fontsize=20)
+                                 show=False,
+                                 axis1=ax1,
+                                 axis2=ax2,
+                                 linestyle='--',
+                                 color='darkred',
+                                 marker='s',
+                                 linewidth=10,
+                                 title_fontsize=20)
 
     # need to return the figure in order for mpl checks to work
     return fig
+
 
 @pytest.mark.mpl_image_compare
 def test_convergence_multi_defaults(convergence_plot_data):
@@ -1494,7 +1535,7 @@ def test_convergence_multi_defaults(convergence_plot_data):
     Test of multiple convergence plot with default values
     """
     from masci_tools.vis.plot_methods import plot_convergence_results_m
-    
+
     iteration, distance, energy = convergence_plot_data(15)
 
     gcf().clear()
@@ -1525,6 +1566,7 @@ def test_convex_hull_defaults_scipy():
     plot_convex_hull2d(hull, show=False)
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare(filename='test_convex_hull_defaults.png')
 def test_convex_hull_defaults_pyhull():
@@ -1561,6 +1603,7 @@ def test_lattice_constant_defaults_single(lattice_constant_data):
 
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_lattice_constant_defaults_single_fit(lattice_constant_data):
     """
@@ -1575,6 +1618,7 @@ def test_lattice_constant_defaults_single_fit(lattice_constant_data):
     plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
     return gcf()
+
 
 @pytest.mark.mpl_image_compare
 def test_lattice_constant_defaults_multi(lattice_constant_data):
@@ -1592,13 +1636,14 @@ def test_lattice_constant_defaults_multi(lattice_constant_data):
 
     return gcf()
 
+
 @pytest.mark.mpl_image_compare
 def test_lattice_constant_defaults_multi_fit(lattice_constant_data):
     """
     Test with default parameters and multiple sets of data and fit data
     """
     from masci_tools.vis.plot_methods import plot_lattice_constant
-    
+
     scaling, energy_data, fit = lattice_constant_data(5)
 
     gcf().clear()
