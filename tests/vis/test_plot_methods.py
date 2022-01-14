@@ -1509,42 +1509,40 @@ def test_convergence_multi_defaults(convergence_plot_data):
     return fig
 
 
-class TestPlotConvexHull2d:  #pylint: disable=missing-class-docstring
+@pytest.mark.mpl_image_compare(filename='test_convex_hull_defaults.png')
+def test_convex_hull_defaults_scipy():
+    """
+    Test with default parameters for scipy convex hull
+    """
+    from scipy.spatial import ConvexHull  #pylint: disable=no-name-in-module
+    from masci_tools.vis.plot_methods import plot_convex_hull2d
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/', filename='defaults.png')
-    def test_defaults_scipy(self):
-        """
-        Test with default parameters
-        """
-        from scipy.spatial import ConvexHull  #pylint: disable=no-name-in-module
-        from masci_tools.vis.plot_methods import plot_convex_hull2d
+    pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
+    hull = ConvexHull(pts)
 
-        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
-        hull = ConvexHull(pts)
+    gcf().clear()
 
-        gcf().clear()
+    plot_convex_hull2d(hull, show=False)
 
-        plot_convex_hull2d(hull, show=False)
+    return gcf()
 
-        return gcf()
+@pytest.mark.mpl_image_compare(filename='test_convex_hull_defaults.png')
+def test_convex_hull_defaults_pyhull():
+    """
+    Test with default parameters for pyhull convex hull
+    """
+    pytest.importorskip('pyhull')
+    from pyhull.convex_hull import ConvexHull  #pylint: disable=import-error
+    from masci_tools.vis.plot_methods import plot_convex_hull2d
 
-    @pytest.mark.mpl_image_compare(baseline_dir='files/plot_methods/matplotlib/convex_hull/', filename='defaults.png')
-    def test_defaults_pyhull(self):
-        """
-        Test with default parameters
-        """
-        pytest.importorskip('pyhull')
-        from pyhull.convex_hull import ConvexHull  #pylint: disable=import-error
-        from masci_tools.vis.plot_methods import plot_convex_hull2d
+    pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
+    hull = ConvexHull(pts)
 
-        pts = [[-0.5, -0.5], [-0.5, 0.5], [0.5, -0.5], [0.5, 0.5], [0, 0]]
-        hull = ConvexHull(pts)
+    gcf().clear()
 
-        gcf().clear()
+    plot_convex_hull2d(hull, show=False)
 
-        plot_convex_hull2d(hull, show=False)
-
-        return gcf()
+    return gcf()
 
 
 class TestPlotLatticeConstant:  #pylint: disable=missing-class-docstring
