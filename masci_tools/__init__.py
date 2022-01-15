@@ -18,9 +18,8 @@ Plus wrappers of visualisation for aiida-fleur workflow nodes
 """
 import logging
 
-__copyright__ = (
-    'Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany. '
-    'All rights reserved.')
+__copyright__ = ('Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany. '
+                 'All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file.'
 __version__ = '0.7.1'
 __authors__ = 'The JuDFT team. Also see AUTHORS.txt file.'
