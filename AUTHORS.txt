@@ -1,6 +1,3 @@
-
-
-
 Jens Broeder j.broeder@fz-juelich.de
 Philipp Ruessmann p.ruessmann@fz-juelich.de 
 Henning Janssen he.janssen@fz-juelich.de

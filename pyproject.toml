@@ -1,77 +1,133 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
 
-[tool.poetry]
-name = "masci_tools"
-version = "0.7.1"
-description = "Tools for Materials science. Vis contains wrapers of matplotlib functionality to visualalize common material science data. Plus wrapers of visualisation for aiida-fleur workflow nodes"
+[project]
+name = "masci-tools"
+dynamic = ["version", "description"]  # read from masci_tools/__init__.py
+authors = [{name = "The JuDFT team", email = "j.broeder@fz-juelich.de"}]
 readme = "README.md"
-authors = ["Jens Bröder <j.broeder@fz-juelich.de>",
-           "Philipp Rüssmann <p.ruessmann@fz-juelich.de>",
-          ]
-license = "MIT"
-homepage = "https://github.com/JuDFTteam/masci-tools"
-repository = "https://github.com/JuDFTteam/masci-tools"
-documentation = "https://masci-tools.readthedocs.io"
-keywords = ["material science",
-            "plots",
-            "visualization",
-            "aiida",
-            "dft"]
-classifiers = ["Development Status :: 4 - Beta",
-               "Intended Audience :: Science/Research",
-               "License :: OSI Approved :: MIT License",
-               "Programming Language :: Python :: 3",
-               "Programming Language :: Python :: 3.7",
-               "Programming Language :: Python :: 3.8",
-               "Programming Language :: Python :: 3.9",
-               'Programming Language :: Python :: 3.10',
-               "Topic :: Scientific/Engineering :: Physics"]
+license = {file = "LICENSE.txt"}
+classifiers = [
+            'Development Status :: 4 - Beta',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: MIT License',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
+            'Topic :: Scientific/Engineering :: Physics',
+        ]
+keywords = ['material science', 'plots', 'fitting', 'visualization', 'aiida', 'dft', 'all-electron']
+requires-python = ">=3.7"
+dependencies = [
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'h5py',
+            'pandas',
+            'lxml>=4.5',
+            'more_itertools',
+            'seaborn',
+            'deepdiff',
+            'humanfriendly',
+            'mendeleev',
+            'click',
+            'click-completion',
+            'PyYAML',
+            'typing-extensions',
+            'tabulate'
+        ]
 
-[tool.poetry.dependencies]
-python = "^3.7"
-numpy = "*"
-scipy = "*"
-matplotlib = "*"
-h5py = "*"
-pandas = "*"
-lxml = "^4.6.3"
-more_itertools = "*"
-bump2version = "*"
-pytest = "^6.0"
-pytest-cov = "*"
-pytest-mpl = "*"
-future = "*"
-seaborn = "*"
-deepdiff = "*"
-humanfriendly = "*"
-mendeleev = "*"
-click = "*"
-click-completion = "*"
-PyYAML = "*"
+[project.optional-dependencies]
+pre-commit = [
+    'mypy==0.930',
+    'pre-commit>=2.6.0',
+    'yapf>=0.30.0',
+    'pylint~=2.11.1',
+    'pytest~=6.0',
+    'lxml-stubs'
+    ]
+docs = [
+    'Sphinx',
+    'docutils',
+    'sphinx_rtd_theme',
+    'sphinx-click',
+    'sphinx-toolbox<=2.15.2',
+    'sphinx-autodoc-typehints'
+    ]
+testing = [
+    'pytest~=6.0',
+    'pytest-cov',
+    'pytest-mpl>=0.12',
+    'pytest-regressions>=1.0'
+    ]
+bokeh-plots = [
+    'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
+    ]
+cmdline-extras = [
+    'python-gitlab'
+    ]
+
+[project.scripts]
+masci-tools = "masci_tools.cmdline.commands.root:cli"
+
+[project.urls]
+Home = "https://masci-tools.readthedocs.io"
+Documentation = "https://masci-tools.readthedocs.io"
+Source = "https://github.com/JuDFTteam/masci-tools"
+
+[tool.flit.module]
+name = "masci_tools"
+
+[tool.flit.sdist]
+exclude = ['tests/']
 
 [tool.mypy]
-python_version="3.8"
-warn_unused_ignores=true
-warn_redundant_casts=true
-no_implicit_optional=true
+python_version = "3.8"
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
 show_error_codes = true
 warn_no_return = true
-disallow_incomplete_defs=true
-disallow_subclassing_any=true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
 
 [[tool.mypy.overrides]]
 module = 'h5py'
-follow_imports='skip'
-ignore_missing_imports=true
+follow_imports = 'skip'
+ignore_missing_imports = true
 
-[tool.yapf]
-based_on_style = "google"
-column_limit = 120
-coalesce_brackets = true
-align_closing_bracket_with_visual_indent = true
-split_arguments_when_comma_terminated = true
-indent_dictionary_value = false
+[tool.pylint.basic]
+good-names = [
+    "_",
+    "x",
+    "y",
+    "z",
+    "i",
+    "j",
+    "k",
+]
+no-docstring-rgx = "^_"
+docstring-min-length = 5
+
+[tool.pylint.classes]
+exclude-protected = [
+    "_asdict",
+    "_fields",
+    "_replace",
+    "_source",
+    "_make",
+    "_Element",
+    "_ElementTree",
+    "_pprint_dict",
+    "_pprint_set",
+    "_dispatch"
+    ]
+
+[tool.pylint.design]
+max-locals = 20
 
 [tool.pylint.format]
 max-line-length = 120
@@ -90,9 +146,9 @@ disable = [
     "fixme",
     "len-as-condition",
     "wrong-import-order",
-    "import-outside-toplevel", 
+    "import-outside-toplevel",
     "duplicate-code",
-    "unnecessary-pass", 
+    "unnecessary-pass",
     "invalid-name",
     "unused-variable",
     "unused-argument",
@@ -112,29 +168,18 @@ disable = [
     "consider-using-f-string"
 ]
 
-[tool.pylint.basic]
-good-names = [
-    "_",
-    "x",
-    "y",
-    "z",
-    "i",
-    "j",
-    "k",
-]
-no-docstring-rgx = "^_"
-docstring-min-length = 5
-
-[tool.pylint.design]
-max-locals = 20
-
-[tool.pylint.classes]
-exclude-protected= ["_asdict","_fields","_replace","_source","_make", "_Element", "_ElementTree", "_pprint_dict","_pprint_set", "_dispatch"]
-
 [tool.pytest.ini_options]
-minversion="6.0"
+minversion = "6.0"
 addopts = "--mpl --mpl-baseline-path=tests/files/mpl-baseline --cov=masci_tools --cov=tests --cov-report xml --mpl-generate-summary=html"
-mpl-results-path= "mpl-results"
+mpl-results-path = "mpl-results"
 testpaths = [
     "tests",
 ]
+
+[tool.yapf]
+based_on_style = "google"
+column_limit = 120
+coalesce_brackets = true
+align_closing_bracket_with_visual_indent = true
+split_arguments_when_comma_terminated = true
+indent_dictionary_value = false
