@@ -2,30 +2,24 @@
 Test of the consistency the input schema dictionaries with the SchemaFiles in the same folder
 """
 import pytest
-import os
-from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound
+
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound, list_available_versions
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SCHEMA_DIR = '../masci_tools/io/parsers/fleur_schema'
 
-#Collect all schemas from the folder
-schema_versions = {'inp': [], 'out': []}
-for root, dirs, files in os.walk(os.path.abspath(os.path.join(CURRENT_DIR, SCHEMA_DIR))):
-    for folder in dirs:
-        if '0.' in folder:
-            schema_versions['inp'].append(folder)
-            if int(folder.split('.')[1]) >= 33 or folder in ('0.31', '0.30', '0.29'):
-                schema_versions['out'].append(folder)
+MAIN_TEST_VERSION = '0.34'
+OLD_TEST_VERSION = '0.27'
 
+AVAILABLE_INPUT_VERSIONS = list_available_versions(output_schema=False)
+AVAILABLE_OUTPUT_VERSIONS = list_available_versions(output_schema=True)
 
 def test_inpschema_dict_structure():
     """
     Test the types of the keys in the inpschemadict
     """
 
-    inputschema = InputSchemaDict.fromVersion('0.34')
+    inputschema = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     EXPECTED_TYPES = {
         'tag_paths': CaseInsensitiveDict,
@@ -57,7 +51,7 @@ def test_outschema_dict_structure():
     Test the types of the keys in the inpschemadict
     """
 
-    outputschema = OutputSchemaDict.fromVersion('0.34')
+    outputschema = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     EXPECTED_TYPES = {
         'tag_paths': CaseInsensitiveDict,
@@ -93,7 +87,7 @@ def test_outschema_dict_structure():
                                       CaseInsensitiveDict)  #since CaseInsensitiveDict is a subclass of LockableDict
 
 
-@pytest.mark.parametrize('schema_version', schema_versions['inp'])
+@pytest.mark.parametrize('schema_version', AVAILABLE_INPUT_VERSIONS)
 def test_inpschema_dict(data_regression, schema_version):
     """
     Test the produced inputschema dicts
@@ -104,8 +98,8 @@ def test_inpschema_dict(data_regression, schema_version):
     data_regression.check(clean_for_reg_dump(inputschema.get_unlocked()))
 
 
-@pytest.mark.parametrize('inp_version', schema_versions['inp'])
-@pytest.mark.parametrize('out_version', schema_versions['out'])
+@pytest.mark.parametrize('inp_version', AVAILABLE_INPUT_VERSIONS)
+@pytest.mark.parametrize('out_version', AVAILABLE_OUTPUT_VERSIONS)
 def test_outschema_dict(data_regression, inp_version, out_version):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
@@ -122,7 +116,7 @@ def test_tag_xpath_input():
     And verify with different version of the schema
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.27')
+    schema_dict = InputSchemaDict.fromVersion(OLD_TEST_VERSION)
 
     #First example easy (magnetism tag is unique and should not differ between the versions)
     assert schema_dict.tag_xpath('magnetism') == '/fleurInput/calculationSetup/magnetism'
@@ -135,7 +129,7 @@ def test_tag_xpath_input():
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('ldaU')
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.tag_xpath('magnetism') == '/fleurInput/calculationSetup/magnetism'
     assert schema_dict.tag_xpath('bzIntegration') == '/fleurInput/cell/bzIntegration'
@@ -151,7 +145,7 @@ def test_relative_tag_xpath_input():
     And verify with different version of the schema
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.relative_tag_xpath('magnetism', 'calculationSetup') == './magnetism'
     assert schema_dict.relative_tag_xpath('magnetism', 'magnetism') == '.'
@@ -163,7 +157,7 @@ def test_relative_tag_xpath_input():
     assert schema_dict.relative_tag_xpath('ldaU', 'fleurInput', contains='species') == './atomSpecies/species/ldaU'
     assert schema_dict.relative_tag_xpath('ldaU', 'species') == './ldaU'
 
-    schema_dict = InputSchemaDict.fromVersion('0.27')
+    schema_dict = InputSchemaDict.fromVersion(OLD_TEST_VERSION)
     with pytest.raises(NoPathFound):
         schema_dict.relative_tag_xpath('DMI', 'forceTheorem')
 
@@ -174,7 +168,7 @@ def test_tag_xpath_output():
     And verify with different version of the schema
     """
 
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.tag_xpath('iteration') == '/fleurOutput/scfLoop/iteration'
     assert schema_dict.tag_xpath('totalEnergy') == './totalEnergy'
@@ -201,7 +195,7 @@ def test_relative_tag_xpath_output():
     And verify with different version of the schema
     """
 
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.relative_tag_xpath('iteration', 'scfLoop') == './iteration'
     assert schema_dict.relative_tag_xpath('iteration', 'iteration') == '.'
@@ -213,7 +207,7 @@ def test_iteration_tag_xpath():
     Test the iteration_tag_xpath method for constructing absolute xpaths into
     iteration elements
     """
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.iteration_tag_xpath('fermienergy') == '/fleurOutput/scfLoop/iteration/FermiEnergy'
 
@@ -233,7 +227,7 @@ def test_relative_iteration_tag_xpath():
     Test the relative_iteration_tag_xpath method for constructing relative xpaths from absolute xpaths into
     iteration elements
     """
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.relative_iteration_tag_xpath('fermienergy', 'scfLoop') == './iteration/FermiEnergy'
     assert schema_dict.relative_iteration_tag_xpath('fermienergy', 'FermiEnergy') == '.'
@@ -254,7 +248,7 @@ def test_iteration_attrib_xpath():
     Test the iteration_attrib_xpath method for constructing absolute xpaths into
     iteration elements to attributes
     """
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.iteration_attrib_xpath(
         'numberforcurrentrun') == '/fleurOutput/scfLoop/iteration/@numberForCurrentRun'
@@ -278,7 +272,7 @@ def test_relative_iteration_attrib_xpath():
     Test the relative_iteration_attrib_xpath method for constructing relative paths from absolute xpaths into
     iteration elements to attributes
     """
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.relative_iteration_attrib_xpath('numberforcurrentrun',
                                                        'scfLoop') == './iteration/@numberForCurrentRun'
@@ -299,7 +293,7 @@ def test_tag_xpath_contains():
     Test the selection of paths based on a contained keyword
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('ldaU')
@@ -319,7 +313,7 @@ def test_tag_xpath_notcontains():
     Test the selection of paths based on a not contained keyword
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.tag_xpath('ldaU')
@@ -339,7 +333,7 @@ def test_tagattrib_xpath_case_insensitivity():
     Test that the selection works with case insensitivity
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.tag_xpath('bzIntegration') == '/fleurInput/cell/bzIntegration'
     assert schema_dict.tag_xpath('BZINTEGRATION') == '/fleurInput/cell/bzIntegration'
@@ -357,7 +351,7 @@ def test_attrib_xpath_input():
     And verify with different version of the schema
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.attrib_xpath('jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
     assert schema_dict.attrib_xpath('mode') == '/fleurInput/cell/bzIntegration/@mode'
@@ -367,7 +361,7 @@ def test_attrib_xpath_input():
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_amf')
 
-    schema_dict = InputSchemaDict.fromVersion('0.27')
+    schema_dict = InputSchemaDict.fromVersion(OLD_TEST_VERSION)
 
     assert schema_dict.attrib_xpath('jspins') == '/fleurInput/calculationSetup/magnetism/@jspins'
     assert schema_dict.attrib_xpath('mode') == '/fleurInput/calculationSetup/bzIntegration/@mode'
@@ -385,7 +379,7 @@ def test_relative_attrib_xpath_input():
     And verify with different version of the schema
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     #First example easy (magnetism tag is unique and should not differ between the versions)
     assert schema_dict.relative_attrib_xpath('jspins', 'calculationSetup') == './magnetism/@jspins'
@@ -419,7 +413,7 @@ def test_attrib_xpath_output():
     And verify with different version of the schema
     """
 
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
     assert schema_dict.attrib_xpath('nat') == '/fleurOutput/numericalParameters/atomsInCell/@nat'
     assert schema_dict.attrib_xpath('qvectors') == './Forcetheorem_SSDISP/@qvectors'
 
@@ -433,7 +427,7 @@ def test_relative_attrib_xpath_output():
     Test the path finding for tags for the input schema without additional options
     And verify with different version of the schema
     """
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     assert schema_dict.relative_attrib_xpath('nat', 'numericalParameters') == './atomsInCell/@nat'
     assert schema_dict.relative_attrib_xpath('nat', 'atomsInCell') == './@nat'
@@ -447,7 +441,7 @@ def test_attrib_xpath_contains():
     Test the selection of paths based on a contained keyword
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_mperp')
@@ -466,7 +460,7 @@ def test_attrib_xpath_notcontains():
     Test the selection of paths based on a contained keyword
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('l_mperp')
@@ -488,7 +482,7 @@ def test_attrib_xpath_exclude():
     Test the selection of paths based on a contained keyword
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('alpha')
@@ -508,7 +502,7 @@ def test_attrib_xpath_exclude_output():
     Test the selection of paths based on a contained keyword
     """
 
-    schema_dict = OutputSchemaDict.fromVersion('0.34')
+    schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     with pytest.raises(NoUniquePathFound):
         schema_dict.attrib_xpath('units')
@@ -525,7 +519,7 @@ def test_tag_info():
     Basic test of the `get_tag_info()` function
     """
 
-    schema_dict = InputSchemaDict.fromVersion('0.34')
+    schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     EXPECTED_RESULT = {
         'attribs': {'name', 'element', 'atomicNumber'},

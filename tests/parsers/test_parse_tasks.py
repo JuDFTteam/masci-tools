@@ -1,7 +1,6 @@
 """
 Tests for the ParseTasks class
 """
-import pytest
 
 
 def test_default_parse_tasks():

@@ -6,9 +6,9 @@ from masci_tools.io.parsers.fleur.fleur_inpxml_parser import inpxml_parser
 import os
 
 # Collect the input files
-file_path1 = 'files/fleur/aiida_fleur/inpxml'
-file_path2 = 'files/fleur/Max-R5'
-file_path3 = 'files/fleur/aiida_fleur/nonvalid_inpxml'
+file_path1 = '../files/fleur/aiida_fleur/inpxml'
+file_path2 = '../files/fleur/Max-R5'
+file_path3 = '../files/fleur/aiida_fleur/nonvalid_inpxml'
 
 inpxmlfilefolder = os.path.dirname(os.path.abspath(__file__))
 inpxmlfilefolder_non_valid = [os.path.abspath(os.path.join(inpxmlfilefolder, file_path3))]
@@ -114,12 +114,12 @@ def test_inpxml_todict(data_regression, inpxmlfilepath):
     data_regression.check(inp_dict)
 
 
-def test_inpxml_todict_warnings(data_regression, clean_parser_log):
+def test_inpxml_todict_warnings(data_regression, clean_parser_log, test_file):
     """
     test if valid inp.xml files are translated to the correct inp_dict
     """
 
-    input_invalid_attr = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/inp_invalid_attributes.xml'))
+    input_invalid_attr = test_file('fleur/inp_invalid_attributes.xml')
     warnings = {}
 
     #The parser shoul not raise and just log all the failed conversions
@@ -127,12 +127,12 @@ def test_inpxml_todict_warnings(data_regression, clean_parser_log):
     data_regression.check({'input_dict': inp_dict, 'warnings': clean_parser_log(warnings)})
 
 
-def test_inpxml_newer_version(data_regression, clean_parser_log):
+def test_inpxml_newer_version(data_regression, clean_parser_log, test_file):
     """
     test if valid inp.xml files with not yet existent versions are parsed correctly (fall back to latest available)
     """
 
-    INPXML_FILEPATH = os.path.abspath(os.path.join(inpxmlfilefolder, 'files/fleur/input_newer_version.xml'))
+    INPXML_FILEPATH = test_file('fleur/input_newer_version.xml')
     warnings = {}
     #The parser shoul not raise and just log all the failed conversions
     inp_dict = inpxml_parser(INPXML_FILEPATH, parser_info_out=warnings)
