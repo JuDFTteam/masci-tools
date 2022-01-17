@@ -28,6 +28,7 @@ except ImportError:
     from typing_extensions import Literal, TypeAlias  #type:ignore
 import warnings
 from logging import Logger, LoggerAdapter
+from lxml import etree
 from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
