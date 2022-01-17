@@ -7,12 +7,12 @@ from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDic
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 
-
 MAIN_TEST_VERSION = '0.34'
 OLD_TEST_VERSION = '0.27'
 
 AVAILABLE_INPUT_VERSIONS = list_available_versions(output_schema=False)
 AVAILABLE_OUTPUT_VERSIONS = list_available_versions(output_schema=True)
+
 
 def test_inpschema_dict_structure():
     """
