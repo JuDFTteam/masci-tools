@@ -34,7 +34,7 @@ def load_inpxml(inpxmlfile: XMLFileLike,
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
 
-    :param inpxmlfile: either path to the inp.xml file, opened file handle
+    :param inpxmlfile: either path to the inp.xml file, opened file handle (in bytes modes i.e. rb)
                        or a xml etree to be parsed
 
     :returns: parsed xmltree of the inpxmlfile and the schema dictionary
@@ -100,7 +100,7 @@ def load_outxml(outxmlfile: XMLFileLike,
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary
 
-    :param outxmlfile: either path to the out.xml file, opened file handle
+    :param outxmlfile: either path to the out.xml file, opened file handle (in bytes modes i.e. rb)
                        or a xml etree to be parsed
 
     :returns: parsed xmltree of the outxmlfile and the schema dictionary

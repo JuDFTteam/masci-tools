@@ -38,7 +38,8 @@ def inpxml_parser(inpxmlfile: XMLFileLike,
     Parses the given inp.xml file to a python dictionary utilizing the schema
     defined by the version number to validate and correctly convert to the dictionary
 
-    :param inpxmlfile: either path to the inp.xml file, opened file handle or a xml etree to be parsed
+    :param inpxmlfile: either path to the inp.xml file, opened file handle (in bytes modes i.e. rb)
+                       or a xml etree to be parsed
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
 

@@ -49,7 +49,8 @@ def outxml_parser(outxmlfile: XMLFileLike,
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
-    :param outxmlfile: either path to the out.xml file, opened file handle or a xml etree to be parsed
+    :param outxmlfile: either path to the out.xml file, opened file handle (in bytes modes i.e. rb)
+                       or a xml etree to be parsed
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param iteration_to_parse: either str or int, (optional, default 'last')
                                determines which iteration should be parsed.
