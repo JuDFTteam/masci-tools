@@ -3,6 +3,9 @@
 # latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...develop)
 
+### Bugfixes
+- Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception
+
 ### For developers
 - Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
 - Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) 
