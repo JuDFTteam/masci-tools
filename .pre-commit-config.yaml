@@ -1,7 +1,7 @@
 ci:
     autoupdate_schedule: monthly
     autofix_prs: true
-    skip: [pylint-errors, pylint-warnings,version-number,mypy]
+    skip: [pylint-errors, pylint-warnings,mypy]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -15,6 +15,7 @@ repos:
     - id: trailing-whitespace
       types: [python]
     - id: check-yaml
+    - id: check-toml
     - id: check-added-large-files
     - id: forbid-new-submodules
 
@@ -97,17 +98,3 @@ repos:
             masci_tools/util/econfig.py|
             masci_tools/util/fleur_calculate_expression.py|
         )$
-
-
-  - id: version-number
-    name: Check version numbers
-    entry: python ./utils/validate_version_consistency.py
-    language: system
-    files: >-
-      (?x)^(
-        setup.py|
-        utils/validate_version_consistency.py|
-        masci_tools/__init__.py|
-        .bumpversion.cfg
-      )$
-    pass_filenames: false

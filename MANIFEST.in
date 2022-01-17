@@ -1,7 +1,0 @@
-include masci_tools/io/parsers/fleur_schema/*/*.xsd
-include AUTHORS.txt
-include CHANGELOG.md
-include LICENSE.txt
-include README.md
-recursive-include docs *
-recursive-include masci_tools/tools *
