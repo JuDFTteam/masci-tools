@@ -831,7 +831,7 @@ class OutputSchemaDict(SchemaDict):
 
         if inpschema_dict is None:
             inpschema_dict = create_inpschema_dict(fsinp_path)  #type:ignore
-        inpschema_data = cast('InputSchemaData', inpschema_dict)
+        inpschema_data = cast(InputSchemaData, inpschema_dict)
 
         schema_dict = create_outschema_dict(fspath, inpschema_dict=inpschema_data)
         schema_dict = merge_schema_dicts(inpschema_data, schema_dict)

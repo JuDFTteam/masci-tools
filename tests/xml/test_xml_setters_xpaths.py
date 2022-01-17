@@ -1,7 +1,6 @@
 """
 Tests of the functions xml_setter_xpaths
 """
-import os
 from lxml import etree
 import pytest
 

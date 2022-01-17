@@ -17,7 +17,6 @@ from __future__ import annotations
 
 from datetime import date
 import numpy as np
-from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.util.parse_tasks_decorators import conversion_function
 from masci_tools.io.common_functions import convert_to_pystd

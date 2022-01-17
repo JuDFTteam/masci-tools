@@ -27,7 +27,6 @@ try:
 except ImportError:
     from typing_extensions import Literal, TypeAlias  #type:ignore
 import warnings
-from lxml import etree
 from logging import Logger, LoggerAdapter
 from masci_tools.io.parsers import fleur_schema
 

@@ -82,7 +82,6 @@ class Tabulator(_abc.ABC):
         :param pretty_print: True: Print the generated list in pretty format.
         :param kwargs: Additional keyword arguments for subclasses.
         """
-        pass
 
     def clear(self):
         """Clear table if already tabulated."""
@@ -112,4 +111,3 @@ class Tabulator(_abc.ABC):
         :param kwargs: Additional keyword arguments for subclasses.
         :return: Tabulated objects' properties.
         """
-        pass

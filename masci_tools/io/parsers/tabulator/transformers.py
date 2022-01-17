@@ -100,7 +100,6 @@ class Transformer(_abc.ABC):
                  {property_name: property_value}, possibly with one being the original property name. In a tabulator,
                  new columns would be created for these new properties.
         """
-        pass
 
 
 class DefaultTransformer(Transformer):

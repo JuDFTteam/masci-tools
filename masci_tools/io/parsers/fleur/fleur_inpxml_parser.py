@@ -16,7 +16,6 @@ and convert its content to a dict
 from __future__ import annotations
 
 from lxml import etree
-from pprint import pprint
 
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml

@@ -17,7 +17,6 @@ from __future__ import annotations
 
 from lxml import etree
 import warnings
-import io
 import os
 from pathlib import Path
 from functools import partial
