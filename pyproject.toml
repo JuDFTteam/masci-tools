@@ -37,7 +37,8 @@ dependencies = [
             'click-completion',
             'PyYAML',
             'typing-extensions',
-            'tabulate'
+            'tabulate',
+            'ase' #Should be removed once io/cif2inp_ase.py is removed
         ]
 
 [project.optional-dependencies]
