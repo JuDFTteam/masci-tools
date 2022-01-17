@@ -60,7 +60,7 @@ docs = [
     ]
 testing = [
     'pytest~=6.0',
-    'pytest-cov',
+    'pytest-cov~=3.0', #For reading configuration from pyproject.toml
     'pytest-mpl>=0.12',
     'pytest-regressions>=1.0'
     ]
@@ -78,6 +78,11 @@ masci-tools = "masci_tools.cmdline.commands.root:cli"
 Home = "https://masci-tools.readthedocs.io"
 Documentation = "https://masci-tools.readthedocs.io"
 Source = "https://github.com/JuDFTteam/masci-tools"
+
+[tool.coverage.run]
+omit = [
+    "venv/*"
+]
 
 [tool.flit.module]
 name = "masci_tools"
