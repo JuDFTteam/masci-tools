@@ -70,6 +70,9 @@ bokeh-plots = [
 cmdline-extras = [
     'python-gitlab'
     ]
+dev = [
+    'bumpver'
+]
 
 [project.scripts]
 masci-tools = "masci_tools.cmdline.commands.root:cli"
@@ -189,3 +192,16 @@ coalesce_brackets = true
 align_closing_bracket_with_visual_indent = true
 split_arguments_when_comma_terminated = true
 indent_dictionary_value = false
+
+[bumpver]
+current_version = "0.7.1"
+version_pattern = "MAJOR.MINOR.PATCH[TAGNUM]"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = false
+push = false
+
+[bumpver.file_patterns]
+"masci_tools/__init__.py" = [
+    "__version__ = '{version}'",
+]
