@@ -43,21 +43,17 @@ def load_inpxml(inpxmlfile: XMLFileLike,
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
-    if isinstance(inpxmlfile, io.IOBase):
-        xml_parse_func: Callable = etree.parse
-    elif isinstance(inpxmlfile, (str, bytes, Path)):
-        if os.path.isfile(inpxmlfile):
-            xml_parse_func = etree.parse
-        else:
-            xml_parse_func = etree.fromstring
-            if base_url is None:
-                warnings.warn('You provided a string of content but no base_url argument.'
-                              'Setting it to the current working directory.'
-                              'If the tree contains xinclude tags these could fail')
-                base_url = os.getcwd()
-            elif isinstance(base_url, Path):
-                base_url = os.fspath(base_url.resolve())
-            xml_parse_func = partial(xml_parse_func, base_url=base_url)
+    xml_parse_func: Callable = etree.parse
+    if isinstance(inpxmlfile, (str, bytes, Path)) and not os.path.isfile(inpxmlfile):
+        xml_parse_func = etree.fromstring
+        if base_url is None:
+            warnings.warn('You provided a string of content but no base_url argument.'
+                          'Setting it to the current working directory.'
+                          'If the tree contains xinclude tags these could fail')
+            base_url = os.getcwd()
+        elif isinstance(base_url, Path):
+            base_url = os.fspath(base_url.resolve())
+        xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
     if isinstance(inpxmlfile, Path):
         inpxmlfile = os.fspath(inpxmlfile)
@@ -113,21 +109,17 @@ def load_outxml(outxmlfile: XMLFileLike,
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 
-    if isinstance(outxmlfile, io.IOBase):
-        xml_parse_func: Callable = etree.parse
-    elif isinstance(outxmlfile, (str, bytes, Path)):
-        if os.path.isfile(outxmlfile):
-            xml_parse_func = etree.parse
-        else:
-            xml_parse_func = etree.fromstring
-            if base_url is None:
-                warnings.warn('You provided a string of content but no base_url argument.'
-                              'Setting it to the current working directory.'
-                              'If the tree contains xinclude tags these could fail')
-                base_url = os.getcwd()
-            elif isinstance(base_url, Path):
-                base_url = os.fspath(base_url.resolve())
-            xml_parse_func = partial(xml_parse_func, base_url=base_url)
+    xml_parse_func: Callable = etree.parse
+    if isinstance(outxmlfile, (str, bytes, Path)) and not os.path.isfile(outxmlfile):
+        xml_parse_func = etree.fromstring
+        if base_url is None:
+            warnings.warn('You provided a string of content but no base_url argument.'
+                          'Setting it to the current working directory.'
+                          'If the tree contains xinclude tags these could fail')
+            base_url = os.getcwd()
+        elif isinstance(base_url, Path):
+            base_url = os.fspath(base_url.resolve())
+        xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
     if isinstance(outxmlfile, Path):
         outxmlfile = os.fspath(outxmlfile)
