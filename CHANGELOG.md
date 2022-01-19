@@ -10,6 +10,12 @@
 - Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
 - Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) 
 
+# v.0.7.2
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...v0.7.2)
+
+### Bugfixes
+- Fixed regression in ``set_atomgroup_label`` and ``set_species_label``. These functions could be used in previous versions with atom labels, that do not exist. This is not possible in ``v.0.7.1``. Since some parts of the ``aiida-fleur`` plugin relied on this the behaviour has to be kept.
+
 # v.0.7.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.7.1)
 
