@@ -151,6 +151,6 @@ jobs:
       - name: Build and Publish to PyPi
         run: |
           flit publish
-        with:
+        env:
           FLIT_USERNAME: __token__
           FLIT_PASSWORD: ${{ secrets.PYPI_KEY }}
