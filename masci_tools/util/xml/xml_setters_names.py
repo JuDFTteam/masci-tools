@@ -682,7 +682,8 @@ def set_species_label(xmltree: XMLLike,
                                    '=': f'{atom_label: >20}'
                                }
                            }},
-                           list_return=True))
+                           list_return=True,
+                           optional=True))
 
     for species_name in species_to_set:
         xmltree = set_species(xmltree, schema_dict, species_name, attributedict, create=create)
@@ -881,20 +882,28 @@ def set_atomgroup_label(xmltree: XMLLike,
         'attributedict': {'nocoParams': {'beta': val}}
 
     """
-    from masci_tools.util.schema_dict_util import tag_exists
+    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
     if atom_label == 'all':
         return set_atomgroup(xmltree, schema_dict, attributedict, species='all')
     film = tag_exists(xmltree, schema_dict, 'filmPos')
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
-    return set_atomgroup(xmltree,
-                         schema_dict,
-                         attributedict,
-                         filters={'atomGroup': {
-                             label_path: {
-                                 '=': f'{atom_label: >20}'
-                             }
-                         }})
+    species_to_set = set(
+        evaluate_attribute(xmltree,
+                           schema_dict,
+                           'species',
+                           filters={'atomGroup': {
+                               label_path: {
+                                   '=': f'{atom_label: >20}'
+                               }
+                           }},
+                           list_return=True,
+                           optional=True))
+
+    for species_name in species_to_set:
+        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, species=species_name)
+
+    return xmltree
 
 
 def set_atomgroup(xmltree: XMLLike,
@@ -946,14 +955,7 @@ def set_atomgroup(xmltree: XMLLike,
         attributedict = {k: v for k, v in attributedict.items() if k != 'species'}
         xmltree = switch_species(xmltree, schema_dict, species_change, position=position, species=species)
 
-    xmltree = xml_set_complex_tag(xmltree,
-                                  schema_dict,
-                                  atomgroup_xpath,
-                                  atomgroup_base_path,
-                                  attributedict,
-                                  create=create)
-
-    return xmltree
+    return xml_set_complex_tag(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, attributedict, create=create)
 
 
 def switch_species_label(xmltree: XMLLike,
