@@ -1,5 +1,11 @@
 # Changelog
 
+# v.0.7.2
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...v0.7.2)
+
+### Bugfixes
+- Fixed regression in ``set_atomgroup_label`` and ``set_species_label``. These functions could be used in previous versions with atom labels, that do not exist. This is not possible in ``v.0.7.1``. Since some parts of the ``aiida-fleur`` plugin relied on this the behaviour has to be kept.
+
 # v.0.7.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.7.1)
 
