@@ -62,24 +62,23 @@ def find_migration(start: str, target: str, migrations: MigrationDict) -> list[C
     if start not in migrations:
         return None
 
-    if target in migrations[start]:
-        if isinstance(migrations[start][target], str):
-            if migrations[start][target] == 'compatible':
-                return []
-            return None
-        return [migrations[start][target]]
+    possible_migrations = migrations[start]
+    if target in possible_migrations:
+        migration = possible_migrations[target]
+        if isinstance(migration, str) and migration == 'compatible':
+            return []
+        return [migration]
 
-    for possible_stop in migrations[start].keys():
-        new_call_list = find_migration(possible_stop, target, migrations)
-
+    for migrated_version, migration in possible_migrations.items():
+        new_call_list = find_migration(migrated_version, target, migrations)
         if new_call_list is None:
+            #Cannot migrate to target from this version
             continue
 
-        if isinstance(migrations[start][possible_stop], str):
-            if migrations[start][possible_stop] == 'compatible':
-                call_list = []
+        if isinstance(migration, str) and migration == 'compatible':
+            call_list = []
         else:
-            call_list = [migrations[start][possible_stop]]
+            call_list = [migration]
         call_list += new_call_list
         return call_list
     return None
