@@ -1752,7 +1752,7 @@ iteration_tag_info:
     attribs: !!set
       Angles: null
       ef: null
-      qpoints: null
+      qPoints: null
       units: null
     complex: !!set {}
     optional: !!set
@@ -3223,7 +3223,7 @@ iteration_unique_attribs:
   ef: ./Forcetheorem_DMI/@ef
   numberforcurrentrun: ./@numberForCurrentRun
   overallnumber: ./@overallNumber
-  qpoints: ./Forcetheorem_DMI/@qpoints
+  qpoints: ./Forcetheorem_DMI/@qPoints
   qvectors: ./Forcetheorem_SSDISP/@qvectors
 iteration_unique_path_attribs:
   angles:
