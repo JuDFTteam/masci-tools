@@ -19,7 +19,7 @@ import numpy as _np
 
 
 def set_zero_below_threshold(array: _np.ndarray,
-                             threshold: float | None = None,
+                             threshold: float | _np.floating[_typing.Any] | None = None,
                              inplace: bool = True) -> _typing.Optional[_np.ndarray]:
     """Set array elements below threshold to zero.
     :param array: numpy array
