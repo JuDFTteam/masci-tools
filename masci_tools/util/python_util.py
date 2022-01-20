@@ -11,6 +11,8 @@
 ###############################################################################
 """Convenience tools only related to Python Standard Library."""
 
+from __future__ import annotations
+
 import copy as _copy
 import dataclasses as _dc
 import datetime as _datetime
@@ -40,7 +42,7 @@ def is_number(a_string: str) -> bool:
         return False
 
 
-def to_number(a_string: str) -> _typing.Union[int, float, str]:
+def to_number(a_string: str) -> int | float | str:
     """Converts a string representation of a number into a numerical type.
 
     Numbers with decimals below machine epsilon, usually around 1e-16, get recognized as int.
@@ -49,7 +51,7 @@ def to_number(a_string: str) -> _typing.Union[int, float, str]:
     :return: Float if represents float, int if represents int, string otherwise.
     :rtype: float, int or str.
     """
-    num = a_string
+    num: str | float | int = a_string
     try:
         num = float(num)
         num = int(num) if num.is_integer() else num
@@ -111,7 +113,7 @@ def random_string(length: int,
     return ''.join(_random.choices(population=population, k=length))
 
 
-def enforce_minimum_python_version(minimum_version: _typing.Tuple[int, int] = (3, 7)):
+def enforce_minimum_python_version(minimum_version: tuple[int, int] = (3, 7)) -> int:
     """For some operation requiring a minimum version, enforce for interpreter.
 
     :param minimum_version:
@@ -125,7 +127,7 @@ def enforce_minimum_python_version(minimum_version: _typing.Tuple[int, int] = (3
     return 0
 
 
-def flatten_list_of_lists(list_of_lists: _typing.List[_typing.List[_typing.Any]]) -> _typing.List[_typing.Any]:
+def flatten_list_of_lists(list_of_lists: list[list[_typing.Any]]) -> list[_typing.Any]:
     return [item for sublist in list_of_lists for item in sublist]
 
 
@@ -146,9 +148,7 @@ def split_list(lst: list, n: int) -> _typing.Generator[_typing.Any, None, None]:
         yield lst[i:i + n]
 
 
-def sort_lists_by_list(lists: _typing.List[_typing.List],
-                       key_list_index: int = 0,
-                       desc: bool = False) -> _typing.Iterator[_typing.Tuple]:
+def sort_lists_by_list(lists: list[list], key_list_index: int = 0, desc: bool = False) -> _typing.Iterator[tuple]:
     """Sort multiple lists by one list.
 
     The key_list gets sorted. The other lists get sorted in the same order.
@@ -172,7 +172,7 @@ def sort_lists_by_list(lists: _typing.List[_typing.List],
     return zip(*sorted(zip(*lists), reverse=desc, key=lambda x: x[key_list_index]))
 
 
-def sort_dict(a_dict: dict, key: _typing.Callable = None, reverse: bool = False) -> dict:
+def sort_dict(a_dict: dict, key: _typing.Callable | None = None, reverse: bool = False) -> dict:
     """Return a copy of a dictionary, sorted by its keys. Nested / recursive.
 
     :param a_dict: dictionary
@@ -212,7 +212,7 @@ def modify_dict(a_dict: dict, transform_value: _typing.Callable = lambda v: v, t
     """
     to_level = to_level if to_level else int(1e9)
 
-    def inner_modify_dict(sub_dict: dict, level: int = 1):
+    def inner_modify_dict(sub_dict: dict, level: int = 1) -> dict:
         if level <= to_level:
             for k, v in sub_dict.copy().items():
                 if isinstance(v, dict):
@@ -273,7 +273,7 @@ class JSONEncoderTailoredIndent(_json.JSONEncoder):
             return super().default(o)
 
     def encode(self, o: _typing.Any) -> str:  # pylint: disable=arguments-differ
-        from _ctypes import PyObj_FromPtr
+        from _ctypes import PyObj_FromPtr  #type: ignore[import]
 
         format_spec = self.FORMAT_SPEC  # Local var to expedite access.
         json_repr = super().encode(o)  # Default JSON.
@@ -327,7 +327,7 @@ class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
             return o.isoformat()
 
 
-def dataclass_default_field(obj: _typing.Any, deepcopy=True) -> _typing.Any:
+def dataclass_default_field(obj: _typing.Any, deepcopy: bool = True) -> _typing.Any:
     """Abbreviator for defining mutable types as default values for fields of dataclasses.
     References:
     - https://stackoverflow.com/a/53870411/8116031
@@ -375,7 +375,7 @@ class SizeEstimator:
         from types import ModuleType, FunctionType
         self.BLACKLIST = type, ModuleType, FunctionType
 
-    def sizeof_simple(self, obj: _typing.Any) -> _typing.Tuple[int, str]:
+    def sizeof_simple(self, obj: _typing.Any) -> tuple[int, str]:
         """For simple PSL data structures. Reference: https://stackoverflow.com/a/19865746/8116031
 
         :return: tuple of bytesize, humanfriendly bytesize
@@ -383,7 +383,7 @@ class SizeEstimator:
         size = self.sys.getsizeof(obj)
         return size, self.hf.format_size(size)
 
-    def sizeof_via_blacklist(self, obj: _typing.Any) -> _typing.Tuple[int, str]:
+    def sizeof_via_blacklist(self, obj: _typing.Any) -> tuple[int, str]:
         """sum size of object & members. Reference: https://stackoverflow.com/a/30316760/8116031."""
         from gc import get_referents
 
@@ -403,7 +403,7 @@ class SizeEstimator:
 
         return size, self.hf.format_size(size)
 
-    def sizeof_via_whitelist(self, obj: _typing.Any) -> _typing.Tuple[int, str]:
+    def sizeof_via_whitelist(self, obj: _typing.Any) -> tuple[int, str]:
         """Recursively iterate to sum size of object & members.
 
         'gives much more fine-grained control over the types we're going to count for memory usage,

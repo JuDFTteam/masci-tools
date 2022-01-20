@@ -93,6 +93,8 @@ repos:
             masci_tools/util/schema_dict_util.py|
             masci_tools/util/parse_task_decorators.py|
             masci_tools/util/logging_util.py|
+            masci_tools/util/python_util.py|
+            masci_tools/util/math_util.py|
             masci_tools/io/common_functions.py|
             masci_tools/util/parse_tasks.py|
             masci_tools/util/econfig.py|

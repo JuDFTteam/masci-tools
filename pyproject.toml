@@ -48,7 +48,8 @@ pre-commit = [
     'yapf>=0.30.0',
     'pylint~=2.11.1',
     'pytest~=6.0',
-    'lxml-stubs'
+    'lxml-stubs',
+    'types-pytz'
     ]
 docs = [
     'Sphinx',
@@ -104,7 +105,10 @@ disallow_incomplete_defs = true
 disallow_subclassing_any = true
 
 [[tool.mypy.overrides]]
-module = 'h5py'
+module = [
+    'h5py',
+    'humanfriendly'
+]
 follow_imports = 'skip'
 ignore_missing_imports = true
 
