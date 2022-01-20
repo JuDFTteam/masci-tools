@@ -434,7 +434,7 @@ class ParseTasks:
 
             parsed_dict = out_dict
             if 'subdict' in spec:
-                parsed_dict = out_dict.get(spec['subdict'], {})
+                parsed_dict = out_dict.setdefault(spec['subdict'], {})
 
             parsed_value = action(node, schema_dict, logger=logger, **args)
 
@@ -451,45 +451,21 @@ class ParseTasks:
 
                 if flat:
                     for key, val in parsed_value.items():
-
-                        if key == base_value:
-                            current_key = task_key
-                        else:
-                            current_key = f'{task_key}_{camel_to_snake(key)}'
-
-                        if current_key not in parsed_dict and use_lists:
-                            parsed_dict[current_key] = []
-
+                        current_key = f'{task_key}_{camel_to_snake(key)}' if key != base_value else task_key
                         if key in no_list or not use_lists:
                             parsed_dict[current_key] = val
                         else:
-                            parsed_dict[current_key].append(val)
+                            parsed_dict.setdefault(current_key, []).append(val)
 
                 else:
                     parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
 
             else:
                 overwrite = spec.get('overwrite_last', False)
-                if task_key not in parsed_dict and use_lists:
-                    if overwrite:
-                        parsed_dict[task_key] = None
-                    else:
-                        parsed_dict[task_key] = []
-
                 if use_lists and not overwrite:
-                    parsed_dict[task_key].append(parsed_value)
-                elif overwrite:
-                    if parsed_value is not None:
-                        parsed_dict[task_key] = parsed_value
+                    parsed_dict.setdefault(task_key, []).append(parsed_value)
                 else:
-                    if parsed_value is not None or\
-                       task_key not in parsed_dict:
-                        parsed_dict[task_key] = parsed_value
-
-            if 'subdict' in spec:
-                out_dict[spec['subdict']] = parsed_dict
-            else:
-                out_dict = parsed_dict
+                    parsed_dict[task_key] = parsed_value if parsed_value is not None else parsed_dict.get(task_key)
 
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
