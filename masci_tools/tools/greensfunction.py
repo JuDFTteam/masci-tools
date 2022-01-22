@@ -15,28 +15,42 @@ and written to ``greensf.hdf`` files by fleur
 """
 from __future__ import annotations
 
-from collections import namedtuple
 from itertools import groupby, chain
 import numpy as np
 import h5py
-from typing import Iterator, Any
+from typing import Iterator, Any, NamedTuple
 try:
     from typing import Literal
 except ImportError:
-    from typing_extensions import Literal
+    from typing_extensions import Literal  #type:ignore
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
-from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation
+from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation, HDF5Recipe
 from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.util.typing import FileLike
 
-GreensfElement = namedtuple(
-    'GreensfElement',
-    ['l', 'lp', 'atomType', 'atomTypep', 'sphavg', 'onsite', 'kresolved', 'contour', 'nLO', 'atomDiff'])
+
+class GreensfElement(NamedTuple):
+    """
+    Namedtuple representing the high-level information about the Green's functions,
+    i.e. what kind, which atoms, which orbitals
+    """
+    l: int
+    lp: int
+    atomType: int
+    atomTypep: int
+    sphavg: bool
+    onsite: bool
+    kresolved: bool
+    contour: int
+    nLO: int
+    atomDiff: np.ndarray
+
 
 CoefficientName = Literal['sphavg', 'uu', 'ud', 'du', 'dd', 'ulou', 'uulo', 'ulod', 'dulo', 'uloulo']
 
 
-def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int = None) -> dict[str, Any]:
+def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int | None = None) -> HDF5Recipe:
     """
     Get the HDF5Reader recipe for reading in a spherically averaged Green's function element
 
@@ -46,7 +60,7 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int =
 
     :returns: dict with the recipe reading all the necessary information from the ``greensf.hdf`` file
     """
-    recipe = {
+    recipe: HDF5Recipe = {
         'datasets': {
             'sphavg': {
                 'h5path':
@@ -124,7 +138,7 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int =
         }
     }
 
-    if version >= 7:
+    if version is not None and version >= 7:
         recipe['attributes']['local_spin_frame'] = {
             'h5path':
             f'/{group_name}/element-{index}/',
@@ -195,7 +209,11 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int =
     return recipe
 
 
-def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0, version: int = None) -> dict[str, Any]:
+def _get_radial_recipe(group_name: str,
+                       index: int,
+                       contour: int,
+                       nLO: int = 0,
+                       version: int | None = None) -> HDF5Recipe:
     """
     Get the HDF5Reader recipe for reading in a radial Green's function element
 
@@ -269,7 +287,7 @@ def _get_radial_recipe(group_name: str, index: int, contour: int, nLO: int = 0, 
     return recipe
 
 
-def _get_kresolved_recipe(group_name: str, index: int, contour: int, version: int = None):
+def _get_kresolved_recipe(group_name: str, index: int, contour: int, version: int | None = None) -> HDF5Recipe:
     """
     Get the HDF5Reader recipe for reading in a k-resolved Green's function element
 
@@ -379,7 +397,7 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
 
 
-def _get_version(hdffile: h5py.File):
+def _get_version(hdffile: h5py.File) -> int | None:
     """
     Get the file version of the given greensf.hdf file
 
@@ -481,7 +499,7 @@ class GreensFunction:
         self.lmax = attributes['lmax']
 
     @classmethod
-    def fromFile(cls, file: Any, index: int = None, **selection_params: Any) -> GreensFunction:
+    def fromFile(cls, file: Any, index: int | None = None, **selection_params: Any) -> GreensFunction:
         """
         Classmethod for creating a :py:class:`GreensFunction` instance directly from a hdf file
 
@@ -497,12 +515,12 @@ class GreensFunction:
             if not selection_params:
                 raise ValueError('If index is not given, parameters for selection need to be provided')
             elements = listElements(file)
-            index = select_element_indices(elements, **selection_params)
-            if len(index) == 1:
-                index = index[0] + 1
+            indices = select_element_indices(elements, **selection_params)
+            if len(indices) == 1:
+                index = indices[0] + 1
             else:
                 raise ValueError(
-                    f'Found multiple possible matches for the given criteria. Indices {index} are possible')
+                    f'Found multiple possible matches for the given criteria. Indices {indices} are possible')
         else:
             if selection_params:
                 raise ValueError('If index is given no further selection parameters are allowed')
@@ -523,7 +541,7 @@ class GreensFunction:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
 
-    def get_coefficient(self, name: CoefficientName, spin: int = None, radial: bool = False) -> np.ndarray:
+    def get_coefficient(self, name: CoefficientName, spin: int | None = None, radial: bool = False) -> np.ndarray:
         """
         Get the coefficient with the given name from the data attribute
 
@@ -649,9 +667,9 @@ class GreensFunction:
 
     def energy_dependence(self,
                           *,
-                          m: int = None,
-                          mp: int = None,
-                          spin: int = None,
+                          m: int | None = None,
+                          mp: int | None = None,
+                          spin: int | None = None,
                           imag: bool = True,
                           both_contours: bool = False) -> np.ndarray:
         """
@@ -666,6 +684,9 @@ class GreensFunction:
 
         :returns: numpy array with the selected data
         """
+        m_index: int | slice
+        mp_index: int | slice
+
         if m is not None:
             m_index = self.to_m_index(m)
         else:
@@ -731,7 +752,9 @@ class colors:
     green = '\033[32m'
 
 
-def printElements(elements: list[GreensfElement], index: list[int] = None, mark: list[int] = None) -> None:
+def printElements(elements: list[GreensfElement],
+                  index: list[int] | None = None,
+                  mark: list[int] | None = None) -> None:
     """
     Print the given list of :py:class:`GreensfElement` in a nice table
 
@@ -741,6 +764,8 @@ def printElements(elements: list[GreensfElement], index: list[int] = None, mark:
     """
     print('Index  | l     | lp    | atom  | atomp | sphavg | onsite | iContour |     atomDiff      |')
     print('-----------------------------------------------------------------------------------------')
+
+    elem_iter: Iterator[tuple[int, GreensfElement]]
     if index is None:
         elem_iter = enumerate(elements)
     else:
@@ -766,7 +791,7 @@ def printElements(elements: list[GreensfElement], index: list[int] = None, mark:
             + colors.endc)
 
 
-def listElements(hdffile: Any, show: bool = False) -> list[GreensfElement]:
+def listElements(hdffile: FileLike, show: bool = False) -> list[GreensfElement]:
     """
     Find the green's function elements contained in the given ``greens.hdf`` file
 
@@ -792,7 +817,9 @@ def listElements(hdffile: Any, show: bool = False) -> list[GreensfElement]:
     return elements
 
 
-def select_elements_from_file(hdffile: Any, show: bool = False, **selection_params) -> Iterator[GreensFunction]:
+def select_elements_from_file(hdffile: FileLike,
+                              show: bool = False,
+                              **selection_params: Any) -> Iterator[GreensFunction]:
     """
     Construct the green's function matching specified criteria from a given ``greensf.hdf`` file
 
@@ -816,7 +843,7 @@ def select_elements_from_file(hdffile: Any, show: bool = False, **selection_para
 
 def select_elements(greensfunctions: list[GreensFunction],
                     show: bool = False,
-                    **selection_params) -> Iterator[GreensFunction]:
+                    **selection_params: Any) -> Iterator[GreensFunction]:
     """
     Select :py:class:`GreensFunction` objects from a list based on constraints on the
     values of their underlying :py:class:`GreensfElement`
@@ -838,7 +865,7 @@ def select_elements(greensfunctions: list[GreensFunction],
     return gf_iterator(found_elements)
 
 
-def select_element_indices(elements: list[GreensfElement], show: bool = False, **selection_params) -> list[int]:
+def select_element_indices(elements: list[GreensfElement], show: bool = False, **selection_params: Any) -> list[int]:
     """
     Select :py:class:`GreensfElement` objects from a list based on constraints on their
     values
@@ -867,7 +894,7 @@ def select_element_indices(elements: list[GreensfElement], show: bool = False, *
     return found_elements
 
 
-def intersite_shells_from_file(hdffile: Any,
+def intersite_shells_from_file(hdffile: FileLike,
                                reference_atom: int,
                                show: bool = False) -> Iterator[tuple[float, GreensFunction, GreensFunction]]:
     """
@@ -924,7 +951,7 @@ def intersite_shells(greensfunctions: list[GreensFunction],
 
 def intersite_shell_indices(elements: list[GreensfElement],
                             reference_atom: int,
-                            show: bool = False) -> list[tuple[float, list[tuple[int, int]]]]:
+                            show: bool = False) -> list[tuple[np.floating[Any], list[tuple[int, int]]]]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a list of :py:class:`GreensfElement`

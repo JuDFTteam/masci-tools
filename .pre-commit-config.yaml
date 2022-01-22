@@ -100,5 +100,6 @@ repos:
             masci_tools/util/econfig.py|
             masci_tools/util/fleur_calculate_expression.py|
             masci_tools/tools/fleur_inpxml_converter.py|
-            masci_tools/cmdline/parameters/.*py|
+            masci_tools/tools/greensfunction.py|
+            masci_tools/cmdline/parameters/slice.py|
         )$
