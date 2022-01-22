@@ -108,7 +108,8 @@ disallow_subclassing_any = true
 [[tool.mypy.overrides]]
 module = [
     'h5py',
-    'humanfriendly'
+    'humanfriendly',
+    'yaml'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true

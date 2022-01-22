@@ -327,7 +327,13 @@ class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
             return o.isoformat()
 
 
-def dataclass_default_field(obj: _typing.Any, deepcopy: bool = True) -> _typing.Any:
+_T = _typing.TypeVar('_T')
+"""
+Generic type alias
+"""
+
+
+def dataclass_default_field(obj: _T, deepcopy: bool = True) -> _T:
     """Abbreviator for defining mutable types as default values for fields of dataclasses.
     References:
     - https://stackoverflow.com/a/53870411/8116031
@@ -353,8 +359,7 @@ def dataclass_default_field(obj: _typing.Any, deepcopy: bool = True) -> _typing.
     """
     if deepcopy:
         return _dc.field(default_factory=lambda: _copy.deepcopy(obj))
-    else:
-        return _dc.field(default_factory=lambda: _copy.copy(obj))
+    return _dc.field(default_factory=lambda: _copy.copy(obj))
 
 
 class SizeEstimator:
