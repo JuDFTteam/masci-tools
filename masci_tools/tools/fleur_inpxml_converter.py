@@ -5,7 +5,7 @@ convert inp.xml files between different file versions
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Iterable, NamedTuple
+from typing import Iterable, NamedTuple, Sequence
 import json
 from pathlib import Path
 import os
@@ -17,6 +17,7 @@ import tabulate
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
+from masci_tools.util.typing import XMLLike
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
@@ -109,8 +110,8 @@ class AmbiguousAction(NamedTuple):
     NamedTuple representing a change in paths that cannot be resolved automatically
     """
     name: str
-    old_paths: tuple[str]
-    new_paths: tuple[str]
+    old_paths: tuple[str,...]
+    new_paths: tuple[str,...]
     attrib: bool
 
     @classmethod
@@ -165,10 +166,10 @@ class CreateAction(NamedTuple):
     name: str
     path: str
     attrib: bool = False
-    element: str = None
+    element: str | None = None
 
     @classmethod
-    def from_path(cls, xpath: str, element: str = None) -> RemoveAction:
+    def from_path(cls, xpath: str, element: str | None = None) -> CreateAction:
         """
         Construct a CreateAction from a given xpath
 
@@ -217,12 +218,12 @@ def analyse_paths(
             paths_target[name].extend(paths)
 
     removed_keys = paths_start.keys() - paths_target.keys()
-    remove = []
+    remove: list[RemoveAction] = []
     for key in removed_keys:
         remove.extend(RemoveAction.from_path(path) for path in paths_start[key])
 
     new_keys = paths_target.keys() - paths_start.keys()
-    create = []
+    create: list[CreateAction] = []
     for key in new_keys:
         create.extend(CreateAction.from_path(path) for path in paths_target[key])
 
@@ -230,14 +231,11 @@ def analyse_paths(
     ambiguous = []
     possible_change_keys = paths_start.keys() & paths_target.keys()
     for key in possible_change_keys:
-        old_paths = paths_start[key]
-        new_paths = paths_target[key]
-
-        if old_paths == new_paths:
+        if paths_start[key] == paths_target[key]:
             continue
 
-        old_paths = set(old_paths)
-        new_paths = set(new_paths)
+        old_paths = set(paths_start[key])
+        new_paths = set(paths_target[key])
 
         different_paths = old_paths.symmetric_difference(new_paths)
         if len(different_paths) == 1:
@@ -406,7 +404,7 @@ def remove_action(actions, name):
     return matching
 
 
-def echo_actions(actions, ignore=None, header='') -> None:
+def echo_actions(actions: Sequence[NamedTuple], ignore: Iterable[str]|None=None, header: str='') -> None:
     """
     Echo a list of actions in a nicely formatted list
 
@@ -504,7 +502,7 @@ def dump_conversion(conversion):
 
 
 def _rename_elements(remove: list[RemoveAction], create: list[CreateAction], move: list[MoveAction], from_version: str,
-                     to_version: str, name: str) -> None:
+                     to_version: str, name: str) -> tuple[list[RemoveAction],list[CreateAction],list[MoveAction]]:
     """
     Get user input on tags that were renamed
     """
@@ -635,7 +633,7 @@ def _create_attrib_elements(create, to_schema):
 
 
 def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveAction], create: list[CreateAction],
-                       move: list[MoveAction], name: str):
+                       move: list[MoveAction], name: str) -> tuple[list[RemoveAction],list[CreateAction],list[MoveAction]]:
     """
     Prompt the user for input on actions that cannot be determined automagically
     """
@@ -690,8 +688,8 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
                     create.append(CreateAction.from_path(path))
                     new_paths.remove(path)
             elif action == 'move':
-                old_path_row = click.prompt('Enter the row you want to remove from the old paths', type=int)
-                new_path_row = click.prompt('Enter the row you want to remove from the new paths', type=int)
+                old_path_row = click.prompt('Enter the row you want to remove from the old paths', type=click.types.IntParamType())
+                new_path_row = click.prompt('Enter the row you want to remove from the new paths', type=click.types.IntParamType())
                 old_path = old_paths.pop(old_path_row)
                 new_path = new_paths.pop(new_path_row)
                 move.append(MoveAction.from_path(old=old_path, new=new_path))
@@ -700,7 +698,7 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
     return remove, create, move
 
 
-def _xml_create_tag_with_parents(xmltree, xpath, node):
+def _xml_create_tag_with_parents(xmltree: XMLLike, xpath: str, node: etree._Element) -> None:
     """
     Create a tag at the given xpath together with it's parents if they are missing
     xml_create_tag cannot create subtags, but since we know that we have simple xpaths
@@ -726,7 +724,7 @@ def _xml_create_tag_with_parents(xmltree, xpath, node):
     xml_create_tag(xmltree, xpath, node)
 
 
-def _xml_delete_attribute_with_warnings(xmltree, xpath, name, warning=''):
+def _xml_delete_attribute_with_warnings(xmltree: XMLLike, xpath: str, name: str, warning: str='') -> None:
     """
     Delete the attribute at the given xpath with the given name and show a warning if one is given
 
@@ -742,7 +740,7 @@ def _xml_delete_attribute_with_warnings(xmltree, xpath, name, warning=''):
         xml_delete_att(xmltree, xpath, name)
 
 
-def _xml_delete_tag_with_warnings(xmltree, xpath, warning=''):
+def _xml_delete_tag_with_warnings(xmltree: XMLLike, xpath: str, warning: str='') -> None:
     """
     Delete the tag at the given xpath and show a warning if one is given
 
@@ -757,7 +755,7 @@ def _xml_delete_tag_with_warnings(xmltree, xpath, warning=''):
         xml_delete_tag(xmltree, xpath)
 
 
-def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str = None) -> None:
+def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str | None = None) -> None:
     """
     Order the elements to be in the correct order for the given schema_dict
     """

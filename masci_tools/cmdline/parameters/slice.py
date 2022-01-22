@@ -1,10 +1,7 @@
 """
 Click parameters for easily selecting multiple elements from a list via indices
 """
-try:
-    from typing import SupportsIndex
-except ImportError:
-    from typing_extensions import SupportsIndex
+from typing import Sequence, Any
 import click
 
 
@@ -33,7 +30,7 @@ class ListElement(IntegerSlice):
     Click parameter for choosing an (or multiple) element(s) from a list
     """
 
-    def __init__(self, data: SupportsIndex, return_list=False) -> None:
+    def __init__(self, data: Sequence[Any], return_list: bool=False) -> None:
         self.data = data
         self.return_list = return_list
         super().__init__()
