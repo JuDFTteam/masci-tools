@@ -13,16 +13,23 @@
 """This subpackage contains the tabulator class for the tabulator subpackage, which turns
 properties of a collections of objects into a table.
 """
+from __future__ import annotations
 
-import abc as _abc
-import typing as _typing
 
-import pandas as _pd
+import abc as abc
+from collections import defaultdict
+from typing import Any, Iterable, TypeVar
+import itertools
+
+import pandas as pd
 
 from .recipes import Recipe
 
+__all__ = ('Tabulator','NamedTupleTabulator')
 
-class Tabulator(_abc.ABC):
+TableType = TypeVar('TableType', dict, pd.DataFrame)
+
+class Tabulator(abc.ABC):
     """For tabulation of a collection of objects' (common) properties into a dict or dataframe.
 
     List of external implementations:
@@ -50,7 +57,7 @@ class Tabulator(_abc.ABC):
       to easily reuse the dtypes information from the recipe.
     """
 
-    def __init__(self, recipe: Recipe = None, **kwargs):
+    def __init__(self, recipe: Recipe | None = None) -> None:
         """Initialize a tabulator object.
 
         The attribute :py:attr:`~.recipe` defines *what* to extract from a set of objects and put them in a table (
@@ -69,11 +76,16 @@ class Tabulator(_abc.ABC):
         if not recipe:
             recipe = Recipe()
         self.recipe = recipe
-        self._table_types = []
-        self._table = None
+        self._table = {}
 
-    @_abc.abstractmethod
-    def autolist(self, obj: _typing.Any, overwrite: bool = False, pretty_print: bool = False, **kwargs):
+        self._column_policies = [
+            'flat',
+            'flat_full_path',
+            'multiindex'
+        ]
+
+    @abc.abstractmethod
+    def autolist(self, obj: Any, overwrite: bool = False, pretty_print: bool = False, **kwargs: Any) -> None:
         """Auto-generate an include list of properties to be tabulated from a given object.
 
         This can serve as an overview for customized include and exclude lists.
@@ -83,22 +95,64 @@ class Tabulator(_abc.ABC):
         :param kwargs: Additional keyword arguments for subclasses.
         """
 
-    def clear(self):
+    @abc.abstractmethod
+    def get_keypath(self, item, keypath):
+        pass
+
+    def clear(self) -> None:
         """Clear table if already tabulated."""
-        self._table = None
+        self._table = {}
 
     @property
-    def table(self) -> _typing.Any:
+    def table(self) -> pd.DataFrame | None:
         """The result table. None if :py:meth:`~tabulate` not yet called."""
-        return self._table
+        return pd.DataFrame.from_dict(self._table) if self._table else None
 
-    @_abc.abstractmethod
+    def process_item(self, item: Any, table: dict[str, Any], keypaths: list, pass_item_to_transformer:bool,failed_paths,failed_transforms,
+                          **kwargs) -> None:
+        row = {}
+
+        for keypath in keypaths:
+            column = keypath[-1]
+            row[column] = None
+
+            value = self.get_keypath(item, keypath)
+            if value is None:
+                failed_paths[keypath].append(self.item_uuid(item))
+                continue
+
+            if not self.recipe.transformer:
+                row[column] = value
+            else:
+                try:
+                    transformed_value = self.recipe.transformer.transform(keypath=keypath,
+                                                                        value=value,
+                                                                        obj=item if pass_item_to_transformer else None,
+                                                                        **kwargs)
+                except (ValueError, KeyError, TypeError):
+                    failed_transforms[keypath].append(self.item_uuid(item))
+                    continue
+
+                if transformed_value.is_transformed:
+                    for t_column, t_value in transformed_value.value.items():
+                        row[t_column] = t_value
+                else:
+                    row[column] = transformed_value.value
+
+        for column, value in row.items():
+            table[column].append(value)
+    
+    def item_uuid(self, item):
+        return repr(item)
+
     def tabulate(self,
-                 collection: _typing.Any,
-                 table_type: _typing.Type = _pd.DataFrame,
+                 collection: Iterable[Any],
+                 table_type: TableType = pd.DataFrame,
                  append: bool = True,
                  column_policy: str = 'flat',
-                 **kwargs) -> _typing.Optional[_typing.Any]:
+                 pass_item_to_transformer: bool =True,
+                 drop_empty_columns: bool = True,
+                 **kwargs) -> TableType:
         """Tabulate the common properties of a collection of objects.
 
         :param collection: collection of objects with same set of properties.
@@ -111,3 +165,80 @@ class Tabulator(_abc.ABC):
         :param kwargs: Additional keyword arguments for subclasses.
         :return: Tabulated objects' properties.
         """
+        if table_type not in (dict, pd.DataFrame):
+            raise TypeError(f"Unknown {table_type=}")
+
+        if table_type == pd.DataFrame and (column_policy not in self._column_policies or column_policy in {'flat_full_path', 'multiindex'}):
+            raise ValueError(f"Warning: Unknown pandas column policy '{column_policy}'")
+
+        if not collection:
+            raise ValueError(f"{collection=} is empty. Will do nothing.")
+
+        if iter(collection) is collection:
+            for item in collection:
+                break
+            collection = itertools.chain((item,), collection)
+        else:
+            item = collection[0]
+
+        # get inc/ex lists. assume that they are in valid keypaths format already
+        # (via property setter auto-conversion)
+        if not self.recipe.include_list:
+            self.autolist(obj=item,
+                          overwrite=True,
+                          pretty_print=False)
+        include_keypaths = self.recipe.include_list
+        exclude_keypaths = self.recipe.exclude_list
+
+        # self._remove_collisions(include_keypaths, "in")
+
+        # remove excluded paths
+        failed_removes = []
+        for keypath in exclude_keypaths:
+            try:
+                include_keypaths.remove(keypath)
+            except ValueError as err:
+                failed_removes.append(keypath)
+        if failed_removes:
+            raise ValueError(f"Warning: Failed to remove exclude keypaths from include keypaths:\n"
+                  f"{failed_removes}")
+
+        # now we can finally build the table
+        table = defaultdict(list)
+        failed_paths = defaultdict(list)
+        failed_transforms = defaultdict(list)
+
+        for item in collection:
+            self.process_item(item,
+                              table=table,
+                              keypaths=include_keypaths,
+                              pass_item_to_transformer=pass_item_to_transformer,
+                              failed_paths=failed_paths,
+                              failed_transforms=failed_transforms,
+                              **kwargs)
+
+        failed_paths = {path: uuids for path, uuids in failed_paths.items() if uuids}
+        failed_transforms = {path: uuids for path, uuids in failed_transforms.items() if uuids}
+
+        self._table = dict(table)
+
+        if table_type == pd.DataFrame:
+            return self.table
+        return self._table
+
+
+class NamedTupleTabulator(Tabulator):
+    
+    def autolist(self, obj: Any, overwrite: bool = False, pretty_print: bool = False, **kwargs: Any) -> None:
+        self.recipe.include_list = obj._fields
+
+    def get_keypath(self, item, keypath):
+        
+        value = item
+        for key in keypath:
+            value = getattr(value, key, None)
+            if value is None:
+                break
+        return value
+
+
