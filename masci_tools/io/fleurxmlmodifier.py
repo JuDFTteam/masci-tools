@@ -18,6 +18,10 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 from __future__ import annotations
 
 from typing import Any, Callable, NamedTuple
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type: ignore
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.io.io_fleurxml import load_inpxml
@@ -75,7 +79,7 @@ class FleurXMLModifier:
     _schema_dict_functions: dict[str, Callable] = SCHEMA_DICT_SETTERS
     _nmmpmat_functions: dict[str, Callable] = NMMPMAT_SETTERS
 
-    _extra_functions: dict[str, Callable] = {}
+    _extra_functions: dict[str, dict[Literal['xpath', 'schema_dict', 'nmmpmat'], Callable]] = {}
 
     def __new__(cls, validate_signatures=True):
 
