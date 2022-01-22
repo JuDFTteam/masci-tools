@@ -1,6 +1,6 @@
 {
-  "from": "0.31",
-  "to": "0.34",
+  "from_version": "0.31",
+  "to_version": "0.34",
   "tag": {
     "remove": [
       [
