@@ -24,6 +24,9 @@ except ImportError:
 from lxml import etree
 
 FilterType: TypeAlias = 'dict[str, Any]'
+"""
+Type for filters argument for XPathBuilder
+"""
 
 
 class XPathBuilder:

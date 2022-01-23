@@ -12,7 +12,6 @@
 # serve to show the default.
 
 import masci_tools
-import sys
 import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -247,14 +246,6 @@ latex_documents = [
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True' # python 3
 #on_rtd = os.environ.read('READTHEDOCS', None) == 'True' # python 2
 
-# Following 3 lines avoid the need of importing load_dbenv() for compiling the
-# documentation -> works also without verdi install
-sys.path.append( os.path.join( os.path.split(__file__)[0],
-                                           os.pardir,os.pardir) )
-sys.path.append( os.path.join( os.path.split(__file__)[0],
-                                           os.pardir))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'rtd_settings'
-
 if not on_rtd:  # only import and set the theme if we're building docs locally
     try:
         import sphinx_rtd_theme
@@ -408,13 +399,9 @@ nitpick_ignore = [
     ('py:class', 'etree._DictAnyStr'),
     ('py:class', 'etree._XPathObject'),
     ('py:class', 'etree._XPathEvaluatorBase'),
-    ('py:class', 'IO'),
-    ('py:class', 'h5py._hl.base.HLObject'),
     ('py:class', 'h5py._hl.group.Group'),
     ('py:class', 'etree._Element'),
-    ('py:class', 'etree._ElementTree'),
     ('py:class', 'TypeAlias'),
-    ('py:class', 'TypeGuard'),
     ('py:class', 'Logger'),
     ('py:class', 'FilterType'),
 ]
