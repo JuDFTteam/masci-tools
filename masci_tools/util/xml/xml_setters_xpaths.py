@@ -201,7 +201,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
     if attributename not in attribs:
         raise ValueError(
             f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
-            f'Allowed attributes are: {attribs.original_case.values()}')
+            f'Allowed attributes are: {sorted(attribs.original_case.values())}')
     attributename = attribs.original_case[attributename]
 
     converted_attribv, _ = convert_to_xml(attribv, schema_dict, attributename, text=False)
@@ -414,7 +414,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     if attributename not in attribs:
         raise ValueError(
             f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
-            f'Allowed attributes are: {attribs.original_case.values()}')
+            f'Allowed attributes are: {sorted(attribs.original_case.values())}')
     attributename = attribs.original_case[attributename]
 
     if isinstance(xpath, XPathBuilder):
