@@ -110,7 +110,8 @@ disallow_subclassing_any = true
 module = [
     'h5py',
     'humanfriendly',
-    'yaml'
+    'yaml',
+    'pandas',
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
