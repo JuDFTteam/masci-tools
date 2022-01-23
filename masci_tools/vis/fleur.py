@@ -238,8 +238,8 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
         spin_dn = spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns})
 
         #Double kpath and extend spin up data
-        kpath = kpath.append(kpath, ignore_index=True)
-        band_index = band_index.append(band_index + nbands + 1, ignore_index=True)
+        kpath = pd.concat([kpath, kpath], ignore_index=True)
+        band_index = pd.concat([band_index, band_index + nbands + 1], ignore_index=True)
         complete_spin = pd.concat([spin_up, spin_dn], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata
