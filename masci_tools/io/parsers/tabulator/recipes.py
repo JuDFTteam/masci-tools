@@ -151,7 +151,7 @@ class Recipe(abc.ABC):
         if isinstance(exclude_list, dict):
             self._exclude_list = self._to_keypaths(exclude_list, 'exclude')
         else:
-            self._exclude_list = exclude_list
+            self._exclude_list = [(path,) if not isinstance(path, (tuple,list)) else path for path in exclude_list]
 
     @property
     def include_list(self) -> KeyPaths:
@@ -162,7 +162,7 @@ class Recipe(abc.ABC):
         if isinstance(include_list, dict):
             self._include_list = self._to_keypaths(include_list, 'include')
         else:
-            self._include_list = include_list
+            self._include_list = [(path,) if not isinstance(path, (tuple,list)) else path for path in include_list]
 
     @staticmethod
     def _to_keypaths(path_dict: dict[str, Any], name: str) -> KeyPaths:

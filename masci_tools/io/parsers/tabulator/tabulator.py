@@ -15,13 +15,13 @@ properties of a collections of objects into a table.
 """
 from __future__ import annotations
 
-import abc as abc
+import abc
 from collections import defaultdict
 from typing import Any, Iterable, TypeVar
 
 import pandas as pd
 
-from .recipes import Recipe
+from .recipes import Recipe, KeyPaths
 
 __all__ = ('Tabulator', 'NamedTupleTabulator', 'TableType')
 
@@ -110,7 +110,7 @@ class Tabulator(abc.ABC):
         """The result table. None if :py:meth:`~tabulate` not yet called."""
         return pd.DataFrame.from_dict(self._table) if self._table else None
 
-    def process_item(self, item: Any, table: dict[str, Any], keypaths: list[tuple[str, ...]],
+    def process_item(self, item: Any, table: dict[str, Any], keypaths: list[tuple[tuple[str, ...], str]],
                      pass_item_to_transformer: bool, **kwargs: Any) -> None:
         """
         Process a single item of the collection of items to be tabulated
@@ -127,8 +127,7 @@ class Tabulator(abc.ABC):
 
         row: dict[str, Any] = {}
 
-        for keypath in keypaths:
-            column = keypath[-1]
+        for keypath, column in keypaths:
             row[column] = None
 
             value = self.get_keypath(item, keypath)
@@ -156,7 +155,43 @@ class Tabulator(abc.ABC):
             table[column].append(value)
 
     def item_uuid(self, item: Any) -> str:
+        """
+        Function to return str to identify items (Can be used for logging failures)
+        """
         return repr(item)
+
+    def _remove_collisions(self,
+                           keypaths: list[tuple[tuple[str, ...], str]],
+                           index: int = -2) -> list[tuple[tuple[str, ...], str]]:
+        """
+        Disambigouate keypaths so that there are no key collisions. If there is a collision
+        the key one level up is taken and combined with apoint
+
+        :param keypaths: Paths to investigate
+        :param index: int index of the next element in the path to try
+
+        :returns: diambigouoated paths
+        """
+
+        grouped_paths = defaultdict(list)
+        for path, name in keypaths:
+            grouped_paths[name].append(path)
+
+        for name, paths in grouped_paths.items():
+            if len(paths) == 1:
+                continue
+
+            if abs(index) > len(paths[0]):
+                raise ValueError(f'Cannot disambigouate paths {paths}')
+
+            #Go up levels until they can be distinguished
+            unique_paths = self._remove_collisions([(path[:index], f'{path[index]}.{name}') for path in paths],
+                                                   index=index - 1)
+
+            for path, unique_path in zip(paths, unique_paths):
+                keypaths[keypaths.index((path, name))] = unique_path
+
+        return keypaths
 
     def tabulate(self,
                  collection: Iterable[Any],
@@ -191,24 +226,44 @@ class Tabulator(abc.ABC):
         # now we can finally build the table
         table: dict[str, Any] = defaultdict(list)
 
-        keypaths = []
+        keypaths: KeyPaths = []
 
         for item in collection:
 
             # get inc/ex lists. assume that they are in valid keypaths format already
             # (via property setter auto-conversion)
-            if not self.recipe.include_list:
-                self.autolist(item=item, overwrite=True, pretty_print=False)
-            keypaths = self.recipe.include_list.copy()
-            exclude_keypaths = self.recipe.exclude_list
-            for keypath in exclude_keypaths:
-                keypaths.remove(keypath)
+            if not keypaths:
+                if not self.recipe.include_list:
+                    self.autolist(item=item, overwrite=True, pretty_print=False)
+                keypaths = self.recipe.include_list.copy()
+                exclude_keypaths = self.recipe.exclude_list
+                for keypath in exclude_keypaths:
+                    keypaths.remove(keypath)
+
+                #Create tuple with (path to take, name of column) to make disambiguating easier
+                named_keypaths = [(path, path[-1]) for path in keypaths]
+
+                self._remove_collisions(named_keypaths)
 
             self.process_item(item,
                               table=table,
-                              keypaths=keypaths,
+                              keypaths=named_keypaths,
                               pass_item_to_transformer=pass_item_to_transformer,
                               **kwargs)
+
+        if drop_empty_columns:
+            empty_columns = [colname for colname, values in table.items() if all(v is None for v in values)]
+            if empty_columns:
+                for colname in empty_columns:
+                    table.pop(colname)
+
+        if append and self._table:
+            difference = self._table.keys() ^ table.keys()
+            if difference:
+                raise ValueError(
+                    f'Warning: Selected {append=}, but new table columns are different from columns of the '
+                    f'existing table. Difference: {difference}. I will abort tabulation. Please clear the table '
+                    f'first.')
 
         self._table = dict(table)
 
@@ -218,12 +273,20 @@ class Tabulator(abc.ABC):
 
 
 class NamedTupleTabulator(Tabulator):
+    """
+    Simple Example of Tabulator for creating Dataframes from Namedtuples
+    """
 
     def autolist(self, item: Any, overwrite: bool = False, pretty_print: bool = False, **kwargs: Any) -> None:
-        self.recipe.include_list = item._fields
+        """
+        Just tabulate all the fields (no recursion into the objects)
+        """
+        self.recipe.include_list = list(item._fields)
 
     def get_keypath(self, item, keypath):
-
+        """
+        Just recursively extract all the attributes
+        """
         value = item
         for key in keypath:
             value = getattr(value, key, None)
