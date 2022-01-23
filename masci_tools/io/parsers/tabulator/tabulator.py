@@ -25,7 +25,7 @@ from .recipes import Recipe, KeyPaths
 
 __all__ = ('Tabulator', 'NamedTupleTabulator', 'TableType')
 
-TableType = TypeVar('TableType', dict, pd.DataFrame)
+TableType = TypeVar('TableType', type[dict], type[pd.DataFrame])
 
 
 class Tabulator(abc.ABC):
