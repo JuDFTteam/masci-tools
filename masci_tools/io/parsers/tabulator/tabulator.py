@@ -23,7 +23,7 @@ import pandas as pd
 
 from .recipes import Recipe
 
-__all__ = ('Tabulator', 'NamedTupleTabulator')
+__all__ = ('Tabulator', 'NamedTupleTabulator', 'TableType')
 
 TableType = TypeVar('TableType', dict, pd.DataFrame)
 

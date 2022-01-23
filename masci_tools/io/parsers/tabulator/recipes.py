@@ -30,6 +30,8 @@ from .transformers import Transformer
 KeyPaths: TypeAlias = 'list[Iterable[str]]'
 PathList: TypeAlias = 'list[Iterable[str]] | dict[str,Any]'
 
+__all__ = ('Recipe',)
+
 
 class Recipe(abc.ABC):
     """Recipe for a :py:class:`~.tabulator.Tabulator`.
