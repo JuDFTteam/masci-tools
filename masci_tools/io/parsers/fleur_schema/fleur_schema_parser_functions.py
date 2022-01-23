@@ -87,7 +87,7 @@ class TagInfo(TypedDict):
 #We define some decorators to cache results to not repeat too many similar xpath calls or recursive function calls
 
 
-def _cache_xpath_construction(func: Callable) -> Callable:
+def _cache_xpath_construction(func: Callable[..., set[str]]) -> Callable[..., set[str]]:
     """
     Decorator for the `_get_xpath` and `_get_attrib_xpath` functions to speed up the parsing of
     xml schemas by caching results
@@ -1252,8 +1252,6 @@ def get_tag_info(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: An
                               enforce_end_type=type_tag,
                               stop_iteration=stop_iteration,
                               iteration_root=iteration_root)
-
-        tag_path = list(tag_path)
 
         type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=type_tag)
         if len(type_elem) == 0:

@@ -18,7 +18,7 @@ from __future__ import annotations
 from itertools import groupby, chain
 import numpy as np
 import h5py
-from typing import Iterator, Any, NamedTuple
+from typing import Iterator, Any, NamedTuple, Generator
 try:
     from typing import Literal
 except ImportError:
@@ -819,7 +819,7 @@ def listElements(hdffile: FileLike, show: bool = False) -> list[GreensfElement]:
 
 def select_elements_from_file(hdffile: FileLike,
                               show: bool = False,
-                              **selection_params: Any) -> Iterator[GreensFunction]:
+                              **selection_params: Any) -> Generator[GreensFunction, None, None]:
     """
     Construct the green's function matching specified criteria from a given ``greensf.hdf`` file
 
@@ -834,16 +834,16 @@ def select_elements_from_file(hdffile: FileLike,
     elements = listElements(hdffile, show=show)
     found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    def gf_iterator(found_elements):
+    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction, None, None]:
         for index in found_elements:
-            yield GreensFunction.from_file(hdffile, index=index + 1)
+            yield GreensFunction.fromFile(hdffile, index=index + 1)
 
     return gf_iterator(found_elements)
 
 
 def select_elements(greensfunctions: list[GreensFunction],
                     show: bool = False,
-                    **selection_params: Any) -> Iterator[GreensFunction]:
+                    **selection_params: Any) -> Generator[GreensFunction, None, None]:
     """
     Select :py:class:`GreensFunction` objects from a list based on constraints on the
     values of their underlying :py:class:`GreensfElement`
@@ -858,7 +858,7 @@ def select_elements(greensfunctions: list[GreensFunction],
     elements = [gf.element for gf in greensfunctions]
     found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    def gf_iterator(found_elements):
+    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction, None, None]:
         for index in found_elements:
             yield greensfunctions[index]
 
@@ -894,9 +894,10 @@ def select_element_indices(elements: list[GreensfElement], show: bool = False, *
     return found_elements
 
 
-def intersite_shells_from_file(hdffile: FileLike,
-                               reference_atom: int,
-                               show: bool = False) -> Iterator[tuple[float, GreensFunction, GreensFunction]]:
+def intersite_shells_from_file(
+        hdffile: FileLike,
+        reference_atom: int,
+        show: bool = False) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a given ``greensf.hdf`` file
@@ -912,7 +913,9 @@ def intersite_shells_from_file(hdffile: FileLike,
     elements = listElements(hdffile)
     jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
 
-    def shell_iterator(shells):
+    def shell_iterator(
+        shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
+    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
         for distance, pairs in shells:
             for g1, g2 in pairs:
                 #Plus 1 because the indexing starts at 1 in the hdf file
@@ -923,9 +926,10 @@ def intersite_shells_from_file(hdffile: FileLike,
     return shell_iterator(jij_pairs)
 
 
-def intersite_shells(greensfunctions: list[GreensFunction],
-                     reference_atom: int,
-                     show: bool = False) -> Iterator[tuple[float, GreensFunction, GreensFunction]]:
+def intersite_shells(
+        greensfunctions: list[GreensFunction],
+        reference_atom: int,
+        show: bool = False) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a list of given :py:class:`GreensFunction`
@@ -941,7 +945,9 @@ def intersite_shells(greensfunctions: list[GreensFunction],
     elements = [gf.element for gf in greensfunctions]
     jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
 
-    def shell_iterator(shells):
+    def shell_iterator(
+        shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
+    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
         for distance, pairs in shells:
             for g1, g2 in pairs:
                 yield (distance, greensfunctions[g1], greensfunctions[g2])

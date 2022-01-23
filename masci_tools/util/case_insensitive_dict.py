@@ -68,7 +68,7 @@ class CaseInsensitiveDict(LockableDict[S, T]):
         super().__setitem__(cast(S, self._norm_key(key)), value)
 
     def __getitem__(self, key: S) -> T:
-        return super().__getitem__(cast(S, self._norm_key(key)))
+        return cast(T, super().__getitem__(cast(S, self._norm_key(key))))
 
     def __contains__(self, key: object) -> bool:
         return super().__contains__(cast(S, self._norm_key(key)))

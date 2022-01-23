@@ -211,7 +211,7 @@ class LockableList(UserList, Generic[T]):
         return the value at index i (default last) and remove it from list
         """
         self.__check_lock()
-        return super().pop(i=i)
+        return cast(T, super().pop(i=i))
 
     def remove(self, item: T) -> None:
         self.__check_lock()
