@@ -189,7 +189,7 @@ class Tabulator(abc.ABC):
                                                    index=index - 1)
 
             for path, unique_path in zip(paths, unique_paths):
-                keypaths[keypaths.index((path, name))] = unique_path
+                keypaths[keypaths.index((path, name))] = path, unique_path[1]
 
         return keypaths
 
