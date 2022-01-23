@@ -293,3 +293,37 @@ class NamedTupleTabulator(Tabulator):
             if value is None:
                 break
         return value
+
+
+class NestedDictTabulator(Tabulator):
+    """
+    Simple Example of Tabulator for creating Dataframes from nested dicts
+    """
+
+    def autolist(self, item: Any, overwrite: bool = False, pretty_print: bool = False, **kwargs: Any) -> None:
+        """
+        Just tabulate all the keys with recursing into subdicts
+        """
+
+        def collect_keypaths(item):
+            keypaths = []
+            for key, value in item.items():
+                if isinstance(value, dict):
+                    subpaths = collect_keypaths(value)
+                    keypaths.extend((key, *path) for path in subpaths)
+                else:
+                    keypaths.append((key,))
+            return keypaths
+
+        self.recipe.include_list = collect_keypaths(item)
+
+    def get_keypath(self, item, keypath):
+        """
+        Just recursively extract all the attributes
+        """
+        value = item
+        for key in keypath:
+            value = value.get(key)
+            if value is None:
+                break
+        return value
