@@ -1389,3 +1389,5 @@ PERIODIC_TABLE_ELEMENTS = {
         'jri': 981
     }
 }
+
+ATOMIC_NUMBERS = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
