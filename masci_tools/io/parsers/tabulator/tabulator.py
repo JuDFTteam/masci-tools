@@ -164,7 +164,7 @@ class Tabulator(abc.ABC):
                            keypaths: list[tuple[tuple[str, ...], str]],
                            index: int = -2) -> list[tuple[tuple[str, ...], str]]:
         """
-        Disambigouate keypaths so that there are no key collisions. If there is a collision
+        Disambiguate keypaths so that there are no key collisions. If there is a collision
         the key one level up is taken and combined with apoint
 
         :param keypaths: Paths to investigate
@@ -182,7 +182,7 @@ class Tabulator(abc.ABC):
                 continue
 
             if abs(index) > len(paths[0]):
-                raise ValueError(f'Cannot disambigouate paths {paths}')
+                raise ValueError(f'Cannot disambiguate paths {paths}')
 
             #Go up levels until they can be distinguished
             unique_paths = self._remove_collisions([(path[:index], f'{path[index]}.{name}') for path in paths],
