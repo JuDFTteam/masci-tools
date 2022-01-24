@@ -137,7 +137,7 @@ class Recipe(abc.ABC):
         """
         self._exclude_list: KeyPaths
         self._include_list: KeyPaths
-        self.dtypes: dict[tuple[str,...], type[Any]] = {}
+        self.dtypes: dict[tuple[str, ...], type[Any]] = {}
 
         self.transformer = transformer
 
@@ -210,7 +210,6 @@ class Recipe(abc.ABC):
         if all(tup[1] is None for tup in keypaths):
             keypaths = [tup[0] for tup in keypaths]  #type:ignore
             datatypes = {path: dtype for path, dtype in keypaths if dtype is not None}
-
 
         # postcondition: keypaths format
         is_list = isinstance(keypaths, list)

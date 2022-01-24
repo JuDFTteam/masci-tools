@@ -268,7 +268,7 @@ class Tabulator(abc.ABC):
         self._table = dict(table)
 
         if table_type == pd.DataFrame:
-            return self.table #type:ignore
+            return self.table  #type:ignore
         return self._table
 
 
