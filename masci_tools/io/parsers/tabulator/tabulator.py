@@ -17,9 +17,10 @@ from __future__ import annotations
 
 import abc
 from collections import defaultdict
-from typing import Any, Iterable, TypeVar
+from typing import Any, FrozenSet, Iterable, TypeVar
 
 import pandas as pd
+import numpy as np
 
 from .recipes import Recipe, KeyPaths
 
@@ -56,7 +57,7 @@ class Tabulator(abc.ABC):
       to easily reuse the dtypes information from the recipe.
     """
 
-    def __init__(self, recipe: Recipe | None = None) -> None:
+    def __init__(self, recipe: Recipe | None = None, separator: str = '.', buffer_size: int = 1024) -> None:
         """Initialize a tabulator object.
 
         The attribute :py:attr:`~.recipe` defines *what* to extract from a set of objects and put them in a table (
@@ -75,7 +76,11 @@ class Tabulator(abc.ABC):
         if not recipe:
             recipe = Recipe()
         self.recipe = recipe
+        self.has_transformer = recipe.transformer is not None
         self._table: dict[str, Any] = {}
+
+        self.separator = separator
+        self.buffer_size = buffer_size
 
         self._column_policies = ['flat', 'flat_full_path', 'multiindex']
 
@@ -110,8 +115,8 @@ class Tabulator(abc.ABC):
         """The result table. None if :py:meth:`~tabulate` not yet called."""
         return pd.DataFrame.from_dict(self._table) if self._table else None
 
-    def process_item(self, item: Any, table: dict[str, Any], keypaths: list[tuple[tuple[str, ...], str]],
-                     pass_item_to_transformer: bool, **kwargs: Any) -> None:
+    def process_item(self, item: Any, index: int, table: dict[str, Any], keypaths: list[tuple[tuple[str, ...], str]],
+                     dtypes: frozenset[str], pass_item_to_transformer: bool, **kwargs: Any) -> None:
         """
         Process a single item of the collection of items to be tabulated
 
@@ -125,34 +130,38 @@ class Tabulator(abc.ABC):
         failed_paths = defaultdict(list)
         failed_transforms = defaultdict(list)
 
-        row: dict[str, Any] = {}
-
         for keypath, column in keypaths:
-            row[column] = None
-
             value = self.get_value(item, keypath)
             if value is None:
                 failed_paths[keypath].append(self.item_uuid(item))
                 continue
 
-            if not self.recipe.transformer:
-                row[column] = value
-            else:
+            if self.has_transformer:
                 try:
-                    transformed_value = self.recipe.transformer.transform(
-                        keypath=keypath, value=value, obj=item if pass_item_to_transformer else None, **kwargs)
+                    transformed_value = self.recipe.transformer.transform(  #type:ignore
+                        keypath=keypath,
+                        value=value,
+                        obj=item if pass_item_to_transformer else None,
+                        **kwargs)
                 except (ValueError, KeyError, TypeError):
                     failed_transforms[keypath].append(self.item_uuid(item))
                     continue
 
                 if transformed_value.is_transformed and isinstance(transformed_value.value, dict):
+                    value = {}
                     for t_column, t_value in transformed_value.value.items():
-                        row[t_column] = t_value
+                        value[t_column] = t_value
                 else:
-                    row[column] = transformed_value.value
+                    value = transformed_value.value
 
-        for column, value in row.items():
-            table.setdefault(column, []).append(value)
+            if column in dtypes:
+                try:
+                    table[column][index] = value
+                except IndexError:
+                    table[column] = np.append(table[column], np.zeros(len(table[column]), dtype=table[column].dtype))
+                    table[column][index] = value
+            else:
+                table.setdefault(column, []).append(value)
 
     def item_uuid(self, item: Any) -> str:
         """
@@ -185,8 +194,8 @@ class Tabulator(abc.ABC):
                 raise ValueError(f'Cannot disambiguate paths {paths}')
 
             #Go up levels until they can be distinguished
-            unique_paths = self._remove_collisions([(path[:index], f'{path[index]}.{name}') for path in paths],
-                                                   index=index - 1)
+            unique_paths = self._remove_collisions(
+                [(path[:index], f'{path[index]}{self.separator}{name}') for path in paths], index=index - 1)
 
             for path, unique_path in zip(paths, unique_paths):
                 keypaths[keypaths.index((path, name))] = path, unique_path[1]
@@ -228,7 +237,7 @@ class Tabulator(abc.ABC):
 
         keypaths: KeyPaths = []
 
-        for item in collection:
+        for index, item in enumerate(collection):
 
             # get inc/ex lists. assume that they are in valid keypaths format already
             # (via property setter auto-conversion)
@@ -236,6 +245,7 @@ class Tabulator(abc.ABC):
                 if not self.recipe.include_list:
                     self.autolist(item=item, overwrite=True, pretty_print=False)
                 keypaths = self.recipe.include_list.copy()
+                dtypes = self.recipe.dtypes
                 exclude_keypaths = self.recipe.exclude_list
                 for keypath in exclude_keypaths:
                     keypaths.remove(keypath)
@@ -245,9 +255,18 @@ class Tabulator(abc.ABC):
 
                 self._remove_collisions(named_keypaths)
 
+                for path, dtype in dtypes.items():
+                    #find corresponding column name
+                    column = [column for p, column in named_keypaths if p == path][0]
+                    table[column] = np.zeros(self.buffer_size, dtype=dtype)
+                dtypes_set = frozenset(table.keys())
+                self.has_transformer = self.recipe.transformer is not None
+
             self.process_item(item,
+                              index=index,
                               table=table,
                               keypaths=named_keypaths,
+                              dtypes=dtypes_set,
                               pass_item_to_transformer=pass_item_to_transformer,
                               **kwargs)
 

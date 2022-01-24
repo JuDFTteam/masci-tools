@@ -207,13 +207,12 @@ class Recipe(abc.ABC):
         # or at least of type _typing.List[_typing.Tuple[list, _typing.Any]].
         # check that. if not, something is wrong.
         # otherwise, just return the paths.
-        if all(tup[1] is None for tup in keypaths):
-            keypaths = [tup[0] for tup in keypaths]  #type:ignore
-            datatypes = {path: dtype for path, dtype in keypaths if dtype is not None}
+        datatypes = {tuple(path): dtype for path, dtype in keypaths if dtype is not None}
+        keypaths = [tuple(path) for path, dtype in keypaths]  #type:ignore
 
         # postcondition: keypaths format
         is_list = isinstance(keypaths, list)
-        is_all_lists = is_list and all(isinstance(path, list) for path in keypaths)
+        is_all_lists = is_list and all(isinstance(path, tuple) for path in keypaths)
         if not is_all_lists:
             raise TypeError(f'Could not generate keypaths of required type list of lists '
                             f'from {name} list. Either specified list in wrong format '
