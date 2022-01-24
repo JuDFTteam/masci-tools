@@ -137,6 +137,8 @@ class Recipe(abc.ABC):
         """
         self._exclude_list: KeyPaths
         self._include_list: KeyPaths
+        self.dtypes: dict[tuple[str,...], type[Any]] = {}
+
         self.transformer = transformer
 
         self.exclude_list = exclude_list or []
@@ -149,7 +151,7 @@ class Recipe(abc.ABC):
     @exclude_list.setter
     def exclude_list(self, exclude_list: PathList) -> None:
         if isinstance(exclude_list, dict):
-            self._exclude_list = self._to_keypaths(exclude_list, 'exclude')
+            self._exclude_list, _ = self._to_keypaths(exclude_list, 'exclude')
         else:
             self._exclude_list = [(path,) if not isinstance(path, (tuple, list)) else path for path in exclude_list]
 
@@ -160,7 +162,8 @@ class Recipe(abc.ABC):
     @include_list.setter
     def include_list(self, include_list: PathList) -> None:
         if isinstance(include_list, dict):
-            self._include_list = self._to_keypaths(include_list, 'include')
+            self._include_list, dtypes = self._to_keypaths(include_list, 'include')
+            self.dtypes = dtypes
         else:
             self._include_list = [(path,) if not isinstance(path, (tuple, list)) else path for path in include_list]
 
@@ -182,8 +185,9 @@ class Recipe(abc.ABC):
             paths = []
             for k, v in sub_dict.items():
                 if isinstance(v, dict):
-                    paths += _to_keypaths_recursive(v, path + [k])
-                paths.append((path + [k], v))
+                    paths.extend(_to_keypaths_recursive(v, path + [k]))
+                else:
+                    paths.append((path + [k], v))
             return paths
 
         # if empty, convert to empty list. if not empty, convert to keypaths
@@ -198,11 +202,6 @@ class Recipe(abc.ABC):
                                                  to_level=99)
 
         keypaths = _to_keypaths_recursive(sub_dict=_a_dict, path=[])
-        # the result consists of sets of subpaths. For each subset, there is
-        # an additianal entry where the value contains the whole subdict from
-        # which the paths were generated. We are not interested in those duplicate
-        # entries, so remove them.
-        keypaths = [tup for tup in keypaths if not isinstance(tup[1], dict)]
 
         # now list should be like [(path1, None), (path2, None), ...],
         # or at least of type _typing.List[_typing.Tuple[list, _typing.Any]].
@@ -210,6 +209,8 @@ class Recipe(abc.ABC):
         # otherwise, just return the paths.
         if all(tup[1] is None for tup in keypaths):
             keypaths = [tup[0] for tup in keypaths]  #type:ignore
+            datatypes = {path: dtype for path, dtype in keypaths if dtype is not None}
+
 
         # postcondition: keypaths format
         is_list = isinstance(keypaths, list)
@@ -221,4 +222,4 @@ class Recipe(abc.ABC):
                             f'autolist stumbled over untreated special case for some unpacked '
                             f'property.')
 
-        return keypaths
+        return keypaths, datatypes

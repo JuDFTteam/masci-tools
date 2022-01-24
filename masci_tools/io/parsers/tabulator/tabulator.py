@@ -25,7 +25,7 @@ from .recipes import Recipe, KeyPaths
 
 __all__ = ('Tabulator', 'NamedTupleTabulator', 'TableType')
 
-TableType = TypeVar('TableType', type[dict], type[pd.DataFrame])
+TableType = TypeVar('TableType', 'dict[str,Any]', pd.DataFrame)
 
 
 class Tabulator(abc.ABC):
@@ -152,7 +152,7 @@ class Tabulator(abc.ABC):
                     row[column] = transformed_value.value
 
         for column, value in row.items():
-            table[column].append(value)
+            table.setdefault(column, []).append(value)
 
     def item_uuid(self, item: Any) -> str:
         """
@@ -195,7 +195,7 @@ class Tabulator(abc.ABC):
 
     def tabulate(self,
                  collection: Iterable[Any],
-                 table_type: TableType = pd.DataFrame,
+                 table_type: type[TableType] = pd.DataFrame,
                  append: bool = True,
                  column_policy: str = 'flat',
                  pass_item_to_transformer: bool = True,
@@ -224,7 +224,7 @@ class Tabulator(abc.ABC):
             raise ValueError(f'{collection=} is empty. Will do nothing.')
 
         # now we can finally build the table
-        table: dict[str, Any] = defaultdict(list)
+        table: dict[str, Any] = {}
 
         keypaths: KeyPaths = []
 
@@ -268,7 +268,7 @@ class Tabulator(abc.ABC):
         self._table = dict(table)
 
         if table_type == pd.DataFrame:
-            return self.table  #type:ignore
+            return self.table #type:ignore
         return self._table
 
 
