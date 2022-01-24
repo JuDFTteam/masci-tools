@@ -91,7 +91,7 @@ class Tabulator(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_keypath(self, item: Any, keypath: Iterable[str]) -> Any:
+    def get_value(self, item: Any, keypath: Iterable[str]) -> Any:
         """
         Extract a value based the path given as an iterable of attribute names
         :param item: Item under consideration
@@ -130,7 +130,7 @@ class Tabulator(abc.ABC):
         for keypath, column in keypaths:
             row[column] = None
 
-            value = self.get_keypath(item, keypath)
+            value = self.get_value(item, keypath)
             if value is None:
                 failed_paths[keypath].append(self.item_uuid(item))
                 continue
@@ -283,7 +283,7 @@ class NamedTupleTabulator(Tabulator):
         """
         self.recipe.include_list = list(item._fields)
 
-    def get_keypath(self, item, keypath):
+    def get_value(self, item, keypath):
         """
         Just recursively extract all the attributes
         """
@@ -317,7 +317,7 @@ class NestedDictTabulator(Tabulator):
 
         self.recipe.include_list = collect_keypaths(item)
 
-    def get_keypath(self, item, keypath):
+    def get_value(self, item, keypath):
         """
         Just recursively extract all the attributes
         """
