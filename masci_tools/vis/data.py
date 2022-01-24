@@ -538,7 +538,7 @@ class PlotData:
         self.columns = columns
         self.data = sources
 
-    def mask_data(self, mask, data_key=None):
+    def mask_data(self, mask, data_key=None, replace_value=None):
         """
         Apply a given mask to the data inplace.
 
@@ -559,7 +559,12 @@ class PlotData:
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)
 
-            masked_source = source[mask_indx]
+            if replace_value is None:
+                masked_source = source[mask_indx]
+            else:
+                source[mask_indx] = replace_value
+                masked_source = source
+
             if expand_data:
                 data.append(masked_source)
             else:
