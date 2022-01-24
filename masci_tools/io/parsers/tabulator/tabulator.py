@@ -237,6 +237,7 @@ class Tabulator(abc.ABC):
 
         keypaths: KeyPaths = []
 
+        dtypes_set: frozenset[str] = frozenset()
         for index, item in enumerate(collection):
 
             # get inc/ex lists. assume that they are in valid keypaths format already
@@ -269,6 +270,11 @@ class Tabulator(abc.ABC):
                               dtypes=dtypes_set,
                               pass_item_to_transformer=pass_item_to_transformer,
                               **kwargs)
+            length = index + 1
+
+        #Adjust to actual length
+        for column in dtypes_set:
+            table[column] = table[column][:length]
 
         if drop_empty_columns:
             empty_columns = [colname for colname, values in table.items() if all(v is None for v in values)]
