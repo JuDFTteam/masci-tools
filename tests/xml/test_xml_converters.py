@@ -53,6 +53,22 @@ def test_convert_to_fortran_bool():
         convert_to_fortran_bool(())
 
 
+@pytest.mark.parametrize('text,expected,error',
+                         (('(1.52,3.14)', 1.52 + 3.14j, False), ('(-1.52,+3.14)', -1.52 + 3.14j, False),
+                          ('(1.52.12,-3.14)', None, True), ('(1.43,not-anumber)', None, True)))
+def test_convert_from_fortran_complex(text, expected, error):
+    """
+    Test of the convert_from_fortran_complex function
+    """
+    from masci_tools.util.xml.converters import convert_from_fortran_complex
+
+    if error:
+        with pytest.raises(ValueError):
+            convert_from_fortran_complex(text)
+    else:
+        assert pytest.approx(convert_from_fortran_complex(text)) == expected
+
+
 STRINGS = [
     '1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T'], ['F', 'T'],
     '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',

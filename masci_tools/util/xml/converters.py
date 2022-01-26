@@ -22,9 +22,10 @@ except ImportError:
 from lxml import etree
 import logging
 from masci_tools.io.parsers import fleur_schema
+import re
 
-BaseType: TypeAlias = Literal['int', 'switch', 'string', 'float', 'float_expression']
-ConvertedType: TypeAlias = 'int | float | bool | str'
+BaseType: TypeAlias = Literal['int', 'switch', 'string', 'float', 'float_expression', 'complex']
+ConvertedType: TypeAlias = 'int | float | bool | str | complex'
 
 
 def convert_to_xml(value: Any | list[Any],
@@ -320,6 +321,13 @@ def convert_from_xml_single_values(xmlstring: str | list[str],
                     exceptions.append(new_exc)
                     continue
 
+            elif value_type == 'complex':
+                try:
+                    converted_value = convert_from_fortran_complex(text)
+                except (ValueError, TypeError) as exc:
+                    exceptions.append(exc)
+                    continue
+
             elif value_type == 'int':
                 try:
                     converted_value = int(text)
@@ -393,6 +401,13 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
                 try:
                     converted_value = f'{val:{float_format}f}'
                 except ValueError as exc:
+                    exceptions.append(exc)
+                    continue
+
+            elif value_type == 'complex':
+                try:
+                    converted_value = f'({val.real:{float_format}f},{val.imag:{float_format}f})'
+                except (ValueError, AttributeError) as exc:
                     exceptions.append(exc)
                     continue
 
@@ -471,6 +486,24 @@ def convert_to_fortran_bool(boolean: bool | str) -> Literal['T', 'F']:
                          "'False', 't', 'T', 'F' or 'f'")
 
     raise TypeError(f'convert_to_fortran_bool accepts only a string or bool as argument, given {boolean} ')
+
+
+def convert_from_fortran_complex(number_str: str) -> complex:
+    """
+    Converts a string of the form (float,float) to a complex number
+
+    :param number_str: string to convert
+
+    :returns: complex number
+    """
+    RE_COMPLEX_NUMBER = r'\([-+]?(?:\d*\.\d+|\d+)\,[-+]?(?:\d*\.\d+|\d+)\)'
+    RE_SINGLE_FLOAT = r'[-+]?(?:\d*\.\d+|\d+)'
+
+    if re.fullmatch(RE_COMPLEX_NUMBER, number_str) is None:
+        raise ValueError(f"String '{number_str}' is not of the format (float,float)")
+    real_str, imag_str = re.findall(RE_SINGLE_FLOAT, number_str)
+
+    return float(real_str) + 1j * float(imag_str)
 
 
 def convert_fleur_lo(loelements: list[etree._Element]) -> str:
