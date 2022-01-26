@@ -43,7 +43,8 @@ BASE_TYPES = {
     },
     'float': {'xsd:double'},
     'float_expression': {'FleurDouble'},
-    'string': {'xsd:string'}
+    'string': {'xsd:string'},
+    'complex': {'FortranComplex'}
 }
 NAMESPACES = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
@@ -885,7 +886,7 @@ def type_order(type_def: AttributeType) -> tuple[int, float]:
     if not isinstance(type_def, AttributeType):
         raise ValueError('Wrong type for type_def')
 
-    BASE_TYPE_ORDER = ('switch', 'int', 'float', 'float_expression', 'string')
+    BASE_TYPE_ORDER = ('switch', 'int', 'complex', 'float', 'float_expression', 'string')
 
     type_index = BASE_TYPE_ORDER.index(type_def.base_type)
     if type_def.length is None:

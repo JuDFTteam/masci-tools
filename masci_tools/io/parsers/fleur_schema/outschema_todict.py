@@ -96,9 +96,7 @@ def create_outschema_dict(path: AnyStr,
         'iteration_tag_info': get_tag_info,
         'omitt_contained_tags': get_omittable_tags,
     }
-    schema_patches = [
-        fix_qpoints_typo,
-    ]
+    schema_patches = [fix_qpoints_typo, patch_text_types]
 
     #print(f'processing: {path}/FleurOutputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -150,6 +148,46 @@ def fix_qpoints_typo(schema_dict: OutputSchemaData, out_version: tuple[int, int]
     old_attribs.discard('qpoints')
     old_attribs.add('qPoints')
     schema_dict['iteration_tag_info'][PATH]['attribs'] = CaseInsensitiveFrozenSet(old_attribs)
+
+
+def patch_text_types(schema_dict: OutputSchemaData, out_version: tuple[int, int]) -> None:
+    """
+    Patch the text_types entry to correct ambigouities
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    ELEMENTS_ENTRY: Literal['text_types'] = 'text_types'
+
+    if out_version >= (0, 35):
+        #After this version the issue was solved
+        return
+
+    CHANGE_TYPES = {
+        (0, 29): {
+            'add': {
+                'densityMatrixFor': [AttributeType(base_type='complex', length='unbounded')]
+            }
+        },
+    }
+
+    all_changes: dict[str, list[AttributeType]] = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if out_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())  #type:ignore
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in schema_dict[ELEMENTS_ENTRY]:
+            raise ValueError(f'patch_text_types failed. Type {name} does not exist')
+        schema_dict[ELEMENTS_ENTRY][name] = new_definition
 
 
 def merge_schema_dicts(inputschema_dict: inpschema_todict.InputSchemaData,

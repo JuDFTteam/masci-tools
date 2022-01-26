@@ -6012,7 +6012,7 @@ text_types:
   - base_type: switch
     length: 4
   densitymatrixfor:
-  - base_type: string
+  - base_type: complex
     length: unbounded
   displace:
   - base_type: float
