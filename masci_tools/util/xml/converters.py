@@ -398,6 +398,9 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
 
         for value_type in possible_types:
             if value_type in ('float', 'float_expression'):
+                if isinstance(val, complex):
+                    exceptions.append(ValueError(f'Could not convert {val} to fortran float. Value is complex'))
+                    continue
                 try:
                     converted_value = f'{val:{float_format}f}'
                 except ValueError as exc:
