@@ -1084,220 +1084,160 @@ def bokeh_spectral_function(kpath,
 ##################################### special plots ################################################
 ####################################################################################################
 
-# periodic table
 
-# tools="pan, xpan, ypan, poly_select, tap, wheel_zoom, xwheel_zoom, ywheel_zoom, xwheel_pan, ywheel_pan,
-#         box_zoom, redo, undo, reset, save, crosshair, zoom_out, xzoom_out, yzoom_out, hover"
-tooltips_def_period = [('Name', '@name'), ('Atomic number', '@{atomic number}'), ('Atomic mass', '@{atomic mass}'),
-                       ('CPK color', '$color[hex, swatch]:CPK'),
-                       ('Electronic configuration', '@{electronic configuration}')]
-
-
-def periodic_table_plot(source,
-                        display_values=[],
-                        display_positions=[],
-                        color_value=None,
-                        tooltips=tooltips_def_period,
-                        title='',
-                        outfilename='periodictable.html',
-                        value_color_range=[None, None],
-                        log_scale=0,
-                        color_map=None,
-                        bokeh_palette='Plasma256',
-                        toolbar_location=None,
-                        tools='hover',
-                        blank_color='#c4c4c4',
-                        blank_outsiders=[True, True],
-                        include_legend=True,
-                        copy_source=True,
-                        legend_labels=None,
-                        color_bar_title=None,
-                        show=True):
-    """
-    Plot function for an interactive periodic table plot. Heat map and hover tool.
-    source must be a panda dataframe containing, period, group,
-
-    param source: pandas dataframe containing everything
-    param tooltips: what is shown with hover tool. values have to be in source
-    example:
-
-    .. code-block:: python
-
-        Keys of panda DF. group, period symbol and atomic number or required...
-        Index([u'atomic number', u'symbol', u'name', u'atomic mass', u'CPK',
-           u'electronic configuration', u'electronegativity', u'atomic radius',
-           u'ion radius', u'van der Waals radius', u'IE-1', u'EA',
-           u'standard state', u'bonding type', u'melting point', u'boiling point',
-           u'density', u'metal', u'year discovered', u'group', u'period',
-           u'rmt_mean', u'rmt_std', u'number_of_occ', u'type_color', u'c_value'],
-          dtype='object')
-
-        tooltips_def = [("Name", "@name"),
-                    ("Atomic number", "@{atomic number}"),
-                    ("Atomic mass", "@{atomic mass}"),
-                    ("CPK color", "$color[hex, swatch]:CPK"),
-                    ("Electronic configuration", "@{electronic configuration}")]
-
-    param display_values: list of strings, have to match source. Values to be displayed on the element rectangles
-    example:["rmt_mean", "rmt_std", "number_of_occ"]
-    param display_positions: list of floats, length has to match display_values, At which y offset the display values should be displayed.
-    """
-    # TODO: solve the use of two different color bars, we just one to use a bokeh color bar and not matplotlib...
-    from bokeh.io import export_png
-    from bokeh.io import output_notebook, output_file
-    from bokeh.sampledata.periodic_table import elements
-    from bokeh.transform import dodge, factor_cmap
-    from bokeh.models import Arrow, OpenHead, NormalHead, VeeHead
-    from bokeh.models import Range1d, LabelSet, Label
-    from bokeh.models import LinearColorMapper, LogColorMapper, ColorBar
-    from bokeh.models import BasicTicker
-
-    from bokeh.io import show as bshow
-    from bokeh.plotting import figure as bokeh_fig
-    from matplotlib.colors import Normalize, LogNorm, to_hex
-    from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
+@ensure_plotter_consistency(plot_params)
+def periodic_table_plot(
+        values,
+        positions=None,
+        color_data=None,
+        data=None,
+        copy_data=False,
+        log_scale=False,
+        color_map=None,
+        title='',
+        color_bar_title=None,
+        saveas='periodictable.html',
+        blank_outsiders='both',  #min, max or both, None
+        blank_color='#c4c4c4',
+        include_legend=True,
+        figure=None,
+        **kwargs):
+    from matplotlib.colors import Normalize, LogNorm
     from matplotlib.cm import ScalarMappable
+    from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
+
+    from bokeh.transform import dodge, linear_cmap, log_cmap
+    from bokeh.sampledata.periodic_table import elements
+    from bokeh.models import Label, ColorBar, OpenHead, Arrow, BasicTicker
 
     if color_map is None:
         color_map = plasma
 
-    if len(display_values) != len(display_positions):
-        raise ValueError(
-            'The input lists "display_values" and "display_positions" of "periodic_table_plot" need to have same length.'
-        )
+    #For this plot we use the sample data from bokeh to fill in values
+    if data is None:
+        data = elements
 
-    if copy_source:
-        source1 = source.copy()
-    else:  # inline we change the data here!
-        source1 = source
+    if positions is None:
+        #TODO: Standard positions
+        pass
 
-    TOOLTIPS = tooltips
+    if isinstance(color_data, list):
+        raise ValueError('Only one color data entry allowed')
 
-    # defaults
-    plot_width = 1470
-    plot_height = 1040
+    plot_data = process_data_arguments(data=data, copy_data=copy_data, color=color_data, values=values)
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
     cbar_height = 40
     cbar_width = 500
     cbar_fontsize = 12  # size of cbar labels
     cbar_standoff = 8
 
-    # preprocessing data
-    # if colors are not given in source, color
-    # if source has "type_color"]
+    groups = [str(x) for x in range(1, 19)]
+    periods = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
+    data['period'] = [periods[x - 1] for x in data.period]
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={
+                                 'width': 1475,
+                                 'height': 675,
+                                 'x_range': groups,
+                                 'y_range': list(reversed(periods)),
+                             },
+                             color_palette='Plasma256',
+                             format_tooltips=False,
+                             tooltips=[('Name', '@name'), ('Atomic number', '@{atomic number}'),
+                                       ('Atomic mass', '@{atomic mass}'), ('CPK color', '$color[hex, swatch]:CPK'),
+                                       ('Electronic configuration', '@{electronic configuration}')])
 
-    # colors are tricky, since for the periodic table we use matplotlib, for the legend we have to use bokeh
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, '', '', figure=figure)
 
-    # Define color map called 'color_scale'
-    data = source1[color_value]
-    if value_color_range[0] is not None:
-        mind = value_color_range[0]
-    else:
-        mind = min(data)  # 0.65 #
-    if value_color_range[1] is not None:
-        maxd = value_color_range[1]
-    else:
-        maxd = max(data)  # 2.81 #
+    color_scale = None
+    if any(entry.color is not None for entry in plot_data.keys()):
+        if plot_params['limits'] is not None:
+            color_limits = plot_params['limits'].get('color')
+            if color_limits is not None:
+                min_color, max_color = color_limits
+        else:
+            min_color, max_color = plot_data.min('color'), plot_data.max('color')
+        color_values = plot_data.values(first=True).color
+        color_name = plot_data.keys(first=True).color
 
-    if log_scale == 0:
-        color_mapper = LinearColorMapper(palette=bokeh_palette, low=mind, high=maxd)
-        norm = Normalize(vmin=mind, vmax=maxd)
-    elif log_scale == 1:
-        for datum in data:
-            if datum < 0:
-                raise ValueError(f'Entry for element {datum} is negative but log-scale is selected')
-        color_mapper = LogColorMapper(palette=bokeh_palette, low=mind, high=maxd)
-        norm = LogNorm(vmin=mind, vmax=maxd)
-    color_scale = ScalarMappable(norm=norm, cmap=color_map).to_rgba(data, alpha=None)
+        if not log_scale:
+            color_mapper = linear_cmap(color_name, palette=plot_params['color_palette'], low=min_color, high=max_color)
+            norm = Normalize(vmin=min_color, vmax=max_color)
+        else:
+            if min_color < 0:
+                raise ValueError(f"Entry for 'color' element '{color_data}' is negative but log-scale is selected")
+            color_mapper = log_cmap(color_name, palette=plot_params['color_palette'], low=min_color, high=max_color)
+            norm = LogNorm(vmin=min_color, vmax=max_color)
 
-    # Define color for blank entries
-    default_value = None
-    color_list = []
-    color_values = []
-    for i in range(len(source1)):
-        color_list.append(blank_color)
-        color_values.append(default_value)
+        color_scale = ScalarMappable(norm=norm, cmap=color_map).to_rgba(color_values, alpha=None)
+        plot_params.set_defaults(default_type='function', color=color_mapper)
 
-    for i, data_element in enumerate(source1[color_value]):
-        if blank_outsiders[0] and data_element < mind:
-            continue
-        if blank_outsiders[1] and data_element > maxd:
-            continue
-        color_list[i] = to_hex(color_scale[i])
-        # color_values[i] = data_element
-
-    source1['type_color'] = color_list
-    # source["c_value"] = color_values
+        if blank_outsiders is not None:
+            if blank_outsiders == 'both':
+                outsiders = np.logical_or(color_values < min_color, color_values > max_color)
+            elif blank_outsiders == 'min':
+                outsiders = color_values < min_color
+            elif blank_outsiders == 'max':
+                outsiders = color_values > max_color
+            plot_data.mask_data(outsiders, data_key='color', replace_value=blank_color)
 
     if include_legend:
         # we copy the Be entry and display it with some text again at another spot
-        be = source1[3:4].copy()
+        be = data[3:4].copy()
         be['group'] = '7'
         # print(be)
-        source1.loc[-1] = be.values[0]
-        source1.index = source1.index + 1
-        source1 = source1.sort_index()
-        # df.head()
-    groups = [str(x) for x in range(1, 19)]
-    periods = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
-    # Plot
-    p = bokeh_fig(
-        title=title,
-        plot_width=plot_width,
-        plot_height=plot_height,  # 450,
-        x_range=groups,
-        y_range=list(reversed(periods)),
-        tools=tools,
-        toolbar_location=toolbar_location,
-        tooltips=TOOLTIPS)
+        data.loc[-1] = be.values[0]
+        data.index = data.index + 1
+        data = data.sort_index()
+
     r = p.rect(
         'group',
         'period',
         0.95,
         0.95,
-        source=source1,
+        source=data,
         fill_alpha=0.6,  # legend="metal",
-        color='type_color')
+        color=plot_params['color'])
+    plot_params.add_tooltips(p, r)
 
-    text_props = {'source': source1, 'text_align': 'left', 'text_baseline': 'middle'}
+    text_props = {'source': data, 'text_align': 'left', 'text_baseline': 'middle'}
     x = dodge('group', -0.4, range=p.x_range)
-
     # The element names
     p.text(x=x,
-           y=dodge('period', 0.25, range=p.y_range),
+           y=dodge('period', -0.35, range=p.y_range),
            text='symbol',
            text_font_style='bold',
            text_font_size='14pt',
            **text_props)
-    p.text(x=dodge('group', 0.1, range=p.x_range),
-           y=dodge('period', 0.25, range=p.y_range),
+    p.text(x=dodge('group', 0.18, range=p.x_range),
+           y=dodge('period', 0.3, range=p.y_range),
            text='atomic number',
            text_font_size='12pt',
            **text_props)
 
+    plot_kw = plot_params.plot_kwargs()
+
     # The values displayed on the element boxes
-    for i, label in enumerate(display_values):
+    for entry, kw, position in zip(plot_data.keys(), plot_kw, positions):
         p.text(x=x,
-               y=dodge('period', display_positions[i], range=p.y_range),
-               text=label,
+               y=dodge('period', position, range=p.y_range),
+               text=entry.values,
                text_font_size='10pt',
                **text_props)
 
+        label = kw.pop('legend_label', entry.values)
+
         # legend
         # not a real legend, but selfmade text
-        # print(be.values[0])
-        # print(source.loc(-1))
-        # print(be['group'])
-        # p.text(x=be['group'], y=dodge("period", 0.25, range=p.y_range), text="test", text_font_style="bold", text_font_size="14pt")
-        if legend_labels is not None:
-            label1 = legend_labels[i]
-        else:
-            label1 = label
-
         # I do not like the hardcoded positions of the legend
         legendlabel = Label(
             x=7.1,
-            y=8.4 + display_positions[i],  # x_units='screen', y_units='screen',
-            text=label1,
+            y=5.4 + position,  #x_units='screen', y_units='screen',
+            text=label,
             render_mode='canvas',  # 'css',
             border_line_color='black',
             border_line_alpha=0.0,
@@ -1308,8 +1248,8 @@ def periodic_table_plot(source,
         legendlabelarrow = Arrow(
             x_start=7.05,
             x_end=6.7,
-            y_start=8.5 + display_positions[i],
-            y_end=8.5 + display_positions[i],  # x_units='screen', y_units='screen',
+            y_start=5.5 + position,
+            y_end=5.5 + position,  # x_units='screen', y_units='screen',
             line_width=2,
             end=OpenHead(line_width=2, size=4))  # 'css',
         # border_line_color='black', border_line_alpha=0.0,
@@ -1328,13 +1268,12 @@ def periodic_table_plot(source,
     p.axis.major_tick_line_color = None
     p.axis.major_label_standoff = 0
     # p.legend.orientation = "horizontal"
-    p.hover.renderers = [r]
     alpha = 1.0
     # add color bar
     if color_bar_title is None:
-        color_bar_title = color_value
+        color_bar_title = plot_data.keys(first=True).color
     color_bar = ColorBar(
-        color_mapper=color_mapper,
+        color_mapper=color_mapper['transform'],
         title=color_bar_title,
         title_text_font_size='12pt',
         ticker=BasicTicker(desired_num_ticks=10),
@@ -1342,7 +1281,7 @@ def periodic_table_plot(source,
         background_fill_color=None,
         # 'vertical',
         label_standoff=cbar_standoff,
-        location=(plot_width * 0.2, plot_height * 0.69),
+        location=(plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55),
         orientation='horizontal',
         scale_alpha=alpha,
         major_label_text_font_size=str(cbar_fontsize) + 'pt',
@@ -1352,14 +1291,8 @@ def periodic_table_plot(source,
     p.add_layout(color_bar, 'center')
 
     # deactivate grid
-
     p.grid.grid_line_color = None
-
-    # export_png(p, filename="plot.png")
-    output_file(outfilename)
-
-    if show:
-        bshow(p)
+    plot_params.save_plot(p, saveas)
 
     return p
 
