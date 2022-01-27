@@ -111,7 +111,7 @@ class ParseTasks:
         'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required', 'subtags',
         'text'
     }
-    ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs'}
+    ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs', 'result_names'}
 
     _version = '0.3.0'
     _migrations: MigrationDict = {}
@@ -454,6 +454,15 @@ class ParseTasks:
                 parsed_dict = out_dict.setdefault(spec['subdict'], {})
 
             parsed_value = action(node, schema_dict, logger=logger, **args)
+
+            if spec['parse_type'] == 'xmlGetter' and 'result_names' in spec:
+                if isinstance(parsed_value, tuple):
+                    if len(spec['result_names']) != len(parsed_value):
+                        raise ValueError('Wrong number of result names given.'
+                                         f"Got {len(parsed_value)} values and {len(spec['result_names'])} names")
+                    parsed_value = dict(zip(spec['result_names'], parsed_value))
+                else:
+                    task_key = spec['result_names'][0]
 
             if isinstance(parsed_value, dict):
 
