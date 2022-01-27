@@ -1676,7 +1676,6 @@ def plot_relaxation_results():
     Relative realxation of every atom type to a reference structure.
     (if none given use the structure from first relaxation cycle as reference)
     """
-    pass
 
 
 @ensure_plotter_consistency(plot_params)
@@ -2303,20 +2302,6 @@ def plot_spectral_function(kpath,
                         **kwargs)
 
     return ax
-
-
-def plot_certain_bands():
-    """
-    Plot only certain bands from a bands.1 file from FLEUR
-    """
-    pass
-
-
-def plot_bands_and_dos():
-    """
-    PLot a Bandstructure with a density of states on the right side.
-    """
-    pass
 
 
 def plot_corelevels(coreleveldict, compound='', axis=None, saveas='scatterplot', **kwargs):
@@ -3076,7 +3061,6 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     different error functions.
     """
     from scipy.special import erf  #pylint: disable=no-name-in-module
-    pass
 
 
 def hyp2f2(a, b, z):
@@ -3091,8 +3075,6 @@ def hyp2f2(a, b, z):
     also maybe go for the special case we need first: 1,1,3/2;2;-z2
     """
     from scipy.special import hyp0f1
-
-    pass
 
 
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
