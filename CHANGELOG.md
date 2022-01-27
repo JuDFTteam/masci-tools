@@ -5,6 +5,7 @@
 
 ### Improvements
 - Fleur schema parsing functions now recognize a new alias from the fleur schemas `FortranComplex` which is a number of the form `(float,float)`. Converters for complex values are added [[#106]](https://github.com/JuDFTteam/masci-tools/pull/106)
+- Added `IncompatibleSchemaVersions` error when a combination of output and input version for `OutputSchemaDict` is given, for which it is known that no XML schema can be compiled
 
 ### Bugfixes
 - Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception

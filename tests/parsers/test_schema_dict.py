@@ -3,7 +3,7 @@ Test of the consistency the input schema dictionaries with the SchemaFiles in th
 """
 import pytest
 
-from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound, list_available_versions
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, NoPathFound, NoUniquePathFound, list_available_versions, IncompatibleSchemaVersions
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 
@@ -104,10 +104,15 @@ def test_outschema_dict(data_regression, inp_version, out_version):
     """
     Test the fleur_schema_parser_functions to make sure that they match the stored inputschema_dict
     """
+    out_version_tuple = tuple(int(x) for x in out_version.split('.'))
+    inp_version_tuple = tuple(int(x) for x in inp_version.split('.'))
+    if out_version_tuple >= (0, 35) and inp_version_tuple <= (0, 32):
+        with pytest.raises(IncompatibleSchemaVersions):
+            outputschema = OutputSchemaDict.fromVersion(version=out_version, inp_version=inp_version)
+    else:
+        outputschema = OutputSchemaDict.fromVersion(version=out_version, inp_version=inp_version)
 
-    outputschema = OutputSchemaDict.fromVersion(version=out_version, inp_version=inp_version)
-
-    data_regression.check(clean_for_reg_dump(outputschema.get_unlocked()))
+        data_regression.check(clean_for_reg_dump(outputschema.get_unlocked()))
 
 
 def test_tag_xpath_input():

@@ -54,6 +54,13 @@ class NoUniquePathFound(ValueError):
     """
 
 
+class IncompatibleSchemaVersions(Exception):
+    """
+    Exeption raised when it is known that a given output version and input version
+    cannot be compiled into a complete fleur output xml schema
+    """
+
+
 F = TypeVar('F', bound=Callable[..., Any])
 """Generic Type variable for callable"""
 
@@ -801,6 +808,11 @@ class OutputSchemaDict(SchemaDict):
 
         if (version, inp_version) in cls._schema_dict_cache and not no_cache:
             return cls._schema_dict_cache[(version, inp_version)]
+
+        #Check for known incompatibilities
+        if int(version.split('.')[1]) >= 35 and int(inp_version.split('.')[1]) <= 32:
+            raise IncompatibleSchemaVersions('Output schemas starting from version 0.35 cannot be compiled '
+                                             'to a XML schema with Input schemas before version 0.33')
 
         inpschema_dict = InputSchemaDict.fromVersion(inp_version, no_cache=no_cache)
         cls._schema_dict_cache[(version, inp_version)] = cls.fromPath(schema_file_path,
