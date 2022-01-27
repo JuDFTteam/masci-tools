@@ -3,13 +3,16 @@
 # latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...develop)
 
+### Improvements
+- Fleur schema parsing functions now recognize a new alias from the fleur schemas `FortranComplex` which is a number of the form `(float,float)`. Converters for complex values are added [[#106]](https://github.com/JuDFTteam/masci-tools/pull/106)
+
 ### Bugfixes
 - Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception
 - Added patch for `OutputSchemaDict` objects with `FleurOutputSchema.xsd` files before version `0.35`. The attribute `qPoints` in the DMI output was actually called `qpoints` in these schemas, making it impossible to retrieve this attribute
 
 ### For developers
 - Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
-- Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) 
+- Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) [[#102]](https://github.com/JuDFTteam/masci-tools/pull/102)
 
 # v.0.7.2
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...v0.7.2)
