@@ -4759,7 +4759,7 @@ text_types:
   - base_type: string
     length: unbounded
   densitymatrixfor:
-  - base_type: string
+  - base_type: complex
     length: unbounded
   edgeindices:
   - base_type: int

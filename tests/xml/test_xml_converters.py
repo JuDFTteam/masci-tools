@@ -53,11 +53,27 @@ def test_convert_to_fortran_bool():
         convert_to_fortran_bool(())
 
 
+@pytest.mark.parametrize('text,expected,error',
+                         (('(1.52,3.14)', 1.52 + 3.14j, False), ('(-1.52,+3.14)', -1.52 + 3.14j, False),
+                          ('(1.52.12,-3.14)', None, True), ('(1.43,not-anumber)', None, True)))
+def test_convert_from_fortran_complex(text, expected, error):
+    """
+    Test of the convert_from_fortran_complex function
+    """
+    from masci_tools.util.xml.converters import convert_from_fortran_complex
+
+    if error:
+        with pytest.raises(ValueError):
+            convert_from_fortran_complex(text)
+    else:
+        assert pytest.approx(convert_from_fortran_complex(text)) == expected
+
+
 STRINGS = [
     '1.2314', 'all', ['all', '213', '-12'], ['PI', 'NOT_PI', '1.2'], ['F', 'T'], ['F', 'T'],
     '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121', '0.0 Pi/4.0 6.3121',
     ['0.0 Pi/4.0 6.3121', 'Bohr Pi/4.0 all', '0.0 Pi/*4.0 0.0'], ['F asd', 'T'],
-    ['12 213 4215 412', '12 213 4215 412 123 14124']
+    ['12 213 4215 412', '12 213 4215 412 123 14124'], ['(1.52,-3.14)', '1.52']
 ]
 
 DEFINITIONS = [[AttributeType(base_type='float', length=1)],
@@ -88,14 +104,16 @@ DEFINITIONS = [[AttributeType(base_type='float', length=1)],
                    AttributeType(base_type='switch', length=4),
                    AttributeType(base_type='int', length=4),
                    AttributeType(base_type='int', length='unbounded')
-               ]]
+               ], [AttributeType(base_type='float', length=1),
+                   AttributeType(base_type='complex', length=1)]]
 
 RESULTS = [(pytest.approx(1.2314), True), ('all', True), (['all', 213, -12], True),
            (['PI', 'NOT_PI', pytest.approx(1.2)], False), (['F', 'T'], False), ([False, True], True),
            (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True), ('0.0 Pi/4.0 6.3121', False),
            (pytest.approx([0.0, 0.7853981633974483, 6.3121]), True),
            ([[0.0, 0.7853981633974483, 6.3121], [1.0, 0.7853981633974483, 'all'], [0.0, 'Pi/*4.0', 0.0]], False),
-           ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True)]
+           ([[False, 'asd'], [True]], True), ([[12, 213, 4215, 412], [12, 213, 4215, 412, 123, 14124]], True),
+           ([1.52 - 3.14j, 1.52], True)]
 
 WARNINGS = [[], [], [], [
     "Could not convert 'PI'",
@@ -105,7 +123,7 @@ WARNINGS = [[], [], [], [
 ], [], [
     "Could not convert 'all'",
     "Could not convert 'Pi/*4.0'",
-], [], []]
+], [], [], []]
 
 
 @pytest.mark.parametrize('string_attr,types,results', zip(STRINGS, DEFINITIONS, RESULTS))
@@ -151,17 +169,18 @@ def test_convert_from_xml_explicit_warnings(caplog, string_attr, types, results,
 TO_XML_VALUES = [
     1.2134, 'all', ['all', 213, '-12'], ['3.14', 'NOT_PI', 1.2], '1', [False, 'True'], [0.0, 'Pi/4.0', 6.3121],
     [0.0, 'Pi/4.0', 6.3121], [0.0, 'Pi/4.0', 6.3121], [[0.0, 'Pi/4.0', 6.3121], ['Bohr', 'Pi/4.0', 'all']],
-    [[False, 'asd'], 'T'], [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]]
+    [[False, 'asd'], 'T'], [[12, '213', 4215, 412], [12, '213', 4215, '412', 123, 14124]], [1.52 - 3.14j, 1.52]
 ]
 
 TO_XML_RESULTS = [('1.2134000000', True), ('all', True), (['all', '213', '-12'], True),
                   (['3.14', 'NOT_PI', '1.2000000000'], True), ('1', True), (['F', 'T'], True),
                   ('0.0000000000 Pi/4.0 6.3121000000', True), ('', False), ('0.0000000000 Pi/4.0 6.3121000000', True),
                   (['0.0000000000 Pi/4.0 6.3121000000', 'Bohr Pi/4.0 all'], True), (['F asd', 'T'], True),
-                  (['12 213 4215 412', '12 213 4215 412 123 14124'], True)]
+                  (['12 213 4215 412', '12 213 4215 412 123 14124'], True),
+                  (['(1.5200000000,-3.1400000000)', '1.5200000000'], True)]
 
 TO_XML_WARNINGS = [[], [], [], [], [], [], [],
-                   ["Could not convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found"], [], [], [], []]
+                   ["Could not convert '[0.0, 'Pi/4.0', 6.3121]', no matching definition found"], [], [], [], [], []]
 
 
 @pytest.mark.parametrize('attr_value,types,results', zip(TO_XML_VALUES, DEFINITIONS, TO_XML_RESULTS))
