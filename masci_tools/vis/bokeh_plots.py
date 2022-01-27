@@ -564,7 +564,7 @@ def bokeh_spinpol_dos(energy_grid,
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
     if 'save_plots' in kwargs:
-        plot_params.set_parameters(show=kwargs.pop('save_plots'))
+        plot_params.set_parameters(save_plots=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
         p = bokeh_line(x,
@@ -1563,7 +1563,7 @@ def plot_convergence_results(iteration, distance, total_energy, *, saveas='conve
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
     if 'save_plots' in kwargs:
-        plot_params.set_parameters(show=kwargs.pop('save_plots'))
+        plot_params.set_parameters(save_plots=kwargs.pop('save_plots'))
 
     with NestedPlotParameters(plot_params):
         p1, p2 = plot_convergence(iteration, distance, total_energy, save_plots=False, show=False, **kwargs)
@@ -1612,7 +1612,7 @@ def plot_convergence_results_m(iterations,
     if 'show' in kwargs:
         plot_params.set_parameters(show=kwargs.pop('show'))
     if 'save_plots' in kwargs:
-        plot_params.set_parameters(show=kwargs.pop('save_plots'))
+        plot_params.set_parameters(save_plots=kwargs.pop('save_plots'))
     if plot_label is not None:
         kwargs['legend_label'] = plot_label
 
