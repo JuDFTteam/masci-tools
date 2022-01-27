@@ -1633,33 +1633,3 @@ def plot_convergence_results_m(iterations,
     plot_params.save_plot(grid, saveas)
 
     return grid
-
-
-######### plot_convex_hull plot ########
-
-
-def plot_convex_hull2d(hull,
-                       title='Convex Hull',
-                       xlabel='Atomic Procentage',
-                       ylabel='Formation energy / atom [eV]',
-                       linestyle='-',
-                       marker='o',
-                       legend=True,
-                       legend_option={},
-                       saveas='convex_hull',
-                       limits=[None, None],
-                       scale=[None, None],
-                       axis=None,
-                       color='k',
-                       color_line='k',
-                       linewidth=2,
-                       markersize=8,
-                       marker_hull='o',
-                       markersize_hull=8,
-                       **kwargs):
-    """
-    Plot method for a 2d convex hull diagram
-
-    :param hull: scipy.spatial.ConvexHull
-    """
-    pass
