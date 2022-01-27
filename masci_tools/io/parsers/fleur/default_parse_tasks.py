@@ -21,10 +21,17 @@ correspond to the keys in the output dictionary
 
 The following keys are expected in each entry:
     :param parse_type: str, defines which methods to use when extracting the information
-    :param path_spec: dict with all the arguments that should be passed to tag_xpath
-                      or attrib_xpath to get the correct path
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
+
+If `parse_type` is not equal to `xmlGetter` the following key is required:
+    :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                      or attrib_xpath to get the correct path
+
+In the case of `xmlGetter` the following keys are allowed:
+    :param name: name of the function in `masci_tools.util.xml.xml_getters` (required)
+    :param kwargs: additional arguments to pass
+    :param result_names: list of str defining the keys under which to enter the outputs of the function
 
 For the allAttribs parse_type there are more keys that can appear:
     :param base_value: str, optional. If given the attribute

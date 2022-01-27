@@ -51,6 +51,7 @@ The following are possible:
                   into a dictionary, but for the parent of the tag
   :singleValue: Special case of allAttribs to parse value and units
                 attribute for the given tag
+  :xmlGetter: Will execute a function in the module `masci_tools.util.xml.xml_getters` given in the `name` entry
 
 The ```path_spec``` key specifies how the key can be uniquely identified.
 
