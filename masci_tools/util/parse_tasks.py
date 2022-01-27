@@ -206,7 +206,7 @@ class ParseTasks:
         """
         Return the registered migrations
         """
-        if getattr(self, '_migrations', None) is None:
+        if not self._migrations:
             import_module('masci_tools.io.parsers.fleur.task_migrations')
         return self._migrations
 
@@ -215,7 +215,7 @@ class ParseTasks:
         """
         Return the registered conversion functions
         """
-        if getattr(self, '_conversion_functions', None) is None:
+        if not self._conversion_functions:
             import_module('masci_tools.io.parsers.fleur.outxml_conversion')
         return self._conversion_functions
 
@@ -224,7 +224,7 @@ class ParseTasks:
         """
         Return the registered parse functions
         """
-        if getattr(self, '_parse_functions', None) is None:
+        if not self._parse_functions:
             import_module('masci_tools.util.schema_dict_util')
         return self._parse_functions
 
@@ -233,7 +233,7 @@ class ParseTasks:
         """
         Return the registered parse functions for parsing multiple attributes
         """
-        if getattr(self, '_all_attribs_function', None) is None:
+        if not self._all_attribs_function:
             import_module('masci_tools.util.schema_dict_util')
         return self._all_attribs_function
 
