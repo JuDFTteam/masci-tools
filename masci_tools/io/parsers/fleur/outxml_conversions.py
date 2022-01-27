@@ -201,7 +201,7 @@ def convert_relax_info(out_dict: dict[str, Any], logger: Logger) -> dict[str, An
         positions = [abs_to_rel(position, cell) for position in positions]
 
     out_dict['relax_brav_vectors'] = cell.tolist()
-    out_dict['relax_atom_positions'] = [[round(x,16) for x in pos] for pos in positions]
+    out_dict['relax_atom_positions'] = [[round(x, 16) for x in pos] for pos in positions]
     out_dict['relax_atomtype_info'] = [(site.kind, site.symbol) for site in atoms]
 
     return out_dict
