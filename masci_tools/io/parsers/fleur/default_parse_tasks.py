@@ -21,10 +21,17 @@ correspond to the keys in the output dictionary
 
 The following keys are expected in each entry:
     :param parse_type: str, defines which methods to use when extracting the information
-    :param path_spec: dict with all the arguments that should be passed to tag_xpath
-                      or attrib_xpath to get the correct path
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
+
+If `parse_type` is not equal to `xmlGetter` the following key is required:
+    :param path_spec: dict with all the arguments that should be passed to tag_xpath
+                      or attrib_xpath to get the correct path
+
+In the case of `xmlGetter` the following keys are allowed:
+    :param name: name of the function in `masci_tools.util.xml.xml_getters` (required)
+    :param kwargs: additional arguments to pass
+    :param result_names: list of str defining the keys under which to enter the outputs of the function
 
 For the allAttribs parse_type there are more keys that can appear:
     :param base_value: str, optional. If given the attribute
@@ -207,101 +214,20 @@ TASKS_DEFINITION = {
     },
     #--------Defintions for relaxation info from input section (bravais matrix, atompos)
     #--------for Bulk and film
-    'bulk_relax_info': {
+    'relax_info': {
         '_general': True,
-        '_modes': [('relax', True), ('film', False)],
+        '_modes': [
+            ('relax', True),
+        ],
         '_conversions': ['convert_relax_info'],
-        'lat_row1': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-1',
-                'contains': 'bulkLattice/bravais'
+        'parsed_relax_info': {
+            'parse_type': 'xmlGetter',
+            'name': 'get_structure_data',
+            'kwargs': {
+                'convert_to_angstroem': False,
+                'include_relaxations': False
             }
-        },
-        'lat_row2': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-2',
-                'contains': 'bulkLattice/bravais'
-            }
-        },
-        'lat_row3': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-3',
-                'contains': 'bulkLattice/bravais'
-            }
-        },
-        'atom_positions': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'relPos'
-            }
-        },
-        'position_species': {
-            'parse_type': 'parentAttribs',
-            'path_spec': {
-                'name': 'relPos'
-            },
-            'flat': False,
-            'only_required': True
-        },
-        'element_species': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'species'
-            },
-            'flat': False,
-            'ignore': ['vcaAddCharge', 'magField']
-        },
-    },
-    'film_relax_info': {
-        '_general': True,
-        '_modes': [('relax', True), ('film', True)],
-        '_conversions': ['convert_relax_info'],
-        'lat_row1': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-1',
-                'contains': 'filmLattice/bravais'
-            }
-        },
-        'lat_row2': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-2',
-                'contains': 'filmLattice/bravais'
-            }
-        },
-        'lat_row3': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'row-3',
-                'contains': 'filmLattice/bravais'
-            }
-        },
-        'atom_positions': {
-            'parse_type': 'text',
-            'path_spec': {
-                'name': 'filmPos'
-            }
-        },
-        'position_species': {
-            'parse_type': 'parentAttribs',
-            'path_spec': {
-                'name': 'filmPos'
-            },
-            'flat': False,
-            'only_required': True
-        },
-        'element_species': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'species'
-            },
-            'flat': False,
-            'ignore': ['vcaAddCharge', 'magField']
-        },
+        }
     },
     #----General iteration tasks
     # iteration number

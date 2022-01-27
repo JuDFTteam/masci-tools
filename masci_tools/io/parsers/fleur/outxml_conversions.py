@@ -19,7 +19,7 @@ from datetime import date
 import numpy as np
 from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.util.parse_tasks_decorators import conversion_function
-from masci_tools.io.common_functions import convert_to_pystd
+from masci_tools.io.common_functions import convert_to_pystd, abs_to_rel, abs_to_rel_f
 from typing import Any
 from logging import Logger
 
@@ -190,23 +190,19 @@ def convert_relax_info(out_dict: dict[str, Any], logger: Logger) -> dict[str, An
 
     :param out_dict: dict with the already parsed information
     """
-    v_1 = out_dict.pop('lat_row1')
-    v_2 = out_dict.pop('lat_row2')
-    v_3 = out_dict.pop('lat_row3')
 
-    out_dict['relax_brav_vectors'] = [v_1, v_2, v_3]
+    atoms, cell, pbc = out_dict.pop('parsed_relax_info')
+    film = not all(pbc)
 
-    out_dict['relax_atom_positions'] = out_dict.pop('atom_positions')
-    species = out_dict.pop('position_species')
-    species = species['species']
-    species_info = out_dict.pop('element_species')
-    if isinstance(species_info['name'], str):
-        species_info = {key: [val] for key, val in species_info.items()}
-    species_info = dict(zip(species_info['name'], species_info['element']))
+    positions = [convert_to_pystd(site.position) for site in atoms]
+    if film:
+        positions = [abs_to_rel_f(position, cell, pbc) for position in positions]
+    else:
+        positions = [abs_to_rel(position, cell) for position in positions]
 
-    out_dict['relax_atomtype_info'] = []
-    for specie in species:
-        out_dict['relax_atomtype_info'].append((specie, species_info[specie]))
+    out_dict['relax_brav_vectors'] = cell.tolist()
+    out_dict['relax_atom_positions'] = [[round(x, 16) for x in pos] for pos in positions]
+    out_dict['relax_atomtype_info'] = [(site.kind, site.symbol) for site in atoms]
 
     return out_dict
 
