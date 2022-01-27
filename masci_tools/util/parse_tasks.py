@@ -32,6 +32,7 @@ from lxml import etree
 from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
+from .xml import xml_getters
 from masci_tools.util.typing import XMLLike
 import masci_tools
 
@@ -102,14 +103,17 @@ class ParseTasks:
     """
 
     CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions', '_optional', '_minimum_version'}
-    REQUIRED_KEYS = {'parse_type', 'path_spec'}
+    REQUIRED_KEYS = {'parse_type'}
+    REQUIRED_KEYS_XML_GETTER = {'parse_type', 'name'}
+    REQUIRED_KEYS_UTIL = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
     ALLOWED_KEYS_ALLATTRIBS = {
         'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required', 'subtags',
         'text'
     }
+    ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs'}
 
-    _version = '0.2.0'
+    _version = '0.3.0'
     _migrations: MigrationDict = {}
     _all_attribs_function: set[str] = set()
     _conversion_functions: dict[str, Callable] = {}
@@ -303,11 +307,22 @@ class ParseTasks:
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self.parse_functions:
+            if definition['parse_type'] == 'xmlGetter':
+                missing_required = self.REQUIRED_KEYS_XML_GETTER.difference(task_keys)
+                if missing_required:
+                    raise ValueError(f'Reqired Keys missing: {missing_required}')
+            else:
+                missing_required = self.REQUIRED_KEYS_UTIL.difference(task_keys)
+                if missing_required:
+                    raise ValueError(f'Reqired Keys missing: {missing_required}')
+
+            if not definition['parse_type'] in self.parse_functions and definition['parse_type'] != 'xmlGetter':
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
             if definition['parse_type'] in self.all_attribs_function:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
+            elif definition['parse_type'] == 'xmlGetter':
+                extra_keys = task_keys.difference(self.ALLOWED_KEYS_XML_GETTER)
             else:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS)
 
@@ -413,9 +428,12 @@ class ParseTasks:
             if task_key.startswith('_'):
                 continue
 
-            action = self.parse_functions[spec['parse_type']]
-
-            args = spec['path_spec'].copy()
+            if spec['parse_type'] == 'xmlGetter':
+                action = getattr(xml_getters, spec['name'])
+                args = spec.get('kwargs', {})
+            else:
+                action = self.parse_functions[spec['parse_type']]
+                args = spec['path_spec'].copy()
 
             if spec['parse_type'] in ['attrib', 'text', 'allAttribs', 'parentAttribs', 'singleValue']:
                 args['constants'] = constants
