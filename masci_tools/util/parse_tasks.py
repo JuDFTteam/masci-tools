@@ -109,9 +109,7 @@ class ParseTasks:
     REQUIRED_KEYS_XML_GETTER = {'parse_type', 'name'}
     REQUIRED_KEYS_UTIL = {'parse_type', 'path_spec'}
     ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last', 'force_list', 'kwargs'}
-    ALLOWED_KEYS_ALLATTRIBS = {
-        'parse_type', 'path_spec', 'subdict', 'base_value', 'overwrite', 'flat', 'kwargs'
-    }
+    ALLOWED_KEYS_ALLATTRIBS = {'parse_type', 'path_spec', 'subdict', 'base_value', 'overwrite', 'flat', 'kwargs'}
     ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs', 'result_names'}
 
     _version = '0.3.0'

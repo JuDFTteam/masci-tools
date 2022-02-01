@@ -184,6 +184,7 @@ def convert_ldau_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[s
 
     return out_dict
 
+
 @conversion_function
 def convert_ldahia_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
     """
@@ -218,11 +219,10 @@ def convert_ldahia_definitions(out_dict: dict[str, Any], logger: Logger) -> dict
             'j': parsed_ldahia['j'][index],
             'unit': 'eV',
             'double_counting': 'AMF' if parsed_ldahia['l_amf'][index] else 'FLL',
-            'initial_occupation':  parsed_ldahia['init_occ'][index]
+            'initial_occupation': parsed_ldahia['init_occ'][index]
         }
 
     return out_dict
-
 
 
 @conversion_function

@@ -128,7 +128,7 @@ TASKS_DEFINITION = {
                 'name': 'startDateAndTime'
             },
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'ignore': ['zone'],
             }
         },
@@ -138,7 +138,7 @@ TASKS_DEFINITION = {
                 'name': 'endDateAndTime'
             },
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'ignore': ['zone'],
             }
         }
@@ -203,7 +203,7 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -215,7 +215,7 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         }
@@ -241,7 +241,7 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldahia_info',
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         }
@@ -264,7 +264,7 @@ TASKS_DEFINITION = {
         }
     },
     'hubbard1_distances': {
-        '_general': True, #General because not every iteration contains a hubbard1 iteration
+        '_general': True,  #General because not every iteration contains a hubbard1 iteration
         '_minimum_version': '0.35',
         '_minimal': True,
         '_modes': [('ldahia', True)],
@@ -376,7 +376,7 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'sumOfEigenvalues'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -386,7 +386,7 @@ TASKS_DEFINITION = {
                 'name': 'coreElectrons',
                 'contains': 'sumOfEigenvalues'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -395,7 +395,7 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'valenceElectrons'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -404,7 +404,7 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'chargeDenXCDenIntegral'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -417,7 +417,7 @@ TASKS_DEFINITION = {
                 'name': 'dftUCorrection'
             },
             'subdict': 'ldau_info',
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -459,7 +459,7 @@ TASKS_DEFINITION = {
                 'name': 'magneticMoment'
             },
             'base_value': 'moment',
-            'kwargs':{
+            'kwargs': {
                 'ignore': ['atomType'],
             }
         }
@@ -472,7 +472,7 @@ TASKS_DEFINITION = {
                 'name': 'orbMagMoment'
             },
             'base_value': 'moment',
-            'kwargs':{
+            'kwargs': {
                 'ignore': ['atomType'],
             }
         }
@@ -495,7 +495,7 @@ TASKS_DEFINITION = {
                 'name': 'forceTotal'
             },
             'flat': False,
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         }
@@ -509,7 +509,7 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         },
@@ -520,7 +520,7 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'kwargs':{
+            'kwargs': {
                 'only_required': True
             }
         }
