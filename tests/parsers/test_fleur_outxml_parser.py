@@ -509,6 +509,19 @@ def test_outxml_ldaurelax(data_regression, test_file):
     })
 
 
+def test_outxml_ldahia(data_regression, test_file):
+    """
+    Test the outxml_parser for LDA+Hubbard1
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/Max-R5/Gd_Hubbard1/files/out.xml')
+
+    out_dict = outxml_parser(OUTXML_FILEPATH, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+    })
+
+
 def test_outxml_force(data_regression, test_file):
     """
     Test the outxml_parser for a forcetheorem calculation
