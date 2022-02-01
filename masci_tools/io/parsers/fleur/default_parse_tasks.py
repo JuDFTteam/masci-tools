@@ -238,6 +238,7 @@ TASKS_DEFINITION = {
         }
     },
     'hubbard1_distances': {
+        '_general': True, #General because not every iteration contains a hubbard1 iteration
         '_minimum_version': '0.35',
         '_minimal': True,
         '_modes': [('ldahia', True)],
@@ -248,7 +249,8 @@ TASKS_DEFINITION = {
             },
             'kwargs': {
                 'iteration_path': True
-            }
+            },
+            'force_list': True,
         },
         'element_distance': {
             'parse_type': 'attrib',
@@ -257,7 +259,8 @@ TASKS_DEFINITION = {
             },
             'kwargs': {
                 'iteration_path': True
-            }
+            },
+            'force_list': True,
         }
     },
     #----General iteration tasks

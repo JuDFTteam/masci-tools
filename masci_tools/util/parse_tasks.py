@@ -108,7 +108,7 @@ class ParseTasks:
     REQUIRED_KEYS = {'parse_type'}
     REQUIRED_KEYS_XML_GETTER = {'parse_type', 'name'}
     REQUIRED_KEYS_UTIL = {'parse_type', 'path_spec'}
-    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last', 'kwargs'}
+    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last', 'force_list', 'kwargs'}
     ALLOWED_KEYS_ALLATTRIBS = {
         'parse_type', 'path_spec', 'subdict', 'base_value', 'overwrite', 'flat', 'kwargs'
     }
@@ -482,7 +482,8 @@ class ParseTasks:
 
             else:
                 overwrite = spec.get('overwrite_last', False)
-                if use_lists and not overwrite:
+                force_list = spec.get('force_list', use_lists)
+                if force_list and not overwrite:
                     parsed_dict.setdefault(task_key, []).append(parsed_value)
                 else:
                     parsed_dict[task_key] = parsed_value if parsed_value is not None else parsed_dict.get(task_key)
