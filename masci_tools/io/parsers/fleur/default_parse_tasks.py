@@ -237,6 +237,29 @@ TASKS_DEFINITION = {
             }
         }
     },
+    'hubbard1_distances': {
+        '_minimum_version': '0.35',
+        '_minimal': True,
+        '_modes': [('ldahia', True)],
+        'occupation_distance': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'occupationDistance'
+            },
+            'kwargs': {
+                'iteration_path': True
+            }
+        },
+        'element_distance': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'elementDistance'
+            },
+            'kwargs': {
+                'iteration_path': True
+            }
+        }
+    },
     #----General iteration tasks
     # iteration number
     # total energy (only total or also contributions, also lda+u correction)
