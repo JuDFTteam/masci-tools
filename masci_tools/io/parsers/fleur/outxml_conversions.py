@@ -174,21 +174,55 @@ def convert_ldau_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[s
         species_key = f'{species_name}/{atom_number}'
         orbital_key = 'spdf'[orbital]
 
-        if species_key not in out_dict['ldau_info']:
-            ldau_dict = out_dict['ldau_info'].get(species_key, {})
-
-        ldau_dict[orbital_key] = {}
-        ldau_dict[orbital_key]['u'] = parsed_ldau['u'][index]
-        ldau_dict[orbital_key]['j'] = parsed_ldau['j'][index]
-        ldau_dict[orbital_key]['unit'] = 'eV'
-        if parsed_ldau['l_amf'][index]:
-            ldau_dict[orbital_key]['double_counting'] = 'AMF'
-        else:
-            ldau_dict[orbital_key]['double_counting'] = 'FLL'
-
-        out_dict['ldau_info'][species_key] = ldau_dict
+        ldau_dict = out_dict['ldau_info'].setdefault(species_key, {})
+        ldau_dict[orbital_key] = {
+            'u': parsed_ldau['u'][index],
+            'j': parsed_ldau['j'][index],
+            'unit': 'eV',
+            'double_counting': 'AMF' if parsed_ldau['l_amf'][index] else 'FLL'
+        }
 
     return out_dict
+
+@conversion_function
+def convert_ldahia_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
+    """
+    Convert the parsed information from LDA+U into a more readable dict
+
+    ldau_info has keys for each species with LDA+U ({species_name}/{atom_number})
+    and this in turn contains a dict with the LDA+U definition for the given orbital (spdf)
+
+    :param out_dict: dict with the already parsed information
+    """
+    parsed_ldahia = out_dict['ldahia_info'].pop('parsed_ldahia')
+    ldahia_species = out_dict['ldahia_info'].pop('ldahia_species')
+
+    if isinstance(ldahia_species['name'], str):
+        ldahia_species = {key: [val] for key, val in ldahia_species.items()}
+
+    if isinstance(parsed_ldahia['l'], int):
+        parsed_ldahia = {key: [val] for key, val in parsed_ldahia.items()}
+
+    ldau_definitions = zip(ldahia_species['name'], ldahia_species['atomic_number'], parsed_ldahia['l'])
+    for index, ldahia_def in enumerate(ldau_definitions):
+
+        species_name, atom_number, orbital = ldahia_def
+
+        species_key = f'{species_name}/{atom_number}'
+        orbital_key = 'spdf'[orbital]
+
+        ldahia_dict = out_dict['ldahia_info'].setdefault(species_key, {})
+
+        ldahia_dict[orbital_key] = {
+            'u': parsed_ldahia['u'][index],
+            'j': parsed_ldahia['j'][index],
+            'unit': 'eV',
+            'double_counting': 'AMF' if parsed_ldahia['l_amf'][index] else 'FLL',
+            'initial_occupation':  parsed_ldahia['init_occ'][index]
+        }
+
+    return out_dict
+
 
 
 @conversion_function

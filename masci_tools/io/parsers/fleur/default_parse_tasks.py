@@ -220,6 +220,32 @@ TASKS_DEFINITION = {
             }
         }
     },
+    'ldahia_info': {
+        '_general': True,
+        '_modes': [('ldahia', True)],
+        '_conversions': ['convert_ldahia_definitions'],
+        'parsed_ldahia': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'ldaHIA',
+                'contains': 'species'
+            },
+            'subdict': 'ldahia_info',
+            'flat': False,
+        },
+        'ldahia_species': {
+            'parse_type': 'parentAttribs',
+            'path_spec': {
+                'name': 'ldaHIA',
+                'contains': 'species'
+            },
+            'subdict': 'ldahia_info',
+            'flat': False,
+            'kwargs':{
+                'only_required': True
+            }
+        }
+    },
     #--------Defintions for relaxation info from input section (bravais matrix, atompos)
     #--------for Bulk and film
     'relax_info': {
@@ -251,6 +277,7 @@ TASKS_DEFINITION = {
                 'iteration_path': True
             },
             'force_list': True,
+            'subdict': 'ldahia_info',
         },
         'element_distance': {
             'parse_type': 'attrib',
@@ -261,6 +288,7 @@ TASKS_DEFINITION = {
                 'iteration_path': True
             },
             'force_list': True,
+            'subdict': 'ldahia_info',
         }
     },
     #----General iteration tasks
