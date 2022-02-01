@@ -261,7 +261,9 @@ def test_outxml_add_tasks_overwrite(data_regression, test_file):
                 'path_spec': {
                     'name': 'freeEnergy'
                 },
-                'only_required': True
+                'kwargs': {
+                    'only_required': True
+                }
             }
         }
     }

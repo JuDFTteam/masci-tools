@@ -108,10 +108,9 @@ class ParseTasks:
     REQUIRED_KEYS = {'parse_type'}
     REQUIRED_KEYS_XML_GETTER = {'parse_type', 'name'}
     REQUIRED_KEYS_UTIL = {'parse_type', 'path_spec'}
-    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
+    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last', 'kwargs'}
     ALLOWED_KEYS_ALLATTRIBS = {
-        'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required', 'subtags',
-        'text'
+        'parse_type', 'path_spec', 'subdict', 'base_value', 'overwrite', 'flat', 'kwargs'
     }
     ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs', 'result_names'}
 
@@ -432,24 +431,17 @@ class ParseTasks:
 
             if spec['parse_type'] == 'xmlGetter':
                 action = getattr(xml_getters, spec['name'])
-                args = spec.get('kwargs', {})
+                args = spec.get('kwargs', {}).copy()
             else:
                 action = self.parse_functions[spec['parse_type']]
                 args = spec['path_spec'].copy()
+                args = {**args, **spec.get('kwargs', {})}
 
             if spec['parse_type'] in ['attrib', 'text', 'allAttribs', 'parentAttribs', 'singleValue']:
                 args['constants'] = constants
 
-            if 'only_required' in spec:
-                args['only_required'] = spec['only_required']
-
-            if 'subtags' in spec:
-                args['subtags'] = spec['subtags']
-
             if spec['parse_type'] == 'singleValue':
-                args['ignore'] = ['comment']
-            elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
-                args['ignore'] = spec.get('ignore', [])
+                args.setdefault('ignore', []).append('comment')
 
             parsed_dict = out_dict
             if 'subdict' in spec:
