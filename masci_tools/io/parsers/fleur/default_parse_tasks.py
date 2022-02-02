@@ -250,8 +250,13 @@ TASKS_DEFINITION = {
         }
     },
     'total_energy': {
-        '_minimal': True,
-        '_conversions': [Conversion(name='convert_total_energy')],
+        '_minimal':
+        True,
+        '_conversions':
+        [Conversion(name='convert_htr_to_ev', kwargs={
+            'name': 'energy_hartree',
+            'converted_name': 'energy',
+        })],
         'energy_hartree': {
             'parse_type': 'attrib',
             'path_spec': {
