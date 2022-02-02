@@ -223,7 +223,7 @@ TASKS_DEFINITION = {
     'ldahia_info': {
         '_general': True,
         '_modes': [('ldahia', True)],
-        '_conversions': ['convert_ldahia_definitions'],
+        '_conversions': [Conversion(name='convert_ldahia_definitions')],
         'parsed_ldahia': {
             'parse_type': 'allAttribs',
             'path_spec': {
