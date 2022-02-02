@@ -7,11 +7,13 @@
 - Fleur schema parsing functions now recognize a new alias from the fleur schemas `FortranComplex` which is a number of the form `(float,float)`. Converters for complex values are added [[#106]](https://github.com/JuDFTteam/masci-tools/pull/106)
 - Added `IncompatibleSchemaVersions` error when a combination of output and input version for `OutputSchemaDict` is given, for which it is known that no XML schema can be compiled
 - `xml_getters` functions can now be used in the task definitions of the `outxml_parser` to keep information consistent. This example definition will insert the structure data, i.e. a tuple of atoms, bravais matrix and periodic boundary conditions into the output dictionary. `{'parse_type':'xmlGetter', 'name': 'get_structure_data'}` [[#107]](https://github.com/JuDFTteam/masci-tools/pull/107)
-
+- The `_conversions` key in the `outxml_parser` now accepts namedtuples `Conversion` to enable passing additional arguments to these functions. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
 ### Bugfixes
 - Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception
 - Added patch for `OutputSchemaDict` objects with `FleurOutputSchema.xsd` files before version `0.35`. The attribute `qPoints` in the DMI output was actually called `qpoints` in these schemas, making it impossible to retrieve this attribute
 
+### Deprecated
+- Passing strings in the `_conversions` key in task definitions for the `outxml_parser`. Use `masci_tools.util.parse_utils.Conversion` instead. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
 ### For developers
 - Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
 - Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) [[#102]](https://github.com/JuDFTteam/masci-tools/pull/102)
