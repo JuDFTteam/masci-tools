@@ -317,7 +317,7 @@ class CFCalculation:
             self.cdn['rmesh'] = np.array(self.cdn['rmesh'])
             self.cdn['RMT'] = max(self.cdn['rmesh'])
 
-    def _validateInput(self):
+    def validate(self):
         """Validate that the object can be used to execute the calculation
         Checks that the given bravais matrices are equal if given
         """
@@ -333,7 +333,7 @@ class CFCalculation:
             if np.any(np.abs(diffBravais) > 1e-8):
                 raise ValueError('Differing definitions of potentials and charge density bravais matrix')
 
-    def _interpolate(self):
+    def interpolate(self):
         """Interpolate all quantities to a common equidistant radial mesh
 
         """
@@ -369,7 +369,7 @@ class CFCalculation:
 
         """
 
-        self._validateInput()
+        self.validate()
 
         if 'cdn' in self.bravaisMat and 'pot' in self.bravaisMat:
             a_vector = self.bravaisMat['pot'][0, :]
@@ -383,7 +383,7 @@ class CFCalculation:
                 print(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
 
         if not self.interpolated:
-            self._interpolate()
+            self.interpolate()
 
         self.denNorm = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
         if not self.quiet:
@@ -468,10 +468,10 @@ def plot_crystal_field_calculation(cfcalc,
 
     """
 
-    cfcalc._validateInput()
+    cfcalc.validate()
 
     if not cfcalc.interpolated:
-        cfcalc._interpolate()
+        cfcalc.interpolate()
 
     if pot_colors is None:
         pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
@@ -493,7 +493,8 @@ def plot_crystal_field_calculation(cfcalc,
                             '-',
                             color=color,
                             label=rf'$V_{{{l}{m}}}$')
-            ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
+            if 'spin-down' in vlm:
+                ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(pot_ylabel, fontsize=fontsize)
     ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
