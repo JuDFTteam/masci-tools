@@ -97,6 +97,8 @@ repos:
             masci_tools/util/python_util.py|
             masci_tools/util/math_util.py|
             masci_tools/util/parse_tasks.py|
+            masci_tools/util/parse_utils.py|
+            masci_tools/util/typing.py|
             masci_tools/util/econfig.py|
             masci_tools/util/fleur_calculate_expression.py|
             masci_tools/tools/fleur_inpxml_converter.py|

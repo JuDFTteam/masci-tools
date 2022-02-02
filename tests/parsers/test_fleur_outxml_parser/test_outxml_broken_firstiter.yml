@@ -85,7 +85,7 @@ warnings:
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
   - '[Iteration 1] No values found for attribute value'
   - '[Iteration 1] No values found for attribute units'
-  - '[Iteration 1] convert_total_energy cannot convert None to eV'
+  - '[Iteration 1] convert_htr_to_ev cannot convert None to eV (Name: energy_hartree)'
   - '[Iteration 1] No values found for attribute distance'
   - '[Iteration 1] No values found for attribute units'
   - '[Iteration 1] No values found for attribute distance'

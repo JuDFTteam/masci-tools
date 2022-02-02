@@ -33,6 +33,8 @@ from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
 from .xml import xml_getters
+from .parse_utils import Conversion
+
 from masci_tools.util.typing import XMLLike
 import masci_tools
 
@@ -495,8 +497,14 @@ class ParseTasks:
 
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
-            action = self.conversion_functions[conversion]
-            out_dict = action(out_dict, logger=logger)
+            if not isinstance(conversion, Conversion):
+                warnings.warn(
+                    'Providing the _conversions as a list of strings is deprecated'
+                    'Use the Conversion namedtuple from masci_tools.util.parse_utils instead', DeprecationWarning)
+                conversion = Conversion(name=conversion)
+
+            action = self.conversion_functions[conversion.name]
+            out_dict = action(out_dict, *conversion.args, logger=logger, **conversion.kwargs)
 
         return out_dict
 

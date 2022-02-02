@@ -25,33 +25,41 @@ from logging import Logger
 
 
 @conversion_function
-def convert_total_energy(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
+def convert_htr_to_ev(out_dict: dict[str, Any],
+                      name: str,
+                      converted_name: str | None = None,
+                      pop: bool = False,
+                      add_unit: bool = True,
+                      logger: Logger | None = None) -> dict[str, Any]:
     """
-    Convert total energy to eV
+    Convert value from htr to eV
     """
 
-    total_energy = out_dict.get('energy_hartree', None)
+    if pop:
+        old = out_dict.pop(name, None)
+    else:
+        old = out_dict.get(name)
 
-    if total_energy is None:
-        if 'energy_hartree' in out_dict:
+    if converted_name is None:
+        converted_name = f'{old}_ev'
+
+    if add_unit:
+        out_dict[f'{converted_name}_units'] = 'eV'
+
+    if old is None:
+        if name in out_dict:
             if logger is not None:
-                logger.warning('convert_total_energy cannot convert None to eV')
-            out_dict['energy'] = None
-            out_dict['energy_units'] = 'eV'
+                logger.warning(f'convert_htr_to_ev cannot convert None to eV (Name: {name})')
+            out_dict[converted_name] = None
         return out_dict
 
-    total_energy = total_energy[-1]
-
-    if 'energy' not in out_dict:
-        out_dict['energy'] = []
-        out_dict['energy_units'] = 'eV'
-
-    if total_energy is not None:
-        out_dict['energy'].append(total_energy * HTR_TO_EV)
+    old = old[-1]
+    if old is not None:
+        out_dict.setdefault(converted_name, []).append(old * HTR_TO_EV)
     else:
         if logger is not None:
-            logger.warning('convert_total_energy cannot convert None to eV')
-        out_dict['energy'].append(None)
+            logger.warning(f'convert_htr_to_ev cannot convert None to eV (Name: {name})')
+        out_dict.setdefault(converted_name, []).append(None)
 
     return out_dict
 

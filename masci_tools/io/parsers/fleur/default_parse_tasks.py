@@ -68,6 +68,7 @@ Following is the current specification of tasks
    :linenos:
 
 """
+from masci_tools.util.parse_utils import Conversion
 
 __working_out_versions__ = {'0.34'}
 __base_version__ = '0.34'
@@ -77,7 +78,7 @@ TASKS_DEFINITION = {
     'general_out_info': {
         '_general': True,
         '_minimal': True,
-        '_conversions': ['calculate_walltime'],
+        '_conversions': [Conversion(name='calculate_walltime')],
         'creator_name': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -190,7 +191,7 @@ TASKS_DEFINITION = {
     'ldau_info': {
         '_general': True,
         '_modes': [('ldau', True)],
-        '_conversions': ['convert_ldau_definitions'],
+        '_conversions': [Conversion(name='convert_ldau_definitions')],
         'parsed_ldau': {
             'parse_type': 'allAttribs',
             'path_spec': {
@@ -219,7 +220,7 @@ TASKS_DEFINITION = {
         '_modes': [
             ('relax', True),
         ],
-        '_conversions': ['convert_relax_info'],
+        '_conversions': [Conversion(name='convert_relax_info')],
         'parsed_relax_info': {
             'parse_type': 'xmlGetter',
             'name': 'get_structure_data',
@@ -249,8 +250,13 @@ TASKS_DEFINITION = {
         }
     },
     'total_energy': {
-        '_minimal': True,
-        '_conversions': ['convert_total_energy'],
+        '_minimal':
+        True,
+        '_conversions':
+        [Conversion(name='convert_htr_to_ev', kwargs={
+            'name': 'energy_hartree',
+            'converted_name': 'energy',
+        })],
         'energy_hartree': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -399,7 +405,7 @@ TASKS_DEFINITION = {
     'forces': {
         '_minimal': True,
         '_modes': [('relax', True)],
-        '_conversions': ['convert_forces'],
+        '_conversions': [Conversion(name='convert_forces')],
         'force_units': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -418,7 +424,7 @@ TASKS_DEFINITION = {
         }
     },
     'charges': {
-        '_conversions': ['calculate_total_magnetic_moment'],
+        '_conversions': [Conversion(name='calculate_total_magnetic_moment')],
         'spin_dependent_charge': {
             'parse_type': 'allAttribs',
             'path_spec': {
