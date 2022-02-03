@@ -353,27 +353,27 @@ def get_cell(xmltree: XMLLike,
                                            logger=logger,
                                            not_contains={'/a', 'c/'})
 
-        row1 = evaluate_text(lattice_tag,
-                             schema_dict,
-                             'row-1',
-                             constants=constants,
-                             contains='bravaisMatrix',
-                             logger=logger,
-                             optional=True)
-        row2 = evaluate_text(lattice_tag,
-                             schema_dict,
-                             'row-2',
-                             constants=constants,
-                             contains='bravaisMatrix',
-                             logger=logger,
-                             optional=True)
-        row3 = evaluate_text(lattice_tag,
-                             schema_dict,
-                             'row-3',
-                             constants=constants,
-                             contains='bravaisMatrix',
-                             logger=logger,
-                             optional=True)
+        if tag_exists(lattice_tag, schema_dict, 'bravaisMatrix', logger=logger):
+            braivais_mat: etree._Element = eval_simple_xpath(lattice_tag, schema_dict, 'bravaisMatrix',
+                                                             logger=logger)  #type:ignore
+        elif not all(pbc) and schema_dict.inp_version >= (0, 35):
+            #For 0.35 there can be no latnam definition (no longer allowed by the schema) so we know the film tag exists
+            braivais_mat = eval_simple_xpath(lattice_tag, schema_dict, 'bravaisMatrixFilm', logger=logger)  #type:ignore
+        else:
+            raise ValueError('Could not extract Bravais matrix out of inp.xml. Is the '
+                             'Bravais matrix explicitly given? i.e Latnam definition '
+                             'not supported.')
+
+        row1 = evaluate_text(braivais_mat, schema_dict, 'row-1', constants=constants, logger=logger, optional=True)
+        row2 = evaluate_text(braivais_mat, schema_dict, 'row-2', constants=constants, logger=logger, optional=True)
+
+        if braivais_mat.tag == 'bravaisMatrixFilm':
+            dtilda = evaluate_attribute(lattice_tag, schema_dict, 'dtilda', constants=constants, logger=logger)
+            row1 += [0.0]
+            row2 += [0.0]
+            row3 = [0.0, 0.0, dtilda]
+        else:
+            row3 = evaluate_text(braivais_mat, schema_dict, 'row-3', constants=constants, logger=logger, optional=True)
 
         if all(x is not None and x != [] for x in [row1, row2, row3]):
             cell = np.array([row1, row2, row3]) * lattice_scale

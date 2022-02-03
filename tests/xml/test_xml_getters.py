@@ -202,6 +202,18 @@ def test_get_cell_film(load_inpxml, data_regression):
     data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
+def test_get_cell_film_max6(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_cell
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R6/inp_film.xml', absolute=False)
+
+    cell, pbc = get_cell(xmltree, schema_dict)
+
+    data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
 def test_get_cell_bulk(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_cell
