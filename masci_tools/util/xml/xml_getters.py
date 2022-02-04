@@ -1051,6 +1051,137 @@ def get_kpoints_data_max4(
 
 
 @schema_dict_version_dispatch(output_schema=False)
+def get_special_kpoints(
+    xmltree: XMLLike,
+    schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+    name: str | None = None,
+    index: int | None = None,
+    only_used: bool = False,
+    logger: Logger | None = None,
+) -> list[tuple[int, str]] | dict[str, list[tuple[int, str]]]:
+    """
+    Extract the labeled special kpoints from the given kpointlist
+
+    .. warning::
+        Only implemented for versions starting with Max5
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param name: str, optional, if given only the kpoint set with the given name
+                 is returned
+    :param index: int, optional, if given only the kpoint set with the given index
+                  is returned
+    :param only_used: bool if True only the kpoint list used in the calculation is returned
+    :param logger: logger object for logging warnings, errors
+
+    :returns: list of tuples (index, label) for multiple kpoint sets a dict with the names containing
+              the list of tuples is returned
+    """
+    from masci_tools.util.schema_dict_util import eval_simple_xpath
+    from masci_tools.util.schema_dict_util import evaluate_attribute
+    from masci_tools.util.xml.common_functions import clear_xml
+
+    if name is not None and index is not None:
+        raise ValueError('Only provide one of index or name to select kpoint lists')
+
+    if only_used and (name is not None or index is not None):
+        raise ValueError('Either use only_used=False and provide the name/index or use only_used=True. Not both')
+
+    if isinstance(xmltree, etree._ElementTree):
+        xmltree, _ = clear_xml(xmltree)
+        root = xmltree.getroot()
+    else:
+        root = xmltree
+
+    if only_used:
+        name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
+
+    kpointlists = eval_simple_xpath(root,
+                                    schema_dict,
+                                    'kPointList',
+                                    contains='kPointLists',
+                                    list_return=True,
+                                    logger=logger)
+
+    if len(kpointlists) == 0:
+        raise ValueError('No Kpoint lists found in the given inp.xml')
+
+    labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
+    if name is not None and name not in labels:
+        if only_used:
+            raise ValueError(f'Found no Kpoint list with the name: {name}'
+                             f'Available list names: {labels}'
+                             'The listName attribute is not consistent with the rest of the input')
+        raise ValueError(f'Found no Kpoint list with the name: {name}'
+                         f'Available list names: {labels}')
+
+    if index is not None:
+        try:
+            kpointlists = [kpointlists[index]]
+        except IndexError as exc:
+            raise ValueError(f'No kPointList with index {index} found. Only {len(kpointlists)} available') from exc
+
+    special_kpoints = {}
+    for kpointlist in kpointlists:
+
+        label = evaluate_attribute(kpointlist, schema_dict, 'name', logger=logger)
+
+        if name is not None and name != label:
+            continue
+
+        labelled_points = eval_simple_xpath(kpointlist,
+                                            schema_dict,
+                                            'kPoint',
+                                            filters={'kPoint': {
+                                                'label': {
+                                                    '!=': ''
+                                                }
+                                            }},
+                                            list_return=True,
+                                            logger=logger)
+
+        special_kpoints[label] = [
+            (
+                kpointlist.index(kpoint),  #type:ignore[attr-defined]
+                str(kpoint.attrib['label'])) for kpoint in labelled_points
+        ]
+
+    if len(special_kpoints) == 1:
+        _, special_kpoints = special_kpoints.popitem()  #type:ignore[assignment]
+
+    return special_kpoints
+
+
+@get_special_kpoints.register(max_version='0.31')
+def get_special_kpoints_max4(xmltree: XMLLike,
+                             schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                             logger: Logger | None = None) -> XMLLike:
+    """
+    Extract the labeled special kpoints from the given kpointlist
+
+    .. warning::
+        Only implemented for versions starting with Max5
+
+    :param xmltree: etree representing the fleur xml file
+    :param schema_dict: schema dictionary corresponding to the file version
+                        of the xmltree
+    :param name: str, optional, if given only the kpoint set with the given name
+                 is returned
+    :param index: int, optional, if given only the kpoint set with the given index
+                  is returned
+    :param only_used: bool if True only the kpoint list used in the calculation is returned
+    :param logger: logger object for logging warnings, errors
+
+    :returns: list of tuples (index, label) for multiple kpoint sets a dict with the names containing
+              the list of tuples is returned
+    """
+
+    raise NotImplementedError(
+        f"'get_special_kpoints' is not implemented for inputs of version '{schema_dict['inp_version']}'")
+
+
+@schema_dict_version_dispatch(output_schema=False)
 def get_relaxation_information(xmltree: XMLLike,
                                schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                                logger: Logger | None = None) -> dict[str, Any]:

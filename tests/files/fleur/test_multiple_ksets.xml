@@ -25,28 +25,28 @@
          <kPointLists>
          <kPointList name="default" count="20" type="tria-bulk">
             <kPoint weight="    1.000000">    0.500000     0.500000     0.000000</kPoint>
-            <kPoint weight="    1.000000">    0.500000     0.500000     0.500000</kPoint>
+            <kPoint weight="    1.000000" label='these'>    0.500000     0.500000     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.500000     0.000000     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.500000     0.000000     0.000000</kPoint>
             <kPoint weight="    1.000000">    0.000000     0.000000     0.000000</kPoint>
             <kPoint weight="    1.000000">    0.000000     0.000000     0.500000</kPoint>
-            <kPoint weight="    1.000000">    0.375000     0.125000     0.500000</kPoint>
+            <kPoint weight="    1.000000" label='are'>    0.375000     0.125000     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.349019     0.349019     0.349019</kPoint>
             <kPoint weight="    1.000000">    0.208334     0.208334     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.375000     0.125000     0.000000</kPoint>
             <kPoint weight="    1.000000">    0.416666     0.416666     0.235294</kPoint>
-            <kPoint weight="    1.000000">    0.399510     0.100490     0.200981</kPoint>
+            <kPoint weight="    1.000000" label='very'>    0.399510     0.100490     0.200981</kPoint>
             <kPoint weight="    1.000000">    0.333334     0.333334     0.000000</kPoint>
             <kPoint weight="    1.000000">    0.166666     0.166666     0.000000</kPoint>
             <kPoint weight="    1.000000">    0.083334     0.083334     0.235294</kPoint>
-            <kPoint weight="    1.000000">    0.500000     0.250000     0.500000</kPoint>
+            <kPoint weight="    1.000000" label='special'>    0.500000     0.250000     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.250000     0.000000     0.500000</kPoint>
             <kPoint weight="    1.000000">    0.500000     0.250000     0.117647</kPoint>
             <kPoint weight="    1.000000">    0.250000     0.000000     0.117647</kPoint>
             <kPoint weight="    1.000000">    0.247059     0.247059     0.247059</kPoint>
          </kPointList>
          <kPointList name="second-set" count="1" type="mesh" nx="1" ny="1" nz="1">
-            <kPoint weight="    1.000000">    0.000000     0.000000     0.000000</kPoint>
+            <kPoint weight="    1.000000" label='test'>    0.000000     0.000000     0.000000</kPoint>
          </kPointList>
          </kPointLists>
       </bzIntegration>
