@@ -1,0 +1,151 @@
+output_dict:
+  charge_den_xc_den_integral:
+  - -500.6884159769
+  - -500.8853351822
+  - -500.8335643411
+  creator_name: fleur 34
+  creator_target_architecture: GEN
+  density_convergence:
+  - - 61.5213363471
+    - 110.887315694
+  - - 6.931555064
+    - 19.3652356338
+  - - 7.3854310563
+    - 18.3312437185
+  density_convergence_units: me/bohr^3
+  end_date:
+    date: 2022/02/01
+    time: '11:29:30'
+  energy:
+  - -613895.9082440219
+  - -613905.1467334009
+  - -613904.7507889769
+  energy_core_electrons:
+  - -13883.7191412657
+  - -13876.2664965199
+  - -13877.9341630229
+  energy_hartree:
+  - -22560.2585143759
+  - -22560.5980225985
+  - -22560.5834719093
+  energy_hartree_units: Htr
+  energy_units: eV
+  energy_valence_electrons:
+  - -8.2223587716
+  - -9.4986218667
+  - -9.7093499653
+  fermi_energy:
+  - 0.1919659881
+  - 0.2694345063
+  - 0.2691728818
+  fermi_energy_units: Htr
+  film: false
+  fleur_modes:
+    band: false
+    bz_integration: tetra
+    cf_coeff: false
+    dos: false
+    film: false
+    force_theorem: false
+    greensf: false
+    gw: false
+    jspin: 2
+    ldahia: true
+    ldau: false
+    noco: false
+    plot: false
+    relax: false
+    soc: true
+  gmax: 10.0
+  input_file_version: '0.34'
+  kmax: 3.0
+  ldahia_info:
+    Gd-1/64:
+      f:
+        double_counting: FLL
+        initial_occupation: 7.0
+        j: 0.7
+        u: 6.7
+        unit: eV
+    element_distance: 0.99752759
+    occupation_distance: 7.0
+  magnetic_moments:
+  - 0.4421057809
+  - 7.3426579789
+  - 7.3486758768
+  magnetic_moments_spin_down_charge:
+  - 8.323329113
+  - 4.2848413522
+  - 4.2869620394
+  magnetic_moments_spin_up_charge:
+  - 8.765434894
+  - 11.627499331
+  - 11.6356379162
+  number_of_atom_types: 1
+  number_of_atoms: 2
+  number_of_iterations: 3
+  number_of_iterations_total: 3
+  number_of_kpoints: 10
+  number_of_species: 1
+  number_of_spin_components: 2
+  number_of_symmetries: 12
+  orbital_magnetic_moments:
+  - 0.9231202119
+  - -0.0272694041
+  - -0.0274013476
+  orbital_magnetic_moments_spin_down_charge:
+  - 2.958947713
+  - 0.0182191013
+  - 0.0183575223
+  orbital_magnetic_moments_spin_up_charge:
+  - -2.0358275011
+  - -0.0454885054
+  - -0.0457588699
+  output_file_version: '0.35'
+  overall_density_convergence:
+  - 50.4514291723
+  - 14.4251810066
+  - 12.42892704
+  spin_density_convergence:
+  - 172.094150133
+  - 25.2592906956
+  - 25.0335764313
+  spin_dependent_charge_interstitial:
+  - - 1.1622536
+    - 0.6602389
+  - - 2.5316192
+    - 1.6437217
+  - - 2.5187546
+    - 1.6360673
+  spin_dependent_charge_mt_spheres:
+  - - 63.5308597
+    - 62.6466464
+  - - 69.2549878
+    - 54.5696701
+  - - 69.2712652
+    - 54.5739117
+  spin_dependent_charge_total:
+  - - 64.6931133
+    - 63.3068853
+  - - 71.786607
+    - 56.2133917
+  - - 71.7900198
+    - 56.209979
+  start_date:
+    date: 2022/02/01
+    time: '11:29:09'
+  sum_of_eigenvalues:
+  - -13891.9415000373
+  - -13885.7651183866
+  - -13887.6435129881
+  title: hcp Gadolinium
+  total_charge:
+  - 127.9999986481
+  - 127.9999987731
+  - 127.9999988207
+  total_magnetic_moment_cell:
+  - 1.3862279999999956
+  - 15.573215300000001
+  - 15.580040799999999
+  walltime: 21
+  walltime_units: seconds

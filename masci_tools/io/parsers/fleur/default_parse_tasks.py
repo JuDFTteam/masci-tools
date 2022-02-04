@@ -27,17 +27,16 @@ The following keys are expected in each entry:
 If `parse_type` is not equal to `xmlGetter` the following key is required:
     :param path_spec: dict with all the arguments that should be passed to tag_xpath
                       or attrib_xpath to get the correct path
+    :param kwargs: additional arguments to pass to the parsing function
 
 In the case of `xmlGetter` the following keys are allowed:
     :param name: name of the function in `masci_tools.util.xml.xml_getters` (required)
-    :param kwargs: additional arguments to pass
     :param result_names: list of str defining the keys under which to enter the outputs of the function
 
 For the allAttribs parse_type there are more keys that can appear:
     :param base_value: str, optional. If given the attribute
                        with this name will be inserted into the key from the task_definition
                        all other keys are formatted as {task_key}_{attribute_name}
-    :param ignore: list of str, these attributes will be ignored
     :param overwrite: list of str, these attributes will not create a list and overwrite any value
                       that might be there
     :param flat: bool, if False the dict parsed from the tag is inserted as a dict into the correspondin key
@@ -128,16 +127,20 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'startDateAndTime'
             },
-            'ignore': ['zone'],
             'flat': False,
+            'kwargs': {
+                'ignore': ['zone'],
+            }
         },
         'end_date': {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'endDateAndTime'
             },
-            'ignore': ['zone'],
             'flat': False,
+            'kwargs': {
+                'ignore': ['zone'],
+            }
         }
     },
     #--------Defintions for general info from input section of outfile (kmax, symmetries, ..)--------
@@ -200,7 +203,9 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
         'ldau_species': {
             'parse_type': 'parentAttribs',
@@ -210,7 +215,35 @@ TASKS_DEFINITION = {
             },
             'subdict': 'ldau_info',
             'flat': False,
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
+        }
+    },
+    'ldahia_info': {
+        '_general': True,
+        '_modes': [('ldahia', True)],
+        '_conversions': [Conversion(name='convert_ldahia_definitions')],
+        'parsed_ldahia': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'ldaHIA',
+                'contains': 'species'
+            },
+            'subdict': 'ldahia_info',
+            'flat': False,
+        },
+        'ldahia_species': {
+            'parse_type': 'parentAttribs',
+            'path_spec': {
+                'name': 'ldaHIA',
+                'contains': 'species'
+            },
+            'subdict': 'ldahia_info',
+            'flat': False,
+            'kwargs': {
+                'only_required': True
+            }
         }
     },
     #--------Defintions for relaxation info from input section (bravais matrix, atompos)
@@ -228,6 +261,34 @@ TASKS_DEFINITION = {
                 'convert_to_angstroem': False,
                 'include_relaxations': False
             }
+        }
+    },
+    'hubbard1_distances': {
+        '_general': True,  #General because not every iteration contains a hubbard1 iteration
+        '_minimum_version': '0.35',
+        '_minimal': True,
+        '_modes': [('ldahia', True)],
+        'occupation_distance': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'occupationDistance'
+            },
+            'kwargs': {
+                'iteration_path': True
+            },
+            'force_list': True,
+            'subdict': 'ldahia_info',
+        },
+        'element_distance': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'elementDistance'
+            },
+            'kwargs': {
+                'iteration_path': True
+            },
+            'force_list': True,
+            'subdict': 'ldahia_info',
         }
     },
     #----General iteration tasks
@@ -315,7 +376,9 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'sumOfEigenvalues'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
         'energy_core_electrons': {
             'parse_type': 'singleValue',
@@ -323,21 +386,27 @@ TASKS_DEFINITION = {
                 'name': 'coreElectrons',
                 'contains': 'sumOfEigenvalues'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
         'energy_valence_electrons': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'valenceElectrons'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
         'charge_den_xc_den_integral': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'chargeDenXCDenIntegral'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
     },
     'ldau_energy_correction': {
@@ -348,7 +417,9 @@ TASKS_DEFINITION = {
                 'name': 'dftUCorrection'
             },
             'subdict': 'ldau_info',
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
     },
     'nmmp_distances': {
@@ -388,7 +459,9 @@ TASKS_DEFINITION = {
                 'name': 'magneticMoment'
             },
             'base_value': 'moment',
-            'ignore': ['atomType']
+            'kwargs': {
+                'ignore': ['atomType'],
+            }
         }
     },
     'orbital_magnetic_moments': {
@@ -399,7 +472,9 @@ TASKS_DEFINITION = {
                 'name': 'orbMagMoment'
             },
             'base_value': 'moment',
-            'ignore': ['atomType']
+            'kwargs': {
+                'ignore': ['atomType'],
+            }
         }
     },
     'forces': {
@@ -420,7 +495,9 @@ TASKS_DEFINITION = {
                 'name': 'forceTotal'
             },
             'flat': False,
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         }
     },
     'charges': {
@@ -432,7 +509,9 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         },
         'total_charge': {
             'parse_type': 'singleValue',
@@ -441,7 +520,9 @@ TASKS_DEFINITION = {
                 'contains': 'allElectronCharges',
                 'not_contains': 'fixed'
             },
-            'only_required': True
+            'kwargs': {
+                'only_required': True
+            }
         }
     },
     #-------Tasks for forcetheorem Calculations
@@ -580,7 +661,9 @@ TASKS_DEFINITION = {
             'path_spec': {
                 'name': 'coreStates'
             },
-            'subtags': True,
+            'kwargs': {
+                'subtags': True,
+            },
             'flat': False
         }
     }
