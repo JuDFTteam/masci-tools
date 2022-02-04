@@ -370,6 +370,7 @@ def test_outxml_max5_0_compatibility(data_regression, clean_parser_log, test_fil
         'warnings': clean_parser_log(warnings),
     })
 
+
 def test_outxml_max6_0_compatibility(data_regression, clean_parser_log, test_file):
     """
     Test if Max5.0 output files are processed correctly
