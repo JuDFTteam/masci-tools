@@ -211,9 +211,9 @@ def parse_symmetry_information(xml_file):
     echo.echo_info('Symmetry information:')
     for rotation, shift in zip(rotations, shifts):
         echo.echo('Rotation:')
-        echo.echo(rotation)
+        echo.echo(str(rotation))
         echo.echo('Translation:')
-        echo.echo(shift)
+        echo.echo(str(shift))
         echo.echo('')
 
 
