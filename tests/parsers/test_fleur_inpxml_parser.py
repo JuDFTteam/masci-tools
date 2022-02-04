@@ -132,7 +132,7 @@ def test_inpxml_max6_0_compatibility(data_regression, clean_parser_log, test_fil
     test if valid inp.xml files with not yet existent versions are parsed correctly (fall back to latest available)
     """
 
-    INPXML_FILEPATH = test_file('fleur/MaX-R6/inp.xml')
+    INPXML_FILEPATH = test_file('fleur/Max-R6/inp.xml')
     warnings = {}
     #The parser shoul not raise and just log all the failed conversions
     inp_dict = inpxml_parser(INPXML_FILEPATH, parser_info_out=warnings)
