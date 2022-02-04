@@ -370,6 +370,20 @@ def test_outxml_max5_0_compatibility(data_regression, clean_parser_log, test_fil
         'warnings': clean_parser_log(warnings),
     })
 
+def test_outxml_max6_0_compatibility(data_regression, clean_parser_log, test_file):
+    """
+    Test if Max5.0 output files are processed correctly
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/Max-R6/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
 
 def test_outxml_differing_versions(data_regression, clean_parser_log, test_file):
     """
