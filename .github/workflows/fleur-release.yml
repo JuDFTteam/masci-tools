@@ -32,7 +32,7 @@ jobs:
     
     - name: Run tests (Generate schema test files)
       id: test
-      run: pytest
+      run: pytest --force-regen #force-regen ensures that regression tests depending on the newest schema version (fallbacks) are regenerated
       continue-on-error: true
     
     - name: Check test run (Should fail)
