@@ -4,6 +4,7 @@
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...develop)
 
 ### Added
+- Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6 release of fleur (file version `0.35`) [[#112]](https://github.com/JuDFTteam/masci-tools/pull/112)
 - New XML getter function: `get_special_kpoints` extracts the labelled kpoints from a kpoint list (for now only implemented for Max5 or later)
 - Added extraction of Hubbard 1 input and distances in the `outxml_parser` for fleur (distances only available starting from version `0.35`) [[#108]](https://github.com/JuDFTteam/masci-tools/pull/108)
 
@@ -12,6 +13,7 @@
 - Added `IncompatibleSchemaVersions` error when a combination of output and input version for `OutputSchemaDict` is given, for which it is known that no XML schema can be compiled
 - `xml_getters` functions can now be used in the task definitions of the `outxml_parser` to keep information consistent. This example definition will insert the structure data, i.e. a tuple of atoms, bravais matrix and periodic boundary conditions into the output dictionary. `{'parse_type':'xmlGetter', 'name': 'get_structure_data'}` [[#107]](https://github.com/JuDFTteam/masci-tools/pull/107)
 - The `_conversions` key in the `outxml_parser` now accepts namedtuples `Conversion` to enable passing additional arguments to these functions. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
+- Adjusted `get_cell` to understand the `bravaisMatrixFilm` inut introduced with the MaX6 release of fleur [[#110]](https://github.com/JuDFTteam/masci-tools/pull/110)
 
 ### Bugfixes
 - Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception
