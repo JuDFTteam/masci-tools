@@ -20,6 +20,8 @@ from masci_tools.io.common_functions import AtomSiteProperties
 from masci_tools.util.typing import XMLLike
 from masci_tools.io.parsers import fleur_schema
 
+from .common_functions import normalize_xmllike
+
 from lxml import etree
 import warnings
 import numpy as np
@@ -58,13 +60,8 @@ def get_fleur_modes(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict)
 
     fleur_modes = {}
@@ -189,13 +186,8 @@ def get_nkpts(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
 
     #Get the name of the current selected kPointSet
     list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
@@ -245,13 +237,8 @@ def get_nkpts_max4(xmltree: XMLLike,
     :returns: int with the number of kpoints
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
 
     modes = get_fleur_modes(root, schema_dict, logger=logger)
 
@@ -326,14 +313,9 @@ def get_cell(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, tag_exists, evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.constants import BOHR_A
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
 
     cell: np.ndarray | None = None
@@ -404,15 +386,10 @@ def _get_species_info(xmltree: XMLLike,
     :returns: Tuple of dicts, containing the normalized species ids
               and the elements for each species
     """
-    from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
     import re
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
 
     names = evaluate_attribute(root,
@@ -484,7 +461,6 @@ def get_parameter_data(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, attrib_exists
     from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text, evaluate_tag
-    from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
@@ -493,11 +469,7 @@ def get_parameter_data(xmltree: XMLLike,
 
     ########
     parameters = {}
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
 
     # Create the cards
@@ -530,7 +502,7 @@ def get_parameter_data(xmltree: XMLLike,
     # &atoms
     species_list = eval_simple_xpath(root, schema_dict, 'species', list_return=True, logger=logger)
 
-    species_info = _get_species_info(xmltree, schema_dict, logger=logger)
+    species_info = _get_species_info(root, schema_dict, logger=logger)
 
     for indx, species in enumerate(species_list):
         atom_dict = {}
@@ -704,7 +676,6 @@ def get_structure_data(
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, tag_exists
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
     from masci_tools.io.common_functions import find_symmetry_relation
     from masci_tools.util.constants import BOHR_A
@@ -715,15 +686,11 @@ def get_structure_data(
             'Please adjust your code to use the namedtuple AtomSiteProperties (see masci_tools.io.common_functions)'
             ' with the fields (position, symbol, kind)', DeprecationWarning)
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
     cell, pbc = get_cell(root, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
 
-    species_info = _get_species_info(xmltree, schema_dict, logger=None)
+    species_info = _get_species_info(root, schema_dict, logger=None)
 
     atom_data: list[AtomSiteProperties] = []
     atom_groups = eval_simple_xpath(root, schema_dict, 'atomGroup', list_return=True, logger=logger)
@@ -892,7 +859,6 @@ def get_kpoints_data(
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
 
     if name is not None and index is not None:
         raise ValueError('Only provide one of index or name to select kpoint lists')
@@ -900,11 +866,7 @@ def get_kpoints_data(
     if only_used and (name is not None or index is not None):
         raise ValueError('Either use only_used=False and provide the name/index or use only_used=True. Not both')
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
 
     constants = read_constants(root, schema_dict, logger=logger)
 
@@ -1002,13 +964,8 @@ def get_kpoints_data_max4(
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
 
     constants = read_constants(root, schema_dict, logger=logger)
 
@@ -1080,7 +1037,6 @@ def get_special_kpoints(
     """
     from masci_tools.util.schema_dict_util import eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
 
     if name is not None and index is not None:
         raise ValueError('Only provide one of index or name to select kpoint lists')
@@ -1088,11 +1044,7 @@ def get_special_kpoints(
     if only_used and (name is not None or index is not None):
         raise ValueError('Either use only_used=False and provide the name/index or use only_used=True. Not both')
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
 
     if only_used:
         name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
@@ -1200,13 +1152,8 @@ def get_relaxation_information(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
 
     if not tag_exists(root, schema_dict, 'relaxation', logger=logger):
@@ -1280,13 +1227,8 @@ def get_symmetry_information(xmltree: XMLLike,
     :raises ValueError: If no symmetryOperations section is included in the xml tree
     """
     from masci_tools.util.schema_dict_util import tag_exists, read_constants, evaluate_text, eval_simple_xpath
-    from masci_tools.util.xml.common_functions import clear_xml
 
-    if isinstance(xmltree, etree._ElementTree):
-        xmltree, _ = clear_xml(xmltree)
-        root = xmltree.getroot()
-    else:
-        root = xmltree
+    root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
 
     if not tag_exists(root, schema_dict, 'symmetryOperations', logger=logger):

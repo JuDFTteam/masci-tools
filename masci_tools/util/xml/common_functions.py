@@ -402,3 +402,13 @@ def abs_to_rel_xpath(xpath: str, new_root: str) -> str:
         raise ValueError(f'New root element {new_root} does not appear in xpath {xpath}')
 
     return xpath
+
+
+def normalize_xmllike(xmllike: XMLLike) -> etree._Element:
+    """
+    Returns the root of the xmltree
+    """
+    if etree.iselement(xmllike):
+        return xmllike
+    xmllike = clear_xml(xmllike)
+    return xmllike.getroot()
