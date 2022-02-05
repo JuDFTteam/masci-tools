@@ -410,5 +410,5 @@ def normalize_xmllike(xmllike: XMLLike) -> etree._Element:
     """
     if etree.iselement(xmllike):
         return xmllike
-    xmllike = clear_xml(xmllike)
+    xmllike, _ = clear_xml(xmllike)
     return xmllike.getroot()
