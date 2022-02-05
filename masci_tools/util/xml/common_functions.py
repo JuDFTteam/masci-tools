@@ -393,10 +393,10 @@ def abs_to_rel_xpath(xpath: str, new_root: str) -> str:
 
     :returns: str of the relative xpath
     """
-    if new_root in xpath:
+    if f'{new_root}/' in xpath or xpath.endswith(new_root):
         xpath = xpath + '/'
         xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
-        xpath = xpath.replace(xpath_to_root, '.')
+        xpath = xpath.replace(f'{xpath_to_root}/', './')
         xpath = xpath.rstrip('/')
     else:
         raise ValueError(f'New root element {new_root} does not appear in xpath {xpath}')

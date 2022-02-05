@@ -362,6 +362,10 @@ class SchemaDict(LockableDict):
         contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
+        #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+        #e.g. bravaisMatrix vs. bravaisMatrixFilm
+        paths = [path for path in paths if f'{root_tag}/' in path or path.endswith(root_tag)]
+        
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
         if len(relative_paths) == 1:
@@ -485,6 +489,9 @@ class SchemaDict(LockableDict):
         contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+        #e.g. bravaisMatrix vs. bravaisMatrixFilm
+        paths = [path for path in paths if f'{root_tag}/' in path or path.endswith(root_tag)]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
         if len(relative_paths) == 1:
@@ -943,6 +950,10 @@ class OutputSchemaDict(SchemaDict):
             contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
+        if f'/{root_tag}' not in iteration_path:
+            #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+            #e.g. bravaisMatrix vs. bravaisMatrixFilm
+            paths = [path for path in paths if f'{root_tag}/' in path or path.endswith(root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
@@ -1095,6 +1106,10 @@ class OutputSchemaDict(SchemaDict):
             contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        if f'/{root_tag}' not in iteration_path:
+            #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+            #e.g. bravaisMatrix vs. bravaisMatrixFilm
+            paths = [path for path in paths if f'{root_tag}/' in path or path.endswith(root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
