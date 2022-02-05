@@ -365,7 +365,7 @@ class SchemaDict(LockableDict):
         #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
         #e.g. bravaisMatrix vs. bravaisMatrixFilm
         paths = [path for path in paths if f'{root_tag}/' in path or path.endswith(root_tag)]
-        
+
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
         if len(relative_paths) == 1:

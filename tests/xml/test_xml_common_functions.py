@@ -219,7 +219,7 @@ def test_abs_to_rel_xpath():
     assert abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'new_root') == './relative/path/@attrib'
     assert abs_to_rel_xpath('/test/new_root/relative/path', 'path') == '.'
     assert abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'path') == './@attrib'
-    
+
     with pytest.raises(ValueError):
         abs_to_rel_xpath('/test/new_root/relative/path/@attrib', 'non_existent')
 

@@ -166,12 +166,14 @@ def test_relative_tag_xpath_input():
     with pytest.raises(NoPathFound):
         schema_dict.relative_tag_xpath('DMI', 'forceTheorem')
 
+
 def test_relative_tag_xpath_tag_containing_root_tag():
     """
-    Test the path finding for tags for other tagnames completely including the root tag name 
+    Test the path finding for tags for other tagnames completely including the root tag name
     """
     schema_dict = InputSchemaDict.fromVersion('0.35')
     assert schema_dict.relative_tag_xpath('row-1', 'bravaisMatrix') == './row-1'
+
 
 def test_tag_xpath_output():
     """
@@ -253,13 +255,13 @@ def test_relative_iteration_tag_xpath():
     assert schema_dict.relative_iteration_tag_xpath(
         'mtcharge', 'scfLoop', not_contains='valence') == './iteration/allElectronCharges/mtCharges/mtCharge'
 
+
 def test_relative_iteration_tag_xpath_tag_containing_root_tag():
     """
-    Test the path finding for tags for other tagnames completely including the root tag name 
+    Test the path finding for tags for other tagnames completely including the root tag name
     """
     schema_dict = OutputSchemaDict.fromVersion(MAIN_TEST_VERSION)
-    assert schema_dict.relative_iteration_tag_xpath(
-        'mtcharge', 'mtCharge', not_contains='valence') == '.'
+    assert schema_dict.relative_iteration_tag_xpath('mtcharge', 'mtCharge', not_contains='valence') == '.'
 
 
 def test_iteration_attrib_xpath():
