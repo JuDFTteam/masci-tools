@@ -1089,6 +1089,7 @@ def bokeh_spectral_function(kpath,
 def periodic_table_plot(
         values,
         positions=None,
+        *,
         color_data=None,
         log_scale=False,
         color_map=None,
@@ -1130,6 +1131,59 @@ def periodic_table_plot(
     from bokeh.transform import dodge, linear_cmap, log_cmap
     from bokeh.sampledata.periodic_table import elements
     from bokeh.models import Label, ColorBar, OpenHead, Arrow, BasicTicker
+
+    from bokeh.models import ColumnDataSource
+
+    if isinstance(values, (dict, pd.DataFrame, ColumnDataSource)) or values is None:
+        warnings.warn(
+            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
+            'and values and positions as the first arguments', DeprecationWarning)
+        data = values
+        values = kwargs.pop('display_values', [])
+        positions = kwargs.pop('display_positions', [])
+
+    if 'color_value' in kwargs:
+        warnings.warn('color_value is deprecated. Use color_data instead', DeprecationWarning)
+        color_data = kwargs.pop('color_value')
+
+    if 'outfilename' in kwargs:
+        warnings.warn('outfilename is deprecated. Use saveas instead', DeprecationWarning)
+        saveas = kwargs.pop('outfilename')
+
+    if 'bokeh_palette' in kwargs:
+        warnings.warn('bokeh_palette is deprecated. Use color_palette instead', DeprecationWarning)
+        kwargs['color_palette'] = kwargs.pop('bokeh_palette')
+
+    if 'copy_source' in kwargs:
+        warnings.warn('copy_source is deprecated. Use copy_data instead', DeprecationWarning)
+        copy_data = kwargs.pop('copy_source')
+
+    if 'legend_labels' in kwargs:
+        warnings.warn('legend_labels is deprecated. Use legend_label instead', DeprecationWarning)
+        kwargs['legend_label'] = kwargs.pop('legend_labels')
+
+    if 'color_bar_title' in kwargs:
+        warnings.warn('color_bar_title is deprecated. Use title entry in the colorbar_options argument instead',
+                      DeprecationWarning)
+        kwargs.setdefault('colorbar_options', {})['title'] = kwargs.pop('color_bar_title')
+
+    if 'value_color_range' in kwargs:
+        warnings.warn('The value_color_range argument is deprecated. Use the color key in the limits argument instead',
+                      DeprecationWarning)
+        kwargs.setdefault('limits', {})['color'] = kwargs.pop('value_color_range')
+
+    if not isinstance(blank_outsiders, str):
+        warnings.warn(
+            'The blank_outsiders argument as a list of bools is deprecated. Use min, max or both or None instead',
+            DeprecationWarning)
+        if all(blank_outsiders):
+            blank_outsiders = 'both'
+        elif blank_outsiders[0]:
+            blank_outsiders = 'min'
+        elif blank_outsiders[1]:
+            blank_outsiders = 'max'
+        else:
+            blank_outsiders = None
 
     if color_map is None:
         color_map = plasma
