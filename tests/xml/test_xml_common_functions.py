@@ -4,6 +4,7 @@ Test of the functions in masci_tools.util.xml.common_functions
 import pytest
 import logging
 from lxml import etree
+from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 LOGGER = logging.getLogger(__name__)
 
@@ -126,7 +127,6 @@ def test_split_off_tag():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_tag
-    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs') == ('/fleurInput/calculationSetup', 'cutoffs')
     assert split_off_tag('/fleurInput/calculationSetup/cutoffs/') == ('/fleurInput/calculationSetup', 'cutoffs')
@@ -146,7 +146,6 @@ def test_add_tag():
     Test of the add_tag function
     """
     from masci_tools.util.xml.common_functions import add_tag
-    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert add_tag('/fleurInput/calculationSetup', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
     assert add_tag('/fleurInput/calculationSetup/', 'cutoffs') == '/fleurInput/calculationSetup/cutoffs'
@@ -164,7 +163,6 @@ def test_split_off_attrib():
     Test of the split_off_tag function
     """
     from masci_tools.util.xml.common_functions import split_off_attrib
-    from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
     assert split_off_attrib('/fleurInput/calculationSetup/cutoffs/@Kmax') == ('/fleurInput/calculationSetup/cutoffs',
                                                                               'Kmax')
@@ -226,3 +224,27 @@ def test_abs_to_rel_xpath():
     assert abs_to_rel_xpath('/test/new_root/relativeExtra/path', 'relativeExtra') == './path'
     with pytest.raises(ValueError):
         abs_to_rel_xpath('/test/new_root/relativeExtra/path', 'relative')
+
+
+@pytest.mark.parametrize('xpath,tag,result', [
+    ('/test/tag/path', 'tag', True),
+    ('/test/tags/path', 'tag', False),
+    ('/test/tag/path', 'path', True),
+    ('/test/tag/path', 'test', True),
+    ('test/tag/path', 'tag', True),
+    ('./test/tag/path', 'test', True),
+    ('.', 'tag', False),
+    ('/test/tag/path[asf]', 'tag', True),
+    ('/test/tag[tests]/path[test]', 'tag', True),
+    ('/test/tag[tests]/path[test]', 'tests', False),
+    ('/test/tag[tests]/path[test]', 'test', True),
+    (XPathBuilder('/test/tag/path'), 'test', True),
+    (etree.XPath('/test/tag[tests]/path[test]'), 'test', True),
+])
+def test_contains_tag(xpath, tag, result):
+    """
+    Test of the contains tag function
+    """
+    from masci_tools.util.xml.common_functions import contains_tag
+
+    assert contains_tag(xpath, tag) == result

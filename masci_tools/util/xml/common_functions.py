@@ -393,7 +393,7 @@ def abs_to_rel_xpath(xpath: str, new_root: str) -> str:
 
     :returns: str of the relative xpath
     """
-    if f'{new_root}/' in xpath or xpath.endswith(new_root):
+    if contains_tag(xpath, new_root):
         xpath = xpath + '/'
         xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
         xpath = xpath.replace(f'{xpath_to_root}/', './')
@@ -412,3 +412,32 @@ def normalize_xmllike(xmllike: XMLLike) -> etree._Element:
         return xmllike
     xmllike, _ = clear_xml(xmllike)
     return xmllike.getroot()
+
+
+def contains_tag(xpath: XPathLike, tag: str) -> bool:
+    """
+    Return whether a given xpath contains a given tag
+    This assumes that predicates of xpaths can't be nested
+    since otherwise the regex for removing them could fail
+
+    This function will only return True if one of the
+    tags exactly matches the tag argument not if one tag contains the
+    given name in it's name
+
+    :param xpath: xpath expression
+    :param tag: tag to check for
+
+    :returns: whether a tag is contained in the xpath
+    """
+    import re
+    if isinstance(xpath, XPathBuilder):
+        return tag in xpath.components
+
+    if isinstance(xpath, etree.XPath):
+        xpath_str = xpath.path  #type:ignore
+    else:
+        xpath_str = str(xpath)
+
+    #Strip out predicates
+    xpath_str = re.sub(r'[\[].*?[\]]', '', xpath_str)
+    return tag in xpath_str.split('/')
