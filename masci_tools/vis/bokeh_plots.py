@@ -1314,14 +1314,14 @@ def periodic_table_plot(
         cbar_location = (plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55)
 
         color_bar = ColorBar(color_mapper=color_mapper['transform'],
-                            title_text_font_size='12pt',
-                            ticker=BasicTicker(desired_num_ticks=10),
-                            border_line_color=None,
-                            background_fill_color=None,
-                            location=cbar_location,
-                            orientation='horizontal',
-                            major_label_text_font_size=cbar_fontsize,
-                            **colorbar_options)
+                             title_text_font_size='12pt',
+                             ticker=BasicTicker(desired_num_ticks=10),
+                             border_line_color=None,
+                             background_fill_color=None,
+                             location=cbar_location,
+                             orientation='horizontal',
+                             major_label_text_font_size=cbar_fontsize,
+                             **colorbar_options)
 
         p.add_layout(color_bar, 'center')
 
