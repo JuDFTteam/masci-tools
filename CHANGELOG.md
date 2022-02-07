@@ -15,6 +15,7 @@
 - The `_conversions` key in the `outxml_parser` now accepts namedtuples `Conversion` to enable passing additional arguments to these functions. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
 - Adjusted `get_cell` to understand the `bravaisMatrixFilm` inut introduced with the MaX6 release of fleur [[#110]](https://github.com/JuDFTteam/masci-tools/pull/110)
 - Improved detection, whether a given xpath contains a tag including stripping predicates. Added function `contains_tag` in `masci_tools.util.xml.common_functions` [[#113]](https://github.com/JuDFTteam/masci-tools/pull/113)
+- Refactored bokeh plot routine `periodic_table_plot` to make use of the plot parameters utilities [[#114]](https://github.com/JuDFTteam/masci-tools/pull/114)
 
 ### Bugfixes
 - Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception

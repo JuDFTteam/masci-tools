@@ -384,3 +384,18 @@ def test_lattice_constant_defaults_multi_fit(check_bokeh_plot, lattice_constant_
     p = plot_lattice_constant(scaling, energy_data, fit_data=fit, show=False)
 
     check_bokeh_plot(p)
+
+
+def test_periodic_table_plot_defaults(check_bokeh_plot):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import periodic_table_plot
+
+    p = periodic_table_plot(['atomic radius', 'year discovered'],
+                            positions=[0.1, -0.05],
+                            show=False,
+                            color_data='atomic radius',
+                            include_legend=True)
+
+    check_bokeh_plot(p)

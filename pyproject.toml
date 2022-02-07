@@ -151,7 +151,6 @@ max-line-length = 120
 disable = [
     "too-few-public-methods",
     "too-many-public-methods",
-    "bad-continuation",
     "wrong-import-position",
     "line-too-long",
     "locally-disabled",
@@ -163,7 +162,6 @@ disable = [
     "wrong-import-order",
     "import-outside-toplevel",
     "duplicate-code",
-    "unnecessary-pass",
     "invalid-name",
     "unused-variable",
     "unused-argument",
