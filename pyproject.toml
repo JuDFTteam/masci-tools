@@ -198,7 +198,7 @@ split_arguments_when_comma_terminated = true
 indent_dictionary_value = false
 
 [bumpver]
-current_version = "0.7.2"
+current_version = "0.8.0"
 version_pattern = "MAJOR.MINOR.PATCH[TAGNUM]"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
