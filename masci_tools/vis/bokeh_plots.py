@@ -1308,7 +1308,7 @@ def periodic_table_plot(
 
     # add color bar
 
-    if any(entry.color is not None for entry in plot_data.keys())
+    if any(entry.color is not None for entry in plot_data.keys()):
         colorbar_options = plot_params['colorbar_options'].copy()
         cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
         cbar_location = (plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55)
