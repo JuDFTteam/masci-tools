@@ -33,7 +33,7 @@ repos:
     additional_dependencies: ['toml']
 
 - repo: https://github.com/ikamensh/flynt/
-  rev: '0.69'
+  rev: '0.76'
   hooks:
   -   id: flynt
       args: [
