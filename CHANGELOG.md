@@ -1,7 +1,7 @@
 # Changelog
 
-# latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...develop)
+# v.0.8.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
 
 ### Added
 - Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6 release of fleur (file version `0.35`) [[#112]](https://github.com/JuDFTteam/masci-tools/pull/112)
