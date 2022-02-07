@@ -1090,10 +1090,10 @@ def periodic_table_plot(
         values,
         positions=None,
         color_data=None,
-        data=None,
-        copy_data=False,
         log_scale=False,
         color_map=None,
+        data=None,
+        copy_data=False,
         title='',
         saveas='periodictable.html',
         blank_outsiders='both',  #min, max or both, None
@@ -1101,6 +1101,28 @@ def periodic_table_plot(
         include_legend=True,
         figure=None,
         **kwargs):
+    """
+    Plot function for an interactive periodic table plot. Heat map and hover tool.
+    source must be a pandas dataframe containing, atom period and group, atomic number and symbol
+
+    :param values: data for the text inside each elements box
+    :param positions: y positions relative to the middle of the box for each value
+    :param color_data: data to display as a heatmap
+    :param color_map: color palette to use for the heatmap (default matplotlib plasma)
+    :param log_scale: bool, if True the heatmap is done logarithmically
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param saveas: str, filename for the saved plot
+    :param blank_outsiders: either 'both', 'min', 'max' or None, determines, which points outside the color
+                            range to color with a default blank color
+    :param blank_color: color to replace values outside the color range by
+    :param include_legend: if True an additional entry with labels explaing each value entry is added
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+
+    Additional kwargs are passed on to the label creation for the element box
+    The kwargs `legend_options` and `colorbar_options` can be used to overwrite default
+    values for these regions of the plot
+    """
     from matplotlib.colors import Normalize, LogNorm
     from matplotlib.cm import ScalarMappable
     from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
@@ -1286,21 +1308,22 @@ def periodic_table_plot(
 
     # add color bar
 
-    colorbar_options = plot_params['colorbar_options'].copy()
-    cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
-    cbar_location = (plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55)
+    if any(entry.color is not None for entry in plot_data.keys())
+        colorbar_options = plot_params['colorbar_options'].copy()
+        cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
+        cbar_location = (plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55)
 
-    color_bar = ColorBar(color_mapper=color_mapper['transform'],
-                         title_text_font_size='12pt',
-                         ticker=BasicTicker(desired_num_ticks=10),
-                         border_line_color=None,
-                         background_fill_color=None,
-                         location=cbar_location,
-                         orientation='horizontal',
-                         major_label_text_font_size=cbar_fontsize,
-                         **colorbar_options)
+        color_bar = ColorBar(color_mapper=color_mapper['transform'],
+                            title_text_font_size='12pt',
+                            ticker=BasicTicker(desired_num_ticks=10),
+                            border_line_color=None,
+                            background_fill_color=None,
+                            location=cbar_location,
+                            orientation='horizontal',
+                            major_label_text_font_size=cbar_fontsize,
+                            **colorbar_options)
 
-    p.add_layout(color_bar, 'center')
+        p.add_layout(color_bar, 'center')
 
     # deactivate grid
     p.grid.grid_line_color = None
