@@ -222,7 +222,7 @@ print(index1)
 print(index2)
 
 print('Potential file read')
-print('found %i potentials in file' % len(index1))
+print(f'found {len(index1)} potentials in file')
 print('')
 
 tempsave = -1
@@ -438,7 +438,7 @@ elif mode == 'shape':
     # add header to shapefun_new
     tmp = datanew
     datanew = []
-    datanew.append('   %i\n' % (len(order)))
+    datanew.append(f'   {len(order)}\n')
     datanew.append('  1.000000000000E+00\n')
     datanew += tmp
     with open('shapefun_new', 'w') as f:
