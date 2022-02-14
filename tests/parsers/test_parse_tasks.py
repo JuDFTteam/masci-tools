@@ -14,7 +14,7 @@ def test_default_parse_tasks():
         'charges', 'magnetic_distances', 'bandgap', 'forcetheorem_ssdisp', 'total_energy_contributions',
         'ldau_energy_correction', 'general_out_info', 'forces', 'nmmp_distances', 'total_energy', 'magnetic_moments',
         'iteration_number', 'forcetheorem_dmi', 'general_inp_info', 'fermi_energy', 'torques', 'noco_angles',
-        'corelevels', 'hubbard1_distances', 'ldahia_info'
+        'corelevels', 'hubbard1_distances', 'ldahia_info', 'global_magnetic_moments'
     }
 
     p = ParseTasks('0.33', validate_defaults=True)
