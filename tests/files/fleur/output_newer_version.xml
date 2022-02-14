@@ -22,7 +22,7 @@
          <scfLoop itmax="4" minDistance=".00001000" maxIterBroyd="99" imix="Anderson" alpha=".05000000" precondParam="0.0" spinf="2.00000000"/>
          <coreElectrons ctail="F" frcor="F" kcrel="0" coretail_lmax="99" l_core_confpot="T"/>
          <xcFunctional name="pbe" relativisticCorrections="F"/>
-         <magnetism jspins="2" l_noco="T" l_ss="F" swsp="F" lflip="F" l_J="F" l_onlyMtStDen="F" fixed_moment="0.0">
+         <magnetism jspins="2" l_noco="F" l_ss="F" swsp="F" lflip="F" l_J="F" l_onlyMtStDen="F" fixed_moment="0.0">
             <qss>.0000000000 .0000000000 .0000000000</qss>
          </magnetism>
          <soc theta=".00000000" phi=".00000000" l_soc="F" spav="F" off="F" soc66="T"/>

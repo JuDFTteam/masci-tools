@@ -477,6 +477,17 @@ TASKS_DEFINITION = {
             }
         }
     },
+    'global_magnetic_moments': {
+        '_minimum_version': '0.35',
+        '_modes': [('noco', True)],
+        'magnetic_vec_moments': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'vec',
+                'tag_name': 'globalMagMoment'
+            }
+        }
+    },
     'forces': {
         '_minimal': True,
         '_modes': [('relax', True)],
