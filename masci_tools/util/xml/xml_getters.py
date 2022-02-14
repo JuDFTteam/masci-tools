@@ -442,6 +442,7 @@ def get_parameter_data(xmltree: XMLLike,
                        inpgen_ready: bool = True,
                        write_ids: bool = True,
                        extract_econfig: bool = False,
+                       allow_special_los: bool = True,
                        logger: Logger | None = None) -> dict[str, Any]:
     """
     This routine returns an python dictionary produced from the inp.xml
@@ -545,9 +546,8 @@ def get_parameter_data(xmltree: XMLLike,
                                                     ignore={'flipSpins'})
 
         atom_lo = eval_simple_xpath(species, schema_dict, 'lo', list_return=True, logger=logger)
-
         if len(atom_lo) != 0:
-            atom_dict['lo'] = convert_fleur_lo(atom_lo)
+            atom_dict['lo'] = convert_fleur_lo(atom_lo, allow_special_los=allow_special_los)
 
         parameters[atoms_name] = filter_out_empty_dict_entries(atom_dict)
 

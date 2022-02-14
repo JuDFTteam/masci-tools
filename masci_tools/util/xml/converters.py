@@ -509,7 +509,7 @@ def convert_from_fortran_complex(number_str: str) -> complex:
     return float(real_str) + 1j * float(imag_str)
 
 
-def convert_fleur_lo(loelements: list[etree._Element]) -> str:
+def convert_fleur_lo(loelements: list[etree._Element], allow_special_los: bool = True) -> str:
     """
     Converts lo xml elements from the inp.xml file into a lo string for the inpgen
     """
@@ -521,11 +521,13 @@ def convert_fleur_lo(loelements: list[etree._Element]) -> str:
 
     lo_string = ''
     for element in loelements:
-        # lo_type = get_xml_attribute(element, 'type')
-        # if lo_type != 'SCLO':  # non standard los not supported for now
-        #     continue
+        lo_type = get_xml_attribute(element, 'type')
+        if lo_type != 'SCLO' and not allow_special_los:  # non standard los not supported for now
+            continue
         eDeriv = get_xml_attribute(element, 'eDeriv')
-        if eDeriv not in ('0', '1'):  # LOs with higher derivatives are also dropped
+        if allow_special_los and eDeriv not in ('0', '1'):  # LOs with higher derivatives are also dropped
+            continue
+        if not allow_special_los and eDeriv != '0':
             continue
         l_num = get_xml_attribute(element, 'l')
         n_num = get_xml_attribute(element, 'n')
