@@ -91,6 +91,7 @@
          <ldaU l="1" U="-6.5" J="0.9" l_amf="F"/>
          <lo type="SCLO" l="2" n="3" eDeriv="0"/>
          <lo type="SCLO" l="2" n="3" eDeriv="1"/>
+         <lo type="SCLO" l="2" n="3" eDeriv="2"/>
          <lo type="HELO" l="2" n="5" eDeriv="0"/>
          <lo type="HELO" l="2" n="5" eDeriv="1"/>
       </species>

@@ -521,16 +521,16 @@ def convert_fleur_lo(loelements: list[etree._Element]) -> str:
 
     lo_string = ''
     for element in loelements:
-        lo_type = get_xml_attribute(element, 'type')
-        if lo_type != 'SCLO':  # non standard los not supported for now
-            continue
+        # lo_type = get_xml_attribute(element, 'type')
+        # if lo_type != 'SCLO':  # non standard los not supported for now
+        #     continue
         eDeriv = get_xml_attribute(element, 'eDeriv')
-        if eDeriv != '0':  # LOs with higher derivatives are also dropped
+        if eDeriv not in ('0', '1'):  # LOs with higher derivatives are also dropped
             continue
         l_num = get_xml_attribute(element, 'l')
         n_num = get_xml_attribute(element, 'n')
         if l_num is None or n_num is None:
-            raise ValueError('Failedto evaluate l and n attribute of LO element')
+            raise ValueError('Failed to evaluate l and n attribute of LO element')
         lostr = f'{n_num}{shell_map[int(l_num)]}'
         lo_string = lo_string + ' ' + lostr
     return lo_string.strip()
