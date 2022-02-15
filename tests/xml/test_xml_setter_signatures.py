@@ -7,7 +7,7 @@ are not changed by accident.
 def test_xml_setter_signatures(data_regression):
     """
     This tests compares the signatures of the xml setter functions to a stored version
-    to make sure that changes are noticed. Also makes sure, that the functions ahve the right expected
+    to make sure that changes are noticed. Also makes sure, that the functions have the right expected
     arguments for their classification
 
     If the change is not a completely optional added new keyword argument the change

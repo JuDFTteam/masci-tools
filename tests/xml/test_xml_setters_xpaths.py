@@ -1,7 +1,6 @@
 """
 Tests of the functions xml_setter_xpaths
 """
-import os
 from lxml import etree
 import pytest
 
@@ -93,7 +92,7 @@ def test_xml_create_tag_schema_dict_create_parents(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
-    with pytest.raises(ValueError, match="Could not create tag 'addArg' because atleast one subtag is missing."):
+    with pytest.raises(ValueError, match="Could not create tag 'addArg' because at least one subtag is missing."):
         xml_create_tag_schema_dict(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA",
                                    '/fleurInput/atomSpecies/species/ldaHIA', 'addArg')
 
@@ -219,7 +218,7 @@ def test_eval_xpath_create_create_parents(load_inpxml):
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
 
-    with pytest.raises(ValueError, match="Could not create tag 'addArg' because atleast one subtag is missing."):
+    with pytest.raises(ValueError, match="Could not create tag 'addArg' because at least one subtag is missing."):
         eval_xpath_create(xmltree, schema_dict, "/fleurInput/atomSpecies/species[@name='Fe-1']/ldaHIA/addArg",
                           '/fleurInput/atomSpecies/species/ldaHIA/addArg')
 
@@ -253,7 +252,7 @@ def test_xml_set_attrib_value(load_inpxml, attribname, attribvalue, result):
     assert str(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs/@Kmax')) == result
 
 
-#The integer argument is converted to float since the arguemnt radius is float_expression (either float or str)
+#The integer argument is converted to float since the argument radius is float_expression (either float or str)
 TEST_ATTRIB_RESULTS = [['test', 'test'], ['test', 'test2'], ['test', '2214.0000000000'], ['test', '2.20000000'],
                        ['2.20000000', 'test']]
 TEST_ATTRIBV = ['test', ['test', 'test2'], ['test', 2214], 'test', ['test']]
@@ -764,7 +763,7 @@ def test_xml_set_simple_tag_create_single(load_inpxml):
 
     changes = {'ne': 6}
 
-    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because atleast one subtag is missing"):
+    with pytest.raises(ValueError, match="Could not create tag 'realAxis' because at least one subtag is missing"):
         xml_set_simple_tag(xmltree, schema_dict, '/fleurInput/calculationSetup/greensFunction',
                            '/fleurInput/calculationSetup/greensFunction', 'realAxis', changes)
 
@@ -791,7 +790,7 @@ def test_xml_set_simple_tag_create_multiple(load_inpxml):
     changes = [{'n': 6}, {'n': 7}]
 
     with pytest.raises(ValueError,
-                       match="Could not create tag 'contourSemicircle' because atleast one subtag is missing"):
+                       match="Could not create tag 'contourSemicircle' because at least one subtag is missing"):
         xml_set_simple_tag(xmltree, schema_dict, '/fleurInput/calculationSetup/greensFunction',
                            '/fleurInput/calculationSetup/greensFunction', 'contourSemicircle', changes)
 

@@ -49,7 +49,8 @@ def outxml_parser(outxmlfile: XMLFileLike,
     """
     Parses the out.xml file to a dictionary based on the version and the given tasks
 
-    :param outxmlfile: either path to the out.xml file, opened file handle or a xml etree to be parsed
+    :param outxmlfile: either path to the out.xml file, opened file handle (in bytes modes i.e. rb)
+                       or a xml etree to be parsed
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param iteration_to_parse: either str or int, (optional, default 'last')
                                determines which iteration should be parsed.
@@ -72,7 +73,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     :return: python dictionary with the information parsed from the out.xml
 
     :raises ValueError: If the validation against the schema failed, or an irrecoverable error
-                        occured during parsing
+                        occurred during parsing
     :raises FileNotFoundError: If no Schema file for the given version was found
     :raises KeyError: If an unknown task is encountered
     """
@@ -195,7 +196,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     iteration_nodes = eval_simple_xpath(root, outschema_dict, 'iteration', logger=logger, list_return=True)
     n_iters = len(iteration_nodes)
 
-    # parse only last stable interation
+    # parse only last stable iteration
     # (if modes (dos and co) maybe parse anyway if broken?)
     if outfile_broken and (n_iters >= 2):
         iteration_nodes = iteration_nodes[:-2]

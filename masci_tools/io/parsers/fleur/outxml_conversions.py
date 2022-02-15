@@ -17,42 +17,49 @@ from __future__ import annotations
 
 from datetime import date
 import numpy as np
-from pprint import pprint
 from masci_tools.util.constants import HTR_TO_EV
 from masci_tools.util.parse_tasks_decorators import conversion_function
-from masci_tools.io.common_functions import convert_to_pystd
+from masci_tools.io.common_functions import convert_to_pystd, abs_to_rel, abs_to_rel_f
 from typing import Any
 from logging import Logger
 
 
 @conversion_function
-def convert_total_energy(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
+def convert_htr_to_ev(out_dict: dict[str, Any],
+                      name: str,
+                      converted_name: str | None = None,
+                      pop: bool = False,
+                      add_unit: bool = True,
+                      logger: Logger | None = None) -> dict[str, Any]:
     """
-    Convert total energy to eV
+    Convert value from htr to eV
     """
 
-    total_energy = out_dict.get('energy_hartree', None)
+    if pop:
+        old = out_dict.pop(name, None)
+    else:
+        old = out_dict.get(name)
 
-    if total_energy is None:
-        if 'energy_hartree' in out_dict:
+    if converted_name is None:
+        converted_name = f'{old}_ev'
+
+    if add_unit:
+        out_dict[f'{converted_name}_units'] = 'eV'
+
+    if old is None:
+        if name in out_dict:
             if logger is not None:
-                logger.warning('convert_total_energy cannot convert None to eV')
-            out_dict['energy'] = None
-            out_dict['energy_units'] = 'eV'
+                logger.warning(f'convert_htr_to_ev cannot convert None to eV (Name: {name})')
+            out_dict[converted_name] = None
         return out_dict
 
-    total_energy = total_energy[-1]
-
-    if 'energy' not in out_dict:
-        out_dict['energy'] = []
-        out_dict['energy_units'] = 'eV'
-
-    if total_energy is not None:
-        out_dict['energy'].append(total_energy * HTR_TO_EV)
+    old = old[-1]
+    if old is not None:
+        out_dict.setdefault(converted_name, []).append(old * HTR_TO_EV)
     else:
         if logger is not None:
-            logger.warning('convert_total_energy cannot convert None to eV')
-        out_dict['energy'].append(None)
+            logger.warning(f'convert_htr_to_ev cannot convert None to eV (Name: {name})')
+        out_dict.setdefault(converted_name, []).append(None)
 
     return out_dict
 
@@ -167,19 +174,53 @@ def convert_ldau_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[s
         species_key = f'{species_name}/{atom_number}'
         orbital_key = 'spdf'[orbital]
 
-        if species_key not in out_dict['ldau_info']:
-            ldau_dict = out_dict['ldau_info'].get(species_key, {})
+        ldau_dict = out_dict['ldau_info'].setdefault(species_key, {})
+        ldau_dict[orbital_key] = {
+            'u': parsed_ldau['u'][index],
+            'j': parsed_ldau['j'][index],
+            'unit': 'eV',
+            'double_counting': 'AMF' if parsed_ldau['l_amf'][index] else 'FLL'
+        }
 
-        ldau_dict[orbital_key] = {}
-        ldau_dict[orbital_key]['u'] = parsed_ldau['u'][index]
-        ldau_dict[orbital_key]['j'] = parsed_ldau['j'][index]
-        ldau_dict[orbital_key]['unit'] = 'eV'
-        if parsed_ldau['l_amf'][index]:
-            ldau_dict[orbital_key]['double_counting'] = 'AMF'
-        else:
-            ldau_dict[orbital_key]['double_counting'] = 'FLL'
+    return out_dict
 
-        out_dict['ldau_info'][species_key] = ldau_dict
+
+@conversion_function
+def convert_ldahia_definitions(out_dict: dict[str, Any], logger: Logger) -> dict[str, Any]:
+    """
+    Convert the parsed information from LDA+U into a more readable dict
+
+    ldau_info has keys for each species with LDA+U ({species_name}/{atom_number})
+    and this in turn contains a dict with the LDA+U definition for the given orbital (spdf)
+
+    :param out_dict: dict with the already parsed information
+    """
+    parsed_ldahia = out_dict['ldahia_info'].pop('parsed_ldahia')
+    ldahia_species = out_dict['ldahia_info'].pop('ldahia_species')
+
+    if isinstance(ldahia_species['name'], str):
+        ldahia_species = {key: [val] for key, val in ldahia_species.items()}
+
+    if isinstance(parsed_ldahia['l'], int):
+        parsed_ldahia = {key: [val] for key, val in parsed_ldahia.items()}
+
+    ldau_definitions = zip(ldahia_species['name'], ldahia_species['atomic_number'], parsed_ldahia['l'])
+    for index, ldahia_def in enumerate(ldau_definitions):
+
+        species_name, atom_number, orbital = ldahia_def
+
+        species_key = f'{species_name}/{atom_number}'
+        orbital_key = 'spdf'[orbital]
+
+        ldahia_dict = out_dict['ldahia_info'].setdefault(species_key, {})
+
+        ldahia_dict[orbital_key] = {
+            'u': parsed_ldahia['u'][index],
+            'j': parsed_ldahia['j'][index],
+            'unit': 'eV',
+            'double_counting': 'AMF' if parsed_ldahia['l_amf'][index] else 'FLL',
+            'initial_occupation': parsed_ldahia['init_occ'][index]
+        }
 
     return out_dict
 
@@ -191,23 +232,19 @@ def convert_relax_info(out_dict: dict[str, Any], logger: Logger) -> dict[str, An
 
     :param out_dict: dict with the already parsed information
     """
-    v_1 = out_dict.pop('lat_row1')
-    v_2 = out_dict.pop('lat_row2')
-    v_3 = out_dict.pop('lat_row3')
 
-    out_dict['relax_brav_vectors'] = [v_1, v_2, v_3]
+    atoms, cell, pbc = out_dict.pop('parsed_relax_info')
+    film = not all(pbc)
 
-    out_dict['relax_atom_positions'] = out_dict.pop('atom_positions')
-    species = out_dict.pop('position_species')
-    species = species['species']
-    species_info = out_dict.pop('element_species')
-    if isinstance(species_info['name'], str):
-        species_info = {key: [val] for key, val in species_info.items()}
-    species_info = dict(zip(species_info['name'], species_info['element']))
+    positions = [convert_to_pystd(site.position) for site in atoms]
+    if film:
+        positions = [abs_to_rel_f(position, cell, pbc) for position in positions]
+    else:
+        positions = [abs_to_rel(position, cell) for position in positions]
 
-    out_dict['relax_atomtype_info'] = []
-    for specie in species:
-        out_dict['relax_atomtype_info'].append((specie, species_info[specie]))
+    out_dict['relax_brav_vectors'] = cell.tolist()
+    out_dict['relax_atom_positions'] = [[round(x, 16) for x in pos] for pos in positions]
+    out_dict['relax_atomtype_info'] = [(site.kind, site.symbol) for site in atoms]
 
     return out_dict
 

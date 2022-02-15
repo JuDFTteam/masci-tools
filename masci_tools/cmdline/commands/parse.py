@@ -120,7 +120,7 @@ def parse_structure_data(xml_file):
 @click.argument('xml-file', type=click.Path(exists=True))
 def parse_cell_data(xml_file):
     """
-    Parse the unit cell definition fo the given xml file
+    Parse the unit cell definition of the given xml file
     """
     from masci_tools.util.xml.xml_getters import get_cell
 
@@ -211,9 +211,9 @@ def parse_symmetry_information(xml_file):
     echo.echo_info('Symmetry information:')
     for rotation, shift in zip(rotations, shifts):
         echo.echo('Rotation:')
-        echo.echo(rotation)
+        echo.echo(str(rotation))
         echo.echo('Translation:')
-        echo.echo(shift)
+        echo.echo(str(shift))
         echo.echo('')
 
 

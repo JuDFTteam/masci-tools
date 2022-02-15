@@ -187,8 +187,8 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     if input_params is None:
         input_params = {}
 
-    # we write always out rel coordinates, because thats the way FLEUR uses
-    # them best. we have to convert them from abs, because thats how they
+    # we write always out rel coordinates, because that's the way FLEUR uses
+    # them best. we have to convert them from abs, because that's how they
     # are stored in a Structure node. cartesian=F is default
     if 'input' not in input_params:
         input_params['input'] = {}
@@ -347,7 +347,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     inpgen_file_content.append(scaling_factor_card)
     inpgen_file_content.append('\n')
 
-    # Write Atomic positons
+    # Write Atomic positions
     inpgen_file_content.append(atom_positions_str)
 
     # Write namelists after atomic positions

@@ -2,7 +2,6 @@
 Tests of the inpxml converter
 """
 import os
-from pathlib import Path
 
 
 def test_generate_conversion(file_regression, remove_conversion):

@@ -139,7 +139,7 @@ class kkrparams:
                 'Chemistry, Exchange-correlation: Scale the magnetic part of the xc-potential and energy. Takes values between 0. (fully suppressed magnetisc potential) and 1. (normal magnetic potential).'
             ]),
             ('NAT_LDAU',
-             [None, '%i', False, 'Chemistry, Exchange-correlation: Numer of atoms where LDA+U will be used']),
+             [None, '%i', False, 'Chemistry, Exchange-correlation: Number of atoms where LDA+U will be used']),
             ('LDAU_PARA', [
                 None, '%i %i %f %f %f', False,
                 'Chemistry, Exchange-correlation: For each atom where LDA+U should be used, the entries are: [atom type] [angular mom. to apply LDA+U] [Ueff] [Jeff] [Eref] where [atom type] is between 1...[NATYP].'
@@ -398,7 +398,7 @@ class kkrparams:
             ]),
             ('TESTOPT', [
                 None, '%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s', False,
-                'Running and test options: optional 8-character keywords in a row without spaces between them plus a secod row of the same.'
+                'Running and test options: optional 8-character keywords in a row without spaces between them plus a second row of the same.'
             ]),
             ('<MPI_SCHEME>', [
                 None, '%i', False,
@@ -411,7 +411,7 @@ class kkrparams:
             ]),
             ('DECIFILES', [
                 None, '%s', False,
-                'Filenames: Name of left and right decifiles (use "vaccum" name to inducate vacuum continuation)'
+                'Filenames: Name of left and right decifiles (use "vacuum" name to inducate vacuum continuation)'
             ]),
             # special options
             ('JIJRAD', [
@@ -1057,7 +1057,7 @@ class kkrparams:
         if value is None:
             if not silent:
                 print('Warning setting value None is not permitted!')
-                print(f'Use remove_value funciton instead! Ignore keyword {key}')
+                print(f'Use remove_value function instead! Ignore keyword {key}')
         else:
             key = key.upper()  # make case insensitive
             if self.__params_type == 'kkrimp' and key == 'XC':
@@ -1176,7 +1176,7 @@ class kkrparams:
         for key in mandatory_list:
             self._mandatory[key] = True
 
-        # overwrite if mandatory list needs to be changed (determinded from value of self.__params_type):
+        # overwrite if mandatory list needs to be changed (determined from value of self.__params_type):
         if self.__params_type == 'voronoi':
             self._update_mandatory_voronoi()
         if self.__params_type == 'kkrimp':

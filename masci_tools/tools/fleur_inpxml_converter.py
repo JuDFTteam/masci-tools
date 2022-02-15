@@ -5,7 +5,11 @@ convert inp.xml files between different file versions
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Iterable, NamedTuple
+from typing import Iterable, NamedTuple, Sequence, TypeVar, cast
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict
 import json
 from pathlib import Path
 import os
@@ -17,6 +21,7 @@ import tabulate
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
+from masci_tools.util.typing import XMLLike, FileLike
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
 from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
@@ -109,8 +114,8 @@ class AmbiguousAction(NamedTuple):
     NamedTuple representing a change in paths that cannot be resolved automatically
     """
     name: str
-    old_paths: tuple[str]
-    new_paths: tuple[str]
+    old_paths: tuple[str, ...]
+    new_paths: tuple[str, ...]
     attrib: bool
 
     @classmethod
@@ -165,10 +170,10 @@ class CreateAction(NamedTuple):
     name: str
     path: str
     attrib: bool = False
-    element: str = None
+    element: str | None = None
 
     @classmethod
-    def from_path(cls, xpath: str, element: str = None) -> RemoveAction:
+    def from_path(cls, xpath: str, element: str | None = None) -> CreateAction:
         """
         Construct a CreateAction from a given xpath
 
@@ -185,12 +190,29 @@ class CreateAction(NamedTuple):
         return cls(name=name, path=path, attrib=attrib, element=element)
 
 
+SimpleAction = TypeVar('SimpleAction', CreateAction, RemoveAction)
+NamedAction = TypeVar('NamedAction', CreateAction, RemoveAction, AmbiguousAction)
+
+
+class Actions(TypedDict):
+    remove: list[RemoveAction]
+    create: list[CreateAction]
+    move: list[MoveAction | NormalizedMoveAction]
+
+
+class FileConversion(TypedDict, total=False):
+    from_version: str
+    to_version: str
+    tag: Actions
+    attrib: Actions
+
+
 def analyse_paths(
     schema_start: InputSchemaDict, schema_target: InputSchemaDict, path_entries: str | list[str]
 ) -> tuple[list[RemoveAction], list[CreateAction], list[MoveAction], list[AmbiguousAction]]:
     """
     Gather the initial path differences between the two given input schema dictionaries
-    fro the given entries. If multiple enetries are given they are first merged together
+    for the given entries. If multiple enetries are given they are first merged together
 
     :param schema_start: InputSchemaDict to start from
     :param schema_start: InputSchemaDict to end up at
@@ -217,12 +239,12 @@ def analyse_paths(
             paths_target[name].extend(paths)
 
     removed_keys = paths_start.keys() - paths_target.keys()
-    remove = []
+    remove: list[RemoveAction] = []
     for key in removed_keys:
         remove.extend(RemoveAction.from_path(path) for path in paths_start[key])
 
     new_keys = paths_target.keys() - paths_start.keys()
-    create = []
+    create: list[CreateAction] = []
     for key in new_keys:
         create.extend(CreateAction.from_path(path) for path in paths_target[key])
 
@@ -230,14 +252,11 @@ def analyse_paths(
     ambiguous = []
     possible_change_keys = paths_start.keys() & paths_target.keys()
     for key in possible_change_keys:
-        old_paths = paths_start[key]
-        new_paths = paths_target[key]
-
-        if old_paths == new_paths:
+        if paths_start[key] == paths_target[key]:
             continue
 
-        old_paths = set(old_paths)
-        new_paths = set(new_paths)
+        old_paths = set(paths_start[key])
+        new_paths = set(paths_target[key])
 
         different_paths = old_paths.symmetric_difference(new_paths)
         if len(different_paths) == 1:
@@ -265,9 +284,15 @@ def analyse_paths(
     return remove, create, move, ambiguous
 
 
-def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, tag_remove=None, tag_move=None):
+def resolve_ambiguouities(ambiguous: list[AmbiguousAction],
+                          remove: list[RemoveAction],
+                          create: list[CreateAction],
+                          move: list[MoveAction],
+                          remove_move: bool = False,
+                          tag_remove: list[RemoveAction] | None = None,
+                          tag_move: list[MoveAction] | None = None) -> None:
     """
-    Try to resolve ambuouities by using additional inforamtion from moved/created removed tags/attributes
+    Try to resolve ambuouities by using additional information from moved/created removed tags/attributes
     """
 
     for action in ambiguous.copy():
@@ -332,7 +357,7 @@ def resolve_ambiguouities(ambiguous, remove, create, move, remove_move=False, ta
             ambiguous.append(AmbiguousAction.from_paths(old=old_paths, new=new_paths))
 
 
-def trim_paths(paths):
+def trim_paths(paths: list[SimpleAction]) -> list[SimpleAction]:
 
     path_copy = paths.copy()
     for action in path_copy:
@@ -346,7 +371,7 @@ def trim_paths(paths):
     return paths
 
 
-def trim_attrib_paths(paths, tag_paths):
+def trim_attrib_paths(paths: list[SimpleAction], tag_paths: list[SimpleAction]) -> list[SimpleAction]:
 
     path_copy = paths.copy()
     for tag_action in tag_paths:
@@ -358,7 +383,7 @@ def trim_attrib_paths(paths, tag_paths):
     return paths
 
 
-def trim_move_paths(paths):
+def trim_move_paths(paths: list[MoveAction]) -> list[MoveAction]:
 
     path_copy = paths.copy()
     for action in path_copy:
@@ -373,7 +398,7 @@ def trim_move_paths(paths):
     return paths
 
 
-def trim_attrib_move_paths(paths, tag_paths):
+def trim_attrib_move_paths(paths: list[MoveAction], tag_paths: list[MoveAction]) -> list[MoveAction]:
 
     path_copy = paths.copy()
     for action in tag_paths:
@@ -386,7 +411,7 @@ def trim_attrib_move_paths(paths, tag_paths):
     return paths
 
 
-def remove_action(actions, name):
+def remove_action(actions: list[NamedAction], name: str) -> list[NamedAction]:
     """
     Find all the occurrences of actions with a given name and return them and remove them from the list
 
@@ -406,7 +431,7 @@ def remove_action(actions, name):
     return matching
 
 
-def echo_actions(actions, ignore=None, header='') -> None:
+def echo_actions(actions: Sequence[NamedTuple], ignore: Iterable[str] | None = None, header: str = '') -> None:
     """
     Echo a list of actions in a nicely formatted list
 
@@ -447,11 +472,11 @@ def echo_actions(actions, ignore=None, header='') -> None:
     click.echo()
 
 
-def load_conversion(from_version, to_version):
+def load_conversion(from_version: str, to_version: str) -> FileConversion:
     """
     Load the conversion between the given versions from a stored json file
 
-    :param from_version: str of the intitial version
+    :param from_version: str of the initial version
     :param to_version: str of the final version
 
     :returns: a dict with the actions to perform
@@ -459,12 +484,12 @@ def load_conversion(from_version, to_version):
     filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{from_version.replace('.','')}_to_{to_version.replace('.','')}.json"
 
     with open(filepath, encoding='utf-8') as f:
-        conversion = json.load(f)
+        conversion: FileConversion = json.load(f)
 
     #convert back to the namedtuples
     conversion['tag']['create'] = [CreateAction(*action) for action in conversion['tag']['create']]
     conversion['tag']['remove'] = [RemoveAction(*action) for action in conversion['tag']['remove']]
-    move = []
+    move: list[MoveAction | NormalizedMoveAction] = []
     for action in conversion['tag']['move']:
         if len(action) == 6:
             move.append(NormalizedMoveAction(*action))
@@ -485,14 +510,14 @@ def load_conversion(from_version, to_version):
     return conversion
 
 
-def dump_conversion(conversion):
+def dump_conversion(conversion: FileConversion) -> None:
     """
     Save the given conversion as a json file in the conversions subfolder
 
     :param conversion: dict representing the conversion
     """
 
-    filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{conversion['from'].replace('.','')}_to_{conversion['to'].replace('.','')}.json"
+    filepath = FILE_DIRECTORY / 'conversions' / f"conversion_{conversion['from_version'].replace('.','')}_to_{conversion['to_version'].replace('.','')}.json"
     os.makedirs(filepath.parent, exist_ok=True)
 
     #Drop all create actions, which have no element set
@@ -504,7 +529,7 @@ def dump_conversion(conversion):
 
 
 def _rename_elements(remove: list[RemoveAction], create: list[CreateAction], move: list[MoveAction], from_version: str,
-                     to_version: str, name: str) -> None:
+                     to_version: str, name: str) -> tuple[list[RemoveAction], list[CreateAction], list[MoveAction]]:
     """
     Get user input on tags that were renamed
     """
@@ -542,7 +567,7 @@ def _rename_elements(remove: list[RemoveAction], create: list[CreateAction], mov
     return remove, create, move
 
 
-def _create_tag_elements(create, to_schema):
+def _create_tag_elements(create: list[CreateAction], to_schema: InputSchemaDict) -> list[CreateAction]:
     """
     Get user input on tags to create
     """
@@ -556,11 +581,11 @@ def _create_tag_elements(create, to_schema):
             name = click.prompt('Name of the element',
                                 type=click.Choice([action.name for action in create], case_sensitive=False),
                                 show_choices=False)
-            create_action = remove_action(create, name)
+            create_actions = remove_action(create, name)
 
-            if len(create_action) != 1:
+            if len(create_actions) != 1:
                 raise ValueError('Not implemented')
-            create_action = create_action[0]
+            create_action = create_actions[0]
             allowed_attribs = to_schema['tag_info'][create_action.path]['attribs']
 
             attribs = {}
@@ -577,7 +602,7 @@ def _create_tag_elements(create, to_schema):
     return create
 
 
-def _add_warnings_on_remove(remove, name):
+def _add_warnings_on_remove(remove: list[RemoveAction], name: str) -> list[RemoveAction]:
     """
     Get user input on warnings to show
     """
@@ -598,13 +623,13 @@ def _add_warnings_on_remove(remove, name):
                                          show_choices=False)
                 remove_list += remove_action(remove, elem_name)
 
-            warning = click.prompt('Enter the warning message', type=str)
+            warning = click.prompt('Enter the warning message', type=click.types.StringParamType())
             remove.extend(action._replace(warning=warning) for action in remove_list)
         remove = sorted(remove, key=lambda x: x.name)
     return remove
 
 
-def _create_attrib_elements(create, to_schema):
+def _create_attrib_elements(create: list[CreateAction], to_schema: InputSchemaDict) -> list[CreateAction]:
     """
     Get user input on attributes to create
     """
@@ -618,11 +643,11 @@ def _create_attrib_elements(create, to_schema):
             name = click.prompt('Name of the attribute',
                                 type=click.Choice([action.name for action in create], case_sensitive=False),
                                 show_choices=False)
-            create_action = remove_action(create, name)
+            create_actions = remove_action(create, name)
 
-            if len(create_action) != 1:
+            if len(create_actions) != 1:
                 raise ValueError('Not implemented')
-            create_action = create_action[0]
+            create_action = create_actions[0]
             default = to_schema['tag_info'][create_action.path]['optional_attribs'].get(create_action.name)
             if default is not None:
                 default = str(default)
@@ -635,7 +660,8 @@ def _create_attrib_elements(create, to_schema):
 
 
 def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveAction], create: list[CreateAction],
-                       move: list[MoveAction], name: str):
+                       move: list[MoveAction],
+                       name: str) -> tuple[list[RemoveAction], list[CreateAction], list[MoveAction]]:
     """
     Prompt the user for input on actions that cannot be determined automagically
     """
@@ -650,11 +676,11 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
                                 type=click.Choice([action.name for action in ambiguous], case_sensitive=False),
                                 show_choices=False)
 
-            entry = remove_action(ambiguous, name)
+            entries = remove_action(ambiguous, name)
 
-            if len(entry) != 1:
+            if len(entries) != 1:
                 raise NotImplementedError("It's broken :-(")
-            entry = entry[0]
+            entry = entries[0]
         else:
             entry = ambiguous.pop(0)
 
@@ -666,9 +692,9 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
         while (new_paths or old_paths) and new_paths != old_paths:
             old_paths_display, new_paths_display = old_paths.copy(), new_paths.copy()
             if len(old_paths) < len(new_paths):
-                old_paths_display += [None] * (len(new_paths) - len(old_paths))
+                old_paths_display += [None] * (len(new_paths) - len(old_paths))  #type:ignore
             elif len(new_paths) < len(old_paths):
-                new_paths_display += [None] * (len(old_paths) - len(new_paths))
+                new_paths_display += [None] * (len(old_paths) - len(new_paths))  #type:ignore
 
             click.echo(
                 tabulate.tabulate(list(zip(old_paths_display, new_paths_display)),
@@ -690,8 +716,10 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
                     create.append(CreateAction.from_path(path))
                     new_paths.remove(path)
             elif action == 'move':
-                old_path_row = click.prompt('Enter the row you want to remove from the old paths', type=int)
-                new_path_row = click.prompt('Enter the row you want to remove from the new paths', type=int)
+                old_path_row = click.prompt('Enter the row you want to remove from the old paths',
+                                            type=click.types.IntParamType())
+                new_path_row = click.prompt('Enter the row you want to remove from the new paths',
+                                            type=click.types.IntParamType())
                 old_path = old_paths.pop(old_path_row)
                 new_path = new_paths.pop(new_path_row)
                 move.append(MoveAction.from_path(old=old_path, new=new_path))
@@ -700,7 +728,7 @@ def _manual_resolution(ambiguous: list[AmbiguousAction], remove: list[RemoveActi
     return remove, create, move
 
 
-def _xml_create_tag_with_parents(xmltree, xpath, node):
+def _xml_create_tag_with_parents(xmltree: XMLLike, xpath: str, node: etree._Element) -> None:
     """
     Create a tag at the given xpath together with it's parents if they are missing
     xml_create_tag cannot create subtags, but since we know that we have simple xpaths
@@ -726,7 +754,7 @@ def _xml_create_tag_with_parents(xmltree, xpath, node):
     xml_create_tag(xmltree, xpath, node)
 
 
-def _xml_delete_attribute_with_warnings(xmltree, xpath, name, warning=''):
+def _xml_delete_attribute_with_warnings(xmltree: XMLLike, xpath: str, name: str, warning: str = '') -> None:
     """
     Delete the attribute at the given xpath with the given name and show a warning if one is given
 
@@ -742,7 +770,7 @@ def _xml_delete_attribute_with_warnings(xmltree, xpath, name, warning=''):
         xml_delete_att(xmltree, xpath, name)
 
 
-def _xml_delete_tag_with_warnings(xmltree, xpath, warning=''):
+def _xml_delete_tag_with_warnings(xmltree: XMLLike, xpath: str, warning: str = '') -> None:
     """
     Delete the tag at the given xpath and show a warning if one is given
 
@@ -757,7 +785,7 @@ def _xml_delete_tag_with_warnings(xmltree, xpath, warning=''):
         xml_delete_tag(xmltree, xpath)
 
 
-def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str = None) -> None:
+def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpath: str | None = None) -> None:
     """
     Order the elements to be in the correct order for the given schema_dict
     """
@@ -792,7 +820,7 @@ def inpxml():
 @click.option('--output-file', '-o', type=str, default='inp.xml', help='Name of the output file')
 @click.option('--overwrite', is_flag=True, help='If the flag is given and the file already exists it is overwritten')
 @click.pass_context
-def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
+def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, output_file: str, overwrite: bool) -> None:
     """
     Convert the given XML_FILE file to version TO_VERSION
 
@@ -828,10 +856,11 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
 
+    action: MoveAction | RemoveAction | CreateAction | NormalizedMoveAction
     #Collect the nodes to be moved
-    move_tags = []
+    move_tags: list[list[etree._Element]] = []
     for action in conversion['tag']['move']:
-        move_tags.append(eval_xpath(xmltree, action.old_path, list_return=True))
+        move_tags.append(eval_xpath(xmltree, action.old_path, list_return=True))  #type: ignore
 
     #Collect the attributes to be moved
     move_attribs = []
@@ -874,13 +903,13 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
         if eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True):
             xml_delete_att(xmltree, path, action.old_name)
         if values:
-            nodes = eval_xpath(xmltree, action.new_path, list_return=True)
+            nodes: list[etree._Element] = eval_xpath(xmltree, action.new_path, list_return=True)  #type: ignore
             if nodes:
                 xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
 
     for action in conversion['attrib']['create']:
         if action.element is not None:
-            nodes = eval_xpath(xmltree, action.path, list_return=True)
+            nodes: list[etree._Element] = eval_xpath(xmltree, action.path, list_return=True)  #type: ignore
             if nodes:
                 xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
 
@@ -914,7 +943,7 @@ def convert_inpxml(ctx, xml_file, to_version, output_file, overwrite):
 @click.argument('to_version', type=str)
 @click.option('--show/--no-show', default=True, help='Show a summary of the conversion at the end')
 @click.pass_context
-def generate_inp_conversion(ctx, from_version, to_version, show):
+def generate_inp_conversion(ctx: click.Context, from_version: str, to_version: str, show: bool) -> FileConversion:
     """
     Generate the conversions from FROM_VERSION to TO_VERSION
 
@@ -961,8 +990,9 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
         for indx_after, action_after in enumerate(move_tags[indx + 1:]):
             if action.old_path in action_after.old_path:
                 intermediate_path = action_after.old_path.replace(action.old_path, action.new_path)
-                move_tags[indx_after + indx + 1] = NormalizedMoveAction.from_move(action_after,
-                                                                                  actual_path=intermediate_path)
+                #yapf:disable
+                move_tags[indx_after + indx + 1] = NormalizedMoveAction.from_move(action_after, actual_path=intermediate_path)  #type:ignore
+                #yapf:enable
 
     create_tags = _create_tag_elements(create_tags, to_schema)
     remove_tags = _add_warnings_on_remove(remove_tags, 'tags')
@@ -999,20 +1029,20 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
     create_attrib = _create_attrib_elements(create_attrib, to_schema)
     remove_attrib = _add_warnings_on_remove(remove_attrib, 'attributes')
 
-    conversion = {
-        'from': from_version,
-        'to': to_version,
+    conversion = FileConversion({
+        'from_version': from_version,
+        'to_version': to_version,
         'tag': {
             'remove': remove_tags,
             'create': create_tags,
-            'move': move_tags
+            'move': cast('list[MoveAction| NormalizedMoveAction]', move_tags)
         },
         'attrib': {
             'remove': remove_attrib,
             'create': create_attrib,
-            'move': move_attrib
+            'move': cast('list[MoveAction| NormalizedMoveAction]', move_attrib)
         }
-    }
+    })
 
     dump_conversion(conversion)
 
@@ -1025,7 +1055,7 @@ def generate_inp_conversion(ctx, from_version, to_version, show):
 @inpxml.command('show-conversion')
 @click.argument('from_version', type=str)
 @click.argument('to_version', type=str)
-def show_inp_conversion(from_version, to_version):
+def show_inp_conversion(from_version: str, to_version: str) -> None:
     """
     Show the actions for an already created conversion from FROM_VERSION to TO_VERSION
 

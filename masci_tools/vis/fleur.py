@@ -91,7 +91,7 @@ def plot_fleur_bands_characterize(bandsdata,
     :param weight_color: list of colors associated with each weight. If spin-polarized bandstructures
                          should be shown with different colors the list should be twice as long as the weights
     :param spinpol: bool, if True (default) use the plot for spin-polarized bands if the data is spin-polarized
-    :param only_spin: optional str, if given only the speicified spin components are plotted
+    :param only_spin: optional str, if given only the specified spin components are plotted
     :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
 
     All other Kwargs are passed on to :py:func:`~masci_tools.vis.fleur.plot_fleur_bands()`
@@ -167,7 +167,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
     :param bandsdata: dataset dict produced by the `FleurBands` recipe
     :param attributes: attributes dict produced by the `FleurBands` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized bands if the data is spin-polarized
-    :param only_spin: optional str, if given only the speicified spin components are plotted
+    :param only_spin: optional str, if given only the specified spin components are plotted
     :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
     :param weight: str, name of the weight (without spin suffix `_up` or `_dn`) you want to emphasize
 
@@ -238,8 +238,8 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
         spin_dn = spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns})
 
         #Double kpath and extend spin up data
-        kpath = kpath.append(kpath, ignore_index=True)
-        band_index = band_index.append(band_index + nbands + 1, ignore_index=True)
+        kpath = pd.concat([kpath, kpath], ignore_index=True)
+        band_index = pd.concat([band_index, band_index + nbands + 1], ignore_index=True)
         complete_spin = pd.concat([spin_up, spin_dn], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata

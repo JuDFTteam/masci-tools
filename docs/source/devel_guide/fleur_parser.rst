@@ -51,6 +51,7 @@ The following are possible:
                   into a dictionary, but for the parent of the tag
   :singleValue: Special case of allAttribs to parse value and units
                 attribute for the given tag
+  :xmlGetter: Will execute a function in the module `masci_tools.util.xml.xml_getters` given in the `name` entry
 
 The ```path_spec``` key specifies how the key can be uniquely identified.
 
@@ -66,13 +67,13 @@ All except the ```name``` key are optional and should be constructed so that the
 possible choice. Otherwise an exception is raised. There are other keywords, which can be entered
 here. These control how the parsed data is entered into the output dictionary. For a definition of these keywords, please refer to :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks`.
 
-Each task can also contain a number of control keys, determining when to peform the tasks.
+Each task can also contain a number of control keys, determining when to perform the tasks.
 Each of these keys begins with an underscore. All of these are optional.
 The following are valid:
 
   :_general: bool, if True (default False) the task is not performed for each iteration but once
              on the root of the file
-  :_minimal: bool, if True the task is peformed even when ```minimal_mode = True``` is given
+  :_minimal: bool, if True the task is performed even when ```minimal_mode = True``` is given
   :_modes: list of tuples specifying requirements on the ```fleur_modes``` for the task.
            For example ```[('jspins', 2), ('soc', True)]``` will only perform the task for a
            magnetic SOC calculation
@@ -94,7 +95,7 @@ These task definitions might have to be adapted for new fleur versions. Some cha
   @register_migration(base_version='0.33', target_version='0.34')
   def migrate_033_to034(definition_dict):
     """
-    Ficticious migration from 0.33 to 0.34
+    Fictitious migration from 0.33 to 0.34
     Moves the `number_of_atom_types` attribute from reading a simple
     attribute to counting the number of atomGroups in the input section
     And removes orbital_magnetic_moments task

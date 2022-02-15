@@ -16,19 +16,20 @@ without a database) are collected.
 from __future__ import annotations
 
 import io
-from typing import Any, Generator, Iterable, NamedTuple, TypeVar
+from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar
 try:
     from typing import TypeAlias  #type:ignore
 except ImportError:
     from typing_extensions import TypeAlias
 import numpy as np
 from collections.abc import Sequence
+from masci_tools.util.typing import FileLike
 ####################################################################################
 
 #helper functions used in calculation, parser etc.
 
 
-def open_general(filename_or_handle, iomode=None):
+def open_general(filename_or_handle: FileLike, iomode: str | None = None) -> IO[Any]:
     """
     Open a file directly from a path or use a file handle if that is given.
     Also take care of closed files by reopenning them.
@@ -46,14 +47,14 @@ def open_general(filename_or_handle, iomode=None):
     if reopen_file:
         if iomode is None:
             iomode = 'r'
-        f = open(filename_or_handle, iomode)
+        f = open(filename_or_handle, iomode, encoding='utf8')
     else:
         f = filename_or_handle
         if f.closed:  # reopen file if it was closed before
             if iomode is None:
-                f = open(f.name, f.mode)
+                f = open(f.name, f.mode, encoding='utf8')
             else:
-                f = open(f.name, iomode)
+                f = open(f.name, iomode, encoding='utf8')
         else:  # make sure reading the file now starts at the beginning again
             f.seek(0)
     return f
@@ -89,7 +90,7 @@ def filter_out_empty_dict_entries(dict_to_filter: dict) -> dict:
     return {key: val for key, val in dict_to_filter.items() if val not in EMPTY_VALUES}
 
 
-def get_alat_from_bravais(bravais, is3D=True):
+def get_alat_from_bravais(bravais: np.ndarray, is3D: bool = True) -> float:
     bravais_tmp = bravais
     if not is3D:
         #take only in-plane lattice to find maximum as alat
@@ -97,7 +98,7 @@ def get_alat_from_bravais(bravais, is3D=True):
     return np.sqrt(np.sum(bravais_tmp**2, axis=1)).max()
 
 
-def search_string(searchkey, txt):
+def search_string(searchkey: str, txt: Iterable[str]) -> int:
     iline = 0
     for line in txt:
         if searchkey in line:
@@ -106,7 +107,7 @@ def search_string(searchkey, txt):
     return -1
 
 
-def angles_to_vec(magnitude, theta, phi):
+def angles_to_vec(magnitude: list | np.ndarray, theta: list | np.ndarray, phi: list | np.ndarray) -> np.ndarray:
     """
     convert (magnitude, theta, phi) to (x,y,z)
 
@@ -141,12 +142,12 @@ def angles_to_vec(magnitude, theta, phi):
         y = r_inplane * np.sin(phi_i)
         z = np.cos(theta_i) * mag_i
         vec.append([x, y, z])
-    vec = np.array(vec)
+    vec_array = np.array(vec)
 
     if single_value_input:
-        vec = vec[0]
+        vec_array = vec_array[0]
 
-    return vec
+    return vec_array
 
 
 def get_Ang2aBohr() -> float:
@@ -173,7 +174,7 @@ def get_Ry2eV() -> float:
     return RY_TO_EV_KKR
 
 
-def vec_to_angles(vec):
+def vec_to_angles(vec: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray] | tuple[float, float, float]:
     """
     converts vector (x,y,z) to (magnitude, theta, phi)
     """
@@ -190,13 +191,13 @@ def vec_to_angles(vec):
         theta.append(np.arctan2(r_inplane, vec_i[2]))
         magnitude.append(np.sqrt(r_inplane**2 + vec_i[2]**2))
     if multiple_entries:
-        magnitude, theta, phi = np.array(magnitude), np.array(theta), np.array(phi)
+        magnitude, theta, phi = np.array(magnitude), np.array(theta), np.array(phi)  #type:ignore
     else:
         magnitude, theta, phi = magnitude[0], theta[0], phi[0]
-    return magnitude, theta, phi
+    return magnitude, theta, phi  #type:ignore
 
 
-def get_version_info(outfile):
+def get_version_info(outfile: FileLike) -> tuple[str, str, str]:
     with open_general(outfile) as f:
         tmptxt = f.readlines()
     itmp = search_string('Code version:', tmptxt)
@@ -214,7 +215,7 @@ def get_version_info(outfile):
     return code_version, compile_options, serial_number
 
 
-def get_corestates_from_potential(potfile='potential'):
+def get_corestates_from_potential(potfile: FileLike = 'potential') -> tuple[list, list, list]:
     """Read core states from potential file"""
     with open_general(potfile) as f:
         txt = f.readlines()
@@ -243,7 +244,7 @@ def get_corestates_from_potential(potfile='potential'):
     return n_core_states, e_core_states, l_core_states
 
 
-def get_highest_core_state(nstates, energies, lmoments):
+def get_highest_core_state(nstates: int, energies: np.ndarray, lmoments: np.ndarray) -> tuple[int, float, str]:
     """Find highest lying core state from list of core states, needed to find and check energy contour"""
     idx = energies.argmax()
     lval = lmoments[idx]
@@ -281,7 +282,7 @@ def interpolate_dos(
     """
 
     with open_general(dosfile) as f:
-        text = f.readline()  # dummy readin of header, may be replaced later
+        f.readline()  # dummy readin of header, may be replaced later
         npot = int(f.readline().split()[0])
         iemax = int(f.readline().split()[0])
         lmax = int(f.readline().split()[0])
@@ -292,15 +293,15 @@ def interpolate_dos(
         for i1 in range(npot):
             #print('Reading potential',i1)
             # Read header (not used)
-            for iheader in range(3):
-                text = f.readline()
+            for _ in range(3):
+                f.readline()
 
             # extract EF
             ef = float(f.readline().split()[7])
 
             # some more dummy lines
-            for iheader in range(5, 9 + 1):
-                text = f.readline()
+            for _ in range(5, 9 + 1):
+                f.readline()
 
             # now header is done. start reading DOS
             # Read dos: (total dos stored at DOS(LMAX+1,IE))
@@ -340,18 +341,17 @@ def interpolate_dos(
             dosnew_all_atoms.append(dosnew)
 
             if i1 != npot:
-                text = f.readline()  # dummy line
+                f.readline()  # dummy line
 
         dosnew_all_atoms = np.array(dosnew_all_atoms)
         dos_all_atoms = np.array(dos_all_atoms)
 
     if return_original:
         return ef, dos_all_atoms, dosnew_all_atoms
-    else:
-        return ef, dosnew_all_atoms
+    return ef, dosnew_all_atoms
 
 
-def get_ef_from_potfile(potfile):
+def get_ef_from_potfile(potfile: FileLike) -> float:
     """
     extract fermi energy from potfile
     """
@@ -524,7 +524,7 @@ def rel_to_abs(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _T
 
     :param vector: list or np.array of length 3, vector to be converted
     :param cell: Bravais matrix of a crystal 3x3 Array, List of list or np.array
-    :return: list of legth 3 of scaled vector, or False if vector was not lenth 3
+    :return: list of length 3 of scaled vector, or False if vector was not length 3
     """
     if not isinstance(vector, np.ndarray):
         vector_np = np.array(vector)

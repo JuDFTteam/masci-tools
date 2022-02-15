@@ -303,7 +303,7 @@ def shift_dataset(dataset, scalar_value, negative=False):
 
     :param dataset: dataset to transform
     :param scalar_value: value to shift the dataset by
-    :param negative: bool, if True the scalar_value will be substracted
+    :param negative: bool, if True the scalar_value will be subtracted
 
     :returns: the dataset shifted by the scalar
               if it is a dict all entries are shifted
@@ -336,7 +336,7 @@ def multiply_scalar(dataset, scalar_value):
     Multiply the given dataset with a scalar_value
 
     :param dataset: dataset to transform
-    :param scalar_value: value to mutiply the dataset by
+    :param scalar_value: value to multiply the dataset by
 
     :returns: the dataset multiplied by the scalar
               if it is a dict all entries are multiplied
@@ -691,7 +691,7 @@ def sum_over_dict_entries(dataset, overwrite_dict=False, entries=None, dict_entr
 @hdf5_transformation(attribute_needed=False)
 def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
     """
-    Add entries to the dataset dict (Only avalaible for dict datasets) with sums
+    Add entries to the dataset dict (Only available for dict datasets) with sums
     over entries containing a given pattern
 
     Used for example in the FleurBands recipe to calculate total atom weights
@@ -758,7 +758,7 @@ def shift_by_attribute(dataset, attribute_value, negative=False):
 
     :param dataset: dataset to transform
     :param attribute_value: value to shift the dataset by
-    :param negative: bool, if True the scalar_value will be substracted
+    :param negative: bool, if True the scalar_value will be subtracted
 
     :returns: the dataset shifted by the scalar
               if it is a dict all entries are shifted
@@ -769,7 +769,7 @@ def shift_by_attribute(dataset, attribute_value, negative=False):
 @hdf5_transformation(attribute_needed=True)
 def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, replace_entries=None):
     """
-    Add entries to the dataset dict (Only avalaible for dict datasets) with sums
+    Add entries to the dataset dict (Only available for dict datasets) with sums
     over entries containing a given pattern formatted with a attribute_value
 
     Used for example in the FleurBands recipe to calculate total atom weights

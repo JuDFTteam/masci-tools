@@ -19,7 +19,7 @@ Up till now 3 decorators are defined:
     - ```register_parsing_function``` gives a mappimg between available parsing functions
       and the keywords in the parsing tasks
     - ```conversion_function``` makes the decorated function available to be called easily
-      after a certain parsing task has occured
+      after a certain parsing task has occurred
 """
 from typing import Callable, List, Union, TypeVar, Any
 from masci_tools.util.parse_tasks import ParseTasks
@@ -77,7 +77,7 @@ def register_parsing_function(parse_type_name: str, all_attribs_keys: bool = Fal
     """
     Decorator to add parse type for task definition dictionary.
 
-    :param parse_type_name: str, the function can be selected in task defintions
+    :param parse_type_name: str, the function can be selected in task definitions
                             via this string
     :param all_attribs_keys: bool, if True the arguments for parsing multiple attributes
                              are valid

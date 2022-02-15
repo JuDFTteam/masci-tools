@@ -39,7 +39,7 @@ def hdfList(name: str, obj: h5py.HLObject) -> None:
     if obj.attrs:
         print(f"{'Attributes:':>{ref_length+9}}")
         for attr_name, attr_val in obj.attrs.items():
-            if len(attr_val) == 1:
+            if isinstance(attr_val, list) and len(attr_val) == 1:
                 attr_val = attr_val[0]
             print(f'{attr_name:>{ref_length+len(attr_name)}}: {attr_val}')
         print('')
@@ -57,7 +57,7 @@ def h5dump(file: FileLike, group: str = '/') -> None:
         if group != '/':
             print(f'Starting from path {group}')
             hdfList(group, file_hdf[group])
-            print('This path contains: \n')
+            print('This path contains:\n')
         file_hdf[group].visititems(hdfList)
 
 

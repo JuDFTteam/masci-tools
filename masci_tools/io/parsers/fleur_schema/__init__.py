@@ -13,10 +13,10 @@
 Load all fleur schema related functions
 """
 from .schema_dict import (InputSchemaDict, OutputSchemaDict, SchemaDict, schema_dict_version_dispatch, NoPathFound,
-                          NoUniquePathFound, list_available_versions)
+                          NoUniquePathFound, IncompatibleSchemaVersions, list_available_versions)
 from .fleur_schema_parser_functions import AttributeType
 
 __all__ = [
     'InputSchemaDict', 'OutputSchemaDict', 'schema_dict_version_dispatch', 'AttributeType', 'NoPathFound',
-    'NoUniquePathFound', 'SchemaDict', 'list_available_versions'
+    'NoUniquePathFound', 'IncompatibleSchemaVersions', 'SchemaDict', 'list_available_versions'
 ]

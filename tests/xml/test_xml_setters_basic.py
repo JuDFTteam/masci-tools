@@ -719,7 +719,7 @@ def test_xml_create_tag_errors(load_inpxml):
 
     xmltree, _ = load_inpxml(TEST_INPXML_PATH, absolute=False)
 
-    with pytest.raises(ValueError, match=r"Could not create tag 'test_tag' because atleast one subtag is missing."):
+    with pytest.raises(ValueError, match=r"Could not create tag 'test_tag' because at least one subtag is missing."):
         xml_create_tag(xmltree, '/fleurInput/calculationSetup/not_existent', 'test_tag')
 
     order = ['mtSphere', 'atomicCutoffs', 'electronConfig', 'energyParameters', 'lo']

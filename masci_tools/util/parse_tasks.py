@@ -27,11 +27,14 @@ try:
 except ImportError:
     from typing_extensions import Literal, TypeAlias  #type:ignore
 import warnings
-from lxml import etree
 from logging import Logger, LoggerAdapter
+from lxml import etree
 from masci_tools.io.parsers import fleur_schema
 
 from masci_tools.util.xml.converters import convert_str_version_number
+from .xml import xml_getters
+from .parse_utils import Conversion
+
 from masci_tools.util.typing import XMLLike
 import masci_tools
 
@@ -62,24 +65,23 @@ def find_migration(start: str, target: str, migrations: MigrationDict) -> list[C
     if start not in migrations:
         return None
 
-    if target in migrations[start]:
-        if isinstance(migrations[start][target], str):
-            if migrations[start][target] == 'compatible':
-                return []
-            return None
-        return [migrations[start][target]]
+    possible_migrations = migrations[start]
+    if target in possible_migrations:
+        migration = possible_migrations[target]
+        if isinstance(migration, str) and migration == 'compatible':
+            return []
+        return [migration]
 
-    for possible_stop in migrations[start].keys():
-        new_call_list = find_migration(possible_stop, target, migrations)
-
+    for migrated_version, migration in possible_migrations.items():
+        new_call_list = find_migration(migrated_version, target, migrations)
         if new_call_list is None:
+            #Cannot migrate to target from this version
             continue
 
-        if isinstance(migrations[start][possible_stop], str):
-            if migrations[start][possible_stop] == 'compatible':
-                call_list = []
+        if isinstance(migration, str) and migration == 'compatible':
+            call_list = []
         else:
-            call_list = [migrations[start][possible_stop]]
+            call_list = [migration]
         call_list += new_call_list
         return call_list
     return None
@@ -92,7 +94,7 @@ class ParseTasks:
     When set up it will initialize the known default tasks and check if they work
     for the given output version
 
-    Accesing definition of task example
+    Accessing definition of task example
 
     .. code-block:: python
 
@@ -103,14 +105,14 @@ class ParseTasks:
     """
 
     CONTROL_KEYS = {'_general', '_modes', '_minimal', '_special', '_conversions', '_optional', '_minimum_version'}
-    REQUIRED_KEYS = {'parse_type', 'path_spec'}
-    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last'}
-    ALLOWED_KEYS_ALLATTRIBS = {
-        'parse_type', 'path_spec', 'subdict', 'base_value', 'ignore', 'overwrite', 'flat', 'only_required', 'subtags',
-        'text'
-    }
+    REQUIRED_KEYS = {'parse_type'}
+    REQUIRED_KEYS_XML_GETTER = {'parse_type', 'name'}
+    REQUIRED_KEYS_UTIL = {'parse_type', 'path_spec'}
+    ALLOWED_KEYS = {'parse_type', 'path_spec', 'subdict', 'overwrite_last', 'force_list', 'kwargs'}
+    ALLOWED_KEYS_ALLATTRIBS = {'parse_type', 'path_spec', 'subdict', 'base_value', 'overwrite', 'flat', 'kwargs'}
+    ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs', 'result_names'}
 
-    _version = '0.2.0'
+    _version = '0.3.0'
     _migrations: MigrationDict = {}
     _all_attribs_function: set[str] = set()
     _conversion_functions: dict[str, Callable] = {}
@@ -121,7 +123,7 @@ class ParseTasks:
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
 
-        :param version: str of the wanted ouput version
+        :param version: str of the wanted output version
         :param task_file: optional, file to override default_parse_tasks
         :param validate_defaults: bool, if True all tasks from the default tasks
                                   are added one by one and are checked for
@@ -160,7 +162,7 @@ class ParseTasks:
 
             if all(working_version < version_tuple for working_version in working_version_tuples):
                 warnings.warn(
-                    f"Output version '{version}' is not explicitely stated as 'working'\n"
+                    f"Output version '{version}' is not explicitly stated as 'working'\n"
                     'with the current version of the outxml_parser.\n'
                     'Since the given version is newer than the latest working version\n'
                     'I will continue. Errors and warnings can occur!', UserWarning)
@@ -207,7 +209,7 @@ class ParseTasks:
         """
         Return the registered migrations
         """
-        if getattr(self, '_migrations', None) is None:
+        if not self._migrations:
             import_module('masci_tools.io.parsers.fleur.task_migrations')
         return self._migrations
 
@@ -216,7 +218,7 @@ class ParseTasks:
         """
         Return the registered conversion functions
         """
-        if getattr(self, '_conversion_functions', None) is None:
+        if not self._conversion_functions:
             import_module('masci_tools.io.parsers.fleur.outxml_conversion')
         return self._conversion_functions
 
@@ -225,16 +227,16 @@ class ParseTasks:
         """
         Return the registered parse functions
         """
-        if getattr(self, '_parse_functions', None) is None:
+        if not self._parse_functions:
             import_module('masci_tools.util.schema_dict_util')
         return self._parse_functions
 
     @property
     def all_attribs_function(self) -> set[str]:
         """
-        Return the registered parse functions for parsing multipl attributes
+        Return the registered parse functions for parsing multiple attributes
         """
-        if getattr(self, '_all_attribs_function', None) is None:
+        if not self._all_attribs_function:
             import_module('masci_tools.util.schema_dict_util')
         return self._all_attribs_function
 
@@ -259,7 +261,7 @@ class ParseTasks:
         :param task_definition: dict with the defined tasks
         :param overwrite: bool (optional), if True and the key is present in the dictionary it will be
                           overwritten with the new definition
-        :param append: bool (optional), if True and the key is present in the dictionary the new defintions
+        :param append: bool (optional), if True and the key is present in the dictionary the new definitions
                        will be inserted into this dictionary (inner keys WILL BE OVERWRITTEN). Additionally
                        if an inner key is overwritten with an empty dict the inner key will be removed
 
@@ -304,11 +306,22 @@ class ParseTasks:
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if not definition['parse_type'] in self.parse_functions:
+            if definition['parse_type'] == 'xmlGetter':
+                missing_required = self.REQUIRED_KEYS_XML_GETTER.difference(task_keys)
+                if missing_required:
+                    raise ValueError(f'Reqired Keys missing: {missing_required}')
+            else:
+                missing_required = self.REQUIRED_KEYS_UTIL.difference(task_keys)
+                if missing_required:
+                    raise ValueError(f'Reqired Keys missing: {missing_required}')
+
+            if not definition['parse_type'] in self.parse_functions and definition['parse_type'] != 'xmlGetter':
                 raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
 
             if definition['parse_type'] in self.all_attribs_function:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
+            elif definition['parse_type'] == 'xmlGetter':
+                extra_keys = task_keys.difference(self.ALLOWED_KEYS_XML_GETTER)
             else:
                 extra_keys = task_keys.difference(self.ALLOWED_KEYS)
 
@@ -414,29 +427,34 @@ class ParseTasks:
             if task_key.startswith('_'):
                 continue
 
-            action = self.parse_functions[spec['parse_type']]
-
-            args = spec['path_spec'].copy()
+            if spec['parse_type'] == 'xmlGetter':
+                action = getattr(xml_getters, spec['name'])
+                args = spec.get('kwargs', {}).copy()
+            else:
+                action = self.parse_functions[spec['parse_type']]
+                args = spec['path_spec'].copy()
+                args = {**args, **spec.get('kwargs', {})}
 
             if spec['parse_type'] in ['attrib', 'text', 'allAttribs', 'parentAttribs', 'singleValue']:
                 args['constants'] = constants
 
-            if 'only_required' in spec:
-                args['only_required'] = spec['only_required']
-
-            if 'subtags' in spec:
-                args['subtags'] = spec['subtags']
-
             if spec['parse_type'] == 'singleValue':
-                args['ignore'] = ['comment']
-            elif spec['parse_type'] in ['allAttribs', 'parentAttribs']:
-                args['ignore'] = spec.get('ignore', [])
+                args.setdefault('ignore', []).append('comment')
 
             parsed_dict = out_dict
             if 'subdict' in spec:
-                parsed_dict = out_dict.get(spec['subdict'], {})
+                parsed_dict = out_dict.setdefault(spec['subdict'], {})
 
             parsed_value = action(node, schema_dict, logger=logger, **args)
+
+            if spec['parse_type'] == 'xmlGetter' and 'result_names' in spec:
+                if isinstance(parsed_value, tuple):
+                    if len(spec['result_names']) != len(parsed_value):
+                        raise ValueError('Wrong number of result names given.'
+                                         f"Got {len(parsed_value)} values and {len(spec['result_names'])} names")
+                    parsed_value = dict(zip(spec['result_names'], parsed_value))
+                else:
+                    task_key = spec['result_names'][0]
 
             if isinstance(parsed_value, dict):
 
@@ -451,57 +469,40 @@ class ParseTasks:
 
                 if flat:
                     for key, val in parsed_value.items():
-
-                        if key == base_value:
-                            current_key = task_key
-                        else:
-                            current_key = f'{task_key}_{camel_to_snake(key)}'
-
-                        if current_key not in parsed_dict and use_lists:
-                            parsed_dict[current_key] = []
-
+                        current_key = f'{task_key}_{camel_to_snake(key)}' if key != base_value else task_key
                         if key in no_list or not use_lists:
                             parsed_dict[current_key] = val
                         else:
-                            parsed_dict[current_key].append(val)
+                            parsed_dict.setdefault(current_key, []).append(val)
 
                 else:
                     parsed_dict[task_key] = {camel_to_snake(key): val for key, val in parsed_value.items()}
 
             else:
                 overwrite = spec.get('overwrite_last', False)
-                if task_key not in parsed_dict and use_lists:
-                    if overwrite:
-                        parsed_dict[task_key] = None
-                    else:
-                        parsed_dict[task_key] = []
-
-                if use_lists and not overwrite:
-                    parsed_dict[task_key].append(parsed_value)
-                elif overwrite:
-                    if parsed_value is not None:
-                        parsed_dict[task_key] = parsed_value
+                force_list = spec.get('force_list', use_lists)
+                if force_list and not overwrite:
+                    parsed_dict.setdefault(task_key, []).append(parsed_value)
                 else:
-                    if parsed_value is not None or\
-                       task_key not in parsed_dict:
-                        parsed_dict[task_key] = parsed_value
-
-            if 'subdict' in spec:
-                out_dict[spec['subdict']] = parsed_dict
-            else:
-                out_dict = parsed_dict
+                    parsed_dict[task_key] = parsed_value if parsed_value is not None else parsed_dict.get(task_key)
 
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
-            action = self.conversion_functions[conversion]
-            out_dict = action(out_dict, logger=logger)
+            if not isinstance(conversion, Conversion):
+                warnings.warn(
+                    'Providing the _conversions as a list of strings is deprecated'
+                    'Use the Conversion namedtuple from masci_tools.util.parse_utils instead', DeprecationWarning)
+                conversion = Conversion(name=conversion)
+
+            action = self.conversion_functions[conversion.name]
+            out_dict = action(out_dict, *conversion.args, logger=logger, **conversion.kwargs)
 
         return out_dict
 
     def show_available_tasks(self, show_definitions: bool = False) -> None:
         """
         Print all currently available task keys.
-        If show_definitions is True also the corresponding defintions will be printed
+        If show_definitions is True also the corresponding definitions will be printed
         """
         if show_definitions:
             pprint(self.tasks)

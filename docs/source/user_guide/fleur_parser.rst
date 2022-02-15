@@ -28,9 +28,9 @@ The conversion of each attribute or text is done according to the FleurInputSche
 +------------------+------------------------------------------------------------------------------+
 | File version     | Compatible?                                                                  |
 +------------------+------------------------------------------------------------------------------+
-| `0.27` - `0.34`  | :raw-html:`<font color="green"> Yes </font>`                                 |
+| `0.27` - `0.35`  | :raw-html:`<font color="green"> Yes </font>`                                 |
 +------------------+------------------------------------------------------------------------------+
-| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`     |
+| `0.36` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.35</cite> </font>`     |
 +------------------+------------------------------------------------------------------------------+
 
 
@@ -71,10 +71,24 @@ The following table shows the version compatibility of the output parser. For ve
 +------------------+-----------------------------------------------------------------------------------------------------+
 | `0.33`           | :raw-html:`<font color="#ffb733"> Yes (no XML validation) </font>`                                  |
 +------------------+-----------------------------------------------------------------------------------------------------+
-| `0.34`           | :raw-html:`<font color="green"> Yes </font>`                                                        |
+| `0.34` - `0.35`  | :raw-html:`<font color="green"> Yes </font>`                                                        |
 +------------------+-----------------------------------------------------------------------------------------------------+
-| `0.35` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.34</cite> </font>`                            |
+| `0.36` -         | :raw-html:`<font color="#ffb733"> Fallback to <cite>0.35</cite> </font>`                            |
 +------------------+-----------------------------------------------------------------------------------------------------+
+
+.. note:: Using File handles
+
+   Both the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` and :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`
+   can also be used with file handles like shown below.
+
+   .. code-block::python
+
+      from masci_tools.io.parsers.fleur import inpxml_parser
+
+      with open('/path/to/random/inp.xml', 'rb') as file:
+         input_dict = inpxml_parser(file)
+   
+   Notice that the file has to be opened in binary mode.
 
 XML getter functions
 ---------------------

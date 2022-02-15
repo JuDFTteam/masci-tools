@@ -57,7 +57,7 @@ The recipe for extracting bandstructure information form the ``banddos.hdf`` loo
    :lines: 168-333
    :linenos:
 
-Each recipe can define the `datasets` and `attributes` entry (if one is not defined, a empty dict is returned in its place). Each entry in these sections has the same strucuture.
+Each recipe can define the `datasets` and `attributes` entry (if one is not defined, a empty dict is returned in its place). Each entry in these sections has the same structure.
 
 .. code-block:: python
 
@@ -92,7 +92,7 @@ General Transformations:
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.stack_datasets()`: Stack the given datasets in the dictionary along a given axis
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.shift_dataset()`: Shift the given dataset with a scalar value
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_scalar()`: Multiply the given dataset with a scalar value
-   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_array()`: Mutiply the given dataset with a given array
+   - :py:func:`~masci_tools.io.parsers.hdf5.transforms.multiply_array()`: Multiply the given dataset with a given array
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.convert_to_complex_array()`: Convert real dataset to complex array
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.calculate_norm()`: Calculate norm of list of vectors (either absolute or difference between subsequent entries)
    - :py:func:`~masci_tools.io.parsers.hdf5.transforms.cumulative_sum()`: Calculative cumulative sum of dataset

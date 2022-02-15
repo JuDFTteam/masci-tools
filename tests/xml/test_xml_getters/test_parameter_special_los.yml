@@ -5,7 +5,7 @@ atom0:
   jri: 731
   lmax: 8
   lnonsph: 6
-  lo: 3d
+  lo: 3d 3d 5d 5d
   rmt: 2.21
 atom1:
   dx: 0.017
@@ -14,7 +14,7 @@ atom1:
   jri: 731
   lmax: 8
   lnonsph: 6
-  lo: 3d
+  lo: 3d 3d 5d 5d
   rmt: 2.21
 comp:
   ctail: true

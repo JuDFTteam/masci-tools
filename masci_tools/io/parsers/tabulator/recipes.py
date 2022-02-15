@@ -43,7 +43,7 @@ class Recipe(_abc.ABC):
         """Initialize a recipe for a :py:class:`~.tabulator.Tabulator`.
 
         The attributes :py:attr:`~.include_list` and :py:attr:`~.exclude_list` control which properties
-        are to be tabulated (=table colunns). A tabulator defines an `autolist` method which can auto-generate
+        are to be tabulated (=table columns). A tabulator defines an `autolist` method which can auto-generate
         an extensive include list from a given object. This can be used to define a custom include or exclude list
         for objects of that use case.
 
@@ -56,7 +56,7 @@ class Recipe(_abc.ABC):
 
         There are three accepted formats for the include and exclude lists, here shown for an example of an
         AiiDA workchain node (for aiida-jutools `NodeTabulator`). In this example, the objects to be a tabulated
-        are nodes in a database, and they have a unique identifer ('uuid'), a label, and some attributes called
+        are nodes in a database, and they have a unique identifier ('uuid'), a label, and some attributes called
         'extras' and 'outputs' with many nested properties inside them. The selection here will tell a tabulator
         to only put those properties in a table.
 

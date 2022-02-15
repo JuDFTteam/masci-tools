@@ -78,7 +78,7 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
         #so what should have been included
         included_tag_names = new_tags.difference(old_tags)
 
-        #Check for emtpy set (relax.xml include may not insert something)
+        #Check for empty set (relax.xml include may not insert something)
         if not included_tag_names:
             continue
 
@@ -129,7 +129,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
               to the excluded trees
 
-    :raises ValueError: if the tag can not be found in teh given xmltree
+    :raises ValueError: if the tag can not be found in the given xmltree
     """
     from masci_tools.util.schema_dict_util import reverse_xinclude
     warnings.warn('DEPRECATED: reverse_xinclude moved to masci_tools.util.schema_dict_util', DeprecationWarning)
@@ -163,7 +163,7 @@ def validate_xml(xmltree: etree._ElementTree,
             error_message = f'Line {err_occurences[0].line}: {message}'
             error_lines = ''
             if len(err_occurences) > 1:
-                error_lines = f"; This error also occured on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
+                error_lines = f"; This error also occurred on the lines {', '.join([str(x.line) for x in err_occurences[1:]])}"
             error_output.append(f'{error_message}{error_lines} \n')
             first_occurence.append(err_occurences[0].line)
 
@@ -172,11 +172,11 @@ def validate_xml(xmltree: etree._ElementTree,
         raise etree.DocumentInvalid(errmsg) from exc
 
 
-def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
+def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
                xpath: XPathLike,
                logger: logging.Logger | None = None,
                list_return: bool = False,
-               namespaces: etree._DictAnyStr | None = None,
+               namespaces: dict[str, str] | None = None,
                **variables: etree._XPathObject) -> etree._XPathObject:
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
@@ -197,17 +197,17 @@ def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
         variables = {**variables, **xpath.path_variables}
         xpath = xpath_str
 
-    if not isinstance(node, (etree._Element, etree._ElementTree, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
+    if not isinstance(node, (etree._Element, etree._ElementTree, etree.XPathElementEvaluator)):
         if logger is not None:
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
-    if isinstance(xpath, etree.XPath) and isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+    if isinstance(xpath, etree.XPath) and isinstance(node, etree.XPathElementEvaluator):
         if logger is not None:
             logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
         raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
 
-    if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree._XPathEvaluatorBase)):  #pylint: disable=protected-access
+    if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree.XPathElementEvaluator)):
         if logger is not None:
             logger.exception(
                 'Passing namespaces is only supported for string xpaths and nodes. for etree.XPath or XPathEvaluatore use namespaces in the init function'
@@ -219,7 +219,7 @@ def eval_xpath(node: XMLLike | etree._XPathEvaluatorBase,
     try:
         if isinstance(xpath, etree.XPath):
             return_value = xpath(node, **variables)
-        elif isinstance(node, etree._XPathEvaluatorBase):  #pylint: disable=protected-access
+        elif isinstance(node, etree.XPathElementEvaluator):
             return_value = node(xpath, **variables)
         else:
             return_value = node.xpath(xpath, namespaces=namespaces, **variables)
@@ -393,12 +393,51 @@ def abs_to_rel_xpath(xpath: str, new_root: str) -> str:
 
     :returns: str of the relative xpath
     """
-    if new_root in xpath:
+    if contains_tag(xpath, new_root):
         xpath = xpath + '/'
         xpath_to_root = '/'.join(xpath.split(new_root + '/')[:-1]) + new_root
-        xpath = xpath.replace(xpath_to_root, '.')
+        xpath = xpath.replace(f'{xpath_to_root}/', './')
         xpath = xpath.rstrip('/')
     else:
         raise ValueError(f'New root element {new_root} does not appear in xpath {xpath}')
 
     return xpath
+
+
+def normalize_xmllike(xmllike: XMLLike) -> etree._Element:
+    """
+    Returns the root of the xmltree
+    """
+    if etree.iselement(xmllike):
+        return xmllike
+    xmllike, _ = clear_xml(xmllike)
+    return xmllike.getroot()
+
+
+def contains_tag(xpath: XPathLike, tag: str) -> bool:
+    """
+    Return whether a given xpath contains a given tag
+    This assumes that predicates of xpaths can't be nested
+    since otherwise the regex for removing them could fail
+
+    This function will only return True if one of the
+    tags exactly matches the tag argument not if one tag contains the
+    given name in it's name
+
+    :param xpath: xpath expression
+    :param tag: tag to check for
+
+    :returns: whether a tag is contained in the xpath
+    """
+    import re
+    if isinstance(xpath, XPathBuilder):
+        return tag in xpath.components
+
+    if isinstance(xpath, etree.XPath):
+        xpath_str = xpath.path  #type:ignore
+    else:
+        xpath_str = str(xpath)
+
+    #Strip out predicates
+    xpath_str = re.sub(r'[\[].*?[\]]', '', xpath_str)
+    return tag in xpath_str.split('/')

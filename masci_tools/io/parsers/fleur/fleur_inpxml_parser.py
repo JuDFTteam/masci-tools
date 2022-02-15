@@ -16,7 +16,6 @@ and convert its content to a dict
 from __future__ import annotations
 
 from lxml import etree
-from pprint import pprint
 
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml, validate_xml
@@ -36,16 +35,17 @@ def inpxml_parser(inpxmlfile: XMLFileLike,
                   base_url: str | None = None) -> dict[str, Any]:
     """
     Parses the given inp.xml file to a python dictionary utilizing the schema
-    defined by the version number to validate and corretly convert to the dictionary
+    defined by the version number to validate and correctly convert to the dictionary
 
-    :param inpxmlfile: either path to the inp.xml file, opened file handle or a xml etree to be parsed
+    :param inpxmlfile: either path to the inp.xml file, opened file handle (in bytes modes i.e. rb)
+                       or a xml etree to be parsed
     :param parser_info_out: dict, with warnings, info, errors, ...
     :param strict: bool if True  and no parser_info_out is provided any encountered error will immediately be raised
 
     :return: python dictionary with the parsed inp.xml
 
     :raises ValueError: If the validation against the schema failed, or an irrecoverable error
-                        occured during parsing
+                        occurred during parsing
     :raises FileNotFoundError: If no Schema file for the given version was found
 
     """
@@ -133,7 +133,7 @@ def inpxml_todict(parent: etree._Element,
     :param schema_dict: structure/layout of the xml file in python dictionary
     :param constants: dict with all the defined constants
     :param omitted_tags: switch. If True only a list of the contained tags is returned
-                         Used to omitt useless tags like e.g ['atomSpecies']['species'][3]
+                         Used to omit useless tags like e.g ['atomSpecies']['species'][3]
                          becomes ['atomSpecies'][3]
     :param base_xpath: str, keeps track of the place in the inp.xml currently being processed
     :param parser_info_out: dict, with warnings, info, errors, ...
@@ -148,7 +148,7 @@ def inpxml_todict(parent: etree._Element,
     return_dict: dict[str, Any] = {}
     if list(parent.items()):
         return_dict = {str(key): val for key, val in parent.items()}
-        # Now we have to convert lazy fortan style into pretty things for the Database
+        # Now we have to convert lazy fortran style into pretty things for the Database
         for key in return_dict:
             if key in schema_dict['attrib_types']:
                 return_dict[key], suc = convert_from_xml(return_dict[key],
@@ -161,7 +161,7 @@ def inpxml_todict(parent: etree._Element,
                     logger.warning("Failed to convert attribute '%s' Got: '%s'", key, return_dict[key])
 
     if parent.text:
-        # has text, but we don't want all the '\n' s and empty stings in the database
+        # has text, but we don't want all the '\n' s and empty strings in the database
         if parent.text.strip() != '':  # might not be the best solutions
             if parent.tag not in schema_dict['text_tags']:
                 if logger is not None:
@@ -206,7 +206,7 @@ def inpxml_todict(parent: etree._Element,
 
         if element.tag in tag_info['several']:
             # make a list, otherwise the tag will be overwritten in the dict
-            if element.tag not in return_dict:  # is this the first occurence?
+            if element.tag not in return_dict:  # is this the first occurrence?
                 if omitted_tags:
                     if len(return_dict) == 0:
                         return_dict = []  #type:ignore

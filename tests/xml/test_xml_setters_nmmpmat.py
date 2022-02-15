@@ -115,6 +115,31 @@ def test_rotate_nmmpmat(load_inpxml, file_regression):
     file_regression.check(prepare_for_file_dump(nmmp_lines))
 
 
+def test_set_nmmpmat_orbital_occupations(load_inpxml, file_regression):
+    """Test setting of nmmpmat with no initial nmmpmat file given"""
+    from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_LDAU_PATH, absolute=False)
+
+    nmmp_lines = None
+    nmmp_lines = set_nmmpmat(xmltree,
+                             nmmp_lines,
+                             schema_dict,
+                             species_name='Ga-1',
+                             orbital=2,
+                             spin=1,
+                             orbital_occupations=[1, 2, 3, 4, 5])
+    nmmp_lines = set_nmmpmat(xmltree,
+                             nmmp_lines,
+                             schema_dict,
+                             'As-2',
+                             orbital=1,
+                             spin=1,
+                             denmat=[[1, -2, 3], [4, -5, 6], [7, -8, 9]])
+
+    file_regression.check(prepare_for_file_dump(nmmp_lines))
+
+
 def test_validate_nmmpmat(load_inpxml, test_file):
     """Test validation method of nmmpmat file together with inp.xml file"""
     from masci_tools.util.xml.xml_setters_nmmpmat import set_nmmpmat, validate_nmmpmat

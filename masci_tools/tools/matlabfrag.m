@@ -11,7 +11,7 @@
 %  For use in pdflatex, I recommend the pstool package.
 %
 % INPUTS
-%  FileName (Required) - A string containting the name of the output files.
+%  FileName (Required) - A string containing the name of the output files.
 %  OPTIONS (Optional) - additional options are added in 'key' and 'value'
 %                       pairs
 %    Key           |   Value
@@ -119,7 +119,7 @@ StringCounter = 0;
 %   FixedWidth (1-true,0-false), LabelType }
 PsfragCmds = {};
 
-% Before doing anthing to the figure, make sure it is fully drawn
+% Before doing anything to the figure, make sure it is fully drawn
 drawnow;
 
 % Set up the page size to be printed
@@ -403,7 +403,7 @@ end
     end
   end
 
-% Get all fo the text object's positions.
+% Get all of the text object's positions.
   function TextPos = GetTextPos(texthandles)
     TextPos = cell(1,length(texthandles));
     for jj=1:length(texthandles)
@@ -924,7 +924,7 @@ end
     while ~exist(filename,'file')
       pause(0.05);
       assert( counter < 100, 'matlabfrag:filetimeout',...
-        'File Timeout. This occured after printing %s and trying to then read it.',filename);
+        'File Timeout. This occurred after printing %s and trying to then read it.',filename);
       counter = counter + 1;
     end
   end

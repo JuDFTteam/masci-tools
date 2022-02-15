@@ -18,6 +18,10 @@ Essentially a low-level version of the FleurinpModifier in aiida_fleur.
 from __future__ import annotations
 
 from typing import Any, Callable, NamedTuple
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type: ignore
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.io.io_fleurxml import load_inpxml
@@ -75,7 +79,7 @@ class FleurXMLModifier:
     _schema_dict_functions: dict[str, Callable] = SCHEMA_DICT_SETTERS
     _nmmpmat_functions: dict[str, Callable] = NMMPMAT_SETTERS
 
-    _extra_functions: dict[str, Callable] = {}
+    _extra_functions: dict[str, dict[Literal['xpath', 'schema_dict', 'nmmpmat'], Callable]] = {}
 
     def __new__(cls, validate_signatures=True):
 
@@ -506,7 +510,7 @@ class FleurXMLModifier:
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create_parents: bool optional (default False), if True and the given xpath has no results the
                                the parent tags are created recursively
-        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -526,7 +530,7 @@ class FleurXMLModifier:
 
         :param tag: str of the tag to delete
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to delete a tag.
                             By default all nodes are used.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -546,7 +550,7 @@ class FleurXMLModifier:
 
         :param tag: str of the attribute to delete
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to delete a attribute.
                             By default all nodes are used.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -570,7 +574,7 @@ class FleurXMLModifier:
         :param tag: str of the tag to replace
         :param newelement: a new tag
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to replace a tag.
                             By default all nodes are used.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -636,7 +640,7 @@ class FleurXMLModifier:
         :param tag_name: str name of the tag, where the text should be set
         :param text: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         :param create: bool optional (default False), if True the tag is created if is missing
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -679,7 +683,7 @@ class FleurXMLModifier:
         :param attributename: the attribute name to set
         :param attribv: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         :param create: bool optional (default False), if True the tag is created if is missing
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -731,7 +735,7 @@ class FleurXMLModifier:
         :param mode: str (either `rel` or `abs`).
                      `rel` multiplies the old value with `add_number`
                      `abs` adds the old value and `add_number`
-        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
@@ -782,7 +786,7 @@ class FleurXMLModifier:
         :param element: a tag name or etree Element to be created
         :param place_index: defines the place where to put a created tag
         :param tag_order: defines a tag order
-        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
         self._validate_signature('xml_create_tag', *args, **kwargs)
@@ -795,7 +799,7 @@ class FleurXMLModifier:
 
         :param xpath: a path to the tag to be replaced
         :param newelement: a new tag
-        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
         self._validate_signature('xml_replace_tag', *args, **kwargs)
@@ -807,7 +811,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path to the tag to be deleted
-        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
         self._validate_signature('xml_delete_tag', *args, **kwargs)
@@ -820,7 +824,7 @@ class FleurXMLModifier:
 
         :param xpath: a path to the attribute to be deleted
         :param attrib: the name of an attribute
-        :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+        :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
         self._validate_signature('xml_delete_att', *args, **kwargs)
@@ -834,7 +838,7 @@ class FleurXMLModifier:
         :param xpath: a path where to set the attributes
         :param attributename: the attribute name to set
         :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
-        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         """
         self._validate_signature('xml_set_attrib_value_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
@@ -846,7 +850,7 @@ class FleurXMLModifier:
 
         :param xpath: a path where to set the attributes
         :param text: value or list of values to set (if not str they will be converted with `str(value)`)
-        :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+        :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         """
         self._validate_signature('xml_set_text_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
@@ -861,7 +865,7 @@ class FleurXMLModifier:
         :param spin: integer, specifies which spin block should be modified
         :param state_occupations: list, sets the diagonal elements of the density matrix and everything
                           else to zero
-        :param denmat: matrix, specify the density matrix explicitely
+        :param denmat: matrix, specify the density matrix explicitly
         :param phi: float, optional angle (radian), by which to rotate the density matrix before writing it
         :param theta: float, optional angle (radian), by which to rotate the density matrix before writing it
         :param filters: Dict specifying constraints to apply on the xpath.

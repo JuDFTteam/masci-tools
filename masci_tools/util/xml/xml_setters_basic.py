@@ -36,7 +36,7 @@ def xml_replace_tag(xmltree: XMLLike,
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
     :param newelement: a new tag
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     :returns: xmltree with replaced tag
@@ -85,7 +85,7 @@ def xml_delete_att(xmltree: XMLLike,
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
     :param attrib: the name of an attribute
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     :returns: xmltree with deleted attribute
@@ -124,7 +124,7 @@ def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterab
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be deleted
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     :returns: xmltree with deleted tag
@@ -216,7 +216,7 @@ def xml_create_tag(xmltree: XMLLike,
     :param element: a tag name or etree Element to be created
     :param place_index: defines the place where to put a created tag
     :param tag_order: defines a tag order
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
     :param correct_order: bool, if True (default) and a tag_order is given, that does not correspond to the given order
                           in the xmltree (only order wrong no unknown tags) it will be corrected and a warning is given
@@ -243,7 +243,7 @@ def xml_create_tag(xmltree: XMLLike,
     parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(parent_nodes) == 0:
-        raise ValueError(f"Could not create tag '{element_name}' because atleast one subtag is missing. "
+        raise ValueError(f"Could not create tag '{element_name}' because at least one subtag is missing. "
                          'Use create=True to create the subtags')
 
     if occurrences is not None:
@@ -340,7 +340,7 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
     :param xpath: a path where to set the attributes
     :param attributename: the attribute name to set
     :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     :raises ValueError: If the lengths of attribv or occurrences do not match number of nodes
 

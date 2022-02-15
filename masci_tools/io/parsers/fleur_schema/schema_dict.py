@@ -10,7 +10,7 @@
 #                                                                             #
 ###############################################################################
 """
-This module provides the classes for easy acces to information
+This module provides the classes for easy access to information
 from the fleur input and output xsd schema files
 """
 from __future__ import annotations
@@ -35,7 +35,7 @@ from lxml import etree
 
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
-from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag
+from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag, contains_tag
 from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
@@ -51,6 +51,13 @@ class NoPathFound(ValueError):
 class NoUniquePathFound(ValueError):
     """
     Exception raised when no unique path is found for a given tag/attribute
+    """
+
+
+class IncompatibleSchemaVersions(Exception):
+    """
+    Exeption raised when it is known that a given output version and input version
+    cannot be compiled into a complete fleur output xml schema
     """
 
 
@@ -103,7 +110,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
             matches.append(default_match)
 
             if len(matches) > 2:
-                raise ValueError('Ambiguous possibilites for schema_dict_version_dispatch for version {version}')
+                raise ValueError('Ambiguous possibilities for schema_dict_version_dispatch for version {version}')
 
             return matches[0]
 
@@ -355,6 +362,10 @@ class SchemaDict(LockableDict):
         contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
+        #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+        #e.g. bravaisMatrix vs. bravaisMatrixFilm
+        paths = [path for path in paths if contains_tag(path, root_tag)]
+
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
         if len(relative_paths) == 1:
@@ -478,6 +489,9 @@ class SchemaDict(LockableDict):
         contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+        #e.g. bravaisMatrix vs. bravaisMatrixFilm
+        paths = [path for path in paths if contains_tag(path, root_tag)]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
         if len(relative_paths) == 1:
@@ -802,6 +816,11 @@ class OutputSchemaDict(SchemaDict):
         if (version, inp_version) in cls._schema_dict_cache and not no_cache:
             return cls._schema_dict_cache[(version, inp_version)]
 
+        #Check for known incompatibilities
+        if int(version.split('.')[1]) >= 35 and int(inp_version.split('.')[1]) <= 32:
+            raise IncompatibleSchemaVersions('Output schemas starting from version 0.35 cannot be compiled '
+                                             'to a XML schema with Input schemas before version 0.33')
+
         inpschema_dict = InputSchemaDict.fromVersion(inp_version, no_cache=no_cache)
         cls._schema_dict_cache[(version, inp_version)] = cls.fromPath(schema_file_path,
                                                                       inp_path=inpschema_file_path,
@@ -831,7 +850,7 @@ class OutputSchemaDict(SchemaDict):
 
         if inpschema_dict is None:
             inpschema_dict = create_inpschema_dict(fsinp_path)  #type:ignore
-        inpschema_data = cast('InputSchemaData', inpschema_dict)
+        inpschema_data = cast(InputSchemaData, inpschema_dict)
 
         schema_dict = create_outschema_dict(fspath, inpschema_dict=inpschema_data)
         schema_dict = merge_schema_dicts(inpschema_data, schema_dict)
@@ -926,11 +945,15 @@ class OutputSchemaDict(SchemaDict):
             raise ValueError(f"{iteration_tag} is not a valid iteration tag valid are: {list(self['iteration_tags'])}")
         iteration_path = self.tag_xpath(iteration_tag)
 
-        if f'/{root_tag}' not in iteration_path:
+        if not contains_tag(iteration_path, root_tag):
             #The paths have to include the root_tag
             contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
+        if not contains_tag(iteration_path, root_tag):
+            #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+            #e.g. bravaisMatrix vs. bravaisMatrixFilm
+            paths = [path for path in paths if contains_tag(path, root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 
@@ -1079,10 +1102,14 @@ class OutputSchemaDict(SchemaDict):
             if 'iteration' in entry and all(f'{excl}_attribs' not in entry for excl in exclude)
         ]
 
-        if f'/{root_tag}' not in iteration_path:
+        if not contains_tag(iteration_path, root_tag):
             contains = _add_condition(contains, root_tag)
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
+        if not contains_tag(iteration_path, root_tag):
+            #Filter out paths which contain the rootTag explicitly not a tag name containing the root tag
+            #e.g. bravaisMatrix vs. bravaisMatrixFilm
+            paths = [path for path in paths if contains_tag(path, root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
 

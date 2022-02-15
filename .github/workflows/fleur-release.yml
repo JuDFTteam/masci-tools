@@ -1,0 +1,58 @@
+name: Fleur Release workflow
+on:
+  workflow_dispatch:  
+  repository_dispatch:
+    types: ['fleur-release']
+
+jobs:
+
+  add-fleur-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install python dependencies
+      run: |
+        pip install -e .[cmdline-extras,testing]
+    
+    - name: Add Fleur schemas
+      env:
+        IFFGIT_APIKEY: ${{ secrets.IFFGIT_APIKEY }}
+      run: |
+        masci-tools fleur-schema add FleurInputSchema.xsd --branch release --from-git
+        masci-tools fleur-schema add FleurOutputSchema.xsd --branch release --from-git
+        masci-tools fleur-schema list
+    
+    - name: Run tests (Generate schema test files)
+      id: test
+      run: pytest --force-regen #force-regen ensures that regression tests depending on the newest schema version (fallbacks) are regenerated
+      continue-on-error: true
+    
+    - name: Check test run (Should fail)
+      if: steps.test.outputs.status == 'success'
+      run: exit 1
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: "[fleur release] Fleur schema update"
+        branch: fleur-release/schema
+        delete-branch: true
+        title: "[fleur release] Fleur schema update"
+        body: |
+          This is an automated PR created by the Fleur release workflow.
+
+          Checklist:
+          - [ ] Check the added Fleur file schemas are correct
+          - [ ] Check the ``inpxml_parser`` and ``outxml_parser`` are working correctly
+          - [ ] Add atleast one example file and tests for the new schema versions
+          - [ ] Ggf. Adapt ``masci_tools/io/parsers/fleur/default_parse_tasks.py`` 
+          - [ ] add new file version to ``__working_out_versions__``
+        

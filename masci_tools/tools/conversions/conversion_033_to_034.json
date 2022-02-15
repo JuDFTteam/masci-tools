@@ -1,6 +1,6 @@
 {
-  "from": "0.33",
-  "to": "0.34",
+  "from_version": "0.33",
+  "to_version": "0.34",
   "tag": {
     "remove": [],
     "create": [],

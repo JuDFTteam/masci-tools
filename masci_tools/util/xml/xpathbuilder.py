@@ -24,6 +24,9 @@ except ImportError:
 from lxml import etree
 
 FilterType: TypeAlias = 'dict[str, Any]'
+"""
+Type for filters argument for XPathBuilder
+"""
 
 
 class XPathBuilder:
@@ -102,7 +105,7 @@ class XPathBuilder:
         'not-contains': 'not(contains({left}, {right}))',
         'starts-with': 'starts-with({left}, {right})',
         'ends-with':
-        '{right} = substring({left}, string-length({left}) - string-length({right}) + 1)',  #'ends-with({left}, {right})' only avaliable in XPath 2.0
+        '{right} = substring({left}, string-length({left}) - string-length({right}) + 1)',  #'ends-with({left}, {right})' only available in XPath 2.0
         'number-nodes': 'count({left})',
         'string-length': 'string-length({left})',
         'has': '{left}',
@@ -301,7 +304,7 @@ class XPathBuilder:
         Prepare conditions based on variables
 
         :param path: str path to process
-        :param prefix: str prefix to use for xpath varaibles
+        :param prefix: str prefix to use for xpath variables
         """
         if isinstance(path, tuple):
             #Multiple node sets. Join them with union

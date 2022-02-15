@@ -43,7 +43,8 @@ BASE_TYPES = {
     },
     'float': {'xsd:double'},
     'float_expression': {'FleurDouble'},
-    'string': {'xsd:string'}
+    'string': {'xsd:string'},
+    'complex': {'FortranComplex'}
 }
 NAMESPACES = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
@@ -87,7 +88,7 @@ class TagInfo(TypedDict):
 #We define some decorators to cache results to not repeat too many similar xpath calls or recursive function calls
 
 
-def _cache_xpath_construction(func: Callable) -> Callable:
+def _cache_xpath_construction(func: Callable[..., set[str]]) -> Callable[..., set[str]]:
     """
     Decorator for the `_get_xpath` and `_get_attrib_xpath` functions to speed up the parsing of
     xml schemas by caching results
@@ -205,7 +206,7 @@ def _get_parent_fleur_type(elem: etree._Element,
     in the parent chain
 
     :param elem: etree element, starting element
-    :param stop_sequence: If a sequence is encountered in the loop it alos terminates
+    :param stop_sequence: If a sequence is encountered in the loop it also terminates
 
     :return: the element of the parent type and the tag of the parent type with the namespaces removed
     """
@@ -532,7 +533,7 @@ def _get_contained_attribs(xmlschema_evaluator: etree.XPathDocumentEvaluator,
             for attrib in new_attribs:
                 attrib_list.append(new_attribs.original_case[attrib])
 
-    attrib_res: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(attrib_list)
+    attrib_res = CaseInsensitiveFrozenSet(attrib_list)
     assert len(set(attrib_list)) == len(attrib_res), f'Lost Information: {attrib_list}'
     return attrib_res
 
@@ -563,7 +564,7 @@ def _get_optional_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
             for opt in new_optionals:
                 optional_list.append(new_optionals.original_case[opt])
 
-    optional_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(optional_list)
+    optional_set = CaseInsensitiveFrozenSet(optional_list)
     assert len(set(optional_list)) == len(optional_set), f'Lost Information: {optional_list}'
 
     return optional_set
@@ -638,7 +639,7 @@ def _get_simple_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
             for simple in new_simple:
                 simple_list.append(new_simple.original_case[simple])
 
-    simple_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(simple_list)
+    simple_set = CaseInsensitiveFrozenSet(simple_list)
     assert len(set(simple_list)) == len(simple_set), f'Lost Information: {simple_list}'
 
     return simple_set
@@ -676,7 +677,7 @@ def _get_several_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                 for tag in new_several_set:
                     several_list.append(new_several_set.original_case[tag])
 
-    several_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(several_list)
+    several_set = CaseInsensitiveFrozenSet(several_list)
     assert len(set(several_list)) == len(several_set), f'Lost Information: {several_list}'
 
     return several_set
@@ -708,7 +709,7 @@ def _get_contained_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, 
             for tag in new_tags_set:
                 text_list.append(new_tags_set.original_case[tag])
 
-    text_set: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(text_list)
+    text_set = CaseInsensitiveFrozenSet(text_list)
     assert len(set(text_list)) == len(text_set), f'Lost Information: {text_list}'
 
     return text_set
@@ -885,7 +886,7 @@ def type_order(type_def: AttributeType) -> tuple[int, float]:
     if not isinstance(type_def, AttributeType):
         raise ValueError('Wrong type for type_def')
 
-    BASE_TYPE_ORDER = ('switch', 'int', 'float', 'float_expression', 'string')
+    BASE_TYPE_ORDER = ('switch', 'int', 'float', 'float_expression', 'complex', 'string')
 
     type_index = BASE_TYPE_ORDER.index(type_def.base_type)
     if type_def.length is None:
@@ -1164,7 +1165,7 @@ def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: A
     :param xmlschema: xmltree representing the schema
 
     :return: dictionary with tags and their corresponding type_definition
-             meaning a dicationary with possible base types and evtl. length restriction
+             meaning a dictionary with possible base types and evtl. length restriction
     """
 
     elements = _xpath_eval(xmlschema_evaluator, '//xsd:element')
@@ -1179,7 +1180,7 @@ def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: A
         else:
             continue  #This type cannot be traced back to a basic type
 
-    text_tags: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(text_tag_list)
+    text_tags = CaseInsensitiveFrozenSet(text_tag_list)
     assert len(set(text_tag_list)) == len(text_tags), f'Lost Information: {text_tag_list}'
 
     return text_tags
@@ -1192,7 +1193,7 @@ def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs:
     :param xmlschema_evaluator: etree.XPathEvaluator for the schema
 
     :return: dictionary with type names and their corresponding type_definition
-             meaning a dicationary with possible base types and evtl. length restriction
+             meaning a dictionary with possible base types and evtl. length restriction
     """
     basic_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name]')
     complex_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:complexType/xsd:simpleContent')
@@ -1252,8 +1253,6 @@ def get_tag_info(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: An
                               enforce_end_type=type_tag,
                               stop_iteration=stop_iteration,
                               iteration_root=iteration_root)
-
-        tag_path = list(tag_path)
 
         type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=type_tag)
         if len(type_elem) == 0:
@@ -1323,7 +1322,7 @@ def get_iteration_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator,
             str(name) for name in _xpath_eval(
                 xmlschema_evaluator, '//xsd:element[@type=$type]/@name', type=parent.attrib['name']))
 
-    tag_names_frozen: CaseInsensitiveFrozenSet[str] = CaseInsensitiveFrozenSet(tag_names)
+    tag_names_frozen = CaseInsensitiveFrozenSet(tag_names)
     assert len(set(tag_names)) == len(tag_names_frozen), f'Lost Information: {tag_names}'
 
     return tag_names_frozen

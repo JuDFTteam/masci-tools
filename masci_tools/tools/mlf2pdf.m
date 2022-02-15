@@ -65,7 +65,7 @@ fprintf(fid,'\\usepackage{color}\n');
 fprintf(fid,'\\usepackage{pstool}\n');
 
 if nargin==3
-    fprintf(fid,'\\usepackage{%s}\n',Packages); % Suplementary packages
+    fprintf(fid,'\\usepackage{%s}\n',Packages); % Supplementary packages
 end
 fprintf(fid,'\\pagestyle{empty}\n');
 fprintf(fid,' \n');

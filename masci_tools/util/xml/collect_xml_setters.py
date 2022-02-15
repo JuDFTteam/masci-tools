@@ -8,7 +8,7 @@ and classify them according to their interface. This makes extending functionali
          :xml_setters_names: No Xpaths as arguments Only names/identifiers for the schema dict
    2. Import it in this file and put the method in the correct SET at the bottom
    3. Write facade method to add task for this function in :py:class:`~masci_tools.io.io_fleurxmlmodifier.FleurXMLModifier`
-      This is not automatized to guarantee that we have some nice docstrings for all the modifiying functions at the surface level
+      This is not automated to guarantee that we have some nice docstrings for all the modifiying functions at the surface level
 """
 
 from typing import Callable, Set

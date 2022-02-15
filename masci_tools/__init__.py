@@ -7,11 +7,21 @@
 # For further information on the license, see the LICENSE.txt file            #
 # For further information please visit                                        #
 ###############################################################################
-'''
-masci-tools
-'''
+"""
+masci-tools is a collection of tools for materials science.
+Mainly for the use with the Fleur (https://flapw.de) and juKKR (https://jukkr.fz-juelich.de) code
+developed at the Forschungszentrum Jülich (see <http://judft.de>).
+
+Contains IO and parsers utitlies for these codes and
+vis contains wrappers of matplotlib functionality to visualize common material science data.
+Plus wrappers of visualisation for aiida-fleur workflow nodes
+"""
 import logging
 
-__version__ = '0.7.2'
+__copyright__ = ('Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany. '
+                 'All rights reserved.')
+__license__ = 'MIT license, see LICENSE.txt file.'
+__version__ = '0.8.0'
+__authors__ = 'The JuDFT team. Also see AUTHORS.txt file.'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())

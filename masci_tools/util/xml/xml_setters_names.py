@@ -52,7 +52,7 @@ def create_tag(xmltree: XMLLike,
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
-    :param occurrences: int or list of int. Which occurence of the parent nodes to create a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     Kwargs:
@@ -109,7 +109,7 @@ def delete_tag(xmltree: XMLLike,
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param occurrences: int or list of int. Which occurence of the parent nodes to delete a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to delete a tag.
                         By default all nodes are used.
 
     Kwargs:
@@ -152,7 +152,7 @@ def delete_att(xmltree: XMLLike,
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param occurrences: int or list of int. Which occurence of the parent nodes to delete a attribute.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to delete a attribute.
                         By default all nodes are used.
 
     Kwargs:
@@ -201,7 +201,7 @@ def replace_tag(xmltree: XMLLike,
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param occurrences: int or list of int. Which occurence of the parent nodes to replace a tag.
+    :param occurrences: int or list of int. Which occurrence of the parent nodes to replace a tag.
                         By default all nodes are used.
 
     Kwargs:
@@ -252,7 +252,7 @@ def add_number_to_attrib(xmltree: XMLLike,
     :param mode: str (either `rel` or `abs`).
                  `rel` multiplies the old value with `add_number`
                  `abs` adds the old value and `add_number`
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -354,7 +354,7 @@ def set_attrib_value(xmltree: XMLLike,
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -466,7 +466,7 @@ def set_text(xmltree: XMLLike,
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param occurrences: int or list of int. Which occurence of the node to set. By default all are set.
+    :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
     Kwargs:
@@ -939,7 +939,7 @@ def set_atomgroup(xmltree: XMLLike,
     atomgroup_base_path = schema_dict.tag_xpath('atomGroup')
     atomgroup_xpath = XPathBuilder(atomgroup_base_path, strict=True, filters=filters)
 
-    if not position and not species and not filters:  # not specfied what to change
+    if not position and not species and not filters:  # not specified what to change
         return xmltree
 
     if position and position != 'all':
@@ -1032,7 +1032,7 @@ def switch_species(xmltree: XMLLike,
     if not clone and changes is not None:
         raise ValueError('changes should only be passed with clone=True')
 
-    if not position and not species and not filters:  # not specfied what to change
+    if not position and not species and not filters:  # not specified what to change
         return xmltree
 
     if position and position != 'all':
@@ -1169,7 +1169,7 @@ def set_kpointlist(xmltree: XMLLike,
                    switch: bool = False,
                    overwrite: bool = False) -> XMLLike:
     """
-    Explicitely create a kPointList from the given kpoints and weights. This routine will add the
+    Explicitly create a kPointList from the given kpoints and weights. This routine will add the
     specified kPointList with the given name.
 
     .. warning::
@@ -1241,7 +1241,7 @@ def set_kpointlist(xmltree: XMLLike,
 def set_kpointlist_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, kpoints: Iterable[Iterable[float]],
                         weights: Iterable[float]) -> XMLLike:
     """
-    Explicitely create a kPointList from the given kpoints and weights. This
+    Explicitly create a kPointList from the given kpoints and weights. This
     routine is specific to input versions Max4 and before and will replace any
     existing kPointCount, kPointMesh, ... with the specified kPointList
 

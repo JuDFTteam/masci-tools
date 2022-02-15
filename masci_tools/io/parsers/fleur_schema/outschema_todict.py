@@ -63,7 +63,9 @@ KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteratio
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: AnyStr, inpschema_dict: inpschema_todict.InputSchemaData) -> OutputSchemaData:
+def create_outschema_dict(path: AnyStr,
+                          inpschema_dict: inpschema_todict.InputSchemaData,
+                          apply_patches: bool = True) -> OutputSchemaData:
     """
     Creates dictionary with information about the FleurOutputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -94,6 +96,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: inpschema_todict.InputSc
         'iteration_tag_info': get_tag_info,
         'omitt_contained_tags': get_omittable_tags,
     }
+    schema_patches = [fix_qpoints_typo, patch_text_types]
 
     #print(f'processing: {path}/FleurOutputSchema.xsd')
     xmlschema = etree.parse(path)
@@ -101,6 +104,7 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: inpschema_todict.InputSc
 
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
     out_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
+    out_version_tuple = convert_str_version_number(out_version)
 
     input_basic_types = inpschema_dict['_basic_types'].get_unlocked()
 
@@ -120,7 +124,70 @@ def create_outschema_dict(path: AnyStr, inpschema_dict: inpschema_todict.InputSc
 
     schema_dict['_input_basic_types'] = LockableDict(input_basic_types)
 
+    if apply_patches:
+        for patch_func in schema_patches:
+            patch_func(schema_dict, out_version_tuple)
+
     return schema_dict
+
+
+def fix_qpoints_typo(schema_dict: OutputSchemaData, out_version: tuple[int, int]) -> None:
+    """
+    In versions before 0.35 the attribute qPoints was mistakenly called qpoints
+    in the FleurOutputSchema.xsd
+    """
+    if out_version >= (0, 35):
+        #Typo was corrected after this version
+        return
+
+    schema_dict['iteration_unique_attribs']['qpoints'] = schema_dict['iteration_unique_attribs']['qpoints'].replace(
+        '@qpoints', '@qPoints')
+
+    PATH = './Forcetheorem_DMI'
+    old_attribs = set(schema_dict['iteration_tag_info'][PATH]['attribs'].original_case.values())
+    old_attribs.discard('qpoints')
+    old_attribs.add('qPoints')
+    schema_dict['iteration_tag_info'][PATH]['attribs'] = CaseInsensitiveFrozenSet(old_attribs)
+
+
+def patch_text_types(schema_dict: OutputSchemaData, out_version: tuple[int, int]) -> None:
+    """
+    Patch the text_types entry to correct ambigouities
+
+    :param schema_dict: dictionary produced by the fleur_schema_parser_functions (modified in-place)
+    :param inp_version: input version converted to tuple of ints
+    """
+
+    ELEMENTS_ENTRY: Literal['text_types'] = 'text_types'
+
+    if out_version >= (0, 35):
+        #After this version the issue was solved
+        return
+
+    CHANGE_TYPES = {
+        (0, 29): {
+            'add': {
+                'densityMatrixFor': [AttributeType(base_type='complex', length='unbounded')]
+            }
+        },
+    }
+
+    all_changes: dict[str, list[AttributeType]] = {}
+
+    for version, changes in sorted(CHANGE_TYPES.items(), key=lambda x: x[0]):
+
+        if out_version < version:
+            continue
+
+        version_add = changes.get('add', {})
+        version_remove = changes.get('remove', set())  #type:ignore
+
+        all_changes = {key: val for key, val in {**all_changes, **version_add}.items() if key not in version_remove}
+
+    for name, new_definition in all_changes.items():
+        if name not in schema_dict[ELEMENTS_ENTRY]:
+            raise ValueError(f'patch_text_types failed. Type {name} does not exist')
+        schema_dict[ELEMENTS_ENTRY][name] = new_definition
 
 
 def merge_schema_dicts(inputschema_dict: inpschema_todict.InputSchemaData,

@@ -1035,7 +1035,7 @@ PERIODIC_TABLE_ELEMENTS = {
         'rmt': 2.2,
         'lmax': '',
         'jri': 981
-    },  # TODO: after wards not rigth
+    },  # TODO: after wards not right
     87: {
         'mass': 223.0,
         'name': 'Francium',
@@ -1389,3 +1389,5 @@ PERIODIC_TABLE_ELEMENTS = {
         'jri': 981
     }
 }
+
+ATOMIC_NUMBERS = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}

@@ -8,7 +8,7 @@ Description
 
 The :py:class:`~masci_tools.vis.parameters.Plotter` class aims to provide a framework, which can be used to handle default values and collect common codeblocks needed for different plotting frameworks.
 
-The :py:class:`~masci_tools.vis.parameters.Plotter` class is a base class that should be subclassed for different Plotting backends. See :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter` or :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter` for examples. The Subclass provides a dictionary of all the keys that should be handled by the plotter class. The Plotter class provides a hierachy of overwriting these parameters (Higher numbers take precedence).
+The :py:class:`~masci_tools.vis.parameters.Plotter` class is a base class that should be subclassed for different Plotting backends. See :py:class:`~masci_tools.vis.matplotlib_plotter.MatplotlibPlotter` or :py:class:`~masci_tools.vis.bokeh_plotter.BokehPlotter` for examples. The Subclass provides a dictionary of all the keys that should be handled by the plotter class. The Plotter class provides a hierarchy of overwriting these parameters (Higher numbers take precedence).
 
    1. Function defaults set with :py:meth:`~masci_tools.vis.parameters.Plotter.set_defaults()` with ``default_type='function'``
    2. Global defaults set with :py:meth:`~masci_tools.vis.parameters.Plotter.set_defaults()`

@@ -1,7 +1,7 @@
 ci:
     autoupdate_schedule: monthly
     autofix_prs: true
-    skip: [pylint-errors, pylint-warnings,version-number,mypy]
+    skip: [pylint-errors, pylint-warnings,mypy]
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
@@ -15,6 +15,7 @@ repos:
     - id: trailing-whitespace
       types: [python]
     - id: check-yaml
+    - id: check-toml
     - id: check-added-large-files
     - id: forbid-new-submodules
 
@@ -32,7 +33,7 @@ repos:
     additional_dependencies: ['toml']
 
 - repo: https://github.com/ikamensh/flynt/
-  rev: '0.69'
+  rev: '0.76'
   hooks:
   -   id: flynt
       args: [
@@ -86,28 +87,21 @@ repos:
             masci_tools/io/fleur_inpgen.py|
             masci_tools/io/hdf5_util.py|
             masci_tools/io/fleurxmlmodifier.py|
+            masci_tools/io/common_functions.py|
             masci_tools/util/xml/.*py|
             masci_tools/util/lockable_containers.py|
             masci_tools/util/case_insensitive_dict.py|
             masci_tools/util/schema_dict_util.py|
             masci_tools/util/parse_task_decorators.py|
             masci_tools/util/logging_util.py|
-            masci_tools/io/common_functions.py|
+            masci_tools/util/python_util.py|
+            masci_tools/util/math_util.py|
             masci_tools/util/parse_tasks.py|
+            masci_tools/util/parse_utils.py|
+            masci_tools/util/typing.py|
             masci_tools/util/econfig.py|
             masci_tools/util/fleur_calculate_expression.py|
+            masci_tools/tools/fleur_inpxml_converter.py|
+            masci_tools/tools/greensfunction.py|
+            masci_tools/cmdline/parameters/slice.py|
         )$
-
-
-  - id: version-number
-    name: Check version numbers
-    entry: python ./utils/validate_version_consistency.py
-    language: system
-    files: >-
-      (?x)^(
-        setup.py|
-        utils/validate_version_consistency.py|
-        masci_tools/__init__.py|
-        .bumpversion.cfg
-      )$
-    pass_filenames: false

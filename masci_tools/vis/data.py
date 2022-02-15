@@ -278,7 +278,7 @@ class PlotData:
         :param data_key: name of the data key to determine the minimum
         :param separate: bool if True the minimum will be determined and returned
                          for all entries separately
-        :param mask: optional mask to select specifc rows from the data entries
+        :param mask: optional mask to select specific rows from the data entries
         :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: minimum value for all entries either combined or as a list
@@ -317,7 +317,7 @@ class PlotData:
         :param data_key: name of the data key to determine the maximum
         :param separate: bool if True the maximum will be determined and returned
                          for all entries separately
-        :param mask: optional mask to select specifc rows from the data entries
+        :param mask: optional mask to select specific rows from the data entries
         :param mask_data_key: optional data key to be used when ``mask`` is a function
 
         :returns: maximum value for all entries either combined or as a list
@@ -538,7 +538,7 @@ class PlotData:
         self.columns = columns
         self.data = sources
 
-    def mask_data(self, mask, data_key=None):
+    def mask_data(self, mask, data_key=None, replace_value=None):
         """
         Apply a given mask to the data inplace.
 
@@ -559,7 +559,12 @@ class PlotData:
             if not isinstance(source, pd.DataFrame):
                 source = pd.DataFrame(data=source)
 
-            masked_source = source[mask_indx]
+            if replace_value is None:
+                masked_source = source[mask_indx]
+            else:
+                source[mask_indx] = replace_value
+                masked_source = source
+
             if expand_data:
                 data.append(masked_source)
             else:
@@ -773,7 +778,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
 
     :param data: The (array-like) data to be normalized
     :param key: key under which to enter the new data
-    :param out_data: dict containining previously normalized data
+    :param out_data: dict containing previously normalized data
     :param flatten_np: bool, if True multidimensional numpy arrays are flattened
     :param forbid_split_up: bool, if True multidimensional arrays are not split up
 

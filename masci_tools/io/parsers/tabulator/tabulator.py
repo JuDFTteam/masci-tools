@@ -45,7 +45,7 @@ class Tabulator(_abc.ABC):
       will likely create a copy. that way can ~half the memory footprint.
     - when returning pandas dataframe, and recipe supplied no dtypes, use automatic downcasting to smallest dtype
       for numeric types (pd.to_numeric), and maybe 'categorical' for string coluns (if num unique values << num
-      values). See pandas > Scaling to larg datasets for more.
+      values). See pandas > Scaling to large datasets for more.
     - maybe add save option (or method) and read() method to read in tabulated table. for pandas, that allow a user
       to easily reuse the dtypes information from the recipe.
     """
@@ -82,7 +82,6 @@ class Tabulator(_abc.ABC):
         :param pretty_print: True: Print the generated list in pretty format.
         :param kwargs: Additional keyword arguments for subclasses.
         """
-        pass
 
     def clear(self):
         """Clear table if already tabulated."""
@@ -112,4 +111,3 @@ class Tabulator(_abc.ABC):
         :param kwargs: Additional keyword arguments for subclasses.
         :return: Tabulated objects' properties.
         """
-        pass

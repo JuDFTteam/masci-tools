@@ -176,12 +176,38 @@ def test_get_nkpts(load_inpxml, inpxmlfilepath):
     assert nkpts != 0
 
 
+@pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
+def test_get_special_kpoints(load_inpxml, inpxmlfilepath):
+    """
+    Test that get_special_kpoints works for all input files
+    """
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+
+    xmltree, schema_dict = load_inpxml(inpxmlfilepath)
+
+    special_points = get_special_kpoints(xmltree, schema_dict)
+
+    assert special_points is not None
+
+
 def test_get_cell_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_cell
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
+
+    cell, pbc = get_cell(xmltree, schema_dict)
+
+    data_regression.check({'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_get_cell_film_max6(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_cell
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R6/inp_film.xml', absolute=False)
 
     cell, pbc = get_cell(xmltree, schema_dict)
 
@@ -462,6 +488,17 @@ def test_parameter_special_los(load_inpxml, data_regression):
     xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
 
     para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
+
+def test_parameter_special_los_not_allowed(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
+
+    para = get_parameter_data(xmltree, schema_dict, allow_special_los=False)
 
     data_regression.check(para)
 
@@ -753,3 +790,66 @@ def test_get_relaxation_information_relaxxml(load_inpxml, data_regression, test_
         relax_dict = get_relaxation_information(xmltree, schema_dict)
 
     data_regression.check(relax_dict)
+
+
+def test_get_special_kpoints_single(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/CuBandXML/files/inp.xml', absolute=False)
+    special_points = get_special_kpoints(xmltree, schema_dict)
+
+    assert special_points == [(0, 'great'), (19, 'path')]
+
+
+def test_get_special_kpoints_multiple(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
+    special_points = get_special_kpoints(xmltree, schema_dict)
+
+    assert special_points == {
+        'default': [(1, 'these'), (6, 'are'), (11, 'very'), (15, 'special')],
+        'second-set': [(0, 'test')]
+    }
+
+
+def test_get_special_kpoints_multiple_selection(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
+    special_points = get_special_kpoints(xmltree, schema_dict, name='default')
+
+    assert special_points == [(1, 'these'), (6, 'are'), (11, 'very'), (15, 'special')]
+
+
+def test_get_special_kpoints_multiple_selection_index(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
+    special_points = get_special_kpoints(xmltree, schema_dict, index=0)
+
+    assert special_points == [(1, 'these'), (6, 'are'), (11, 'very'), (15, 'special')]
+
+
+def test_get_special_kpoints_multiple_selection_used(load_inpxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
+    #Conflicting arguments
+    with pytest.raises(ValueError):
+        special_points = get_special_kpoints(xmltree, schema_dict, name='default', only_used=True)
+    with pytest.raises(ValueError):
+        special_points = get_special_kpoints(xmltree, schema_dict, index=0, only_used=True)
+
+    special_points = get_special_kpoints(xmltree, schema_dict, only_used=True)
+
+    assert special_points == [(1, 'these'), (6, 'are'), (11, 'very'), (15, 'special')]
+
+
+def test_get_special_kpoints_output(load_outxml):
+
+    from masci_tools.util.xml.xml_getters import get_special_kpoints
+    xmltree, schema_dict = load_outxml('fleur/Max-R5/CuBandXML/files/out.xml', absolute=False)
+    special_points = get_special_kpoints(xmltree, schema_dict)
+
+    assert special_points == [(0, 'great'), (19, 'path')]

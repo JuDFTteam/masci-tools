@@ -11,13 +11,15 @@
 ###############################################################################
 """Convenience tools only for mathematical operations (numpy etc.)."""
 
+from __future__ import annotations
+
 import typing as _typing
 
 import numpy as _np
 
 
 def set_zero_below_threshold(array: _np.ndarray,
-                             threshold: float = None,
+                             threshold: float | _np.floating[_typing.Any] | None = None,
                              inplace: bool = True) -> _typing.Optional[_np.ndarray]:
     """Set array elements below threshold to zero.
     :param array: numpy array
@@ -31,9 +33,10 @@ def set_zero_below_threshold(array: _np.ndarray,
         arr = _np.copy(array)
         arr[_np.abs(arr) < threshold] = 0
         return arr
+    return None
 
 
-def drop_values(array: _np.ndarray, *args, **kwargs) -> _np.ndarray:
+def drop_values(array: _np.ndarray, *args: str, **kwargs: float) -> _np.ndarray:
     """Drop elements matching conditions (masks) from array, return cleaned array.
 
     All conditions are specified as 'masks', and concatenated with logical AND.

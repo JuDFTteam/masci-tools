@@ -251,7 +251,7 @@ while (True):
                 else:
                     plot(data, 'x--')
 
-                # substract reference for Etot and mom
+                # subtract reference for Etot and mom
                 if len(data) > 1 and opt[i] in [1, 3]:
                     if opt[i] == 3 and len(data[0]) > 1:
                         datanew = zeros_like(data)[:, :-1]

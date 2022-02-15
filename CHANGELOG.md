@@ -1,5 +1,34 @@
 # Changelog
 
+# v.0.8.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
+
+### Added
+- Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6 release of fleur (file version `0.35`) [[#112]](https://github.com/JuDFTteam/masci-tools/pull/112)
+- New XML getter function: `get_special_kpoints` extracts the labelled kpoints from a kpoint list (for now only implemented for Max5 or later)
+- Added extraction of Hubbard 1 input and distances in the `outxml_parser` for fleur (distances only available starting from version `0.35`) [[#108]](https://github.com/JuDFTteam/masci-tools/pull/108)
+- Added extraction of global vector of magnetic moments in non-collinear calculations in `outxml_parser` under the key `magnetic_vec_moments` starting from version `0.35`
+
+### Improvements
+- Fleur schema parsing functions now recognize a new alias from the fleur schemas `FortranComplex` which is a number of the form `(float,float)`. Converters for complex values are added. (Note: Complex numbers should not yet be used in the `outxml_parser`, since AiiDA (<2.0) does not support complex numbers yet) [[#106]](https://github.com/JuDFTteam/masci-tools/pull/106)
+- Added `IncompatibleSchemaVersions` error when a combination of output and input version for `OutputSchemaDict` is given, for which it is known that no XML schema can be compiled
+- `xml_getters` functions can now be used in the task definitions of the `outxml_parser` to keep information consistent. This example definition will insert the structure data, i.e. a tuple of atoms, bravais matrix and periodic boundary conditions into the output dictionary. `{'parse_type':'xmlGetter', 'name': 'get_structure_data'}` [[#107]](https://github.com/JuDFTteam/masci-tools/pull/107)
+- The `_conversions` key in the `outxml_parser` now accepts namedtuples `Conversion` to enable passing additional arguments to these functions. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
+- Adjusted `get_cell` to understand the `bravaisMatrixFilm` inut introduced with the MaX6 release of fleur [[#110]](https://github.com/JuDFTteam/masci-tools/pull/110)
+- Improved detection, whether a given xpath contains a tag including stripping predicates. Added function `contains_tag` in `masci_tools.util.xml.common_functions` [[#113]](https://github.com/JuDFTteam/masci-tools/pull/113)
+- Refactored bokeh plot routine `periodic_table_plot` to make use of the plot parameters utilities [[#114]](https://github.com/JuDFTteam/masci-tools/pull/114)
+- `get_parameter_data` now extracts LOs with higher energy derivatives or `HELO` type, as they are supported by the newest versions of the inpgen. The old behaviour of dropping all non `SCLO` and `eDeriv="0"` LOs is available via the option `allow_special_los=False`
+### Bugfixes
+- Fix in ``load_inpxml`` and ``load_outxml`` (this also effects the ``inpxml/outxml_parser``). Previously file handle like objects not directly subclassing ``io.IOBase`` would lead to an exception
+- Added patch for `OutputSchemaDict` objects with `FleurOutputSchema.xsd` files before version `0.35`. The attribute `qPoints` in the DMI output was actually called `qpoints` in these schemas, making it impossible to retrieve this attribute
+- Fixed behaviour of relative XPath methods of `SchemaDict` which did not correctly handle root tags, whose names are contained in other tag names, for example `bravaisMatrix` and `bravaisMatrixFilm` from the new file version `0.35`
+
+### Deprecated
+- Passing strings in the `_conversions` key in task definitions for the `outxml_parser`. Use `masci_tools.util.parse_utils.Conversion` instead. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
+### For developers
+- Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
+- Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) [[#102]](https://github.com/JuDFTteam/masci-tools/pull/102)
+
 # v.0.7.2
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...v0.7.2)
 

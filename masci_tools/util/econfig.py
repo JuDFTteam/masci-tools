@@ -3,7 +3,7 @@ Functions for expanding/splitting or converting electron configuration strings
 """
 from __future__ import annotations
 
-from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS
+from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, ATOMIC_NUMBERS
 
 all_econfig = [
     '1s2', '2s2', '2p6', '3s2', '3p6', '4s2', '3d10', '4p6', '5s2', '4d10', '5p6', '6s2', '4f14', '5d10', '6p6', '7s2',
@@ -12,7 +12,6 @@ all_econfig = [
 states_spin = {'s': ['1/2'], 'p': ['1/2', '3/2'], 'd': ['3/2', '5/2'], 'f': ['5/2', '7/2']}
 max_state_occ = {'s': 2., 'p': 6., 'd': 10., 'f': 14.}
 max_state_occ_spin = {'1/2': 2., '3/2': 4., '5/2': 6., '7/2': 8.}
-ATOMIC_NAMES = {data['symbol']: num for num, data in PERIODIC_TABLE_ELEMENTS.items()}
 
 
 def get_econfig(element: str | int, full: bool = False) -> str | None:
@@ -26,7 +25,7 @@ def get_econfig(element: str | int, full: bool = False) -> str | None:
     if isinstance(element, int):
         econ: str | None = PERIODIC_TABLE_ELEMENTS.get(element, {}).get('econfig')  #type:ignore
     elif isinstance(element, str):
-        element_num = ATOMIC_NAMES.get(element, None)
+        element_num = ATOMIC_NUMBERS.get(element, None)
         if element_num is None:
             raise ValueError(f'No element available called {element}')
         econ: str = PERIODIC_TABLE_ELEMENTS.get(element_num, {}).get('econfig')  #type:ignore
