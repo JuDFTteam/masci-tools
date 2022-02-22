@@ -16,6 +16,9 @@
 - Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 
+### For developers
+- Fixed upload of pytest-mpl results artifacts to include the whole directory with images and not just the HTML file [[#117]](https://github.com/JuDFTteam/masci-tools/pull/117)
+
 # v.0.8.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
 
