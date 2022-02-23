@@ -50,12 +50,7 @@ def load_inpxml(inpxmlfile: XMLFileLike,
                           'Setting it to the current working directory.'
                           'If the tree contains xinclude tags these could fail')
             base_url = os.getcwd()
-        elif isinstance(base_url, Path):
-            base_url = os.fspath(base_url.resolve())
         xml_parse_func = partial(xml_parse_func, base_url=base_url)
-
-    if isinstance(inpxmlfile, Path):
-        inpxmlfile = os.fspath(inpxmlfile)
 
     if isinstance(inpxmlfile, etree._ElementTree):
         xmltree = inpxmlfile
@@ -116,12 +111,7 @@ def load_outxml(outxmlfile: XMLFileLike,
                           'Setting it to the current working directory.'
                           'If the tree contains xinclude tags these could fail')
             base_url = os.getcwd()
-        elif isinstance(base_url, Path):
-            base_url = os.fspath(base_url.resolve())
         xml_parse_func = partial(xml_parse_func, base_url=base_url)
-
-    if isinstance(outxmlfile, Path):
-        outxmlfile = os.fspath(outxmlfile)
 
     outfile_broken = False
 

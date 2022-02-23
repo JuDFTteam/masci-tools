@@ -21,8 +21,9 @@ from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInse
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from lxml import etree
 import copy
+import os
 from collections import UserList
-from typing import AnyStr, Callable
+from typing import Callable
 try:
     from typing import TypedDict, Literal
 except ImportError:
@@ -63,7 +64,7 @@ KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteratio
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: AnyStr,
+def create_outschema_dict(path: os.PathLike,
                           inpschema_dict: inpschema_todict.InputSchemaData,
                           apply_patches: bool = True) -> OutputSchemaData:
     """
@@ -99,7 +100,7 @@ def create_outschema_dict(path: AnyStr,
     schema_patches = [fix_qpoints_typo, patch_text_types]
 
     #print(f'processing: {path}/FleurOutputSchema.xsd')
-    xmlschema = etree.parse(path)
+    xmlschema = etree.parse(path)  #type: ignore
     xmlschema, _ = clear_xml(xmlschema)
 
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
