@@ -15,7 +15,7 @@ These can still use the schema dict for finding information about the xpath
 """
 from __future__ import annotations
 
-from typing import Any, Iterable, cast
+from typing import Any, Iterable
 try:
     from typing import Literal
 except ImportError:
@@ -160,8 +160,8 @@ def xml_set_attrib_value(xmltree: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
                          xpath: XPathLike,
                          base_xpath: str,
-                         attributename: str,
-                         attribv: Any,
+                         name: str,
+                         value: Any,
                          occurrences: int | Iterable[int] | None = None,
                          create: bool = False) -> XMLLike:
     """
@@ -176,14 +176,14 @@ def xml_set_attrib_value(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xpath: a path where to set the attributes
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
-    :param attributename: the attribute name to set
-    :param attribv: value or list of values to set
+    :param name: the attribute name to set
+    :param value: value or list of values to set
     :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
     :param create: bool optional (default False), if True the tag is created if is missing
 
     :raises ValueError: If the conversion to string failed
     :raises ValueError: If the tag is missing and `create=False`
-    :raises ValueError: If the attributename is not allowed on the base_xpath
+    :raises ValueError: If the name is not allowed on the base_xpath
 
     :returns: xmltree with set attribute
     """
@@ -198,14 +198,13 @@ def xml_set_attrib_value(xmltree: XMLLike,
     _, tag_name = split_off_tag(base_xpath)
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
-    if attributename not in attribs:
-        raise ValueError(
-            f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
-            f'Allowed attributes are: {sorted(attribs.original_case.values())}')
-    attributename = attribs.original_case[attributename]
+    if name not in attribs:
+        raise ValueError(f"The key '{name}' is not expected for this version of the input for the '{tag_name}' tag. "
+                         f'Allowed attributes are: {sorted(attribs.original_case.values())}')
+    name = attribs.original_case[name]
 
-    converted_attribv, _ = convert_to_xml(attribv, schema_dict, attributename, text=False)
-    n_nodes = len(converted_attribv) if is_sequence(converted_attribv) else 1
+    converted_value, _ = convert_to_xml(value, schema_dict, name, text=False)
+    n_nodes = len(converted_value) if is_sequence(converted_value) else 1
 
     if create:
         nodes: list[etree._Element] = eval_xpath_create(xmltree,
@@ -221,19 +220,19 @@ def xml_set_attrib_value(xmltree: XMLLike,
 
     if len(nodes) == 0:
         raise ValueError(
-            f"Could not set attribute '{attributename}' on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' "
+            f"Could not set attribute '{name}' on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' "
             'because at least one subtag is missing. '
             'Use create=True to create the subtags')
 
-    return xml_set_attrib_value_no_create(xmltree, xpath, attributename, converted_attribv, occurrences=occurrences)
+    return xml_set_attrib_value_no_create(xmltree, xpath, name, converted_value, occurrences=occurrences)
 
 
 def xml_set_first_attrib_value(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
                                xpath: XPathLike,
                                base_xpath: str,
-                               attributename: str,
-                               attribv: Any,
+                               name: str,
+                               value: Any,
                                create: bool = False) -> XMLLike:
     """
     Sets the first occurrence attribute in a xmltree to a given value.
@@ -246,8 +245,8 @@ def xml_set_first_attrib_value(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xpath: a path where to set the attribute
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
-    :param attributename: the attribute name to set
-    :param attribv: value or list of values to set
+    :param name: the attribute name to set
+    :param value: value or list of values to set
     :param create: bool optional (default False), if True the tag is created if is missing
 
     :raises ValueError: If the conversion to string failed
@@ -257,14 +256,7 @@ def xml_set_first_attrib_value(xmltree: XMLLike,
     :returns: xmltree with set attribute
     """
 
-    return xml_set_attrib_value(xmltree,
-                                schema_dict,
-                                xpath,
-                                base_xpath,
-                                attributename,
-                                attribv,
-                                create=create,
-                                occurrences=0)
+    return xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, name, value, create=create, occurrences=0)
 
 
 def xml_set_text(xmltree: XMLLike,
@@ -359,9 +351,10 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
                              schema_dict: fleur_schema.SchemaDict,
                              xpath: XPathLike,
                              base_xpath: str,
-                             attributename: str,
-                             add_number: Any,
-                             mode: Literal['abs', 'rel'] = 'abs',
+                             name: str,
+                             number_to_add: Any,
+                             mode: Literal['abs', 'absolute',
+                                           'rel', 'relative'] = 'absolute',
                              occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Adds a given number to the attribute value in a xmltree. By default the attribute will be shifted
@@ -372,11 +365,11 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xpath: a path where to set the attributes
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
-    :param attributename: the attribute name to change
-    :param add_number: number to add/multiply with the old attribute value
-    :param mode: str (either `rel` or `abs`).
-                 `rel` multiplies the old value with `add_number`
-                 `abs` adds the old value and `add_number`
+    :param name: the attribute name to change
+    :param number_to_add: number to add/multiply with the old attribute value
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with `number_to_add`
+                 `abs`/`absolute` adds the old value and `number_to_add`
     :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     :raises ValueError: If the attribute is unknown or cannot be float or int
@@ -387,16 +380,14 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     """
     from masci_tools.util.schema_dict_util import read_constants
     from masci_tools.util.xml.converters import convert_from_xml
-    from masci_tools.io.common_functions import is_sequence
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib, split_off_tag
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
-    if attributename not in schema_dict['attrib_types']:
-        raise ValueError(
-            f"You try to shift the attribute:'{attributename}' , but the key is unknown to the fleur plug-in")
+    if name not in schema_dict['attrib_types']:
+        raise ValueError(f"You try to shift the attribute:'{name}' , but the key is unknown to the fleur plug-in")
 
-    possible_types = schema_dict['attrib_types'][attributename]
+    possible_types = schema_dict['attrib_types'][name]
 
     if not etree.iselement(xmltree):
         constants = read_constants(xmltree.getroot(), schema_dict)
@@ -407,63 +398,65 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     if 'float' not in types and \
        'float_expression' not in types and \
        'int' not in types:
-        raise ValueError(f"Given attribute name '{attributename}' is not float or int")
+        raise ValueError(f"Given attribute name '{name}' is not float or int")
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
     _, tag_name = split_off_tag(base_xpath)
-    if attributename not in attribs:
-        raise ValueError(
-            f"The key '{attributename}' is not expected for this version of the input for the '{tag_name}' tag. "
-            f'Allowed attributes are: {sorted(attribs.original_case.values())}')
-    attributename = attribs.original_case[attributename]
+    if name not in attribs:
+        raise ValueError(f"The key '{name}' is not expected for this version of the input for the '{tag_name}' tag. "
+                         f'Allowed attributes are: {sorted(attribs.original_case.values())}')
+    name = attribs.original_case[name]
 
     if isinstance(xpath, XPathBuilder):
         if '@' not in xpath.components[-1]:
-            xpath.append_tag(f'@{attributename}')
-    elif not str(xpath).endswith(f'/@{attributename}'):
-        xpath = '/@'.join([str(xpath), attributename])
+            xpath.append_tag(f'@{name}')
+    elif not str(xpath).endswith(f'/@{name}'):
+        xpath = '/@'.join([str(xpath), name])
 
     stringattribute: list[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
-    tag_xpath, attributename = split_off_attrib(xpath)
+    tag_xpath, name = split_off_attrib(xpath)
 
     if len(stringattribute) == 0:
-        raise ValueError(f"No attribute values found for '{attributename}'. Cannot add number")
+        raise ValueError(f"No attribute values found for '{name}'. Cannot add number")
 
     res: tuple[list[int | float], bool] = convert_from_xml(stringattribute,
                                                            schema_dict,
-                                                           attributename,
+                                                           name,
                                                            text=False,
                                                            constants=constants,
                                                            list_return=True)  #type:ignore
-    attribvalues, _ = res
+    values, _ = res
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            attribvalues = [attribvalues[occ] for occ in cast(Iterable[int], occurrences)]
+            values = [values[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
-    if mode == 'abs':
-        attribvalues = [value + float(add_number) for value in attribvalues]
-    elif mode == 'rel':
-        attribvalues = [value * float(add_number) for value in attribvalues]
+    if mode in ('abs', 'absolute'):
+        values = [value + float(number_to_add) for value in values]
+    elif mode in ('rel', 'relative'):
+        values = [value * float(number_to_add) for value in values]
+    else:
+        raise ValueError(f'Unknown mode for modifying value: {mode}. '
+                         'Only rel, relative, abs and absolute are allowed')
 
     if 'float' in types or 'float_expression' in types:
-        pass
+        new_values = values
     elif 'int' in types:
-        if any(not value.is_integer() for value in attribvalues):
+        if any(not value.is_integer() for value in values):
             raise ValueError('You are trying to write a float to an integer attribute')
-        attribvalues = [int(value) for value in attribvalues]
+        new_values = [int(value) for value in values]
 
     xmltree = xml_set_attrib_value(xmltree,
                                    schema_dict,
                                    tag_xpath,
                                    base_xpath,
-                                   attributename,
-                                   attribvalues,
+                                   name,
+                                   new_values,
                                    occurrences=occurrences)
 
     return xmltree
@@ -473,9 +466,9 @@ def xml_add_number_to_first_attrib(xmltree: XMLLike,
                                    schema_dict: fleur_schema.SchemaDict,
                                    xpath: XPathLike,
                                    base_xpath: str,
-                                   attributename: str,
-                                   add_number: Any,
-                                   mode: Literal['abs', 'rel'] = 'abs') -> XMLLike:
+                                   name: str,
+                                   number_to_add: Any,
+                                   mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute') -> XMLLike:
     """
     Adds a given number to the first occurrence of a attribute value in a xmltree.
     If there are no nodes under the specified xpath an error is raised
@@ -485,10 +478,10 @@ def xml_add_number_to_first_attrib(xmltree: XMLLike,
     :param xpath: a path where to set the attributes
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param attributename: the attribute name to change
-    :param add_number: number to add/multiply with the old attribute value
-    :param mode: str (either `rel` or `abs`).
-                 `rel` multiplies the old value with `add_number`
-                 `abs` adds the old value and `add_number`
+    :param number_to_add: number to add/multiply with the old attribute value
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with `number_to_add`
+                 `abs`/`absolute` adds the old value and `number_to_add`
 
     :raises ValueError: If the attribute is unknown or cannot be float or int
     :raises ValueError: If the evaluation of the old values failed
@@ -500,8 +493,8 @@ def xml_add_number_to_first_attrib(xmltree: XMLLike,
                                     schema_dict,
                                     xpath,
                                     base_xpath,
-                                    attributename,
-                                    add_number,
+                                    name,
+                                    number_to_add,
                                     mode=mode,
                                     occurrences=0)
 
@@ -588,11 +581,11 @@ def xml_set_complex_tag(xmltree: XMLLike,
                         schema_dict: fleur_schema.SchemaDict,
                         xpath: XPathLike,
                         base_xpath: str,
-                        attributedict: dict[str, Any],
+                        changes: dict[str, Any],
                         create: bool = False) -> XMLLike:
     """
-    Recursive Function to correctly set tags/attributes for a given tag.
-    Goes through the attributedict and decides based on the schema_dict, how the corresponding
+    Recursive function to correctly set tags/attributes for a given tag and it's subtags.
+    Goes through the changes dictionary and decides based on the schema_dict, how the corresponding
     key has to be handled.
 
     Supports:
@@ -607,13 +600,14 @@ def xml_set_complex_tag(xmltree: XMLLike,
     :param xpath: a path where to set the attributes
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param tag_name: name of the tag to set
-    :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
-                          to do on this tag (attributename, subdict with changes to the subtag, ...)
+    :param changes: Keys in the dictionary correspond to names of tags and the values are the modifications
+                    to do on this tag (attributename, subdict with changes to the subtag, ...)
     :param create: bool optional (default False), if True and the path, where the complex tag is
                    set does not exist it is created
 
     :returns: xmltree with changes to the complex tag
     """
+    #TODO: Should changes be alloed to be a list to set multiple tags like in set_simple_tag
     import copy
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
@@ -627,7 +621,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
         #eval complex tag and ggf create
         eval_xpath_create(xmltree, schema_dict, xpath, base_xpath, create_parents=True)
 
-    for key, val in attributedict.items():
+    for key, val in changes.items():
 
         if key not in tag_info['complex'] | tag_info['simple'] | tag_info['attribs']:
             raise ValueError(
