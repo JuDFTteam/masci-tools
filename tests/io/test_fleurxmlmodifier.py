@@ -140,42 +140,43 @@ def test_fleurxml_modifier_from_list(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
     from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 
-    fm = FleurXMLModifier.fromList([('set_inpchanges', {
-        'change_dict': {
+    task_list = [('set_inpchanges', {
+        'changes': {
             'dos': True,
             'Kmax': 3.9
         }
     }), ('shift_value', {
-        'change_dict': {
+        'changes': {
             'Kmax': 0.1
         },
         'mode': 'rel'
     }),
-                                    ('shift_value_species_label', {
-                                        'atom_label': '                 222',
-                                        'attributename': 'radius',
-                                        'value_given': 3,
-                                        'mode': 'abs'
-                                    }), ('set_kpointlist', {
-                                        'kpoints': [[0, 0, 0]],
-                                        'weights': [1]
-                                    }),
-                                    ('set_species', {
-                                        'species_name': 'all',
-                                        'attributedict': {
-                                            'mtSphere': {
-                                                'radius': 3.333
-                                            }
-                                        }
-                                    })])
+                 ('shift_value_species_label', {
+                     'atom_label': '                 222',
+                     'attribute_name': 'radius',
+                     'number_to_add': 3,
+                     'mode': 'abs'
+                 }), ('set_kpointlist', {
+                     'kpoints': [[0, 0, 0]],
+                     'weights': [1]
+                 }), ('set_species', {
+                     'species_name': 'all',
+                     'changes': {
+                         'mtSphere': {
+                             'radius': 3.333
+                         }
+                     }
+                 })]
+
+    fm = FleurXMLModifier.fromList(task_list)
 
     assert fm.changes() == [
-        ModifierTask(name='set_inpchanges', args=(), kwargs={'change_dict': {
+        ModifierTask(name='set_inpchanges', args=(), kwargs={'changes': {
             'dos': True,
             'Kmax': 3.9
         }}),
         ModifierTask(name='shift_value', args=(), kwargs={
-            'change_dict': {
+            'changes': {
                 'Kmax': 0.1
             },
             'mode': 'rel'
@@ -184,8 +185,8 @@ def test_fleurxml_modifier_from_list(test_file):
                      args=(),
                      kwargs={
                          'atom_label': '                 222',
-                         'attributename': 'radius',
-                         'value_given': 3,
+                         'attribute_name': 'radius',
+                         'number_to_add': 3,
                          'mode': 'abs'
                      }),
         ModifierTask(name='set_kpointlist', args=(), kwargs={
@@ -196,7 +197,84 @@ def test_fleurxml_modifier_from_list(test_file):
                      args=(),
                      kwargs={
                          'species_name': 'all',
-                         'attributedict': {
+                         'changes': {
+                             'mtSphere': {
+                                 'radius': 3.333
+                             }
+                         }
+                     })
+    ]
+
+    #The underlying methods are tested in the specific tests for the setters
+    #We only want to ensure that the procedure finishes without error
+    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
+
+    assert xmltree is not None
+
+
+def test_fleurxml_modifier_from_list_deprecated_arguments(test_file):
+    """Tests if fleurinp_modifier with various modifications on species"""
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+
+    task_list = [('set_inpchanges', {
+        'change_dict': {
+            'dos': True,
+            'Kmax': 3.9
+        }
+    }), ('shift_value', {
+        'change_dict': {
+            'Kmax': 0.1
+        },
+        'mode': 'rel'
+    }),
+                 ('shift_value_species_label', {
+                     'atom_label': '                 222',
+                     'attributename': 'radius',
+                     'value_given': 3,
+                     'mode': 'abs'
+                 }), ('set_kpointlist', {
+                     'kpoints': [[0, 0, 0]],
+                     'weights': [1]
+                 }), ('set_species', {
+                     'species_name': 'all',
+                     'attributedict': {
+                         'mtSphere': {
+                             'radius': 3.333
+                         }
+                     }
+                 })]
+
+    with pytest.deprecated_call():
+        fm = FleurXMLModifier.fromList(task_list)
+
+    assert fm.changes() == [
+        ModifierTask(name='set_inpchanges', args=(), kwargs={'changes': {
+            'dos': True,
+            'Kmax': 3.9
+        }}),
+        ModifierTask(name='shift_value', args=(), kwargs={
+            'changes': {
+                'Kmax': 0.1
+            },
+            'mode': 'rel'
+        }),
+        ModifierTask(name='shift_value_species_label',
+                     args=(),
+                     kwargs={
+                         'atom_label': '                 222',
+                         'attribute_name': 'radius',
+                         'number_to_add': 3,
+                         'mode': 'abs'
+                     }),
+        ModifierTask(name='set_kpointlist', args=(), kwargs={
+            'kpoints': [[0, 0, 0]],
+            'weights': [1]
+        }),
+        ModifierTask(name='set_species',
+                     args=(),
+                     kwargs={
+                         'species_name': 'all',
+                         'changes': {
                              'mtSphere': {
                                  'radius': 3.333
                              }
