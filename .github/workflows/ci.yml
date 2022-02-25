@@ -93,6 +93,7 @@ jobs:
       matrix:
         python-version: ['3.10','3.9', '3.8', '3.7']
         experimental: [false]
+      fail-fast: false
     
     name: tests-python-${{ matrix.python-version }}
     continue-on-error: ${{ matrix.experimental }}
@@ -130,5 +131,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
-        name: Matplotlib comparison
+        name: matplotlib-comparison-${{ matrix.python-version }}
         path: mpl-results
