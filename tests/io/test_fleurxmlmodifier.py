@@ -413,3 +413,17 @@ def test_fleurxmlmodifier_nmmpmat(test_file):
 
     assert xmltree is not None
     assert nmmpmat is not None
+
+
+def test_fleurxmlmodifier_deprecated_validate():
+    """Check that the deprecated _validate_signature is working correctly"""
+    #pylint: disable=protected-access
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+    fm = FleurXMLModifier()
+    with pytest.deprecated_call():
+        fm._validate_signature('delete_att', 'test')
+
+    with pytest.deprecated_call():
+        with pytest.raises(TypeError):
+            fm._validate_signature('delete_att', non_existent_arg='test')
