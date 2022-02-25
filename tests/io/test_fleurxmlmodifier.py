@@ -2,6 +2,7 @@
 Test for the FleurXMLModifier class
 """
 import pytest
+from masci_tools.io.fleurxmlmodifier import ModifierTask
 
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
@@ -12,7 +13,7 @@ def test_fleurxmlmodifier_facade_methods():
     """
     Make sure that adding all facade methods results in the right task list
     """
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
     from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 
     fm = FleurXMLModifier(validate_signatures=False)
@@ -55,7 +56,7 @@ def test_fleurxmlmodifier_facade_methods_validation():
 
 def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
@@ -102,7 +103,7 @@ def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
 
 def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
@@ -138,44 +139,45 @@ def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
 
 def test_fleurxml_modifier_from_list(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
-    fm = FleurXMLModifier.fromList([('set_inpchanges', {
-        'change_dict': {
+    task_list = [('set_inpchanges', {
+        'changes': {
             'dos': True,
             'Kmax': 3.9
         }
     }), ('shift_value', {
-        'change_dict': {
+        'changes': {
             'Kmax': 0.1
         },
         'mode': 'rel'
     }),
-                                    ('shift_value_species_label', {
-                                        'atom_label': '                 222',
-                                        'attributename': 'radius',
-                                        'value_given': 3,
-                                        'mode': 'abs'
-                                    }), ('set_kpointlist', {
-                                        'kpoints': [[0, 0, 0]],
-                                        'weights': [1]
-                                    }),
-                                    ('set_species', {
-                                        'species_name': 'all',
-                                        'attributedict': {
-                                            'mtSphere': {
-                                                'radius': 3.333
-                                            }
-                                        }
-                                    })])
+                 ('shift_value_species_label', {
+                     'atom_label': '                 222',
+                     'attribute_name': 'radius',
+                     'number_to_add': 3,
+                     'mode': 'abs'
+                 }), ('set_kpointlist', {
+                     'kpoints': [[0, 0, 0]],
+                     'weights': [1]
+                 }), ('set_species', {
+                     'species_name': 'all',
+                     'changes': {
+                         'mtSphere': {
+                             'radius': 3.333
+                         }
+                     }
+                 })]
+
+    fm = FleurXMLModifier.fromList(task_list)
 
     assert fm.changes() == [
-        ModifierTask(name='set_inpchanges', args=(), kwargs={'change_dict': {
+        ModifierTask(name='set_inpchanges', args=(), kwargs={'changes': {
             'dos': True,
             'Kmax': 3.9
         }}),
         ModifierTask(name='shift_value', args=(), kwargs={
-            'change_dict': {
+            'changes': {
                 'Kmax': 0.1
             },
             'mode': 'rel'
@@ -184,8 +186,8 @@ def test_fleurxml_modifier_from_list(test_file):
                      args=(),
                      kwargs={
                          'atom_label': '                 222',
-                         'attributename': 'radius',
-                         'value_given': 3,
+                         'attribute_name': 'radius',
+                         'number_to_add': 3,
                          'mode': 'abs'
                      }),
         ModifierTask(name='set_kpointlist', args=(), kwargs={
@@ -196,7 +198,7 @@ def test_fleurxml_modifier_from_list(test_file):
                      args=(),
                      kwargs={
                          'species_name': 'all',
-                         'attributedict': {
+                         'changes': {
                              'mtSphere': {
                                  'radius': 3.333
                              }
@@ -209,6 +211,162 @@ def test_fleurxml_modifier_from_list(test_file):
     xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+
+
+@pytest.mark.parametrize('name, kwargs, expected_task', [
+    ('set_inpchanges', {
+        'change_dict': {
+            'dos': True,
+            'Kmax': 3.9
+        }
+    }, ModifierTask(name='set_inpchanges', kwargs={'changes': {
+        'dos': True,
+        'Kmax': 3.9
+    }})),
+    ('shift_value', {
+        'change_dict': {
+            'Kmax': 0.1
+        },
+        'mode': 'rel'
+    }, ModifierTask(name='shift_value', kwargs={
+        'changes': {
+            'Kmax': 0.1
+        },
+        'mode': 'rel'
+    })),
+    ('set_species', {
+        'species_name': 'all',
+        'attributedict': {
+            'element': 'T'
+        }
+    }, ModifierTask(name='set_species', kwargs={
+        'species_name': 'all',
+        'changes': {
+            'element': 'T'
+        }
+    })),
+    ('set_species_label', {
+        'atom_label': 'all',
+        'attributedict': {
+            'element': 'T'
+        }
+    }, ModifierTask(name='set_species_label', kwargs={
+        'atom_label': 'all',
+        'changes': {
+            'element': 'T'
+        }
+    })),
+    ('shift_value_species_label', {
+        'atom_label': '                 222',
+        'attributename': 'radius',
+        'value_given': 3,
+        'mode': 'abs'
+    },
+     ModifierTask(name='shift_value_species_label',
+                  kwargs={
+                      'atom_label': '                 222',
+                      'attribute_name': 'radius',
+                      'number_to_add': 3,
+                      'mode': 'abs'
+                  })),
+    ('set_atomgroup', {
+        'species': 'all',
+        'attributedict': {
+            'species': 'T'
+        },
+        'create': True,
+    }, ModifierTask(name='set_atomgroup', kwargs={
+        'species': 'all',
+        'changes': {
+            'species': 'T'
+        },
+    })),
+    ('set_atomgroup_label', {
+        'atom_label': '                 222',
+        'attributedict': {
+            'species': 'T'
+        },
+        'create': True,
+    },
+     ModifierTask(name='set_atomgroup_label',
+                  kwargs={
+                      'atom_label': '                 222',
+                      'changes': {
+                          'species': 'T'
+                      },
+                  })),
+    ('delete_att', {
+        'attrib_name': 'test'
+    }, ModifierTask(name='delete_att', kwargs={'name': 'test'})),
+    ('replace_tag', {
+        'tag_name': 'test',
+        'newelement': 'NEW'
+    }, ModifierTask(name='replace_tag', kwargs={
+        'tag_name': 'test',
+        'element': 'NEW'
+    })),
+    ('set_attrib_value', {
+        'attributename': 'test',
+        'attribv': 'NEW'
+    }, ModifierTask(name='set_attrib_value', kwargs={
+        'name': 'test',
+        'value': 'NEW'
+    })),
+    ('set_first_attrib_value', {
+        'attributename': 'test',
+        'attribv': 'NEW'
+    }, ModifierTask(name='set_first_attrib_value', kwargs={
+        'name': 'test',
+        'value': 'NEW'
+    })),
+    ('add_number_to_attrib', {
+        'attributename': 'test',
+        'add_number': 1.0
+    }, ModifierTask(name='add_number_to_attrib', kwargs={
+        'name': 'test',
+        'number_to_add': 1.0
+    })),
+    ('add_number_to_first_attrib', {
+        'attributename': 'test',
+        'add_number': 1.0
+    }, ModifierTask(name='add_number_to_first_attrib', kwargs={
+        'name': 'test',
+        'number_to_add': 1.0
+    })),
+    ('xml_replace_tag', {
+        'xpath': './test',
+        'newelement': 'NEW'
+    }, ModifierTask(name='xml_replace_tag', kwargs={
+        'xpath': './test',
+        'element': 'NEW'
+    })),
+    ('xml_delete_att', {
+        'xpath': './test',
+        'attributename': 'test'
+    }, ModifierTask(name='xml_delete_att', kwargs={
+        'xpath': './test',
+        'name': 'test'
+    })),
+    ('xml_set_attrib_value_no_create', {
+        'xpath': './test',
+        'attributename': 'test',
+        'attribv': 'NEW'
+    }, ModifierTask(name='xml_set_attrib_value_no_create', kwargs={
+        'xpath': './test',
+        'name': 'test',
+        'value': 'NEW'
+    })),
+])
+def test_fleurxml_modifier_deprecated_arguments(name, kwargs, expected_task):
+    """Test the various deprecations in the fleurxmlmodifier"""
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+    fm = FleurXMLModifier()
+
+    action = fm.get_avail_actions()[name]
+    with pytest.deprecated_call():
+        action(**kwargs)
+    assert fm.changes() == [expected_task]
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
@@ -255,3 +413,17 @@ def test_fleurxmlmodifier_nmmpmat(test_file):
 
     assert xmltree is not None
     assert nmmpmat is not None
+
+
+def test_fleurxmlmodifier_deprecated_validate():
+    """Check that the deprecated _validate_signature is working correctly"""
+    #pylint: disable=protected-access
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+    fm = FleurXMLModifier()
+    with pytest.deprecated_call():
+        fm._validate_signature('delete_att', 'test')
+
+    with pytest.deprecated_call():
+        with pytest.raises(TypeError):
+            fm._validate_signature('delete_att', non_existent_arg='test')

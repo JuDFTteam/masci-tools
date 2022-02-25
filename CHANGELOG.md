@@ -3,7 +3,18 @@
 # latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...develop)
 
-Nothing here yet
+### Improvements
+- Several arguments in XML setter functions were renamed for more consistent signatures.
+  The main changes are 
+   - `attributedict`/`change_dict` -> `changes`
+   - `attributename`/`attribv` -> `name`/`value`
+   - `add_number` -> `number_to_add`
+  
+  The old signatures are still supported with deprecations if called via the `FleurXMLModifier` [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
+
+### Bugfixes
+- Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
+- Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 
 # v.0.8.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
