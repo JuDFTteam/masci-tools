@@ -353,8 +353,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
                              base_xpath: str,
                              name: str,
                              number_to_add: Any,
-                             mode: Literal['abs', 'absolute',
-                                           'rel', 'relative'] = 'absolute',
+                             mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                              occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Adds a given number to the attribute value in a xmltree. By default the attribute will be shifted
@@ -477,7 +476,7 @@ def xml_add_number_to_first_attrib(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xpath: a path where to set the attributes
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
-    :param attributename: the attribute name to change
+    :param name: the attribute name to change
     :param number_to_add: number to add/multiply with the old attribute value
     :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
                  `rel`/`relative` multiplies the old value with `number_to_add`
@@ -518,7 +517,7 @@ def xml_set_simple_tag(xmltree: XMLLike,
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
     :param tag_name: name of the tag to set
     :param changes: list of dicts or dict with the changes. Elements in list describe multiple tags.
-                    Keys in the dictionary correspond to {'attributename': attributevalue}
+                    Keys in the dictionary correspond to {'name': value}
     :param create_parents: bool optional (default False), if True and the path, where the simple tags are
                            set does not exist it is created
 

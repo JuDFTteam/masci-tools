@@ -328,16 +328,19 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_inpchanges()` to
         the list of tasks that will be done on the xmltree.
 
-        :param change_dict: a dictionary with changes
+        :param changes: a dictionary with changes
         :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
-        An example of change_dict::
+        An example of changes::
 
-            change_dict = {'itmax' : 1,
-                           'l_noco': True,
-                           'ctail': False,
-                           'l_ss': True}
+            changes = {'itmax' : 1,
+                       'l_noco': True,
+                       'ctail': False,
+                       'l_ss': True}
         """
+        if 'change_dict' in kwargs:
+            warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('change_dict')
         self._validate_signature('set_inpchanges', *args, **kwargs)
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
@@ -346,14 +349,19 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value()` to
         the list of tasks that will be done on the xmltree.
 
-        :param change_dict: a python dictionary with the keys to shift and the shift values.
-        :param mode: 'abs' if change given is absolute, 'rel' if relative
+        :param changes: a python dictionary with the keys to shift and the shift values.
+        :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                     `rel`/`relative` multiplies the old value with the given value
+                     `abs`/`absolute` adds the old value and the given value
         :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
-        An example of change_dict::
+        An example of changes::
 
-                change_dict = {'itmax' : 1, 'dVac': -0.123}
+                changes = {'itmax' : 1, 'dVac': -0.123}
         """
+        if 'change_dict' in kwargs:
+            warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('change_dict')
         self._validate_signature('shift_value', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
@@ -364,26 +372,29 @@ class FleurXMLModifier:
 
         :param species_name: string, name of the specie you want to change
                              Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
-        :param attributedict: a python dict specifying what you want to change.
+        :param changes: a python dict specifying what you want to change.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         :param create: bool, if species does not exist create it and all subtags?
 
-        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        **changes** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a MT radius it
         can be done via::
 
-            attributedict = {'mtSphere' : {'radius' : 2.2}}
+            changes = {'mtSphere' : {'radius' : 2.2}}
 
         Another example::
 
-            'attributedict': {'special': {'socscale': 0.0}}
+            'changes': {'special': {'socscale': 0.0}}
 
         that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
         ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
         """
+        if 'attributedict' in kwargs:
+            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('attributedict')
         self._validate_signature('set_species', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
@@ -393,9 +404,12 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
-        :param attributedict: a python dict specifying what you want to change.
+        :param changes: a python dict specifying what you want to change.
 
         """
+        if 'attributedict' in kwargs:
+            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('attributedict')
         self._validate_signature('set_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
@@ -449,15 +463,23 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param atom_label: string, a label of the atom which specie will be changed. 'all' if set up all species
-        :param attributename: name of the attribute to change
-        :param value_given: value to add or to multiply by
-        :param mode: 'rel' for multiplication or 'abs' for addition
+        :param attribute_name: name of the attribute to change
+        :param number_to_add: value to add or to multiply by
+        :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                    `rel`/`relative` multiplies the old value with `number_to_add`
+                    `abs`/`absolute` adds the old value and `number_to_add`
 
-        Kwargs if the attributename does not correspond to a unique path:
+        Kwargs if the attribute_name does not correspond to a unique path:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
 
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use attribute_name instead', DeprecationWarning)
+            kwargs['attribute_name'] = kwargs.pop('attributename')
+        if 'value_given' in kwargs:
+            warnings.warn('The argument value_given is deprecated. Use number_to_add instead', DeprecationWarning)
+            kwargs['number_to_add'] = kwargs.pop('value_given')
         self._validate_signature('shift_value_species_label', *args, **kwargs)
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
@@ -466,20 +488,25 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
         the list of tasks that will be done on the xmltree.
 
-        :param attributedict: a python dict specifying what you want to change.
+        :param changes: a python dict specifying what you want to change.
         :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
         :param species: atom groups, corresponding to the given species will be changed
-        :param create: bool, if species does not exist create it and all subtags?
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
-        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        **changes** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
         can be done via::
 
-            'attributedict': {'nocoParams': {'beta': val}}
+            'changes': {'nocoParams': {'beta': val}}
 
         """
+        if 'attributedict' in kwargs:
+            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('attributedict')
+        if 'create' in kwargs:
+            warnings.warn('The argument create is deprecatedand is ignored.', DeprecationWarning)
+            kwargs.pop('create')
         self._validate_signature('set_atomgroup', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
@@ -489,16 +516,21 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
-        :param attributedict: a python dict specifying what you want to change.
-        :param create: bool, if species does not exist create it and all subtags?
+        :param changes: a python dict specifying what you want to change.
 
-        **attributedict** is a python dictionary containing dictionaries that specify attributes
+        **changes** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
         can be done via::
 
-            'attributedict': {'nocoParams': {'beta': val}}
+            'changes': {'nocoParams': {'beta': val}}
 
         """
+        if 'attributedict' in kwargs:
+            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['changes'] = kwargs.pop('attributedict')
+        if 'create' in kwargs:
+            warnings.warn('The argument create is deprecatedand is ignored.', DeprecationWarning)
+            kwargs.pop('create')
         self._validate_signature('set_atomgroup_label', *args, **kwargs)
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
@@ -549,7 +581,7 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_att()` to
         the list of tasks that will be done on the xmltree.
 
-        :param tag: str of the attribute to delete
+        :param name: str of the attribute to delete
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurrence of the parent nodes to delete a attribute.
                             By default all nodes are used.
@@ -564,6 +596,9 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
+        if 'attrib_name' in kwargs:
+            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attrib_name')
         self._validate_signature('delete_att', *args, **kwargs)
         self._tasks.append(ModifierTask('delete_att', args, kwargs))
 
@@ -573,7 +608,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param tag: str of the tag to replace
-        :param newelement: a new tag
+        :param element: a new tag
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurrence of the parent nodes to replace a tag.
                             By default all nodes are used.
@@ -585,6 +620,9 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
+        if 'newelement' in kwargs:
+            warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
+            kwargs['element'] = kwargs.pop('newelement')
         self._validate_signature('replace_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
@@ -594,8 +632,8 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param tag_name: name of the tag to set
-        :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
-                              to do on this tag (attributename, subdict with changes to the subtag, ...)
+        :param changes: Keys in the dictionary correspond to names of tags and the values are the modifications
+                        to do on this tag (attributename, subdict with changes to the subtag, ...)
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create: bool optional (default False), if True and the path, where the complex tag is
                        set does not exist it is created
@@ -681,8 +719,8 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_attrib_value()` to
         the list of tasks that will be done on the xmltree.
 
-        :param attributename: the attribute name to set
-        :param attribv: value or list of values to set
+        :param name: the attribute name to set
+        :param value: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         :param create: bool optional (default False), if True the tag is created if is missing
@@ -698,6 +736,12 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attributename')
+        if 'attribv' in kwargs:
+            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
+            kwargs['value'] = kwargs.pop('attribv')
         self._validate_signature('set_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
@@ -706,8 +750,8 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_attrib_value()` to
         the list of tasks that will be done on the xmltree.
 
-        :param attributename: the attribute name to set
-        :param attribv: value or list of values to set
+        :param name: the attribute name to set
+        :param value: value or list of values to set
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param create: bool optional (default False), if True the tag is created if is missing
         :param filters: Dict specifying constraints to apply on the xpath.
@@ -722,6 +766,12 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attributename')
+        if 'attribv' in kwargs:
+            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
+            kwargs['value'] = kwargs.pop('attribv')
         self._validate_signature('set_first_attrib_value', *args, **kwargs)
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
@@ -730,12 +780,12 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_attrib()` to
         the list of tasks that will be done on the xmltree.
 
-        :param attributename: the attribute name to change
-        :param add_number: number to add/multiply with the old attribute value
+        :param name: the attribute name to change
+        :param number_to_add: number to add/multiply with the old attribute value
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param mode: str (either `rel` or `abs`).
-                     `rel` multiplies the old value with `add_number`
-                     `abs` adds the old value and `add_number`
+        :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                    `rel`/`relative` multiplies the old value with `number_to_add`
+                    `abs`/`absolute` adds the old value and `number_to_add`
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -749,6 +799,12 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attributename')
+        if 'add_number' in kwargs:
+            warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
+            kwargs['number_to_add'] = kwargs.pop('add_number')
         self._validate_signature('add_number_to_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
@@ -757,12 +813,12 @@ class FleurXMLModifier:
         Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_first_attrib()` to
         the list of tasks that will be done on the xmltree.
 
-        :param attributename: the attribute name to change
-        :param add_number: number to add/multiply with the old attribute value
+        :param name: the attribute name to change
+        :param number_to_add: number to add/multiply with the old attribute value
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-        :param mode: str (either `rel` or `abs`).
-                     `rel` multiplies the old value with `add_number`
-                     `abs` adds the old value and `add_number`
+        :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                    `rel`/`relative` multiplies the old value with `number_to_add`
+                    `abs`/`absolute` adds the old value and `number_to_add`
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
@@ -775,6 +831,12 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
 
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attributename')
+        if 'add_number' in kwargs:
+            warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
+            kwargs['number_to_add'] = kwargs.pop('add_number')
         self._validate_signature('add_number_to_first_attrib', *args, **kwargs)
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
@@ -799,7 +861,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path to the tag to be replaced
-        :param newelement: a new tag
+        :param element: a new tag
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
@@ -828,7 +890,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path to the attribute to be deleted
-        :param attrib: the name of an attribute
+        :param name: the name of an attribute
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
@@ -844,8 +906,8 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param xpath: a path where to set the attributes
-        :param attributename: the attribute name to set
-        :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
+        :param name: the attribute name to set
+        :param value: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         """
         if 'attributename' in kwargs:

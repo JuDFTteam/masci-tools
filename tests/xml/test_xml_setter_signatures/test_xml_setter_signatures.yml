@@ -47,16 +47,16 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attributename
+  - - name
     - null
-  - - add_number
+  - - number_to_add
     - null
   - - complex_xpath
     - null
   - - filters
     - null
   - - mode
-    - abs
+    - absolute
   - - occurrences
     - null
   - - kwargs
@@ -66,16 +66,16 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attributename
+  - - name
     - null
-  - - add_number
+  - - number_to_add
     - null
   - - complex_xpath
     - null
   - - filters
     - null
   - - mode
-    - abs
+    - absolute
   - - kwargs
     - null
   clone_species:
@@ -111,7 +111,7 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attrib_name
+  - - name
     - null
   - - complex_xpath
     - null
@@ -143,7 +143,7 @@ schema_dict:
     - null
   - - tag_name
     - null
-  - - newelement
+  - - element
     - null
   - - complex_xpath
     - null
@@ -158,7 +158,7 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attributedict
+  - - changes
     - null
   - - position
     - null
@@ -166,8 +166,6 @@ schema_dict:
     - null
   - - filters
     - null
-  - - create
-    - false
   set_atomgroup_label:
   - - xmltree
     - null
@@ -175,18 +173,16 @@ schema_dict:
     - null
   - - atom_label
     - null
-  - - attributedict
+  - - changes
     - null
-  - - create
-    - false
   set_attrib_value:
   - - xmltree
     - null
   - - schema_dict
     - null
-  - - attributename
+  - - name
     - null
-  - - attribv
+  - - value
     - null
   - - complex_xpath
     - null
@@ -220,9 +216,9 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attributename
+  - - name
     - null
-  - - attribv
+  - - value
     - null
   - - complex_xpath
     - null
@@ -237,9 +233,9 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - attributename
+  - - tag_name
     - null
-  - - attribv
+  - - text
     - null
   - - complex_xpath
     - null
@@ -254,7 +250,7 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - change_dict
+  - - changes
     - null
   - - path_spec
     - null
@@ -321,7 +317,7 @@ schema_dict:
     - null
   - - species_name
     - null
-  - - attributedict
+  - - changes
     - null
   - - filters
     - null
@@ -334,7 +330,7 @@ schema_dict:
     - null
   - - atom_label
     - null
-  - - attributedict
+  - - changes
     - null
   - - create
     - false
@@ -362,10 +358,10 @@ schema_dict:
     - null
   - - schema_dict
     - null
-  - - change_dict
+  - - changes
     - null
   - - mode
-    - abs
+    - absolute
   - - path_spec
     - null
   shift_value_species_label:
@@ -375,12 +371,12 @@ schema_dict:
     - null
   - - atom_label
     - null
-  - - attributename
+  - - attribute_name
     - null
-  - - value_given
+  - - number_to_add
     - null
   - - mode
-    - abs
+    - absolute
   - - kwargs
     - null
   switch_kpointset:
