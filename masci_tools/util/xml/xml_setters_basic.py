@@ -28,14 +28,14 @@ from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
-                    new_element: etree._Element,
+                    element: etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     replaces xml tags by another tag on an xmletree in place
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
-    :param new_element: a new tag
+    :param element: an Element to replace the found tags with
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
@@ -68,7 +68,7 @@ def xml_replace_tag(xmltree: XMLLike,
             raise ValueError('Could not find parent of node')
         index = parent.index(node)  #type:ignore
         parent.remove(node)
-        parent.insert(index, copy.deepcopy(new_element))
+        parent.insert(index, copy.deepcopy(element))
 
     etree.indent(xmltree)
     return xmltree
@@ -76,14 +76,14 @@ def xml_replace_tag(xmltree: XMLLike,
 
 def xml_delete_att(xmltree: XMLLike,
                    xpath: XPathLike,
-                   attribute_name: str,
+                   name: str,
                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Deletes an xml attribute in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
-    :param attribute_name: the name of an attribute
+    :param name: the name of an attribute to delete
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
@@ -111,7 +111,7 @@ def xml_delete_att(xmltree: XMLLike,
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
-        node.attrib.pop(attribute_name, '')
+        node.attrib.pop(name, '')
 
     return xmltree
 

@@ -28,6 +28,7 @@ from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
 from lxml import etree
+import warnings
 #Enable warnings for missing docstrings
 #pylint: enable=missing-function-docstring
 
@@ -802,6 +803,10 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        if 'newelement' in kwargs:
+            warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
+            kwargs['element'] = kwargs.pop('newelement')
+
         self._validate_signature('xml_replace_tag', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
@@ -827,6 +832,9 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['name'] = kwargs.pop('attributename')
         self._validate_signature('xml_delete_att', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
@@ -840,6 +848,12 @@ class FleurXMLModifier:
         :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         """
+        if 'attributename' in kwargs:
+            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
+            kwargs['attribute_name'] = kwargs.pop('attributename')
+        if 'attribv' in kwargs:
+            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
+            kwargs['value'] = kwargs.pop('attribv')
         self._validate_signature('xml_set_attrib_value_no_create', *args, **kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 

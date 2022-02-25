@@ -443,7 +443,7 @@ xpath:
     - null
   - - xpath
     - null
-  - - attrib
+  - - name
     - null
   - - occurrences
     - null
@@ -459,7 +459,7 @@ xpath:
     - null
   - - xpath
     - null
-  - - newelement
+  - - element
     - null
   - - occurrences
     - null
@@ -468,9 +468,9 @@ xpath:
     - null
   - - xpath
     - null
-  - - attributename
+  - - name
     - null
-  - - attribv
+  - - value
     - null
   - - occurrences
     - null
