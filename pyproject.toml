@@ -27,7 +27,7 @@ dependencies = [
             'matplotlib',
             'h5py',
             'pandas',
-            'lxml>=4.5',
+            'lxml~=4.8',
             'more_itertools',
             'seaborn',
             'deepdiff',

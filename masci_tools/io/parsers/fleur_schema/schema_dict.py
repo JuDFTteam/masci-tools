@@ -681,11 +681,8 @@ class InputSchemaDict(SchemaDict):
 
         :return: InputSchemaDict object with the information for the provided file
         """
-        fspath = os.fspath(path)
-        schema_dict = create_inpschema_dict(fspath)
-
-        xmlschema_doc = etree.parse(fspath)
-        xmlschema = etree.XMLSchema(xmlschema_doc)
+        schema_dict = create_inpschema_dict(path)
+        xmlschema = etree.XMLSchema(file=path)  #type:ignore
 
         return cls(schema_dict, xmlschema=xmlschema)
 
@@ -845,25 +842,22 @@ class OutputSchemaDict(SchemaDict):
         if inp_path is None:
             inp_path = Path(path).parent / 'FleurInputSchema.xsd'
 
-        fspath = os.fspath(path)
-        fsinp_path = os.fspath(inp_path)
-
         if inpschema_dict is None:
-            inpschema_dict = create_inpschema_dict(fsinp_path)  #type:ignore
+            inpschema_dict = create_inpschema_dict(inp_path)  #type:ignore
         inpschema_data = cast(InputSchemaData, inpschema_dict)
 
-        schema_dict = create_outschema_dict(fspath, inpschema_dict=inpschema_data)
+        schema_dict = create_outschema_dict(path, inpschema_dict=inpschema_data)
         schema_dict = merge_schema_dicts(inpschema_data, schema_dict)
 
         with tempfile.TemporaryDirectory() as td:
             td_path = Path(td)
             temp_input_schema_path = td_path / 'FleurInputSchema.xsd'
-            shutil.copy(fsinp_path, temp_input_schema_path)
+            shutil.copy(inp_path, temp_input_schema_path)
 
             temp_output_schema_path = td_path / 'FleurOutputSchema.xsd'
-            shutil.copy(fspath, temp_output_schema_path)
-            xmlschema_doc = etree.parse(os.fspath(temp_output_schema_path))
-            xmlschema = etree.XMLSchema(xmlschema_doc)
+            shutil.copy(path, temp_output_schema_path)
+
+            xmlschema = etree.XMLSchema(file=temp_output_schema_path)  #type:ignore
 
         return cls(schema_dict, xmlschema=xmlschema)
 

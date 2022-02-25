@@ -98,7 +98,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
             project.files.raw(file_path=f'io/xml/{file_name}', ref=branch, streamed=True, action=f.write)
         echo.echo_success('Download successful')
 
-    xmlschema = etree.parse(os.fspath(schema_file))
+    xmlschema = etree.parse(schema_file)
     xmlschema, _ = clear_xml(xmlschema)
 
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}

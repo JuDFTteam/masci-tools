@@ -3,6 +3,7 @@ Tests for the load functions in io_fleurxml
 """
 from lxml import etree
 import pytest
+from pathlib import Path
 
 
 def test_load_inpxml(test_file):
@@ -30,6 +31,31 @@ def test_load_inpxml(test_file):
     assert xmltree is not None
     assert schema_dict['inp_version'] == '0.34'
 
+    #Pass file content
+    with open(TEST_INPXML_PATH, 'rb') as inpfile:
+        content = inpfile.read()
+    xmltree, schema_dict = load_inpxml(content, base_url=TEST_INPXML_PATH)
+
+    assert xmltree is not None
+    assert schema_dict['inp_version'] == '0.34'
+
+    #Pass file content with pathlib base_url
+    with open(TEST_INPXML_PATH, 'rb') as inpfile:
+        content = inpfile.read()
+    xmltree, schema_dict = load_inpxml(content, base_url=Path(TEST_INPXML_PATH))
+
+    assert xmltree is not None
+    assert schema_dict['inp_version'] == '0.34'
+
+    #Pass file content
+    with open(TEST_INPXML_PATH, 'rb') as inpfile:
+        content = inpfile.read()
+    with pytest.warns(UserWarning):
+        xmltree, schema_dict = load_inpxml(content)
+
+    assert xmltree is not None
+    assert schema_dict['inp_version'] == '0.34'
+
 
 def test_load_outxml(test_file):
     from masci_tools.io.io_fleurxml import load_outxml
@@ -52,8 +78,36 @@ def test_load_outxml(test_file):
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file handle
-    with open(TEST_OUTXML_PATH, encoding='utf-8') as inpfile:
-        xmltree, schema_dict = load_outxml(inpfile)
+    with open(TEST_OUTXML_PATH, encoding='utf-8') as outfile:
+        xmltree, schema_dict = load_outxml(outfile)
+
+    assert xmltree is not None
+    assert schema_dict['out_version'] == '0.34'
+    assert schema_dict['inp_version'] == '0.34'
+
+    #Pass file content
+    with open(TEST_OUTXML_PATH, 'rb') as outfile:
+        content = outfile.read()
+    xmltree, schema_dict = load_outxml(content, base_url=TEST_OUTXML_PATH)
+
+    assert xmltree is not None
+    assert schema_dict['out_version'] == '0.34'
+    assert schema_dict['inp_version'] == '0.34'
+
+    #Pass file content with pathlib base_url
+    with open(TEST_OUTXML_PATH, 'rb') as outfile:
+        content = outfile.read()
+    xmltree, schema_dict = load_outxml(content, base_url=Path(TEST_OUTXML_PATH))
+
+    assert xmltree is not None
+    assert schema_dict['out_version'] == '0.34'
+    assert schema_dict['inp_version'] == '0.34'
+
+    #Pass file content with pathlib base_url
+    with open(TEST_OUTXML_PATH, 'rb') as outfile:
+        content = outfile.read()
+    with pytest.warns(UserWarning):
+        xmltree, schema_dict = load_outxml(content)
 
     assert xmltree is not None
     assert schema_dict['out_version'] == '0.34'

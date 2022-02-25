@@ -9,7 +9,7 @@ import shutil
 
 
 @pytest.fixture
-def fake_schemas_and_test_files(tmp_path):
+def fake_schemas_and_test_files(tmp_path, test_file):
     """
     Helper fixture for add fleur schema tests
 
@@ -33,7 +33,7 @@ def fake_schemas_and_test_files(tmp_path):
 
     schema_file = schema_folder / 'FleurInputSchema.xsd'
 
-    inputschema = etree.parse(os.fspath(schema_file))
+    inputschema = etree.parse(schema_file)
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     root = inputschema.xpath('/xsd:schema', namespaces=namespaces)[0]
     root.attrib['version'] = '0.01'
@@ -41,11 +41,11 @@ def fake_schemas_and_test_files(tmp_path):
                              namespaces=namespaces)[0]
     root.attrib['value'] = '0.01'
 
-    inputschema.write(os.fspath(tmp_path / 'FleurInputSchema.xsd'), encoding='utf-8', pretty_print=True)
+    inputschema.write(tmp_path / 'FleurInputSchema.xsd', encoding='utf-8', pretty_print=True)
 
     schema_file = schema_folder / 'FleurOutputSchema.xsd'
 
-    outputschema = etree.parse(os.fspath(schema_file))
+    outputschema = etree.parse(schema_file)
     namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
     root = outputschema.xpath('/xsd:schema', namespaces=namespaces)[0]
     root.attrib['version'] = '0.01'
@@ -53,23 +53,21 @@ def fake_schemas_and_test_files(tmp_path):
                               namespaces=namespaces)[0]
     root.attrib['value'] = '0.01'
 
-    outputschema.write(os.fspath(tmp_path / 'FleurOutputSchema.xsd'), encoding='utf-8', pretty_print=True)
+    outputschema.write(tmp_path / 'FleurOutputSchema.xsd', encoding='utf-8', pretty_print=True)
 
-    xml_file = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/inp.xml')
-
-    xmltree = etree.parse(os.fspath(xml_file))
+    xml_file = test_file('fleur/Max-R5/SiLOXML/files/inp.xml')
+    xmltree = etree.parse(xml_file)
     root = xmltree.xpath('/fleurInput')[0]
     root.attrib['fleurInputVersion'] = '0.01'
-    xmltree.write(os.fspath(tmp_path / 'inp.xml'), encoding='utf-8', pretty_print=True)
+    xmltree.write(tmp_path / 'inp.xml', encoding='utf-8', pretty_print=True)
 
-    xml_file = Path(__file__).parent.resolve() / Path('../files/fleur/Max-R5/SiLOXML/files/out.xml')
-
-    xmltree = etree.parse(os.fspath(xml_file))
+    xml_file = test_file('fleur/Max-R5/SiLOXML/files/out.xml')
+    xmltree = etree.parse(xml_file)
     root = xmltree.xpath('/fleurOutput')[0]
     root.attrib['fleurOutputVersion'] = '0.01'
     root = xmltree.xpath('//fleurInput')[0]
     root.attrib['fleurInputVersion'] = '0.01'
-    xmltree.write(os.fspath(tmp_path / 'out.xml'), encoding='utf-8', pretty_print=True)
+    xmltree.write(tmp_path / 'out.xml', encoding='utf-8', pretty_print=True)
 
     try:
         yield tmp_path
