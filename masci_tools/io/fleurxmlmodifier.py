@@ -35,8 +35,8 @@ import warnings
 
 class ModifierTask(NamedTuple):
     name: str
-    args: tuple[Any, ...]
-    kwargs: dict[str, Any]
+    args: tuple[Any, ...] = ()
+    kwargs: dict[str, Any] = {}
 
 
 class FleurXMLModifier:
@@ -129,7 +129,7 @@ class FleurXMLModifier:
             except KeyError as exc:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
 
-    def _validate_signature(self, name: str, *args: Any, **kwargs: Any) -> None:
+    def _validate_signature(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
         """
         Validate that the given arguments to the registration
         method can be used to call the corresponding XML modifying function
@@ -341,7 +341,7 @@ class FleurXMLModifier:
         if 'change_dict' in kwargs:
             warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
             kwargs['changes'] = kwargs.pop('change_dict')
-        self._validate_signature('set_inpchanges', *args, **kwargs)
+        self._validate_signature('set_inpchanges', args, kwargs)
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
     def shift_value(self, *args: Any, **kwargs: Any) -> None:
@@ -362,7 +362,7 @@ class FleurXMLModifier:
         if 'change_dict' in kwargs:
             warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
             kwargs['changes'] = kwargs.pop('change_dict')
-        self._validate_signature('shift_value', *args, **kwargs)
+        self._validate_signature('shift_value', args, kwargs)
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
     def set_species(self, *args: Any, **kwargs: Any) -> None:
@@ -375,7 +375,6 @@ class FleurXMLModifier:
         :param changes: a python dict specifying what you want to change.
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-        :param create: bool, if species does not exist create it and all subtags?
 
         **changes** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a MT radius it
@@ -395,7 +394,7 @@ class FleurXMLModifier:
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
             kwargs['changes'] = kwargs.pop('attributedict')
-        self._validate_signature('set_species', *args, **kwargs)
+        self._validate_signature('set_species', args, kwargs)
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
     def set_species_label(self, *args: Any, **kwargs: Any) -> None:
@@ -410,7 +409,7 @@ class FleurXMLModifier:
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
             kwargs['changes'] = kwargs.pop('attributedict')
-        self._validate_signature('set_species_label', *args, **kwargs)
+        self._validate_signature('set_species_label', args, kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
     def clone_species(self, *args: Any, **kwargs: Any) -> None:
@@ -423,7 +422,7 @@ class FleurXMLModifier:
         :param new_name: new name of the cloned species
         :param changes: a optional python dict specifying what you want to change.
         """
-        self._validate_signature('clone_species', *args, **kwargs)
+        self._validate_signature('clone_species', args, kwargs)
         self._tasks.append(ModifierTask('clone_species', args, kwargs))
 
     def switch_species(self, *args: Any, **kwargs: Any) -> None:
@@ -440,7 +439,7 @@ class FleurXMLModifier:
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details`
         """
-        self._validate_signature('switch_species', *args, **kwargs)
+        self._validate_signature('switch_species', args, kwargs)
         self._tasks.append(ModifierTask('switch_species', args, kwargs))
 
     def switch_species_label(self, *args: Any, **kwargs: Any) -> None:
@@ -454,7 +453,7 @@ class FleurXMLModifier:
                   from one species the species will be cloned with :py:func:`clone_species()`
         :param changes: changes to do if the species is cloned
         """
-        self._validate_signature('switch_species_label', *args, **kwargs)
+        self._validate_signature('switch_species_label', args, kwargs)
         self._tasks.append(ModifierTask('switch_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args: Any, **kwargs: Any) -> None:
@@ -480,7 +479,7 @@ class FleurXMLModifier:
         if 'value_given' in kwargs:
             warnings.warn('The argument value_given is deprecated. Use number_to_add instead', DeprecationWarning)
             kwargs['number_to_add'] = kwargs.pop('value_given')
-        self._validate_signature('shift_value_species_label', *args, **kwargs)
+        self._validate_signature('shift_value_species_label', args, kwargs)
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
     def set_atomgroup(self, *args: Any, **kwargs: Any) -> None:
@@ -505,9 +504,9 @@ class FleurXMLModifier:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
             kwargs['changes'] = kwargs.pop('attributedict')
         if 'create' in kwargs:
-            warnings.warn('The argument create is deprecatedand is ignored.', DeprecationWarning)
+            warnings.warn('The argument create is deprecated and is ignored.', DeprecationWarning)
             kwargs.pop('create')
-        self._validate_signature('set_atomgroup', *args, **kwargs)
+        self._validate_signature('set_atomgroup', args, kwargs)
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
     def set_atomgroup_label(self, *args: Any, **kwargs: Any) -> None:
@@ -531,7 +530,7 @@ class FleurXMLModifier:
         if 'create' in kwargs:
             warnings.warn('The argument create is deprecatedand is ignored.', DeprecationWarning)
             kwargs.pop('create')
-        self._validate_signature('set_atomgroup_label', *args, **kwargs)
+        self._validate_signature('set_atomgroup_label', args, kwargs)
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
     def create_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -553,7 +552,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
-        self._validate_signature('create_tag', *args, **kwargs)
+        self._validate_signature('create_tag', args, kwargs)
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
 
     def delete_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -573,7 +572,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
-        self._validate_signature('delete_tag', *args, **kwargs)
+        self._validate_signature('delete_tag', args, kwargs)
         self._tasks.append(ModifierTask('delete_tag', args, kwargs))
 
     def delete_att(self, *args: Any, **kwargs: Any) -> None:
@@ -597,9 +596,10 @@ class FleurXMLModifier:
                             valid values are: settable, settable_contains, other
         """
         if 'attrib_name' in kwargs:
-            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
+            warnings.warn('The argument attrib_name is deprecated. Use name instead', DeprecationWarning)
             kwargs['name'] = kwargs.pop('attrib_name')
-        self._validate_signature('delete_att', *args, **kwargs)
+        print(args, kwargs)
+        self._validate_signature('delete_att', args, kwargs)
         self._tasks.append(ModifierTask('delete_att', args, kwargs))
 
     def replace_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -623,7 +623,7 @@ class FleurXMLModifier:
         if 'newelement' in kwargs:
             warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
             kwargs['element'] = kwargs.pop('newelement')
-        self._validate_signature('replace_tag', *args, **kwargs)
+        self._validate_signature('replace_tag', args, kwargs)
         self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
     def set_complex_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -646,7 +646,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
-        self._validate_signature('set_complex_tag', *args, **kwargs)
+        self._validate_signature('set_complex_tag', args, kwargs)
         self._tasks.append(ModifierTask('set_complex_tag', args, kwargs))
 
     def set_simple_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -668,7 +668,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
-        self._validate_signature('set_simple_tag', *args, **kwargs)
+        self._validate_signature('set_simple_tag', args, kwargs)
         self._tasks.append(ModifierTask('set_simple_tag', args, kwargs))
 
     def set_text(self, *args: Any, **kwargs: Any) -> None:
@@ -690,7 +690,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
-        self._validate_signature('set_text', *args, **kwargs)
+        self._validate_signature('set_text', args, kwargs)
         self._tasks.append(ModifierTask('set_text', args, kwargs))
 
     def set_first_text(self, *args: Any, **kwargs: Any) -> None:
@@ -711,7 +711,7 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
 
         """
-        self._validate_signature('set_first_text', *args, **kwargs)
+        self._validate_signature('set_first_text', args, kwargs)
         self._tasks.append(ModifierTask('set_first_text', args, kwargs))
 
     def set_attrib_value(self, *args: Any, **kwargs: Any) -> None:
@@ -742,7 +742,7 @@ class FleurXMLModifier:
         if 'attribv' in kwargs:
             warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
             kwargs['value'] = kwargs.pop('attribv')
-        self._validate_signature('set_attrib_value', *args, **kwargs)
+        self._validate_signature('set_attrib_value', args, kwargs)
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
     def set_first_attrib_value(self, *args: Any, **kwargs: Any) -> None:
@@ -772,7 +772,7 @@ class FleurXMLModifier:
         if 'attribv' in kwargs:
             warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
             kwargs['value'] = kwargs.pop('attribv')
-        self._validate_signature('set_first_attrib_value', *args, **kwargs)
+        self._validate_signature('set_first_attrib_value', args, kwargs)
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
     def add_number_to_attrib(self, *args: Any, **kwargs: Any) -> None:
@@ -805,7 +805,7 @@ class FleurXMLModifier:
         if 'add_number' in kwargs:
             warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
             kwargs['number_to_add'] = kwargs.pop('add_number')
-        self._validate_signature('add_number_to_attrib', *args, **kwargs)
+        self._validate_signature('add_number_to_attrib', args, kwargs)
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
     def add_number_to_first_attrib(self, *args: Any, **kwargs: Any) -> None:
@@ -837,7 +837,7 @@ class FleurXMLModifier:
         if 'add_number' in kwargs:
             warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
             kwargs['number_to_add'] = kwargs.pop('add_number')
-        self._validate_signature('add_number_to_first_attrib', *args, **kwargs)
+        self._validate_signature('add_number_to_first_attrib', args, kwargs)
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -852,7 +852,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
-        self._validate_signature('xml_create_tag', *args, **kwargs)
+        self._validate_signature('xml_create_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
     def xml_replace_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -869,7 +869,7 @@ class FleurXMLModifier:
             warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
             kwargs['element'] = kwargs.pop('newelement')
 
-        self._validate_signature('xml_replace_tag', *args, **kwargs)
+        self._validate_signature('xml_replace_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
     def xml_delete_tag(self, *args: Any, **kwargs: Any) -> None:
@@ -881,7 +881,7 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
-        self._validate_signature('xml_delete_tag', *args, **kwargs)
+        self._validate_signature('xml_delete_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
     def xml_delete_att(self, *args: Any, **kwargs: Any) -> None:
@@ -897,7 +897,7 @@ class FleurXMLModifier:
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
             kwargs['name'] = kwargs.pop('attributename')
-        self._validate_signature('xml_delete_att', *args, **kwargs)
+        self._validate_signature('xml_delete_att', args, kwargs)
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args: Any, **kwargs: Any) -> None:
@@ -912,11 +912,11 @@ class FleurXMLModifier:
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['attribute_name'] = kwargs.pop('attributename')
+            kwargs['name'] = kwargs.pop('attributename')
         if 'attribv' in kwargs:
             warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
             kwargs['value'] = kwargs.pop('attribv')
-        self._validate_signature('xml_set_attrib_value_no_create', *args, **kwargs)
+        self._validate_signature('xml_set_attrib_value_no_create', args, kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
     def xml_set_text_no_create(self, *args: Any, **kwargs: Any) -> None:
@@ -928,7 +928,7 @@ class FleurXMLModifier:
         :param text: value or list of values to set (if not str they will be converted with `str(value)`)
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
         """
-        self._validate_signature('xml_set_text_no_create', *args, **kwargs)
+        self._validate_signature('xml_set_text_no_create', args, kwargs)
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args: Any, **kwargs: Any) -> None:
@@ -947,7 +947,7 @@ class FleurXMLModifier:
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         """
-        self._validate_signature('set_nmmpmat', *args, **kwargs)
+        self._validate_signature('set_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
 
     def rotate_nmmpmat(self, *args: Any, **kwargs: Any) -> None:
@@ -962,7 +962,7 @@ class FleurXMLModifier:
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
         """
-        self._validate_signature('rotate_nmmpmat', *args, **kwargs)
+        self._validate_signature('rotate_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
 
     def set_kpointlist(self, *args: Any, **kwargs: Any) -> None:
@@ -983,7 +983,7 @@ class FleurXMLModifier:
         :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
         :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
         """
-        self._validate_signature('set_kpointlist', *args, **kwargs)
+        self._validate_signature('set_kpointlist', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointlist', args, kwargs))
 
     def switch_kpointset(self, *args: Any, **kwargs: Any) -> None:
@@ -996,7 +996,7 @@ class FleurXMLModifier:
 
         :param list_name: name of the kPoint set to use
         """
-        self._validate_signature('switch_kpointset', *args, **kwargs)
+        self._validate_signature('switch_kpointset', args, kwargs)
         self._tasks.append(ModifierTask('switch_kpointset', args, kwargs))
 
     def set_nkpts(self, *args: Any, **kwargs: Any) -> None:
@@ -1011,7 +1011,7 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
-        self._validate_signature('set_nkpts', *args, **kwargs)
+        self._validate_signature('set_nkpts', args, kwargs)
         self._tasks.append(ModifierTask('set_nkpts', args, kwargs))
 
     def set_kpath(self, *args: Any, **kwargs: Any) -> None:
@@ -1027,5 +1027,5 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
         """
-        self._validate_signature('set_kpath', *args, **kwargs)
+        self._validate_signature('set_kpath', args, kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))
