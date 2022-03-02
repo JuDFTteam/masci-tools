@@ -547,7 +547,7 @@ TASKS_DEFINITION = {
                 'contains': 'DMI'
             }
         },
-       'dmi_force_so': {
+        'dmi_force_so': {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'allAtoms',
