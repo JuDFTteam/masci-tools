@@ -1,0 +1,277 @@
+defs: []
+roots:
+  references:
+  - attributes: {}
+    type: AllLabels
+  - attributes: {}
+    type: AllLabels
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTickFormatter
+  - attributes: {}
+    type: BasicTicker
+  - attributes: {}
+    type: BasicTicker
+  - attributes:
+      bottom_units: screen
+      coordinates: null
+      fill_alpha: 0.5
+      fill_color: lightgrey
+      group: null
+      left_units: screen
+      level: overlay
+      line_alpha: 1.0
+      line_color: black
+      line_dash:
+      - 4
+      - 4
+      line_width: 2
+      right_units: screen
+      syncable: false
+      top_units: screen
+    type: BoxAnnotation
+  - attributes:
+      overlay: {}
+    type: BoxZoomTool
+  - attributes:
+      source: {}
+    type: CDSView
+  - attributes:
+      data:
+        index:
+          __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAACMAAAAAAAAAJAAAAAAAAAAlAAAAAAAAACYAAAAAAAAAJwAAAAAAAAAoAAAAAAAAACkAAAAAAAAAKgAAAAAAAAArAAAAAAAAACwAAAAAAAAALQAAAAAAAAAuAAAAAAAAAC8AAAAAAAAAMAAAAAAAAAAxAAAAAAAAADIAAAAAAAAAMwAAAAAAAAA0AAAAAAAAADUAAAAAAAAANgAAAAAAAAA3AAAAAAAAADgAAAAAAAAAOQAAAAAAAAA6AAAAAAAAADsAAAAAAAAAPAAAAAAAAAA9AAAAAAAAAD4AAAAAAAAAPwAAAAAAAABAAAAAAAAAAEEAAAAAAAAAQgAAAAAAAABDAAAAAAAAAEQAAAAAAAAARQAAAAAAAABGAAAAAAAAAEcAAAAAAAAASAAAAAAAAABJAAAAAAAAAEoAAAAAAAAASwAAAAAAAABMAAAAAAAAAE0AAAAAAAAATgAAAAAAAABPAAAAAAAAAFAAAAAAAAAAUQAAAAAAAABSAAAAAAAAAFMAAAAAAAAAVAAAAAAAAABVAAAAAAAAAFYAAAAAAAAAVwAAAAAAAABYAAAAAAAAAFkAAAAAAAAAWgAAAAAAAABbAAAAAAAAAFwAAAAAAAAAXQAAAAAAAABeAAAAAAAAAF8AAAAAAAAAYAAAAAAAAABhAAAAAAAAAGIAAAAAAAAAYwAAAAAAAAA=
+          dtype: int64
+          order: little
+          shape:
+          - 100
+        x:
+          __ndarray__: AAAAAAAAJMBjuaXVkJgjwMVyS6shMSPAKCzxgLLJIsCK5ZZWQ2IiwO2ePCzU+iHAT1jiAWWTIcCyEYjX9SshwBTLLa2GxCDAd4TTghddIMCze/KwUOsfwHjuPVxyHB/APWGJB5RNHsAC1NSytX4dwMdGIF7XrxzAjLlrCfngG8BSLLe0GhIbwBefAmA8QxrA3BFOC150GcChhJm2f6UYwGb35GGh1hfAK2owDcMHF8Dw3Hu45DgWwLVPx2MGahXAesISDyibFMAjhEcbR8wTwOj2ksZo/RLArWnecYouEsBy3CkdrF8RwDdPdcjNkBDA+YOB596DD8CDaRg+IuYNwA5Pr5RlSAzAmDRG66iqCsAiGt1B7AwJwKz/c5gvbwfANuUK73LRBcDByqFFtjMEwEuwOJz5lQLA1ZXP8jz4AMC+9sySALX+v9PB+j+Hefu/54wo7Q0++L/7V1aalAL1vxAjhEcbx/G/SNxj6UMX7b9xcr9DUaDmv5oIG55eKeC/hj3t8Ndk079dp5GWytu5v12nkZbK27k/hj3t8Ndk0z+aCBueXingP3Fyv0NRoOY/SNxj6UMX7T8QI4RHG8fxP/tXVpqUAvU/54wo7Q0++D/Twfo/h3n7P772zJIAtf4/1ZXP8jz4AEBLsDic+ZUCQMHKoUW2MwRANuUK73LRBUCs/3OYL28HQCIa3UHsDAlAmDRG66iqCkAOT6+UZUgMQINpGD4i5g1A+YOB596DD0A3T3XIzZAQQHLcKR2sXxFArWnecYouEkDo9pLGaP0SQCOERxtHzBNAesISDyibFEC1T8djBmoVQPDce7jkOBZAK2owDcMHF0Bm9+RhodYXQKGEmbZ/pRhA3BFOC150GUAXnwJgPEMaQFIst7QaEhtAjLlrCfngG0DHRiBe168cQALU1LK1fh1APWGJB5RNHkB47j1cchwfQLN78rBQ6x9Ad4TTghddIEAUyy2thsQgQLIRiNf1KyFAT1jiAWWTIUDtnjws1PohQIrlllZDYiJAKCzxgLLJIkDFckurITEjQGO5pdWQmCNAAAAAAAAAJEA=
+          dtype: float64
+          order: little
+          shape:
+          - 100
+        y:
+          __ndarray__: AAAAAAAAWUDZJaq3BgBYQHf4a7JGBVdA6+I2GsAPVkAlehnFch9VQCO+E7NeNFRA+BkXDoROU0CkjSPW4m1SQBSuR+F6klFASnuDL0y8UECtwJDVrdZPQFDkSdI1P05AfGEyVTCyTEBWDi2ynS9LQN3qOel9t0lA7yB2ptBJSECKsOHpleZGQNJvXwfOjUVApIgMq3g/REAB++jUlftCQAqd19glwkFAwW7YtiiTQEAFNBE2PN0+QJs90AoMqTxAi6azk8GJOkCPwvUoXH84QO49XHLciTZAYWwhyEGpNEDoTUUqjN0yQMmOjUC8JjFAfQVpxqIJL0AdrP9zmO8rQOW4UzpY/yhAYoTwaOM4JkAHtkqwOJwjQGGm7V9ZKSFAxvmbUIjAHUAZc9cS8oEZQNdppKXylhVA5CzsaYf/EUC62or9ZXcNQEn0MorllgdAdqbQeY1dAkD0piIVxpb7P6n26XjMwPM/Ne84RUdy6j8ep+hILv/fP4hGdxA7U9A/iqvKviuCtz+IhVrTvOOEP4iFWtO844Q/iqvKviuCtz+IRncQO1PQPx6n6Egu/98/Ne84RUdy6j+p9ul4zMDzP/SmIhXGlvs/dqbQeY1dAkBJ9DKK5ZYHQLraiv1ldw1A5CzsaYf/EUDXaaSl8pYVQBlz1xLygRlAxvmbUIjAHUBhpu1fWSkhQAe2SrA4nCNAYoTwaOM4JkDluFM6WP8oQB2s/3OY7ytAfQVpxqIJL0DJjo1AvCYxQOhNRSqM3TJAYWwhyEGpNEDuPVxy3Ik2QI/C9ShcfzhAi6azk8GJOkCbPdAKDKk8QAU0ETY83T5AwW7YtiiTQEAKndfYJcJBQAH76NSV+0JApIgMq3g/REDSb18Hzo1FQIqw4emV5kZA7yB2ptBJSEDd6jnpfbdJQFYOLbKdL0tAfGEyVTCyTEBQ5EnSNT9OQK3AkNWt1k9ASnuDL0y8UEAUrkfhepJRQKSNI9bibVJA+BkXDoROU0AjvhOzXjRUQCV6GcVyH1VA6+I2GsAPVkB3+GuyRgVXQNklqrcGAFhAAAAAAAAAWUA=
+          dtype: float64
+          order: little
+          shape:
+          - 100
+      selected: {}
+      selection_policy: {}
+    type: ColumnDataSource
+  - attributes: {}
+    type: CrosshairTool
+  - attributes: {}
+    type: DataRange1d
+  - attributes: {}
+    type: DataRange1d
+  - attributes:
+      coordinates: null
+      data_source: {}
+      glyph: {}
+      group: null
+      hover_glyph: null
+      muted_glyph: {}
+      name: y
+      nonselection_glyph: {}
+      view: {}
+    type: GlyphRenderer
+  - attributes:
+      axis: {}
+      coordinates: null
+      group: null
+      ticker: null
+    type: Grid
+  - attributes:
+      axis: {}
+      coordinates: null
+      dimension: 1
+      group: null
+      ticker: null
+    type: Grid
+  - attributes:
+      callback: null
+      renderers:
+      - {}
+      toggleable: false
+      tooltips:
+      - - X
+        - '@x'
+      - - Y
+        - '@y'
+    type: HoverTool
+  - attributes:
+      axis_label: x
+      axis_label_text_font_size: 24pt
+      axis_line_width: 2
+      coordinates: null
+      formatter: {}
+      group: null
+      major_label_policy: {}
+      major_label_text_font_size: 16pt
+      ticker: {}
+    type: LinearAxis
+  - attributes:
+      axis_label: y
+      axis_label_text_font_size: 24pt
+      axis_line_width: 2
+      coordinates: null
+      formatter: {}
+      group: null
+      major_label_policy: {}
+      major_label_text_font_size: 16pt
+      ticker: {}
+    type: LinearAxis
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: LinearScale
+  - attributes: {}
+    type: PanTool
+  - attributes:
+      below:
+      - {}
+      center:
+      - {}
+      - {}
+      left:
+      - {}
+      renderers:
+      - {}
+      title: {}
+      toolbar: {}
+      x_range: {}
+      x_scale: {}
+      y_range: {}
+      y_scale: {}
+    subtype: Figure
+    type: Plot
+  - attributes:
+      coordinates: null
+      fill_alpha: 0.5
+      fill_color: lightgrey
+      group: null
+      level: overlay
+      line_alpha: 1.0
+      line_color: black
+      line_dash:
+      - 4
+      - 4
+      line_width: 2
+      syncable: false
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - attributes:
+      overlay: {}
+    type: PolySelectTool
+  - attributes: {}
+    type: RedoTool
+  - attributes: {}
+    type: ResetTool
+  - attributes: {}
+    type: SaveTool
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: darkred
+      hatch_alpha:
+        value: 0.1
+      hatch_color:
+        value: darkred
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        value: 12
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: darkred
+      hatch_alpha:
+        value: 0.2
+      hatch_color:
+        value: darkred
+      line_alpha:
+        value: 0.2
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        value: 12
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: darkred
+      hatch_alpha:
+        value: 0.8
+      hatch_color:
+        value: darkred
+      line_alpha:
+        value: 0.8
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        value: 12
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes: {}
+    type: Selection
+  - attributes:
+      callback: null
+    type: TapTool
+  - attributes:
+      coordinates: null
+      group: null
+    type: Title
+  - attributes:
+      active_inspect:
+      - {}
+      tools:
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+      - {}
+    type: Toolbar
+  - attributes: {}
+    type: UndoTool
+  - attributes: {}
+    type: UnionRenderers
+  - attributes: {}
+    type: WheelZoomTool
+  - attributes: {}
+    type: ZoomInTool
+  - attributes: {}
+    type: ZoomOutTool
+title: Bokeh Application
+version: 2.4.2

@@ -551,7 +551,7 @@ def bokeh_spinpol_dos(energy_grid,
     plot_params.set_color_palette_by_num_plots()
 
     #Double the colors for spin up and down
-    kwargs['color'] = list(plot_params['color'].copy())
+    kwargs['color'] = list(plot_params['color']).copy()
     kwargs['color'].extend(kwargs['color'])
 
     if 'legend_label' not in kwargs:
