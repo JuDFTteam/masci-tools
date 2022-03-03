@@ -1,22 +1,14 @@
-defs: []
 roots:
   references:
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTicker
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -29,11 +21,9 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
   - attributes:
       data:
@@ -3236,11 +3226,8 @@ roots:
           order: little
           shape:
           - 3120
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
   - attributes:
       range_padding: 0.0
     type: DataRange1d
@@ -3255,31 +3242,14 @@ roots:
       - 4.134138543687261
     type: FixedTicker
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
-  - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
+  - attributes: {}
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3291,8 +3261,6 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       label_text_font_size: 14pt
@@ -3307,20 +3275,12 @@ roots:
       axis_label: E-E_F [eV]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
   - attributes:
       axis_label: ''
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
       major_label_overrides:
         '0': X
         '0.325724555583458': K
@@ -3329,16 +3289,11 @@ roots:
         '2.7522062913750363': W
         '3.2128503754791113': X
         '4.134138543687261': g
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       below:
       - {}
@@ -3359,20 +3314,12 @@ roots:
       - {}
       - {}
       - {}
-      title: {}
-      toolbar: {}
       width: 1280
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -3384,19 +3331,15 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
   - attributes:
       end: 15
       start: -15
     type: Range1d
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_color:
         field: color_up
@@ -3451,78 +3394,56 @@ roots:
       y:
         field: eigenvalues_up
     type: Scatter
-  - attributes: {}
-    type: Selection
+  - type: Selection
   - attributes:
-      coordinates: null
-      group: null
       line_dash:
       - 6
       location: 0
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 0.0
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 0.325724555583458
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 1.302898222333832
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 2.1007571802081184
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 2.7522062913750363
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 3.2128503754791113
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 4.134138543687261
     type: Span
-  - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      coordinates: null
-      group: null
-    type: Title
+  - type: TapTool
+  - type: Title
   - attributes:
       active_inspect:
       - {}
@@ -3541,15 +3462,10 @@ roots:
       - {}
       - {}
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 2.4.2

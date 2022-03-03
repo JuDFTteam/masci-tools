@@ -1,28 +1,17 @@
-defs: []
 roots:
   references:
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: AllLabels
+  - type: AllLabels
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -37,10 +26,8 @@ roots:
     type: BoxAnnotation
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -53,191 +40,129 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
   - attributes:
       children:
@@ -276,8 +201,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -311,8 +234,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -346,8 +267,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -381,8 +300,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -416,8 +333,6 @@ roots:
           order: little
           shape:
           - 33
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -451,8 +366,6 @@ roots:
           order: little
           shape:
           - 33
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -486,8 +399,6 @@ roots:
           order: little
           shape:
           - 33
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -521,8 +432,6 @@ roots:
           order: little
           shape:
           - 33
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -556,8 +465,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -591,8 +498,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -626,8 +531,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -661,8 +564,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -696,8 +597,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -731,8 +630,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -766,8 +663,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -801,8 +696,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -836,8 +729,6 @@ roots:
           order: little
           shape:
           - 38
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -871,8 +762,6 @@ roots:
           order: little
           shape:
           - 38
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -906,8 +795,6 @@ roots:
           order: little
           shape:
           - 38
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -941,8 +828,6 @@ roots:
           order: little
           shape:
           - 38
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -976,8 +861,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1011,8 +894,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1046,8 +927,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1081,8 +960,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1116,8 +993,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1151,8 +1026,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1186,8 +1059,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1221,8 +1092,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1256,8 +1125,6 @@ roots:
           order: little
           shape:
           - 21
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1291,8 +1158,6 @@ roots:
           order: little
           shape:
           - 21
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1326,8 +1191,6 @@ roots:
           order: little
           shape:
           - 21
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1361,8 +1224,6 @@ roots:
           order: little
           shape:
           - 21
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1396,8 +1257,6 @@ roots:
           order: little
           shape:
           - 24
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1431,8 +1290,6 @@ roots:
           order: little
           shape:
           - 24
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1466,8 +1323,6 @@ roots:
           order: little
           shape:
           - 24
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1501,8 +1356,6 @@ roots:
           order: little
           shape:
           - 24
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1536,8 +1389,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1571,8 +1422,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1606,8 +1455,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1641,8 +1488,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1676,8 +1521,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1711,8 +1554,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1746,8 +1587,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1781,8 +1620,6 @@ roots:
           order: little
           shape:
           - 35
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1816,8 +1653,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1851,8 +1686,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1886,8 +1719,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1921,8 +1752,6 @@ roots:
           order: little
           shape:
           - 49
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1956,8 +1785,6 @@ roots:
           order: little
           shape:
           - 23
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1991,8 +1818,6 @@ roots:
           order: little
           shape:
           - 23
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2026,8 +1851,6 @@ roots:
           order: little
           shape:
           - 23
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2061,8 +1884,6 @@ roots:
           order: little
           shape:
           - 23
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2096,8 +1917,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2131,8 +1950,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2166,8 +1983,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2201,8 +2016,6 @@ roots:
           order: little
           shape:
           - 26
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2236,8 +2049,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2271,8 +2082,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2306,8 +2115,6 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2341,706 +2148,202 @@ roots:
           order: little
           shape:
           - 18
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
-  - attributes: {}
-    type: CrosshairTool
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
+  - type: CrosshairTool
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
+  - type: DataRange1d
+  - type: DataRange1d
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_10
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_10
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_11
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_11
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_12
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_12
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_13
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_13
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_14
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_14
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_5
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_5
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_6
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_6
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_7
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_7
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_8
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_8
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_9
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_9
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_10
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_10
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_11
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_11
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_12
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_12
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_13
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_13
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_14
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_14
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_5
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_5
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_6
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_6
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_7
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_7
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_8
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_8
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_9
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: iteration_energy_9
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
-  - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
+  - attributes: {}
+    type: Grid
+  - attributes: {}
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
-    type: Grid
-  - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
       children:
@@ -3052,7 +2355,6 @@ roots:
         - 0
     type: GridBox
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3065,7 +2367,6 @@ roots:
         - '@distance_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3078,7 +2379,6 @@ roots:
         - '@distance_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3091,7 +2391,6 @@ roots:
         - '@distance_10'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3104,7 +2403,6 @@ roots:
         - '@distance_11'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3117,7 +2415,6 @@ roots:
         - '@distance_12'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3130,7 +2427,6 @@ roots:
         - '@distance_13'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3143,7 +2439,6 @@ roots:
         - '@distance_14'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3156,7 +2451,6 @@ roots:
         - '@distance_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3169,7 +2463,6 @@ roots:
         - '@distance_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3182,7 +2475,6 @@ roots:
         - '@distance_4'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3195,7 +2487,6 @@ roots:
         - '@distance_5'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3208,7 +2499,6 @@ roots:
         - '@distance_6'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3221,7 +2511,6 @@ roots:
         - '@distance_7'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3234,7 +2523,6 @@ roots:
         - '@distance_8'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3247,7 +2535,6 @@ roots:
         - '@distance_9'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3260,7 +2547,6 @@ roots:
         - '@energy_diff_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3273,7 +2559,6 @@ roots:
         - '@energy_diff_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3286,7 +2571,6 @@ roots:
         - '@energy_diff_10'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3299,7 +2583,6 @@ roots:
         - '@energy_diff_11'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3312,7 +2595,6 @@ roots:
         - '@energy_diff_12'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3325,7 +2607,6 @@ roots:
         - '@energy_diff_13'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3338,7 +2619,6 @@ roots:
         - '@energy_diff_14'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3351,7 +2631,6 @@ roots:
         - '@energy_diff_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3364,7 +2643,6 @@ roots:
         - '@energy_diff_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3377,7 +2655,6 @@ roots:
         - '@energy_diff_4'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3390,7 +2667,6 @@ roots:
         - '@energy_diff_5'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3403,7 +2679,6 @@ roots:
         - '@energy_diff_6'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3416,7 +2691,6 @@ roots:
         - '@energy_diff_7'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3429,7 +2703,6 @@ roots:
         - '@energy_diff_8'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -3443,8 +2716,6 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       - {}
@@ -3465,8 +2736,6 @@ roots:
     type: Legend
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       - {}
@@ -4479,70 +3748,40 @@ roots:
       axis_label: Iteration
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
   - attributes:
       axis_label: Iteration
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
+  - type: LinearScale
+  - type: LinearScale
   - attributes:
       axis_label: Distance [me/bohr^3]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LogAxis
   - attributes:
       axis_label: Total energy difference [Htr]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LogAxis
-  - attributes: {}
-    type: LogScale
-  - attributes: {}
-    type: LogScale
-  - attributes:
-      ticker: null
-    type: LogTickFormatter
-  - attributes:
-      ticker: null
-    type: LogTickFormatter
+  - type: LogScale
+  - type: LogScale
+  - type: LogTickFormatter
+  - type: LogTickFormatter
   - attributes:
       num_minor_ticks: 10
     type: LogTicker
   - attributes:
       num_minor_ticks: 10
     type: LogTicker
-  - attributes: {}
-    type: PanTool
-  - attributes: {}
-    type: PanTool
+  - type: PanTool
+  - type: PanTool
   - attributes:
       below:
       - {}
@@ -4586,14 +3825,7 @@ roots:
       - {}
       right:
       - {}
-      title: {}
-      toolbar: {}
-      toolbar_location: null
       width: 800
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
@@ -4639,21 +3871,12 @@ roots:
       - {}
       right:
       - {}
-      title: {}
-      toolbar: {}
-      toolbar_location: null
       width: 800
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -4666,10 +3889,8 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -4681,11 +3902,9 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
   - attributes:
       toolbars:
@@ -4747,18 +3966,12 @@ roots:
       - {}
       - {}
     type: ProxyToolbar
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: ResetTool
+  - type: SaveTool
+  - type: SaveTool
   - attributes:
       fill_color:
         value: '#1f77b4'
@@ -6379,140 +5592,72 @@ roots:
       y:
         field: energy_diff_9
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: TapTool
+  - type: TapTool
   - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      coordinates: null
-      group: null
       text: Convergence (log)
     type: Title
   - attributes:
-      coordinates: null
-      group: null
       text: Total energy difference over scf-Iterations
     type: Title
   - attributes:
@@ -6608,144 +5753,75 @@ roots:
       - {}
     type: Toolbar
   - attributes:
-      toolbar: {}
       toolbar_location: above
     type: ToolbarBox
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 2.4.2

@@ -1,22 +1,14 @@
-defs: []
 roots:
   references:
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTicker
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -29,62 +21,43 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
   - attributes:
       data:
@@ -190,8 +163,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -297,8 +268,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -404,8 +373,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -511,8 +478,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -618,8 +583,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -725,8 +688,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -832,8 +793,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -939,8 +898,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1046,8 +1003,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1153,8 +1108,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1260,8 +1213,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1367,8 +1318,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1474,8 +1423,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1581,8 +1528,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1688,8 +1633,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1795,8 +1738,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -1902,8 +1843,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -2009,11 +1948,8 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
   - attributes:
       range_padding: 0.0
     type: DataRange1d
@@ -2023,218 +1959,65 @@ roots:
       - 0.63895407737518
     type: FixedTicker
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: eigenvalues_up
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
-  - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
+  - attributes: {}
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2245,7 +2028,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2256,7 +2038,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2267,7 +2048,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2278,7 +2058,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2289,7 +2068,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2300,7 +2078,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2311,7 +2088,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2322,7 +2098,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2333,7 +2108,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2344,7 +2118,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2355,7 +2128,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2366,7 +2138,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2377,7 +2148,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2388,7 +2158,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2399,7 +2168,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2410,7 +2178,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2421,7 +2188,6 @@ roots:
         - '@eigenvalues_up'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -2433,8 +2199,6 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       label_text_font_size: 14pt
@@ -2886,33 +2650,20 @@ roots:
       axis_label: E-E_F [eV]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
   - attributes:
       axis_label: ''
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
       major_label_overrides:
         '0': great
         '0.63895407737518': path
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       below:
       - {}
@@ -2945,20 +2696,12 @@ roots:
       - {}
       - {}
       - {}
-      title: {}
-      toolbar: {}
       width: 1280
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -2970,85 +2713,52 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
   - attributes:
       end: 15
       start: -15
     type: Range1d
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
   - attributes:
-      coordinates: null
-      group: null
       line_dash:
       - 6
       location: 0
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 0.0
     type: Span
   - attributes:
-      coordinates: null
       dimension: height
-      group: null
       line_dash:
       - 6
       location: 0.63895407737518
     type: Span
-  - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      coordinates: null
-      group: null
-    type: Title
+  - type: TapTool
+  - type: Title
   - attributes:
       active_inspect:
       - {}
@@ -3101,49 +2811,27 @@ roots:
       - {}
       - {}
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 2.4.2

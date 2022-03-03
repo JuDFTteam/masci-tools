@@ -1,24 +1,15 @@
-defs: []
 roots:
   references:
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -31,770 +22,537 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      source: {}
-    type: CDSView
-  - attributes:
-      data:
-        energy_1:
-          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_1:
-          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_1:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_1:
-          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_1:
-          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_1:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_1:
-          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_1:
-          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_1:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_1:
-          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_1:
-          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_1:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_4:
-          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_4:
-          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_4:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_4:
-          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_4:
-          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_4:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_4:
-          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_4:
-          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_4:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_4:
-          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_4:
-          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_4:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_3:
-          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_3:
-          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_3:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_3:
-          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_3:
-          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_3:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_3:
-          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_3:
-          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_3:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_3:
-          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_3:
-          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_3:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_2:
-          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_2:
-          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_2:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_2:
-          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_2:
-          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_2:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_2:
-          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_2:
-          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_2:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_2:
-          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_2:
-          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_2:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_0:
-          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_0:
-          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_0:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_0:
-          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_0:
-          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_0:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_0:
-          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_0:
-          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_0:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
-  - attributes:
-      data:
-        energy_0:
-          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        fit_0:
-          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-        scaling_0:
-          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
-          dtype: float64
-          order: little
-          shape:
-          - 10
-      selected: {}
-      selection_policy: {}
-    type: ColumnDataSource
   - attributes: {}
-    type: CrosshairTool
+    type: CDSView
   - attributes: {}
-    type: DataRange1d
+    type: CDSView
   - attributes: {}
-    type: DataRange1d
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
+  - attributes: {}
+    type: CDSView
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
+      data:
+        energy_1:
+          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_1:
+          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_1:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_1:
+          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_1:
+          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_1:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_1:
+          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_1:
+          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_1:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_1:
+          __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_1:
+          __ndarray__: +8vuycMzf8Avo1hu6TN/wNrmxvQENH/AcuFASBY0f8CASL99HTR/wHtmSYAaNH/A7fDXZA00f8BNMnIW9jN/wCLgEKrUM3/AqZ83Fakzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_1:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_4:
+          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_4:
+          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_4:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_4:
+          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_4:
+          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_4:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_4:
+          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_4:
+          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_4:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_4:
+          __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_4:
+          __ndarray__: asGLvgIvf8DPoKF/gi9/wLU3+MLkL3/AVisTfikwf8A8MevFUDB/wKLuA5BaMH/AiGNd3EYwf8Dvj/eqFTB/wNZz0vvGL3/AAWpq2Vovf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_4:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_3:
+          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_3:
+          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_3:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_3:
+          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_3:
+          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_3:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_3:
+          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_3:
+          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_3:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_3:
+          __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_3:
+          __ndarray__: nYU97fA0f8BkO99PjTV/wI51cRsNNn/A3o5wWnA2f8CRLGACtzZ/wKVOQBPhNn/A30+Nl+42f8B81cqE3zZ/wHrf+NqzNn/An8iTpGs2f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_3:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_2:
+          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_2:
+          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_2:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_2:
+          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_2:
+          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_2:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_2:
+          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_2:
+          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_2:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_2:
+          __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_2:
+          __ndarray__: CmgibPgzf8DKVMGoJDR/wA+XHHdKNH/AU3k7wmk0f8AcsRafgjR/wKjjMQOVNH/A9RCN7qA0f8DJk6RrpjR/wJq2f2WlNH/ALNSa5p00f8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_2:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_0:
+          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_0:
+          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_0:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_0:
+          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_0:
+          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_0:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_0:
+          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_0:
+          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_0:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy_0:
+          __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit_0:
+          __ndarray__: qWqCqPszf8A9D+7OWjR/wEoH6/+cNH/AWwhyUMI0f8DmXIqryjR/wOoENBG2NH/ALVvri4Q0f8CvX7AbNjR/wG8Sg8DKM3/AqBjnb0Izf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling_0:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
+  - attributes:
       name: energy_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_1
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_2
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_3
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: fit_4
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
-  - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
+  - attributes: {}
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -805,7 +563,6 @@ roots:
         - '@energy_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -816,7 +573,6 @@ roots:
         - '@fit_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -827,7 +583,6 @@ roots:
         - '@energy_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -838,7 +593,6 @@ roots:
         - '@fit_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -849,7 +603,6 @@ roots:
         - '@energy_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -860,7 +613,6 @@ roots:
         - '@fit_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -871,7 +623,6 @@ roots:
         - '@energy_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -882,7 +633,6 @@ roots:
         - '@fit_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -893,7 +643,6 @@ roots:
         - '@energy_4'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -905,8 +654,6 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       - {}
@@ -1206,30 +953,17 @@ roots:
       axis_label: Relative Volume
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
   - attributes:
       axis_label: Total energy norm[0] [eV]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       below:
       - {}
@@ -1260,19 +994,11 @@ roots:
       - {}
       - {}
       - {}
-      title: {}
-      toolbar: {}
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -1284,15 +1010,11 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_color:
         value: '#1f77b4'
@@ -1863,52 +1585,28 @@ roots:
       y:
         field: fit_4
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: TapTool
   - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      coordinates: null
-      group: null
       text: Equation of states
     type: Title
   - attributes:
@@ -1947,53 +1645,29 @@ roots:
       - {}
       - {}
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 2.4.2

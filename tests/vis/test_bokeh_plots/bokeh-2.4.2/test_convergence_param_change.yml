@@ -1,28 +1,17 @@
-defs: []
 roots:
   references:
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: AllLabels
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: AllLabels
+  - type: AllLabels
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -37,10 +26,8 @@ roots:
     type: BoxAnnotation
   - attributes:
       bottom_units: screen
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       left_units: screen
       level: overlay
       line_alpha: 1.0
@@ -53,23 +40,17 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: BoxZoomTool
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
-  - attributes:
-      source: {}
+  - attributes: {}
     type: CDSView
   - attributes:
       children:
@@ -138,8 +119,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -203,8 +182,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -268,8 +245,6 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
   - attributes:
       data:
@@ -333,90 +308,34 @@ roots:
           order: little
           shape:
           - 20
-      selected: {}
-      selection_policy: {}
     type: ColumnDataSource
-  - attributes: {}
-    type: CrosshairTool
-  - attributes: {}
-    type: CrosshairTool
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
-  - attributes: {}
-    type: DataRange1d
+  - type: CrosshairTool
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
+  - type: DataRange1d
+  - type: DataRange1d
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: distance
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: distance
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_diff_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
   - attributes:
-      coordinates: null
-      data_source: {}
-      glyph: {}
-      group: null
-      hover_glyph: null
-      muted_glyph: {}
       name: energy_diff_0
-      nonselection_glyph: {}
-      view: {}
     type: GlyphRenderer
-  - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
+  - attributes: {}
+    type: Grid
+  - attributes: {}
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
-      group: null
-      ticker: null
-    type: Grid
-  - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
-      axis: {}
-      coordinates: null
       dimension: 1
-      group: null
-      ticker: null
     type: Grid
   - attributes:
       children:
@@ -428,7 +347,6 @@ roots:
         - 0
     type: GridBox
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -441,7 +359,6 @@ roots:
         - '@distance'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - {}
       toggleable: false
@@ -455,16 +372,12 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       click_policy: hide
-      coordinates: null
-      group: null
       items:
       - {}
       label_text_font_size: 14pt
@@ -539,70 +452,40 @@ roots:
       axis_label: Iteration
       axis_label_text_font_size: 24pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
   - attributes:
       axis_label: Iteration
       axis_label_text_font_size: 24pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LinearAxis
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
+  - type: LinearScale
+  - type: LinearScale
   - attributes:
       axis_label: Distance [me/bohr^3]
       axis_label_text_font_size: 24pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LogAxis
   - attributes:
       axis_label: Total energy difference [Htr]
       axis_label_text_font_size: 24pt
       axis_line_width: 2
-      coordinates: null
-      formatter: {}
-      group: null
-      major_label_policy: {}
       major_label_text_font_size: 16pt
-      ticker: {}
     type: LogAxis
-  - attributes: {}
-    type: LogScale
-  - attributes: {}
-    type: LogScale
-  - attributes:
-      ticker: null
-    type: LogTickFormatter
-  - attributes:
-      ticker: null
-    type: LogTickFormatter
+  - type: LogScale
+  - type: LogScale
+  - type: LogTickFormatter
+  - type: LogTickFormatter
   - attributes:
       num_minor_ticks: 10
     type: LogTicker
   - attributes:
       num_minor_ticks: 10
     type: LogTicker
-  - attributes: {}
-    type: PanTool
-  - attributes: {}
-    type: PanTool
+  - type: PanTool
+  - type: PanTool
   - attributes:
       below:
       - {}
@@ -618,14 +501,7 @@ roots:
       - {}
       right:
       - {}
-      title: {}
-      toolbar: {}
-      toolbar_location: null
       width: 800
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
@@ -643,21 +519,12 @@ roots:
       - {}
       right:
       - {}
-      title: {}
-      toolbar: {}
-      toolbar_location: null
       width: 800
-      x_range: {}
-      x_scale: {}
-      y_range: {}
-      y_scale: {}
     subtype: Figure
     type: Plot
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -670,10 +537,8 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      coordinates: null
       fill_alpha: 0.5
       fill_color: lightgrey
-      group: null
       level: overlay
       line_alpha: 1.0
       line_color: black
@@ -685,11 +550,9 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
-  - attributes:
-      overlay: {}
+  - attributes: {}
     type: PolySelectTool
   - attributes:
       toolbars:
@@ -723,18 +586,12 @@ roots:
       - {}
       - {}
     type: ProxyToolbar
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: ResetTool
+  - type: SaveTool
+  - type: SaveTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -863,28 +720,16 @@ roots:
       y:
         field: energy_diff_0
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: TapTool
+  - type: TapTool
   - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      callback: null
-    type: TapTool
-  - attributes:
-      coordinates: null
-      group: null
       text: Convergence (log)
     type: Title
   - attributes:
-      coordinates: null
-      group: null
       text: Total energy difference over scf-Iterations
     type: Title
   - attributes:
@@ -924,32 +769,19 @@ roots:
       - {}
     type: Toolbar
   - attributes:
-      toolbar: {}
       toolbar_location: above
     type: ToolbarBox
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 2.4.2
