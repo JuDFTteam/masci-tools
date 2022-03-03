@@ -67,7 +67,7 @@ testing = [
     'pytest-regressions>=1.0'
     ]
 bokeh-plots = [
-    'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
+    'bokeh'
     ]
 cmdline-extras = [
     'python-gitlab'

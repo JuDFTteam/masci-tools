@@ -1,9 +1,7 @@
 roots:
   references:
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
   - attributes:
       axis_label: x
       axis_label_text_font_size:
@@ -30,10 +28,8 @@ roots:
       ticker:
         type: BasicTicker
     type: LinearAxis
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       ticker:
         type: BasicTicker
@@ -93,12 +89,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: x_0
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -107,12 +100,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: x_1
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -121,12 +111,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: x_2
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -135,12 +122,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: x_3
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -149,25 +133,16 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: x_4
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
   - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -178,7 +153,6 @@ roots:
         - '@y_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -189,7 +163,6 @@ roots:
         - '@y_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -200,7 +173,6 @@ roots:
         - '@y_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -211,7 +183,6 @@ roots:
         - '@y_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -262,12 +233,9 @@ roots:
       renderers:
       - type: GlyphRenderer
     type: LegendItem
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       fill_alpha:
         value: 0.5
@@ -287,16 +255,12 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      callback: null
       overlay:
         type: PolyAnnotation
     type: PolySelectTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_color:
         value: '#1f77b4'
@@ -447,18 +411,12 @@ roots:
       y:
         field: y_4
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
   - attributes:
-      callback: null
       data:
         x_4:
           __ndarray__: AAAAAAAAJMAUlnhA2WQjwCgs8YCyySLAO8JpwYsuIsBPWOIBZZMhwGPuWkI++CDAd4TTghddIMAWNZiG4YMfwD1hiQeUTR7AZY16iEYXHcCMuWsJ+eAbwLTlXIqrqhrA3BFOC150GcADPj+MED4YwCtqMA3DBxfAU5YhjnXRFcB6whIPKJsUwIY97fDXZBPArWnecYouEsDVlc/yPPgQwPmDgefegw/ASNxj6UMXDcCYNEbrqKoKwOeMKO0NPgjANuUK73LRBcCGPe3w12QDwNWVz/I8+ADASNxj6UMX/b/njCjtDT74v4Y97fDXZPO/SNxj6UMX7b+GPe3w12Tjv4Y97fDXZNO/AAAAAAAAAACGPe3w12TTP4Y97fDXZOM/SNxj6UMX7T+GPe3w12TzP+eMKO0NPvg/SNxj6UMX/T/Vlc/yPPgAQIY97fDXZANANuUK73LRBUDnjCjtDT4IQJg0RuuoqgpASNxj6UMXDUD5g4Hn3oMPQNWVz/I8+BBArWnecYouEkCGPe3w12QTQHrCEg8omxRAU5YhjnXRFUArajANwwcXQAM+P4wQPhhA3BFOC150GUC05VyKq6oaQIy5awn54BtAZY16iEYXHUA9YYkHlE0eQBY1mIbhgx9Ad4TTghddIEBj7lpCPvggQE9Y4gFlkyFAO8JpwYsuIkAoLPGAsskiQBSWeEDZZCNAAAAAAAAAJEDsaYe/JpskQNjTDn9NNiVAxT2WPnTRJUCxpx3+mmwmQJ0Rpb3BBydAiXssfeiiJ0B15bM8Dz4oQGFPO/w12ShATrnCu1x0KUA6I0p7gw8qQCaN0TqqqipAEvdY+tBFK0D+YOC59+ArQOrKZ3kefCxA1zTvOEUXLUDDnnb4a7ItQD1hiQeUTS5AKcsQx7roLkAWNZiG4YMvQIHPDyOEDzBAd4TTghddMEBtOZfiqqowQGPuWkI++DBAWaMeotFFMUBPWOIBZZMxQEUNpmH44DFAO8JpwYsuMkAydy0hH3wyQCgs8YCyyTJAHuG04EUXM0AUlnhA2WQzQApLPKBssjNAAAAAAAAANEA=
@@ -476,7 +434,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         x_1:
           __ndarray__: AAAAAAAAJMBjuaXVkJgjwMVyS6shMSPAKCzxgLLJIsCK5ZZWQ2IiwO2ePCzU+iHAT1jiAWWTIcCyEYjX9SshwBTLLa2GxCDAd4TTghddIMCze/KwUOsfwHjuPVxyHB/APWGJB5RNHsAC1NSytX4dwMdGIF7XrxzAjLlrCfngG8BSLLe0GhIbwBefAmA8QxrA3BFOC150GcChhJm2f6UYwGb35GGh1hfAK2owDcMHF8Dw3Hu45DgWwLVPx2MGahXAesISDyibFMAjhEcbR8wTwOj2ksZo/RLArWnecYouEsBy3CkdrF8RwDdPdcjNkBDA+YOB596DD8CDaRg+IuYNwA5Pr5RlSAzAmDRG66iqCsAiGt1B7AwJwKz/c5gvbwfANuUK73LRBcDByqFFtjMEwEuwOJz5lQLA1ZXP8jz4AMC+9sySALX+v9PB+j+Hefu/54wo7Q0++L/7V1aalAL1vxAjhEcbx/G/SNxj6UMX7b9xcr9DUaDmv5oIG55eKeC/hj3t8Ndk079dp5GWytu5v12nkZbK27k/hj3t8Ndk0z+aCBueXingP3Fyv0NRoOY/SNxj6UMX7T8QI4RHG8fxP/tXVpqUAvU/54wo7Q0++D/Twfo/h3n7P772zJIAtf4/1ZXP8jz4AEBLsDic+ZUCQMHKoUW2MwRANuUK73LRBUCs/3OYL28HQCIa3UHsDAlAmDRG66iqCkAOT6+UZUgMQINpGD4i5g1A+YOB596DD0A3T3XIzZAQQHLcKR2sXxFArWnecYouEkDo9pLGaP0SQCOERxtHzBNAesISDyibFEC1T8djBmoVQPDce7jkOBZAK2owDcMHF0Bm9+RhodYXQKGEmbZ/pRhA3BFOC150GUAXnwJgPEMaQFIst7QaEhtAjLlrCfngG0DHRiBe168cQALU1LK1fh1APWGJB5RNHkB47j1cchwfQLN78rBQ6x9Ad4TTghddIEAUyy2thsQgQLIRiNf1KyFAT1jiAWWTIUDtnjws1PohQIrlllZDYiJAKCzxgLLJIkDFckurITEjQGO5pdWQmCNAAAAAAAAAJEA=
@@ -494,7 +451,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         x_0:
           __ndarray__: AAAAAAAAJMBjuaXVkJgjwMVyS6shMSPAKCzxgLLJIsCK5ZZWQ2IiwO2ePCzU+iHAT1jiAWWTIcCyEYjX9SshwBTLLa2GxCDAd4TTghddIMCze/KwUOsfwHjuPVxyHB/APWGJB5RNHsAC1NSytX4dwMdGIF7XrxzAjLlrCfngG8BSLLe0GhIbwBefAmA8QxrA3BFOC150GcChhJm2f6UYwGb35GGh1hfAK2owDcMHF8Dw3Hu45DgWwLVPx2MGahXAesISDyibFMAjhEcbR8wTwOj2ksZo/RLArWnecYouEsBy3CkdrF8RwDdPdcjNkBDA+YOB596DD8CDaRg+IuYNwA5Pr5RlSAzAmDRG66iqCsAiGt1B7AwJwKz/c5gvbwfANuUK73LRBcDByqFFtjMEwEuwOJz5lQLA1ZXP8jz4AMC+9sySALX+v9PB+j+Hefu/54wo7Q0++L/7V1aalAL1vxAjhEcbx/G/SNxj6UMX7b9xcr9DUaDmv5oIG55eKeC/hj3t8Ndk079dp5GWytu5v12nkZbK27k/hj3t8Ndk0z+aCBueXingP3Fyv0NRoOY/SNxj6UMX7T8QI4RHG8fxP/tXVpqUAvU/54wo7Q0++D/Twfo/h3n7P772zJIAtf4/1ZXP8jz4AEBLsDic+ZUCQMHKoUW2MwRANuUK73LRBUCs/3OYL28HQCIa3UHsDAlAmDRG66iqCkAOT6+UZUgMQINpGD4i5g1A+YOB596DD0A3T3XIzZAQQHLcKR2sXxFArWnecYouEkDo9pLGaP0SQCOERxtHzBNAesISDyibFEC1T8djBmoVQPDce7jkOBZAK2owDcMHF0Bm9+RhodYXQKGEmbZ/pRhA3BFOC150GUAXnwJgPEMaQFIst7QaEhtAjLlrCfngG0DHRiBe168cQALU1LK1fh1APWGJB5RNHkB47j1cchwfQLN78rBQ6x9Ad4TTghddIEAUyy2thsQgQLIRiNf1KyFAT1jiAWWTIUDtnjws1PohQIrlllZDYiJAKCzxgLLJIkDFckurITEjQGO5pdWQmCNAAAAAAAAAJEA=
@@ -512,7 +468,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         x_3:
           __ndarray__: AAAAAAAAJMBjuaXVkJgjwMVyS6shMSPAKCzxgLLJIsCK5ZZWQ2IiwO2ePCzU+iHAT1jiAWWTIcCyEYjX9SshwBTLLa2GxCDAd4TTghddIMCze/KwUOsfwHjuPVxyHB/APWGJB5RNHsAC1NSytX4dwMdGIF7XrxzAjLlrCfngG8BSLLe0GhIbwBefAmA8QxrA3BFOC150GcChhJm2f6UYwGb35GGh1hfAK2owDcMHF8Dw3Hu45DgWwLVPx2MGahXAesISDyibFMAjhEcbR8wTwOj2ksZo/RLArWnecYouEsBy3CkdrF8RwDdPdcjNkBDA+YOB596DD8CDaRg+IuYNwA5Pr5RlSAzAmDRG66iqCsAiGt1B7AwJwKz/c5gvbwfANuUK73LRBcDByqFFtjMEwEuwOJz5lQLA1ZXP8jz4AMC+9sySALX+v9PB+j+Hefu/54wo7Q0++L/7V1aalAL1vxAjhEcbx/G/SNxj6UMX7b9xcr9DUaDmv5oIG55eKeC/hj3t8Ndk079dp5GWytu5v12nkZbK27k/hj3t8Ndk0z+aCBueXingP3Fyv0NRoOY/SNxj6UMX7T8QI4RHG8fxP/tXVpqUAvU/54wo7Q0++D/Twfo/h3n7P772zJIAtf4/1ZXP8jz4AEBLsDic+ZUCQMHKoUW2MwRANuUK73LRBUCs/3OYL28HQCIa3UHsDAlAmDRG66iqCkAOT6+UZUgMQINpGD4i5g1A+YOB596DD0A3T3XIzZAQQHLcKR2sXxFArWnecYouEkDo9pLGaP0SQCOERxtHzBNAesISDyibFEC1T8djBmoVQPDce7jkOBZAK2owDcMHF0Bm9+RhodYXQKGEmbZ/pRhA3BFOC150GUAXnwJgPEMaQFIst7QaEhtAjLlrCfngG0DHRiBe168cQALU1LK1fh1APWGJB5RNHkB47j1cchwfQLN78rBQ6x9Ad4TTghddIEAUyy2thsQgQLIRiNf1KyFAT1jiAWWTIUDtnjws1PohQIrlllZDYiJAKCzxgLLJIkDFckurITEjQGO5pdWQmCNAAAAAAAAAJEA=
@@ -530,7 +485,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         x_2:
           __ndarray__: AAAAAAAAJMBjuaXVkJgjwMVyS6shMSPAKCzxgLLJIsCK5ZZWQ2IiwO2ePCzU+iHAT1jiAWWTIcCyEYjX9SshwBTLLa2GxCDAd4TTghddIMCze/KwUOsfwHjuPVxyHB/APWGJB5RNHsAC1NSytX4dwMdGIF7XrxzAjLlrCfngG8BSLLe0GhIbwBefAmA8QxrA3BFOC150GcChhJm2f6UYwGb35GGh1hfAK2owDcMHF8Dw3Hu45DgWwLVPx2MGahXAesISDyibFMAjhEcbR8wTwOj2ksZo/RLArWnecYouEsBy3CkdrF8RwDdPdcjNkBDA+YOB596DD8CDaRg+IuYNwA5Pr5RlSAzAmDRG66iqCsAiGt1B7AwJwKz/c5gvbwfANuUK73LRBcDByqFFtjMEwEuwOJz5lQLA1ZXP8jz4AMC+9sySALX+v9PB+j+Hefu/54wo7Q0++L/7V1aalAL1vxAjhEcbx/G/SNxj6UMX7b9xcr9DUaDmv5oIG55eKeC/hj3t8Ndk079dp5GWytu5v12nkZbK27k/hj3t8Ndk0z+aCBueXingP3Fyv0NRoOY/SNxj6UMX7T8QI4RHG8fxP/tXVpqUAvU/54wo7Q0++D/Twfo/h3n7P772zJIAtf4/1ZXP8jz4AEBLsDic+ZUCQMHKoUW2MwRANuUK73LRBUCs/3OYL28HQCIa3UHsDAlAmDRG66iqCkAOT6+UZUgMQINpGD4i5g1A+YOB596DD0A3T3XIzZAQQHLcKR2sXxFArWnecYouEkDo9pLGaP0SQCOERxtHzBNAesISDyibFEC1T8djBmoVQPDce7jkOBZAK2owDcMHF0Bm9+RhodYXQKGEmbZ/pRhA3BFOC150GUAXnwJgPEMaQFIst7QaEhtAjLlrCfngG0DHRiBe168cQALU1LK1fh1APWGJB5RNHkB47j1cchwfQLN78rBQ6x9Ad4TTghddIEAUyy2thsQgQLIRiNf1KyFAT1jiAWWTIUDtnjws1PohQIrlllZDYiJAKCzxgLLJIkDFckurITEjQGO5pdWQmCNAAAAAAAAAJEA=
@@ -547,9 +501,7 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes:
-      callback: null
-    type: TapTool
+  - type: TapTool
   - attributes:
       text: ''
     type: Title
@@ -590,7 +542,6 @@ roots:
       - type: HoverTool
       - type: HoverTool
       - type: HoverTool
-      active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
@@ -612,23 +563,14 @@ roots:
       - type: ZoomInTool
       - type: ZoomOutTool
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0

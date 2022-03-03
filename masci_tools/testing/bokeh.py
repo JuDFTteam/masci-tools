@@ -35,7 +35,9 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
         else:
             if not (datadir / basename).parent.is_dir():
                 filename = basename.name
-                prev_version = previous_bokeh_results(basename.parent)
+                _, _, current_version = basename.parent.name.partition('-')
+                current_version = tuple(int(x) for x in current_version.split('.'))
+                prev_version = previous_bokeh_results(current_version)
 
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
@@ -165,6 +167,8 @@ def fixture_clean_bokeh_json():
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
+                data.pop(key)
+            elif val is None or (isinstance(val, (list, dict)) and len(val) == 0):
                 data.pop(key)
             elif isinstance(val, dict):
                 data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry=key == 'data')
