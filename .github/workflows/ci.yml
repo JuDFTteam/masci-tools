@@ -128,7 +128,7 @@ jobs:
         codecov
 
     - uses: actions/upload-artifact@v2
+      if: failure()
       with:
         name: Matplotlib comparison
-        path: mpl-results/fig_comparison.html
-        if-no-files-found: ignore
+        path: mpl-results
