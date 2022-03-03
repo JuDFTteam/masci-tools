@@ -11,12 +11,12 @@
    - `add_number` -> `number_to_add`
   
   The old signatures are still supported with deprecations if called via the `FleurXMLModifier` [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
-- Remove constraint on `bokeh` version (previously `<=1.4.0`)
+- Remove constraint on `bokeh` version (previously `<=1.4.0`) [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
 
 ### Bugfixes
 - Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
-- Fixed problems in `masci_tools.testing.bokeh` when adding files for new bokeh versions
+- Fixed problems in `masci_tools.testing.bokeh` when adding files for new bokeh versions [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
 
 ### For developers
 - Fixed upload of pytest-mpl results artifacts to include the whole directory with images and not just the HTML file [[#117]](https://github.com/JuDFTteam/masci-tools/pull/117)
