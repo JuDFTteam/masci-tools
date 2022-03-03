@@ -23,8 +23,7 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='function')
-def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir,
-                     original_datadir):
+def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir):
 
     def _regression_bokeh_plot(bokeh_fig):
 
@@ -36,9 +35,9 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
         else:
             if not (datadir / basename).parent.is_dir():
                 filename = basename.name
-                _, _, prev_version = basename.parent.name.partition('-')
-                prev_version = tuple(int(x) for x in prev_version.split('.'))
-                prev_version = previous_bokeh_results(prev_version)
+                _, _, current_version = basename.parent.name.partition('-')
+                current_version = tuple(int(x) for x in current_version.split('.'))
+                prev_version = previous_bokeh_results(current_version)
 
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
@@ -51,7 +50,7 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
 
             curdoc().clear()
             curdoc().add_root(bokeh_fig)
-            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(original_datadir / basename))
+            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(basename))
 
     return _regression_bokeh_plot
 
@@ -168,6 +167,8 @@ def fixture_clean_bokeh_json():
 
         for key, val in list(data.items()):
             if key in ('id', 'root_ids'):
+                data.pop(key)
+            elif val is None or (isinstance(val, (list, dict)) and len(val) == 0):
                 data.pop(key)
             elif isinstance(val, dict):
                 data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry=key == 'data')
