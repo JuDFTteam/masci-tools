@@ -1,9 +1,7 @@
 roots:
   references:
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
   - attributes:
       axis_label: E-E_F [eV]
       axis_label_text_font_size:
@@ -32,10 +30,8 @@ roots:
       ticker:
         type: FixedTicker
     type: LinearAxis
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       ticker:
         type: BasicTicker
@@ -79,19 +75,14 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: eigenvalues_up
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
   - attributes:
-      callback: null
       range_padding: 0.0
     type: DataRange1d
   - attributes:
@@ -100,7 +91,6 @@ roots:
       - 0.63895407737518
     type: FixedTicker
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -401,12 +391,9 @@ roots:
       y:
         field: eigenvalues_up
     type: Scatter
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       fill_alpha:
         value: 0.5
@@ -426,21 +413,16 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      callback: null
       overlay:
         type: PolyAnnotation
     type: PolySelectTool
   - attributes:
-      callback: null
       end: 15
       start: -15
     type: Range1d
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -458,10 +440,8 @@ roots:
       y:
         field: eigenvalues_up
     type: Scatter
-  - attributes: {}
-    type: Selection
+  - type: Selection
   - attributes:
-      callback: null
       data:
         INT_up:
           __ndarray__: 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
@@ -575,9 +555,7 @@ roots:
       - 6
       location: 0.63895407737518
     type: Span
-  - attributes:
-      callback: null
-    type: TapTool
+  - type: TapTool
   - attributes:
       text: ''
     type: Title
@@ -615,7 +593,6 @@ roots:
       active_drag: auto
       active_inspect:
       - type: HoverTool
-      active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
@@ -633,15 +610,10 @@ roots:
       - type: ZoomInTool
       - type: ZoomOutTool
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0
