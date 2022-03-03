@@ -89,6 +89,8 @@ class BokehPlotter(Plotter):
             'line_width': 1.0,
             'line_dash': 'dashed'
         },
+        'text_font_size': '10pt',
+        'text_font_style': 'normal',
 
         #output control
         'save_plots': False,
@@ -196,6 +198,10 @@ class BokehPlotter(Plotter):
         'and two horizontal at -1 and 1',
         'straight_line_options':
         'Color, width, and more options for the help-lines',
+        'text_font_size':
+        'fontsize for the text glyphs in the plot',
+        'text_font_style':
+        'fontstyle for the text glyphs in the plot',
 
         #output control
         'save_plots':
@@ -243,6 +249,7 @@ class BokehPlotter(Plotter):
     _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
     _PLOT_KWARGS_IMAGE = {'color', 'alpha', 'color_palette'}
+    _PLOT_KWARGS_TEXT = {'text_font_style', 'text_font_size'}
 
     __doc__ = __doc__ + _generate_plot_parameters_table(_BOKEH_DEFAULTS, _BOKEH_DESCRIPTIONS)
 
@@ -289,6 +296,8 @@ class BokehPlotter(Plotter):
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_AREA
         elif plot_type == 'image':
             kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_IMAGE
+        elif plot_type == 'text':
+            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_TEXT
 
         if extra_keys is not None:
             kwargs_keys = kwargs_keys | extra_keys
