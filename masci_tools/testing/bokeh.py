@@ -23,7 +23,8 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='function')
-def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir):
+def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir,
+                     original_datadir):
 
     def _regression_bokeh_plot(bokeh_fig):
 
@@ -35,7 +36,9 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
         else:
             if not (datadir / basename).parent.is_dir():
                 filename = basename.name
-                prev_version = previous_bokeh_results(basename.parent)
+                _, _, prev_version = basename.parent.name.partition('-')
+                prev_version = tuple(int(x) for x in prev_version.split('.'))
+                prev_version = previous_bokeh_results(prev_version)
 
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
@@ -48,7 +51,7 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
 
             curdoc().clear()
             curdoc().add_root(bokeh_fig)
-            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(basename))
+            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(original_datadir / basename))
 
     return _regression_bokeh_plot
 
