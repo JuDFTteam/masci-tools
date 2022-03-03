@@ -244,12 +244,17 @@ class BokehPlotter(Plotter):
         'y_range_padding',
     }
 
-    _PLOT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
-    _PLOT_KWARGS_LINE = {'line_color', 'line_alpha', 'line_dash', 'line_width'}
-    _PLOT_KWARGS_SCATTER = {'marker', 'marker_size', 'fill_alpha', 'fill_color'}
-    _PLOT_KWARGS_AREA = {'fill_alpha', 'fill_color'}
-    _PLOT_KWARGS_IMAGE = {'color', 'alpha', 'color_palette'}
-    _PLOT_KWARGS_TEXT = {'text_font_style', 'text_font_size'}
+    _DEFAULT_KWARGS = {'color', 'alpha', 'legend_label', 'name'}
+    _TYPE_TO_KWARGS = {
+        'default': _DEFAULT_KWARGS,
+        'line': _DEFAULT_KWARGS | {'line_color', 'line_alpha', 'line_dash', 'line_width'},
+        'scatter': _DEFAULT_KWARGS | {'marker', 'marker_size', 'fill_alpha', 'fill_color'},
+        'area': _DEFAULT_KWARGS | {'fill_alpha', 'fill_color'},
+        'image': _DEFAULT_KWARGS | {'color', 'alpha', 'color_palette'},
+        'text': _DEFAULT_KWARGS | {'text_font_style', 'text_font_size'}
+    }
+
+    _POSTPROCESS_RENAMES = {'marker_size': 'size', 'color_palette': 'palette'}
 
     __doc__ = __doc__ + _generate_plot_parameters_table(_BOKEH_DEFAULTS, _BOKEH_DESCRIPTIONS)
 
@@ -258,77 +263,9 @@ class BokehPlotter(Plotter):
         super().__init__(self._BOKEH_DEFAULTS,
                          general_keys=self._BOKEH_GENERAL_ARGS,
                          key_descriptions=self._BOKEH_DESCRIPTIONS,
+                         type_kwargs_mapping=self._TYPE_TO_KWARGS,
+                         kwargs_postprocess_rename=self._POSTPROCESS_RENAMES,
                          **kwargs)
-
-    def plot_kwargs(self,
-                    ignore=None,
-                    extra_keys=None,
-                    plot_type='default',
-                    post_process=True,
-                    list_of_dicts=True,
-                    **kwargs):
-        """
-        Creates a dict or list of dicts (for multiple plots) with the defined parameters
-        for the plotting calls of matplotlib
-
-        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
-        :param extra_keys: optional set for additional keys to retrieve
-        :param post_process: bool, if True the parameters are cleaned up for inserting them directly into bokeh plotting functions
-
-        Kwargs are used to replace values by custom parameters:
-
-        Example for using a custom markersize::
-
-            p = BokehPlotter()
-            p.add_parameter('marker_custom', default_from='marker')
-            p.plot_kwargs(marker='marker_custom')
-
-        This code snippet will return the standard parameters for a plot, but the value
-        for the marker will be taken from the key `marker_custom`
-        """
-        if plot_type == 'default':
-            kwargs_keys = self._PLOT_KWARGS
-        elif plot_type == 'line':
-            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_LINE
-        elif plot_type == 'scatter':
-            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_SCATTER
-        elif plot_type == 'area':
-            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_AREA
-        elif plot_type == 'image':
-            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_IMAGE
-        elif plot_type == 'text':
-            kwargs_keys = self._PLOT_KWARGS | self._PLOT_KWARGS_TEXT
-
-        if extra_keys is not None:
-            kwargs_keys = kwargs_keys | extra_keys
-
-        #Insert custom keys to retrieve
-        kwargs_keys = kwargs_keys.copy()
-        for key, replace_key in kwargs.items():
-            kwargs_keys.remove(key)
-            kwargs_keys.add(replace_key)
-
-        plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
-
-        #Rename replaced keys back to standard names
-        for key, replace_key in kwargs.items():
-            custom_val = plot_kwargs.pop(replace_key, None)
-            if custom_val is not None:
-                plot_kwargs[key] = custom_val
-
-        if not post_process:
-            return plot_kwargs
-
-        if 'marker_size' in plot_kwargs:
-            plot_kwargs['size'] = plot_kwargs.pop('marker_size')
-
-        if 'color_palette' in plot_kwargs:
-            plot_kwargs['palette'] = plot_kwargs.pop('color_palette')
-
-        if list_of_dicts:
-            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
-
-        return plot_kwargs
 
     def prepare_figure(self, title, xlabel, ylabel, figure=None):
         """

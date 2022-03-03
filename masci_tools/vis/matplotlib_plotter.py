@@ -298,17 +298,17 @@ class MatplotlibPlotter(Plotter):
         'color_cycle', 'sub_colormap', 'save_options'
     }
 
-    #Sets of keys with special purposes
+    _TYPE_TO_KWARGS = {
+        'default': {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder'},
+        'area': {'area_linecolor', 'area_alpha', 'zorder'},
+        'colormesh': {
+            'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
+            'plot_alpha', 'zorder'
+        },
+        'histogram': {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'},
+    }
 
-    _PLOT_KWARGS = {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder'}
-    _PLOT_KWARGS_AREA = {'area_linecolor', 'area_alpha', 'zorder'}
-    _PLOT_KWARGS_COLORMESH = {
-        'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
-        'plot_alpha', 'zorder'
-    }
-    _PLOT_KWARGS_HIST = {
-        'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'
-    }
+    _POSTPROCESS_RENAMES = {'plot_label': 'label', 'plot_alpha': 'alpha'}
 
     __doc__ = __doc__ + _generate_plot_parameters_table(_MATPLOTLIB_DEFAULTS, _MATPLOTLIB_DESCRIPTIONS)
 
@@ -316,12 +316,14 @@ class MatplotlibPlotter(Plotter):
         super().__init__(self._MATPLOTLIB_DEFAULTS,
                          general_keys=self._MATPLOTLIB_GENERAL_ARGS,
                          key_descriptions=self._MATPLOTLIB_DESCRIPTIONS,
+                         type_kwargs_mapping=self._TYPE_TO_KWARGS,
+                         kwargs_postprocess_rename=self._POSTPROCESS_RENAMES,
                          **kwargs)
 
     def plot_kwargs(self,
+                    plot_type='default',
                     ignore=None,
                     extra_keys=None,
-                    plot_type='default',
                     post_process=True,
                     list_of_dicts=True,
                     **kwargs):
@@ -344,46 +346,25 @@ class MatplotlibPlotter(Plotter):
         This code snippet will return the standard parameters for a plot, but the value
         for the marker will be taken from the key `marker_custom`
         """
-        if plot_type == 'default':
-            kwargs_keys = self._PLOT_KWARGS
-        elif plot_type == 'colormesh':
-            kwargs_keys = self._PLOT_KWARGS_COLORMESH
-        elif plot_type == 'histogram':
-            kwargs_keys = self._PLOT_KWARGS_HIST
-
         if self.single_plot:
             any_area = self['area_plot']
         else:
             any_area = any(self[('area_plot', indx)] for indx in range(self.num_plots))
 
         if any_area:
-            kwargs_keys = kwargs_keys | self._PLOT_KWARGS_AREA
+            area_kwargs = self._type_kwargs_mapping['area']
+            extra_keys = extra_keys | area_kwargs if extra_keys is not None else area_kwargs
 
-        if extra_keys is not None:
-            kwargs_keys = kwargs_keys | extra_keys
-
-        #Insert custom keys to retrieve
-        kwargs_keys = kwargs_keys.copy()
-        for key, replace_key in kwargs.items():
-            kwargs_keys.remove(key)
-            kwargs_keys.add(replace_key)
-
-        plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
-
-        #Rename replaced keys back to standard names
-        for key, replace_key in kwargs.items():
-            custom_val = plot_kwargs.pop(replace_key, None)
-            if custom_val is not None:
-                plot_kwargs[key] = custom_val
+        #list of dicts is done later
+        plot_kwargs = super().plot_kwargs(plot_type=plot_type,
+                                          ignore=ignore,
+                                          extra_keys=extra_keys,
+                                          post_process=post_process,
+                                          list_of_dicts=False,
+                                          **kwargs)
 
         if not post_process:
             return plot_kwargs
-
-        if 'plot_label' in plot_kwargs:
-            plot_kwargs['label'] = plot_kwargs.pop('plot_label')
-
-        if 'plot_alpha' in plot_kwargs:
-            plot_kwargs['alpha'] = plot_kwargs.pop('plot_alpha')
 
         if 'cmap' in plot_kwargs and self['sub_colormap'] is not None:
             if not isinstance(self['sub_colormap'], (tuple, list)):
