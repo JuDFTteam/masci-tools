@@ -1750,8 +1750,7 @@ def matrix_plot(
         figure=None,
         categorical_axis=False,
         categorical_sort_key=None,
-        include_legend=True,
-        legend_entry=None,
+        block_size=0.95,
         **kwargs):
     """
     Plot function for an interactive periodic table plot. Heat map and hover tool.
@@ -1855,20 +1854,24 @@ def matrix_plot(
                 outsiders = color_values > max_color
             plot_data.mask_data(outsiders, data_key='color', replace_value=blank_color)
 
-    x_axis = plot_data.keys(first=True).x_axis
-    y_axis = plot_data.keys(first=True).y_axis
-
-    r = p.rect(x_axis, y_axis, 0.95, 0.95, source=data, fill_alpha=0.6, color=plot_params['color'])
+    entry, source = plot_data.items(first=True)
+    r = p.rect(entry.x_axis,
+               entry.y_axis,
+               block_size,
+               block_size,
+               source=source,
+               fill_alpha=0.6,
+               color=plot_params['color'])
     plot_params.add_tooltips(p, r)
 
     plot_kw = plot_params.plot_kwargs(plot_type='text', ignore='color')
     # The values displayed on the element boxes
-    for entry, kw, position in zip(plot_data.keys(), plot_kw, positions):
+    for (entry, source), kw, position in zip(plot_data.items(), plot_kw, positions):
 
-        p.text(x=dodge(x_axis, x_offset, range=p.x_range),
-               y=dodge(y_axis, position, range=p.y_range),
+        p.text(x=dodge(entry.x_axis, x_offset, range=p.x_range),
+               y=dodge(entry.y_axis, position, range=p.y_range),
                text=entry.text,
-               source=data,
+               source=source,
                **kw)
 
     # add color bar

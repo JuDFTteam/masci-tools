@@ -399,3 +399,28 @@ def test_periodic_table_plot_defaults(check_bokeh_plot):
                             include_legend=True)
 
     check_bokeh_plot(p)
+
+
+def test_matrix_plot_defaults(check_bokeh_plot):
+    """
+    Test with default parameters
+    """
+    from masci_tools.vis.bokeh_plots import matrix_plot
+
+    x = np.linspace(-1, 1, 11)
+    y = np.linspace(-1, 1, 11)
+
+    xv, yv = np.meshgrid(x, y)
+    z = 10 * np.exp(-xv**2 - yv**2)
+    xv, yv, z = xv.flatten(), yv.flatten(), z.flatten()
+
+    p = matrix_plot([f'{x:.1f}' for x in z],
+                    xv,
+                    yv,
+                    positions=[0.0],
+                    x_offset=-0.06,
+                    color_data=z,
+                    show=False,
+                    block_size=0.18)
+
+    check_bokeh_plot(p)
