@@ -50,6 +50,9 @@ logger = logging.getLogger(__name__)
 #This namedtuple is used as the return value for the crystal field calculation to have easy access
 #to all the necessary information
 class CFCoefficient(NamedTuple):
+    """
+    Namedtuple representing an individual crystal field coefficient
+    """
     l: int
     m: int
     spin_up: float | complex
@@ -278,7 +281,7 @@ class CFCalculation:
         else:
             raise ValueError(f'No potential for atomType {atom_type} found in {hdffile}')
 
-        logger.info(f'read_potential (HDF): Generated the following information: {self.vlm.keys()}')
+        logger.info('read_potential (HDF): Generated the following information: %s', self.vlm.keys())
 
     def __readpottxt(self, file, index, header=0, complexData=True):
         """Read in the potential for the (l,m) tuple 'index' from a txt file
@@ -347,7 +350,7 @@ class CFCalculation:
         else:
             raise ValueError(f'No charge density for atom_type {atom_type} found in {hdffile}')
 
-        logger.info(f'read_charge_density (HDF): Generated the following information: {self.cdn.keys()}')
+        logger.info('read_charge_density (HDF): Generated the following information: %s', self.cdn.keys())
 
     def __readcdntxt(self, file, header=0):
         """Read in the charge density from a txt file
@@ -388,8 +391,10 @@ class CFCalculation:
 
         if 'cdn' in self.bravaisMat and 'pot' in self.bravaisMat:
             diffBravais = self.bravaisMat['cdn'] - self.bravaisMat['pot']
-            if np.any(np.abs(diffBravais) > 1e-8):
-                logger.warning('Differing definitions of potentials and charge density bravais matrix')
+            max_diff = np.max(np.abs(diffBravais))
+            if max_diff > 1e-8:
+                logger.warning('Differing definitions of potentials and charge density bravais matrix. Max. Diff: %f',
+                               max_diff)
 
     def interpolate(self) -> None:
         """Interpolate all quantities to a common equidistant radial mesh
@@ -441,14 +446,14 @@ class CFCalculation:
             self.theta = np.arccos(c_vector[2] / (np.linalg.norm(c_vector)))
             self.phi = np.arccos(a_vector[0] / (np.linalg.norm(a_vector)))
 
-            logger.info(fr'Angle between lattice vector c and z-axis: {self.theta/np.pi:5.3f} $\pi$')
-            logger.info(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
+            logger.info(r'Angle between lattice vector c and z-axis: %f $\pi$', self.theta / np.pi)
+            logger.info(r'Angle between lattice vector a and x-axis:  %f $\pi$', self.phi / np.pi)
 
         if not self.interpolated:
             self.interpolate()
 
         self.density_normalization = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
-        logger.info(f'Density normalization = {self.density_normalization}')
+        logger.info('Density normalization = %f', self.density_normalization)
 
         results = []
         for lmkey, vlm in [(key, val) for key, val in self.int.items() if isinstance(key, tuple)]:
@@ -468,7 +473,7 @@ class CFCalculation:
 
                 if self.coefficient_cutoff is not None:
                     if all(np.abs(value) < self.coefficient_cutoff for value in integral.values()):
-                        logger.info(f'Dismissing coefficient for {lmkey}: {integral}')
+                        logger.info(f'Dismissing coefficient for (%i,%i): %s', l, m, integral)
                         continue
 
                 results.append(
