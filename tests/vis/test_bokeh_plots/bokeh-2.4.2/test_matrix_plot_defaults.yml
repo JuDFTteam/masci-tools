@@ -25,12 +25,9 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
   - attributes:
       label_standoff: 8
       major_label_text_font_size: 12pt
@@ -1035,23 +1032,17 @@ roots:
   - type: CrosshairTool
   - type: DataRange1d
   - type: DataRange1d
-  - attributes: {}
-    type: Dodge
+  - type: Dodge
   - attributes:
       value: -0.06
     type: Dodge
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
     type: HoverTool
   - attributes:
@@ -1331,20 +1322,7 @@ roots:
   - type: LinearScale
   - type: NoOverlap
   - type: PanTool
-  - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      right:
-      - {}
-    subtype: Figure
+  - subtype: Figure
     type: Plot
   - attributes:
       fill_alpha: 0.5
@@ -1360,8 +1338,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -1471,24 +1448,7 @@ roots:
         field: y_axis
     type: Text
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers

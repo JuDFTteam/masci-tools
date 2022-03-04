@@ -22,10 +22,8 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
   - attributes:
       data:
         index:
@@ -53,14 +51,11 @@ roots:
   - attributes:
       name: y
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -70,15 +65,11 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: y
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       line_color: '#1f77b4'
@@ -121,18 +112,7 @@ roots:
   - type: LinearScale
   - type: LinearScale
   - type: PanTool
-  - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
-      left:
-      - {}
-      renderers:
-      - {}
-    subtype: Figure
+  - subtype: Figure
     type: Plot
   - attributes:
       fill_alpha: 0.5
@@ -148,32 +128,14 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - type: RedoTool
   - type: ResetTool
   - type: SaveTool
   - type: Selection
   - type: TapTool
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: WheelZoomTool

@@ -49,18 +49,12 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
   - type: CategoricalScale
   - type: CategoricalScale
   - attributes:
@@ -75,10 +69,8 @@ roots:
       title_text_font_size: 12pt
       width: 500
     type: ColorBar
-  - attributes: {}
-    type: ColumnDataSource
-  - attributes: {}
-    type: ColumnDataSource
+  - type: ColumnDataSource
+  - type: ColumnDataSource
   - attributes:
       data:
         CPK:
@@ -12204,24 +12196,16 @@ roots:
       - II
       - I
     type: FactorRange
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Name
@@ -12543,25 +12527,7 @@ roots:
     type: OpenHead
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       height: 675
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       width: 1475
     subtype: Figure
     type: Plot
@@ -12579,8 +12545,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -12845,24 +12810,7 @@ roots:
         field: period
     type: Text
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers

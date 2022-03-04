@@ -21,12 +21,9 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
   - attributes:
       axis_label: x
       axis_label_text_font_size: 18pt
@@ -359,10 +356,8 @@ roots:
         - Philadelphia
     type: ColumnDataSource
   - type: CrosshairTool
-  - attributes: {}
-    type: Dodge
-  - attributes: {}
-    type: Dodge
+  - type: Dodge
+  - type: Dodge
   - attributes:
       factors:
       - Apple
@@ -381,18 +376,13 @@ roots:
       - Philadelphia
       - Washington D.C.
     type: FactorRange
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: GlyphRenderer
+  - type: GlyphRenderer
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
     type: HoverTool
   - attributes:
@@ -659,19 +649,7 @@ roots:
   - type: NoOverlap
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
       height: 1050
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      right:
-      - {}
       width: 750
     subtype: Figure
     type: Plot
@@ -689,8 +667,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -806,24 +783,7 @@ roots:
         field: y_axis
     type: Text
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers

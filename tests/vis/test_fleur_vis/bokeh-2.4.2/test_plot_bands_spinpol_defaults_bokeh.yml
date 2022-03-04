@@ -21,12 +21,9 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
   - attributes:
       data:
         INT_down:
@@ -306,14 +303,11 @@ roots:
       level: underlay
       name: eigenvalues_down
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -322,8 +316,6 @@ roots:
         - '@eigenvalues_down'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -333,22 +325,15 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: Spin-Down
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: Spin-Up
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       axis_label: E-E_F [eV]
@@ -374,26 +359,7 @@ roots:
   - type: LinearScale
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
       height: 720
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       width: 1280
     subtype: Figure
     type: Plot
@@ -411,8 +377,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - attributes:
       end: 15
       start: -15
@@ -579,26 +544,7 @@ roots:
     type: Span
   - type: TapTool
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers

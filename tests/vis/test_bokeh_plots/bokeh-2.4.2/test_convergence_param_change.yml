@@ -40,23 +40,13 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes:
-      children:
-      - {}
-      - {}
-    type: Column
+  - type: BoxZoomTool
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: Column
   - attributes:
       data:
         distance:
@@ -327,10 +317,8 @@ roots:
   - attributes:
       name: energy_diff_0
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
-  - attributes: {}
-    type: Grid
+  - type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
@@ -347,8 +335,6 @@ roots:
         - 0
     type: GridBox
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -359,8 +345,6 @@ roots:
         - '@distance'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -372,29 +356,19 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       click_policy: hide
-      items:
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: delta total energy
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       line_color: darkred
@@ -487,38 +461,12 @@ roots:
   - type: PanTool
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
       height: 450
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      right:
-      - {}
       width: 800
     subtype: Figure
     type: Plot
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
       height: 450
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      right:
-      - {}
       width: 800
     subtype: Figure
     type: Plot
@@ -550,42 +498,9 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
-  - attributes: {}
-    type: PolySelectTool
-  - attributes:
-      toolbars:
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: ProxyToolbar
+  - type: PolySelectTool
+  - type: PolySelectTool
+  - type: ProxyToolbar
   - type: RedoTool
   - type: RedoTool
   - type: ResetTool
@@ -732,42 +647,8 @@ roots:
   - attributes:
       text: Total energy difference over scf-Iterations
     type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
-  - attributes:
-      active_inspect:
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
+  - type: Toolbar
   - attributes:
       toolbar_location: above
     type: ToolbarBox

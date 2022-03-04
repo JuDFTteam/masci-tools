@@ -53,24 +53,15 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: ColumnDataSource
-  - attributes: {}
-    type: ColumnDataSource
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: ColumnDataSource
+  - type: ColumnDataSource
   - attributes:
       data:
         INT_down:
@@ -758,14 +749,11 @@ roots:
   - attributes:
       name: Total_up
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -776,8 +764,6 @@ roots:
         - '@$name{(0,0.00)}'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -788,8 +774,6 @@ roots:
         - '@$name{(0,0.00)}'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -800,8 +784,6 @@ roots:
         - '@$name{(0,0.00)}'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -812,8 +794,6 @@ roots:
         - '@$name{(0,0.00)}'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -824,8 +804,6 @@ roots:
         - '@$name{(0,0.00)}'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - DOS Name
@@ -837,32 +815,19 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
-      - {}
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: Interstitial up/down
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: Sm  up/down
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: Total up/down
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       line_color: '#ff7f0e'
@@ -1059,25 +1024,6 @@ roots:
     type: NumeralTickFormatter
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       width: 1000
     subtype: Figure
     type: Plot
@@ -1095,8 +1041,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - type: RedoTool
   - type: ResetTool
   - type: SaveTool
@@ -1123,34 +1068,7 @@ roots:
   - attributes:
       text: Density of states
     type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers

@@ -22,18 +22,12 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
   - attributes:
       data:
         shift_4:
@@ -157,14 +151,11 @@ roots:
   - attributes:
       name: x_4
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -173,8 +164,6 @@ roots:
         - '@y_0'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -183,8 +172,6 @@ roots:
         - '@y_1'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -193,8 +180,6 @@ roots:
         - '@y_2'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -203,8 +188,6 @@ roots:
         - '@y_3'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - X
@@ -214,43 +197,27 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: x_0
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: x_1
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: x_2
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: x_3
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: x_4
-      renderers:
-      - {}
     type: LegendItem
   - attributes:
       line_color: '#1f77b4'
@@ -397,22 +364,7 @@ roots:
   - type: LinearScale
   - type: LinearScale
   - type: PanTool
-  - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    subtype: Figure
+  - subtype: Figure
     type: Plot
   - attributes:
       fill_alpha: 0.5
@@ -428,8 +380,7 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
+  - type: PolySelectTool
   - type: RedoTool
   - type: ResetTool
   - type: SaveTool
@@ -440,32 +391,7 @@ roots:
   - type: Selection
   - type: TapTool
   - type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
   - type: UndoTool
   - type: UnionRenderers
   - type: UnionRenderers
