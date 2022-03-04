@@ -24,6 +24,8 @@ from __future__ import annotations
 import h5py
 import os
 import csv
+import logging
+import tabulate
 from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,6 +43,8 @@ try:
 except ImportError:
     from typing_extensions import Literal  #type: ignore[misc]
 import warnings
+
+logger = logging.getLogger(__name__)
 
 
 #This namedtuple is used as the return value for the crystal field calculation to have easy access
@@ -71,9 +75,7 @@ class CFCalculation:
     :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
                                 is used for the equidistant mesh.
                                 IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
-    :param pot_cutoff: float Defines minimum value that has to appear in potentials to not be omitted (Only HDF)
-    :param only_m0: bool, Ignores coefficients with m!=0 if True
-    :param quiet: bool, suppresses print statements if True
+    :param coefficient_cutoff: float Defines minimum value that cf coeffiecients have ot have to be considered non-zero
 
     """
 
@@ -99,8 +101,6 @@ class CFCalculation:
                  *,
                  radial_points: int = 4000,
                  reference_radius: float | Literal['pot', 'cdn'] = 'pot',
-                 only_m0: bool = False,
-                 quiet: bool = False,
                  coefficient_cutoff: float | None = 1e-3,
                  **kwargs: Any) -> None:
 
@@ -126,7 +126,8 @@ class CFCalculation:
         if 'only_m0' in kwargs:
             warnings.warn('The argument only_m0 is deprecated.', DeprecationWarning)
             self.only_m0 = kwargs['only_m0']
-        self.quiet = quiet
+        if 'quiet' in kwargs:
+            warnings.warn('The argument quiet is deprecated.', DeprecationWarning)
 
     @property
     def denNorm(self):
@@ -277,8 +278,7 @@ class CFCalculation:
         else:
             raise ValueError(f'No potential for atomType {atom_type} found in {hdffile}')
 
-        if not self.quiet:
-            print(f'readPOTHDF: Generated the following information: {self.vlm.keys()}')
+        logger.info(f'read_potential (HDF): Generated the following information: {self.vlm.keys()}')
 
     def __readpottxt(self, file, index, header=0, complexData=True):
         """Read in the potential for the (l,m) tuple 'index' from a txt file
@@ -347,8 +347,7 @@ class CFCalculation:
         else:
             raise ValueError(f'No charge density for atom_type {atom_type} found in {hdffile}')
 
-        if not self.quiet:
-            print(f'readcdnHDF: Generated the following information: {self.cdn.keys()}')
+        logger.info(f'read_charge_density (HDF): Generated the following information: {self.cdn.keys()}')
 
     def __readcdntxt(self, file, header=0):
         """Read in the charge density from a txt file
@@ -390,7 +389,7 @@ class CFCalculation:
         if 'cdn' in self.bravaisMat and 'pot' in self.bravaisMat:
             diffBravais = self.bravaisMat['cdn'] - self.bravaisMat['pot']
             if np.any(np.abs(diffBravais) > 1e-8):
-                raise ValueError('Differing definitions of potentials and charge density bravais matrix')
+                logger.warning('Differing definitions of potentials and charge density bravais matrix')
 
     def interpolate(self) -> None:
         """Interpolate all quantities to a common equidistant radial mesh
@@ -416,13 +415,16 @@ class CFCalculation:
                     self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'], value[1, :], fill_value='extrapolate')
         self.interpolated = True
 
-    def get_coefficients(self, convention: Literal['Stevens', 'Wybourne'] = 'Stevens') -> list[CFCoefficient]:
+    def get_coefficients(self,
+                         convention: Literal['Stevens', 'Wybourne'] = 'Stevens',
+                         table_fmt: str | None = None) -> list[CFCoefficient]:
         """Performs the integration to obtain the crystal field coefficients
         If the data was not already interpolated, the interpolation will
         be performed beforehand
 
         Parameters:
             :param convention: str of the convention to use (Stevens or Wybourne)
+            :param table_fmt: str if not None a table with the given format will be printed using tabulate
 
         :returns: list of CFCoefficient objects (namedtuple), with all the necessary information
         """
@@ -439,18 +441,16 @@ class CFCalculation:
             self.theta = np.arccos(c_vector[2] / (np.linalg.norm(c_vector)))
             self.phi = np.arccos(a_vector[0] / (np.linalg.norm(a_vector)))
 
-            if not self.quiet:
-                print(fr'Angle between lattice vector c and z-axis: {self.theta/np.pi:5.3f} $\pi$')
-                print(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
+            logger.info(fr'Angle between lattice vector c and z-axis: {self.theta/np.pi:5.3f} $\pi$')
+            logger.info(fr'Angle between lattice vector a and x-axis: {self.phi/np.pi:5.3f} $\pi$')
 
         if not self.interpolated:
             self.interpolate()
 
         self.density_normalization = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
-        if not self.quiet:
-            print(f'Density normalization = {self.density_normalization}')
+        logger.info(f'Density normalization = {self.density_normalization}')
 
-        result = []
+        results = []
         for lmkey, vlm in [(key, val) for key, val in self.int.items() if isinstance(key, tuple)]:
             l, m = lmkey
             if not self.only_m0 or m == 0:
@@ -468,11 +468,10 @@ class CFCalculation:
 
                 if self.coefficient_cutoff is not None:
                     if all(np.abs(value) < self.coefficient_cutoff for value in integral.values()):
-                        if not self.quiet:
-                            print(f'Dismissing coefficient for {lmkey}: {integral}')
+                        logger.info(f'Dismissing coefficient for {lmkey}: {integral}')
                         continue
 
-                result.append(
+                results.append(
                     CFCoefficient(l=l,
                                   m=m,
                                   spin_up=integral['spin-up'],
@@ -480,25 +479,28 @@ class CFCalculation:
                                   unit='K',
                                   convention=convention))
 
-        result.sort(key=lambda item: (item.l, abs(item.m)))
+        results.sort(key=lambda item: (item.l, abs(item.m)))
 
-        if not self.quiet:
+        if table_fmt is not None:
 
-            print(f'\nThe following results were obtained with the {result[0].convention} convention:')
+            print(f'\nThe following results were obtained with the {convention} convention:')
 
-            if any(isinstance(coeff.spin_up, complex) for coeff in result):
-                print('l  m', '       $C^{up}_{lm}$ [K]              ', '       $C^{dn}_{lm}$ [K]')
-            else:
-                print('l  m', '       $C^{up}_{lm}$ [K]', '       $C^{dn}_{lm}$ [K]')
-            for coeff in result:
-                if isinstance(coeff.spin_up, complex):
-                    print(
-                        f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up.real:>+25.8f}{coeff.spin_up.imag:>+11.8f} i {coeff.spin_down.real:>+25.8f}{coeff.spin_down.imag:>+11.8f} i '
-                    )
+            results_table = [
+                [val for key, val in entry._asdict().items() if key not in ('unit', 'convention')] for entry in results
+            ]
+
+            headers = ('l', 'm', 'Spin-Up [K]', 'Spin-Down [K]')
+            if table_fmt in ('latex', 'latex_raw'):
+                table_fmt = 'latex_raw'
+                if convention == 'Stevens':
+                    headers = ('l', 'm', r'$A^{\uparrow}_{lm}\langle r^l \rangle$ [K]',
+                               r'$A^{\downarrow}_{lm}\langle r^l \rangle$ [K]')
                 else:
-                    print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
+                    headers = ('l', 'm', r'$B^{\uparrow}_{lm}$ [K]', r'$B^{\downarrow}_{lm}$ [K]')
 
-        return result
+            print(tabulate.tabulate(results_table, tablefmt=table_fmt, headers=headers))
+
+        return results
 
     def performIntegration(self, convert=True):
         """DEPRECATED: Use get_coefficients instead
