@@ -1729,6 +1729,7 @@ def plot_convergence_results_m(iterations,
     return grid
 
 
+@ensure_plotter_consistency(plot_params)
 def matrix_plot(
         text_values,
         x_axis_data,
@@ -1751,6 +1752,7 @@ def matrix_plot(
         categorical_axis=False,
         categorical_sort_key=None,
         block_size=0.95,
+        block_size_pixel=100,
         **kwargs):
     """
     Plot function for an interactive periodic table plot. Heat map and hover tool.
@@ -1813,7 +1815,6 @@ def matrix_plot(
                              format_tooltips=False,
                              tooltips=[])
 
-    block_size_pixel = 100
     if categorical_axis:
         x_values = sorted(set(plot_data.values(first=True).x_axis), key=categorical_sort_key)
         y_values = sorted(set(plot_data.values(first=True).y_axis), key=categorical_sort_key)
