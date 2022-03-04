@@ -219,10 +219,9 @@ def xml_set_attrib_value(xmltree: XMLLike,
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        raise ValueError(
-            f"Could not set attribute '{name}' on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' "
-            'because at least one subtag is missing. '
-            'Use create=True to create the subtags')
+        raise ValueError(f"Could not set attribute '{name}' on path '{xpath!r}' "
+                         'because at least one subtag is missing. '
+                         'Use create=True to create the subtags')
 
     return xml_set_attrib_value_no_create(xmltree, xpath, name, converted_value, occurrences=occurrences)
 
@@ -312,9 +311,8 @@ def xml_set_text(xmltree: XMLLike,
         nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        raise ValueError(
-            f"Could not set text on path '{str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}' because at least one subtag is missing. "
-            'Use create=True to create the subtags')
+        raise ValueError(f"Could not set text on path '{xpath!r}' because at least one subtag is missing. "
+                         'Use create=True to create the subtags')
 
     return xml_set_text_no_create(xmltree, xpath, converted_text, occurrences=occurrences)
 
