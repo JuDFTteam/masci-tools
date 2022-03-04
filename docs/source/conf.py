@@ -398,6 +398,7 @@ nitpick_ignore = [
     ('py:class', 'etree._XPathObject'),
     ('py:class', 'h5py._hl.group.Group'),
     ('py:class', 'etree._Element'),
+    ('py:class', 'etree.XPath'),
     ('py:class', 'TypeAlias'),
     ('py:class', 'Logger'),
     ('py:class', 'FilterType'),
