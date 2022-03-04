@@ -104,8 +104,8 @@ def _cache_xpath_construction(func: Callable[..., set[str]]) -> Callable[..., se
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = eval_single_string_attribute(xmlschema_evaluator,'/xsd:schema/@version')
-        root_tag = eval_single_string_attribute(xmlschema_evaluator,'/xsd:schema/xsd:element/@name')
+        version = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/@version')
+        root_tag = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/xsd:element/@name')
 
         arg_tuple = (version, root_tag, name, kwargs.get('enforce_end_type', ''), kwargs.get('ref', '')) + \
                     tuple(key for key in kwargs if kwargs.get(key, False))
@@ -143,8 +143,8 @@ def _cache_xpath_eval(func: Callable) -> Callable:
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = eval_single_string_attribute(xmlschema_evaluator,'/xsd:schema/@version')
-        root_tag = eval_single_string_attribute(xmlschema_evaluator,'/xsd:schema/xsd:element/@name')
+        version = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/@version')
+        root_tag = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/xsd:element/@name')
 
         arg_tuple = (version, root_tag, xpath, *variables.items())
 
@@ -179,8 +179,9 @@ def _xpath_eval(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str,
     """
     return xmlschema_evaluator(xpath, **variables)
 
+
 def eval_single_string_attribute(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str,
-                                  **variables: etree._XPathObject) -> str:
+                                 **variables: etree._XPathObject) -> str:
     """
     Wrapper around the xpath calls in this module. Makes sure the return value
     is a single string (not cached)
@@ -192,7 +193,8 @@ def eval_single_string_attribute(xmlschema_evaluator: etree.XPathDocumentEvaluat
     if not isinstance(result, list):
         raise ValueError(f'Expected list from xpath result, got {result!r}')
     result_str = str(result[0])
-    return result_str           
+    return result_str
+
 
 def _normalized_name(tag: str) -> str:
     """

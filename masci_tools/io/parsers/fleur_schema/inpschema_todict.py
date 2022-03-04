@@ -83,7 +83,7 @@ def create_inpschema_dict(path: os.PathLike, apply_patches: bool = True) -> Inpu
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
 
     inp_version = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/@version')
-    
+
     inp_version_tuple = convert_str_version_number(inp_version)
 
     schema_dict: InputSchemaData = {}
