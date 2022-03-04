@@ -40,135 +40,69 @@ roots:
       syncable: false
       top_units: screen
     type: BoxAnnotation
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: BoxZoomTool
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes: {}
-    type: CDSView
-  - attributes:
-      children:
-      - {}
-      - {}
-    type: Column
+  - type: BoxZoomTool
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: Column
   - attributes:
       data:
         distance_12:
@@ -2335,10 +2269,8 @@ roots:
   - attributes:
       name: iteration_energy_9
     type: GlyphRenderer
-  - attributes: {}
-    type: Grid
-  - attributes: {}
-    type: Grid
+  - type: Grid
+  - type: Grid
   - attributes:
       dimension: 1
     type: Grid
@@ -2355,8 +2287,6 @@ roots:
         - 0
     type: GridBox
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2367,8 +2297,6 @@ roots:
         - '@distance_0'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2379,8 +2307,6 @@ roots:
         - '@distance_1'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2391,8 +2317,6 @@ roots:
         - '@distance_10'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2403,8 +2327,6 @@ roots:
         - '@distance_11'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2415,8 +2337,6 @@ roots:
         - '@distance_12'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2427,8 +2347,6 @@ roots:
         - '@distance_13'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2439,8 +2357,6 @@ roots:
         - '@distance_14'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2451,8 +2367,6 @@ roots:
         - '@distance_2'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2463,8 +2377,6 @@ roots:
         - '@distance_3'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2475,8 +2387,6 @@ roots:
         - '@distance_4'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2487,8 +2397,6 @@ roots:
         - '@distance_5'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2499,8 +2407,6 @@ roots:
         - '@distance_6'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2511,8 +2417,6 @@ roots:
         - '@distance_7'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2523,8 +2427,6 @@ roots:
         - '@distance_8'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2535,8 +2437,6 @@ roots:
         - '@distance_9'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2547,8 +2447,6 @@ roots:
         - '@energy_diff_0'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2559,8 +2457,6 @@ roots:
         - '@energy_diff_1'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2571,8 +2467,6 @@ roots:
         - '@energy_diff_10'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2583,8 +2477,6 @@ roots:
         - '@energy_diff_11'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2595,8 +2487,6 @@ roots:
         - '@energy_diff_12'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2607,8 +2497,6 @@ roots:
         - '@energy_diff_13'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2619,8 +2507,6 @@ roots:
         - '@energy_diff_14'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2631,8 +2517,6 @@ roots:
         - '@energy_diff_2'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2643,8 +2527,6 @@ roots:
         - '@energy_diff_3'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2655,8 +2537,6 @@ roots:
         - '@energy_diff_4'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2667,8 +2547,6 @@ roots:
         - '@energy_diff_5'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2679,8 +2557,6 @@ roots:
         - '@energy_diff_6'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2691,8 +2567,6 @@ roots:
         - '@energy_diff_7'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2703,8 +2577,6 @@ roots:
         - '@energy_diff_8'
     type: HoverTool
   - attributes:
-      renderers:
-      - {}
       toggleable: false
       tooltips:
       - - Calculation id
@@ -2716,253 +2588,131 @@ roots:
     type: HoverTool
   - attributes:
       click_policy: hide
-      items:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       click_policy: hide
-      items:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
       label_text_font_size: 14pt
     type: Legend
   - attributes:
       label:
         value: delta total energy 0
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 1
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 10
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 11
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 12
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 13
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 14
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 2
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 3
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 4
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 5
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 6
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 7
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 8
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: delta total energy 9
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 0
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 1
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 10
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 11
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 12
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 13
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 14
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 2
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 3
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 4
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 5
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 6
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 7
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 8
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       label:
         value: distance 9
-      renderers:
-      - {}
-      - {}
     type: LegendItem
   - attributes:
       line_color: '#1f77b4'
@@ -3783,94 +3533,12 @@ roots:
   - type: PanTool
   - type: PanTool
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
       height: 450
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      right:
-      - {}
       width: 800
     subtype: Figure
     type: Plot
   - attributes:
-      below:
-      - {}
-      center:
-      - {}
-      - {}
-      - {}
       height: 450
-      left:
-      - {}
-      renderers:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      right:
-      - {}
       width: 800
     subtype: Figure
     type: Plot
@@ -3902,70 +3570,9 @@ roots:
       xs_units: screen
       ys_units: screen
     type: PolyAnnotation
-  - attributes: {}
-    type: PolySelectTool
-  - attributes: {}
-    type: PolySelectTool
-  - attributes:
-      toolbars:
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: ProxyToolbar
+  - type: PolySelectTool
+  - type: PolySelectTool
+  - type: ProxyToolbar
   - type: RedoTool
   - type: RedoTool
   - type: ResetTool
@@ -5660,98 +5267,8 @@ roots:
   - attributes:
       text: Total energy difference over scf-Iterations
     type: Title
-  - attributes:
-      active_inspect:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
-  - attributes:
-      active_inspect:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      tools:
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-      - {}
-    type: Toolbar
+  - type: Toolbar
+  - type: Toolbar
   - attributes:
       toolbar_location: above
     type: ToolbarBox

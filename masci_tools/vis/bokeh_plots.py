@@ -1198,7 +1198,11 @@ def periodic_table_plot(
     if isinstance(color_data, list):
         raise ValueError('Only one color data entry allowed')
 
-    plot_data = process_data_arguments(data=data, copy_data=copy_data, color=color_data, values=values)
+    plot_data = process_data_arguments(data=data,
+                                       copy_data=copy_data,
+                                       color=color_data,
+                                       values=values,
+                                       forbid_split_up={'color'})
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -1723,3 +1727,173 @@ def plot_convergence_results_m(iterations,
     plot_params.save_plot(grid, saveas)
 
     return grid
+
+
+@ensure_plotter_consistency(plot_params)
+def matrix_plot(
+        text_values,
+        x_axis_data,
+        y_axis_data,
+        positions=None,
+        *,
+        color_data=None,
+        x_offset=-0.47,
+        log_scale=False,
+        color_map=None,
+        data=None,
+        copy_data=False,
+        title='',
+        xlabel='x',
+        ylabel='y',
+        saveas='matrix_plot.html',
+        blank_outsiders='both',  #min, max or both, None
+        blank_color='#c4c4c4',
+        figure=None,
+        categorical_axis=False,
+        categorical_sort_key=None,
+        block_size=0.95,
+        block_size_pixel=100,
+        **kwargs):
+    """
+    Plot function for an interactive periodic table plot. Heat map and hover tool.
+    source must be a pandas dataframe containing, atom period and group, atomic number and symbol
+
+    :param values: data for the text inside each elements box
+    :param positions: y positions relative to the middle of the box for each value
+    :param color_data: data to display as a heatmap
+    :param color_map: color palette to use for the heatmap (default matplotlib plasma)
+    :param log_scale: bool, if True the heatmap is done logarithmically
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param saveas: str, filename for the saved plot
+    :param blank_outsiders: either 'both', 'min', 'max' or None, determines, which points outside the color
+                            range to color with a default blank color
+    :param blank_color: color to replace values outside the color range by
+    :param include_legend: if True an additional entry with labels explaing each value entry is added
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+
+    Additional kwargs are passed on to the label creation for the element box
+    The kwargs `legend_options` and `colorbar_options` can be used to overwrite default
+    values for these regions of the plot
+    """
+    from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
+
+    from bokeh.transform import dodge, linear_cmap, log_cmap
+    from bokeh.models import FactorRange, ColorBar, BasicTicker
+
+    if color_map is None:
+        color_map = plasma
+
+    if positions is None:
+        raise NotImplementedError('Not providing positions is not yet implemented')
+
+    plot_data = process_data_arguments(data=data,
+                                       copy_data=copy_data,
+                                       color=color_data,
+                                       text=text_values,
+                                       x_axis=x_axis_data,
+                                       y_axis=y_axis_data,
+                                       forbid_split_up={'color', 'x_axis', 'y_axis'})
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    plot_params.add_parameter('colorbar_options',
+                              default_val={
+                                  'fontsize': 12,
+                                  'label_standoff': 8,
+                                  'title': plot_data.keys(first=True).color,
+                                  'scale_alpha': 1.0
+                              })
+
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={
+                                 'x_axis_type': 'auto',
+                                 'y_axis_type': 'auto',
+                             },
+                             color_palette='Plasma256',
+                             format_tooltips=False,
+                             tooltips=[])
+
+    if categorical_axis:
+        x_values = sorted(set(plot_data.values(first=True).x_axis), key=categorical_sort_key)
+        y_values = sorted(set(plot_data.values(first=True).y_axis), key=categorical_sort_key)
+        plot_params.set_defaults(default_type='function',
+                                 figure_kwargs={
+                                     'height': block_size_pixel * len(y_values),
+                                     'width': block_size_pixel * len(x_values),
+                                     'x_range': FactorRange(factors=x_values),
+                                     'y_range': FactorRange(factors=y_values),
+                                 })
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
+
+    if any(entry.color is not None for entry in plot_data.keys()):
+        if plot_params['limits'] is not None and plot_params['limits'].get('color') is not None:
+            min_color, max_color = plot_params['limits']['color']
+        else:
+            min_color, max_color = plot_data.min('color'), plot_data.max('color')
+        color_values = plot_data.values(first=True).color
+        color_name = plot_data.keys(first=True).color
+
+        if not log_scale:
+            color_mapper = linear_cmap(color_name, palette=plot_params['color_palette'], low=min_color, high=max_color)
+        else:
+            if min_color < 0:
+                raise ValueError(f"Entry for 'color' element '{color_data}' is negative but log-scale is selected")
+            color_mapper = log_cmap(color_name, palette=plot_params['color_palette'], low=min_color, high=max_color)
+
+        plot_params.set_defaults(default_type='function', color=color_mapper)
+
+        if blank_outsiders is not None:
+            if blank_outsiders == 'both':
+                outsiders = np.logical_or(color_values < min_color, color_values > max_color)
+            elif blank_outsiders == 'min':
+                outsiders = color_values < min_color
+            elif blank_outsiders == 'max':
+                outsiders = color_values > max_color
+            plot_data.mask_data(outsiders, data_key='color', replace_value=blank_color)
+
+    entry, source = plot_data.items(first=True)
+    r = p.rect(entry.x_axis,
+               entry.y_axis,
+               block_size,
+               block_size,
+               source=source,
+               fill_alpha=0.6,
+               color=plot_params['color'])
+    plot_params.add_tooltips(p, r)
+
+    plot_kw = plot_params.plot_kwargs(plot_type='text', ignore='color')
+    # The values displayed on the element boxes
+    for (entry, source), kw, position in zip(plot_data.items(), plot_kw, positions):
+
+        p.text(x=dodge(entry.x_axis, x_offset, range=p.x_range),
+               y=dodge(entry.y_axis, position, range=p.y_range),
+               text=entry.text,
+               source=source,
+               **kw)
+
+    # add color bar
+    if any(entry.color is not None for entry in plot_data.keys()):
+        colorbar_options = plot_params['colorbar_options'].copy()
+        cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
+
+        color_bar = ColorBar(color_mapper=color_mapper['transform'],
+                             title_text_font_size='12pt',
+                             ticker=BasicTicker(desired_num_ticks=10),
+                             border_line_color=None,
+                             background_fill_color=None,
+                             orientation='vertical',
+                             major_label_text_font_size=cbar_fontsize,
+                             **colorbar_options)
+
+        p.add_layout(color_bar, 'right')
+
+    # deactivate grid
+    p.grid.grid_line_color = None
+    plot_params.set_limits(p)
+    plot_params.save_plot(p, saveas)
+
+    return p
