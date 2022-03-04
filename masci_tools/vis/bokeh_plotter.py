@@ -91,6 +91,9 @@ class BokehPlotter(Plotter):
         },
         'text_font_size': '10pt',
         'text_font_style': 'normal',
+        'text_color': 'black',
+        'text_align': 'left',
+        'text_baseline': 'middle',
 
         #output control
         'save_plots': False,
@@ -202,6 +205,12 @@ class BokehPlotter(Plotter):
         'fontsize for the text glyphs in the plot',
         'text_font_style':
         'fontstyle for the text glyphs in the plot',
+        'text_color':
+        'text color for the text glyphs in the plot',
+        'text_align':
+        'text alignment for the text glyphs in the plot',
+        'text_baseline':
+        'text baseline for the text glyphs in the plot',
 
         #output control
         'save_plots':
@@ -251,7 +260,7 @@ class BokehPlotter(Plotter):
         'scatter': _DEFAULT_KWARGS | {'marker', 'marker_size', 'fill_alpha', 'fill_color'},
         'area': _DEFAULT_KWARGS | {'fill_alpha', 'fill_color'},
         'image': _DEFAULT_KWARGS | {'color', 'alpha', 'color_palette'},
-        'text': _DEFAULT_KWARGS | {'text_font_style', 'text_font_size'}
+        'text': _DEFAULT_KWARGS | {'text_font_style', 'text_font_size', 'text_color', 'text_align', 'text_baseline'}
     }
 
     _POSTPROCESS_RENAMES = {'marker_size': 'size', 'color_palette': 'palette'}

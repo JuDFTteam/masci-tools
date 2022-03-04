@@ -1198,7 +1198,11 @@ def periodic_table_plot(
     if isinstance(color_data, list):
         raise ValueError('Only one color data entry allowed')
 
-    plot_data = process_data_arguments(data=data, copy_data=copy_data, color=color_data, values=values)
+    plot_data = process_data_arguments(data=data,
+                                       copy_data=copy_data,
+                                       color=color_data,
+                                       values=values,
+                                       forbid_split_up={'color'})
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -1732,6 +1736,7 @@ def matrix_plot(
         positions=None,
         *,
         color_data=None,
+        x_offset=-0.47,
         log_scale=False,
         color_map=None,
         data=None,
@@ -1742,10 +1747,11 @@ def matrix_plot(
         saveas='matrix_plot.html',
         blank_outsiders='both',  #min, max or both, None
         blank_color='#c4c4c4',
-        include_legend=True,
         figure=None,
         categorical_axis=False,
         categorical_sort_key=None,
+        include_legend=True,
+        legend_entry=None,
         **kwargs):
     """
     Plot function for an interactive periodic table plot. Heat map and hover tool.
@@ -1772,9 +1778,7 @@ def matrix_plot(
     from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
 
     from bokeh.transform import dodge, linear_cmap, log_cmap
-    from bokeh.models import FactorRange
-    # from bokeh.sampledata.periodic_table import elements
-    # from bokeh.models import Label, ColorBar, OpenHead, Arrow, BasicTicker
+    from bokeh.models import FactorRange, ColorBar, BasicTicker
 
     if color_map is None:
         color_map = plasma
@@ -1782,44 +1786,27 @@ def matrix_plot(
     if positions is None:
         raise NotImplementedError('Not providing positions is not yet implemented')
 
-    if isinstance(color_data, list):
-        raise ValueError('Only one color data entry allowed')
-
     plot_data = process_data_arguments(data=data,
                                        copy_data=copy_data,
                                        color=color_data,
                                        text=text_values,
                                        x_axis=x_axis_data,
-                                       y_axis=y_axis_data)
+                                       y_axis=y_axis_data,
+                                       forbid_split_up={'color', 'x_axis', 'y_axis'})
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
 
-    # #Create two dictionary parameters for customizing the legend and colorbar
-    # plot_params.add_parameter(
-    #     'legend_options',
-    #     default_val={
-    #         'text_font_size': '13px',  #Please only provide it in pixels
-    #         'arrow_line_width': 2,
-    #         'arrow_size': 4,
-    #         'arrow_length': 0.3,
-    #         'label_standoff': 0.0,
-    #     })
-
-    # plot_params.add_parameter('colorbar_options',
-    #                           default_val={
-    #                               'height': 40,
-    #                               'width': 500,
-    #                               'fontsize': 12,
-    #                               'label_standoff': 8,
-    #                               'title': plot_data.keys(first=True).color,
-    #                               'scale_alpha': 1.0
-    #                           })
+    plot_params.add_parameter('colorbar_options',
+                              default_val={
+                                  'fontsize': 12,
+                                  'label_standoff': 8,
+                                  'title': plot_data.keys(first=True).color,
+                                  'scale_alpha': 1.0
+                              })
 
     plot_params.set_defaults(default_type='function',
                              figure_kwargs={
-                                 'width': 1000,
-                                 'height': 1000,
                                  'x_axis_type': 'auto',
                                  'y_axis_type': 'auto',
                              },
@@ -1874,71 +1861,31 @@ def matrix_plot(
     r = p.rect(x_axis, y_axis, 0.95, 0.95, source=data, fill_alpha=0.6, color=plot_params['color'])
     plot_params.add_tooltips(p, r)
 
-    plot_kw = plot_params.plot_kwargs(plot_type='text')
-
-    x_offset = -0.47
-    text_props = {'source': data, 'text_align': 'left', 'text_baseline': 'middle'}
+    plot_kw = plot_params.plot_kwargs(plot_type='text', ignore='color')
     # The values displayed on the element boxes
     for entry, kw, position in zip(plot_data.keys(), plot_kw, positions):
-        kw.pop('color')
 
         p.text(x=dodge(x_axis, x_offset, range=p.x_range),
                y=dodge(y_axis, position, range=p.y_range),
                text=entry.text,
-               **text_props,
+               source=data,
                **kw)
 
-        # label = kw.pop('legend_label', entry.values)
-
-        # if include_legend:
-        #     options = plot_params['legend_options']
-        #     arrow_length = options['arrow_length']
-        #     y_pos = 5.5 + position
-        #     x_pos = 7 + options['label_standoff'] + arrow_length
-        #     legend_fontsize = options['text_font_size']
-        #     fontsize_in_data = int(legend_fontsize.rstrip('px')) / plot_params['figure_kwargs']['height'] * 7
-        #     y_pos_label = y_pos - fontsize_in_data / 2
-
-        #     # legend
-        #     # not a real legend, but selfmade text
-        #     # I do not like the hardcoded positions of the legend
-        #     legendlabel = Label(x=x_pos,
-        #                         y=y_pos_label,
-        #                         text=label,
-        #                         render_mode='canvas',
-        #                         border_line_color='black',
-        #                         border_line_alpha=0.0,
-        #                         background_fill_color=None,
-        #                         background_fill_alpha=1.0,
-        #                         text_font_size=legend_fontsize)
-        #     p.add_layout(legendlabel)
-
-        #     legendlabelarrow = Arrow(x_start=x_pos,
-        #                              x_end=x_pos - arrow_length,
-        #                              y_start=y_pos,
-        #                              y_end=y_pos,
-        #                              line_width=options['arrow_line_width'],
-        #                              end=OpenHead(line_width=options['arrow_line_width'], size=options['arrow_size']))
-        #     p.add_layout(legendlabelarrow)
-
     # add color bar
+    if any(entry.color is not None for entry in plot_data.keys()):
+        colorbar_options = plot_params['colorbar_options'].copy()
+        cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
 
-    # if any(entry.color is not None for entry in plot_data.keys()):
-    #     colorbar_options = plot_params['colorbar_options'].copy()
-    #     cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
-    #     cbar_location = (plot_params['figure_kwargs']['width'] * 0.2, plot_params['figure_kwargs']['height'] * 0.55)
+        color_bar = ColorBar(color_mapper=color_mapper['transform'],
+                             title_text_font_size='12pt',
+                             ticker=BasicTicker(desired_num_ticks=10),
+                             border_line_color=None,
+                             background_fill_color=None,
+                             orientation='vertical',
+                             major_label_text_font_size=cbar_fontsize,
+                             **colorbar_options)
 
-    #     color_bar = ColorBar(color_mapper=color_mapper['transform'],
-    #                          title_text_font_size='12pt',
-    #                          ticker=BasicTicker(desired_num_ticks=10),
-    #                          border_line_color=None,
-    #                          background_fill_color=None,
-    #                          location=cbar_location,
-    #                          orientation='horizontal',
-    #                          major_label_text_font_size=cbar_fontsize,
-    #                          **colorbar_options)
-
-    #     p.add_layout(color_bar, 'center')
+        p.add_layout(color_bar, 'right')
 
     # deactivate grid
     p.grid.grid_line_color = None
