@@ -20,6 +20,7 @@
 
 ### For developers
 - Fixed upload of pytest-mpl results artifacts to include the whole directory with images and not just the HTML file [[#117]](https://github.com/JuDFTteam/masci-tools/pull/117)
+- Updated typing to newer version of `lxml-stubs` (`0.4.0`) [[#123]](https://github.com/JuDFTteam/masci-tools/pull/123)
 
 # v.0.8.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
