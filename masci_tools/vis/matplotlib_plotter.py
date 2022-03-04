@@ -305,7 +305,8 @@ class MatplotlibPlotter(Plotter):
             'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
             'plot_alpha', 'zorder'
         },
-        'histogram': {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'},
+        'histogram':
+        {'linewidth', 'linestyle', 'color', 'plot_label', 'plot_alpha', 'edgecolor', 'facecolor', 'zorder'},
     }
 
     _POSTPROCESS_RENAMES = {'plot_label': 'label', 'plot_alpha': 'alpha'}

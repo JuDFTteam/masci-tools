@@ -425,11 +425,12 @@ def test_matrix_plot_defaults(check_bokeh_plot):
 
     check_bokeh_plot(p)
 
+
 def test_matrix_plot_categorical_axis(check_bokeh_plot):
     """
     Test with categorical axis
     """
-    pytest.importorskip('bokeh',minversion='2.0.0')
+    pytest.importorskip('bokeh', minversion='2.0.0')
     from masci_tools.vis.bokeh_plots import matrix_plot
 
     x_names = ['Apple', 'Orange', 'Banana', 'Pear', 'Cherry']
