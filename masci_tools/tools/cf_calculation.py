@@ -16,10 +16,15 @@
    the potential
 
 """
+#TODO: Replace double underscore methods for reading
+#TODO: replace print statements with proper logging
+
+from __future__ import annotations
+
 import h5py
 import os
 import csv
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -28,10 +33,25 @@ from scipy.interpolate import interp1d
 from scipy.special import sph_harm  #pylint: disable=no-name-in-module
 from masci_tools.util.constants import HTR_TO_KELVIN
 from masci_tools.io.common_functions import skipHeader
+from masci_tools.util.typing import FileLike
+
+from typing import NamedTuple, Any
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type: ignore[misc]
+import warnings
+
 
 #This namedtuple is used as the return value for the crystal field calculation to have easy access
 #to all the necessary information
-CFCoefficient = namedtuple('CFCoefficient', ['l', 'm', 'spin_up', 'spin_down', 'unit', 'convention'])
+class CFCoefficient(NamedTuple):
+    l: int
+    m: int
+    spin_up: float | complex
+    spin_down: float | complex
+    unit: str
+    convention: str
 
 
 class CFCalculation:
@@ -57,7 +77,7 @@ class CFCalculation:
 
     """
 
-    __version__ = '0.1.0'
+    __version__ = '0.2.0'
 
     #prefactor for converting Blm to Alm<r^l>
     _alphalm = {
@@ -75,26 +95,45 @@ class CFCalculation:
         (6, 6): np.sqrt(231.0) / 16.0,
     }
 
-    def __init__(self, radial_points=4000, reference_radius='pot', pot_cutoff=1e-3, only_m0=False, quiet=False):
+    def __init__(self,
+                 *,
+                 radial_points: int = 4000,
+                 reference_radius: float | Literal['pot', 'cdn'] = 'pot',
+                 only_m0: bool = False,
+                 quiet: bool = False,
+                 coefficient_cutoff: float | None = 1e-3,
+                 **kwargs: Any) -> None:
 
         self.vlm = {}
         self.cdn = {}
 
-        self.denNorm = None
-        self.phi = None
-        self.theta = None
+        self.density_normalization: float | None = None
+        self.phi: float | None = None
+        self.theta: float | None = None
 
-        self.interpolated = False
+        self.interpolated: bool = False
         self.int = {}
         self.bravaisMat = {}
 
         self.radial_points = radial_points
         self.reference_radius = reference_radius
-        self.pot_cutoff = pot_cutoff
-        self.only_m0 = only_m0
+        self.coefficient_cutoff: float | None = coefficient_cutoff
+        self.pot_cutoff = None
+        if 'pot_cutoff' in kwargs:
+            warnings.warn('The argument pot_cutoff is deprecated. Use cf_cutoff instead', DeprecationWarning)
+            self.pot_cutoff = kwargs['pot_cutoff']
+        self.only_m0 = False
+        if 'only_m0' in kwargs:
+            warnings.warn('The argument only_m0 is deprecated.', DeprecationWarning)
+            self.only_m0 = kwargs['only_m0']
         self.quiet = quiet
 
-    def prefactor(self, l, m):
+    @property
+    def denNorm(self):
+        """DEPRECATED: Use density_normalization instead"""
+        return self.density_normalization
+
+    def stevens_prefactor(self, l: int, m: int) -> float:
         """Gives the lm dependent prefactor for conversion between
         Blm and Alm coefficients
 
@@ -106,45 +145,69 @@ class CFCalculation:
         """
         return self._alphalm.get((l, abs(m)), 0.0)
 
-    def readPot(self, *args, lm=None, **kwargs):
+    def readPot(self, *args, **kwargs):
+        """DEPRECATED: Use read_pot"""
+        warnings.warn('readPot is deprecated. Use read_potential instead', DeprecationWarning)
+        if 'atomType' in kwargs:
+            warnings.warn('The argument atomType is deprecated. Use atom_type instead', DeprecationWarning)
+            kwargs['atom_type'] = kwargs.pop('atomType')
+        if 'complexData' in kwargs:
+            warnings.warn('The argument complexData is deprecated. Use complex_data instead', DeprecationWarning)
+            kwargs['complex_data'] = kwargs.pop('complexData')
+        if 'lm' in kwargs:
+            warnings.warn('The argument lm is deprecated. Use lm_indices instead', DeprecationWarning)
+            kwargs['lm_indices'] = kwargs.pop('lm')
+
+        self.read_potential(*args, **kwargs)
+
+    def read_potential(self,
+                       *files: FileLike | h5py.File,
+                       lm_indices: list[tuple[int, int]] | None = None,
+                       atom_type: int | None = None,
+                       header: int = 0,
+                       complex_data: bool = True) -> None:
         """Reads in the potentials for the CF coefficient calculation
         If hdf files are given also the muffin tin radius is read in
 
         :param args: Expects string filenames for the potentials to read in
                      The function expects either HDF files or txt files with the
                      format (rmesh,vlmup,vlmdn)
-        :param lm: list of tuples, Defines the l and m indices for the given txt files
-        :param atomType: int, Defines the atomType to read in (only for HDF files)
+        :param lm_indices: list of tuples, Defines the l and m indices for the given txt files
+        :param atom_type: int, Defines the atomType to read in (only for HDF files)
         :param header: int, Define how many lines to skip in the beginning of txt file
-        :param complexData: bool, Define if the data in the text file is complex
+        :param complex_data: bool, Define if the data in the text file is complex
 
         Raises:
             ValueError: lm indices list length has to match number of files read in
 
         """
 
-        if lm is None:
-            lm = []
-
-        atomType = kwargs.get('atomType')
-        header = kwargs.get('header', 0)
-        complexData = kwargs.get('complexData', True)
+        if lm_indices is None:
+            lm_indices = []
 
         #Reads in the filenames given in args as potentials
-        for index, file in enumerate(args):
+        for index, file in enumerate(files):
             if isinstance(file, (str, Path)):
                 _, extension = os.path.splitext(file)
                 if extension == '.hdf':
                     with h5py.File(file, 'r') as hdffile:
-                        self.__readpotHDF(hdffile, atomType=atomType)
+                        self.__readpotHDF(hdffile, atom_type=atom_type)
                 else:
-                    if index >= len(lm):
+                    if index >= len(lm_indices):
                         raise ValueError('Not enough lm indices for the given files')
-                    self.__readpottxt(file, lm[index], header=header, complexData=complexData)
+                    self.__readpottxt(file, lm_indices[index], header=header, complexData=complex_data)
             else:
-                self.__readpotHDF(file, atomType)
+                self.__readpotHDF(file, atom_type)
 
-    def readCDN(self, file, **kwargs):
+    def readCDN(self, *args, **kwargs):
+        """DEPRECATED: Use read_charge_density instead"""
+        warnings.warn('readCDN is deprecated. Use read_charge_density instead', DeprecationWarning)
+        if 'atomType' in kwargs:
+            warnings.warn('The argument atomType is deprecated. Use atom_type instead', DeprecationWarning)
+            kwargs['atom_type'] = kwargs.pop('atomType')
+        self.read_charge_density(*args, **kwargs)
+
+    def read_charge_density(self, file: FileLike | h5py.File, atom_type: int | None = None, header: int = 0) -> None:
         """Reads in the normed charge density for the CF coefficient calculation
         If hdf files are given also the muffin tin radius is read in
 
@@ -154,25 +217,21 @@ class CFCalculation:
                          format (rmesh,cdn).
                          The charge density should be given as r^2n(r) and normed to 1
         kwargs:
-            :param atomType: int, Defines the atomType to read in (only for HDF files)
+            :param atom_type: int, Defines the atom_type to read in (only for HDF files)
             :param header: int, Define how many lines to skip in the beginning of txt file
 
         """
-
-        atomType = kwargs.get('atomType')
-        header = kwargs.get('header', 0)
-
         if isinstance(file, (str, Path)):
             _, extension = os.path.splitext(file)
             if extension == '.hdf':
                 with h5py.File(file, 'r') as hdffile:
-                    self.__readcdnHDF(hdffile, atomType=atomType)
+                    self.__readcdnHDF(hdffile, atom_type=atom_type)
             else:
                 self.__readcdntxt(file, header=header)
         else:
-            self.__readcdnHDF(file, atomType)
+            self.__readcdnHDF(file, atom_type)
 
-    def __readpotHDF(self, hdffile, atomType=None):
+    def __readpotHDF(self, hdffile, atom_type=None):
         """Read in the potential from a HDF file
 
         """
@@ -187,12 +246,12 @@ class CFCalculation:
 
         potential_groups = {key for key in hdffile if 'pot-' in key}
 
-        if len(potential_groups) != 1 and atomType is None:
+        if len(potential_groups) != 1 and atom_type is None:
             raise ValueError('Multiple possibilities for calculated potentials. '
                              f'Select the desired atomType: {potential_groups}')
 
-        if atomType is not None:
-            pot_group = f'pot-{atomType}'
+        if atom_type is not None:
+            pot_group = f'pot-{atom_type}'
         else:
             pot_group = potential_groups.pop()
 
@@ -212,11 +271,11 @@ class CFCalculation:
 
                     _data = _vlm.get('vlm')
                     _data = np.array(_data[:, :, 0] + 1j * _data[:, :, 1])
-                    if abs(_data).max() >= self.pot_cutoff:
+                    if self.pot_cutoff is None or abs(_data).max() >= self.pot_cutoff:
                         self.vlm[(l, m)] = _data
 
         else:
-            raise ValueError(f'No potential for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No potential for atomType {atom_type} found in {hdffile}')
 
         if not self.quiet:
             print(f'readPOTHDF: Generated the following information: {self.vlm.keys()}')
@@ -253,7 +312,7 @@ class CFCalculation:
             self.vlm['rmesh'] = np.array(self.vlm['rmesh'])
             self.vlm['RMT'] = max(self.vlm['rmesh'])
 
-    def __readcdnHDF(self, hdffile, atomType=None):
+    def __readcdnHDF(self, hdffile, atom_type=None):
         """Read in the charge density from a HDF file
 
         """
@@ -268,12 +327,12 @@ class CFCalculation:
 
         cdn_groups = {key for key in hdffile if 'cdn-' in key}
 
-        if len(cdn_groups) != 1 and atomType is None:
+        if len(cdn_groups) != 1 and atom_type is None:
             raise ValueError('Multiple possibilities for calculated charge densities. '
-                             f'Select the desired atomType: {cdn_groups}')
+                             f'Select the desired atom_type: {cdn_groups}')
 
-        if atomType is not None:
-            cdn_group = f'cdn-{atomType}'
+        if atom_type is not None:
+            cdn_group = f'cdn-{atom_type}'
         else:
             cdn_group = cdn_groups.pop()
 
@@ -286,7 +345,7 @@ class CFCalculation:
             self.cdn['data'] = np.array(_data)
 
         else:
-            raise ValueError(f'No charge density for atomType {atomType} found in {hdffile}')
+            raise ValueError(f'No charge density for atom_type {atom_type} found in {hdffile}')
 
         if not self.quiet:
             print(f'readcdnHDF: Generated the following information: {self.cdn.keys()}')
@@ -317,7 +376,7 @@ class CFCalculation:
             self.cdn['rmesh'] = np.array(self.cdn['rmesh'])
             self.cdn['RMT'] = max(self.cdn['rmesh'])
 
-    def validate(self):
+    def validate(self) -> None:
         """Validate that the object can be used to execute the calculation
         Checks that the given bravais matrices are equal if given
         """
@@ -333,7 +392,7 @@ class CFCalculation:
             if np.any(np.abs(diffBravais) > 1e-8):
                 raise ValueError('Differing definitions of potentials and charge density bravais matrix')
 
-    def interpolate(self):
+    def interpolate(self) -> None:
         """Interpolate all quantities to a common equidistant radial mesh
 
         """
@@ -357,17 +416,19 @@ class CFCalculation:
                     self.int[key]['spin-down'] = interp1d(self.vlm['rmesh'], value[1, :], fill_value='extrapolate')
         self.interpolated = True
 
-    def performIntegration(self, convert=True):
+    def get_coefficients(self, convention: Literal['Stevens', 'Wybourne'] = 'Stevens') -> list[CFCoefficient]:
         """Performs the integration to obtain the crystal field coefficients
         If the data was not already interpolated, the interpolation will
         be performed beforehand
 
         Parameters:
-            :param convert: bool, converts to Steven's coefficients (if True)
+            :param convention: str of the convention to use (Stevens or Wybourne)
 
         :returns: list of CFCoefficient objects (namedtuple), with all the necessary information
-
         """
+
+        if convention not in ('Stevens', 'Wybourne'):
+            raise ValueError(f'Unknown Crystal field convention: {convention}')
 
         self.validate()
 
@@ -385,9 +446,9 @@ class CFCalculation:
         if not self.interpolated:
             self.interpolate()
 
-        self.denNorm = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
+        self.density_normalization = np.trapz(self.int['cdn'](self.int['rmesh']), self.int['rmesh'])
         if not self.quiet:
-            print(f'Density normalization = {self.denNorm}')
+            print(f'Density normalization = {self.density_normalization}')
 
         result = []
         for lmkey, vlm in [(key, val) for key, val in self.int.items() if isinstance(key, tuple)]:
@@ -402,23 +463,22 @@ class CFCalculation:
                 if 'spin-down' not in integral:
                     integral['spin-down'] = integral['spin-up']
 
-                if convert:
-                    integral = {key: val.real * self.prefactor(l, m) for key, val in integral.items()}
-                    coeff = CFCoefficient(l=l,
-                                          m=m,
-                                          spin_up=integral['spin-up'],
-                                          spin_down=integral['spin-down'],
-                                          unit='K',
-                                          convention='Stevens')
-                else:
-                    coeff = CFCoefficient(l=l,
-                                          m=m,
-                                          spin_up=integral['spin-up'],
-                                          spin_down=integral['spin-down'],
-                                          unit='K',
-                                          convention='Wybourne')
+                if convention == 'Stevens':
+                    integral = {key: val.real * self.stevens_prefactor(l, m) for key, val in integral.items()}
 
-                result.append(coeff)
+                if self.coefficient_cutoff is not None:
+                    if all(np.abs(value) < self.coefficient_cutoff for value in integral.values()):
+                        if not self.quiet:
+                            print(f'Dismissing coefficient for {lmkey}: {integral}')
+                        continue
+
+                result.append(
+                    CFCoefficient(l=l,
+                                  m=m,
+                                  spin_up=integral['spin-up'],
+                                  spin_down=integral['spin-down'],
+                                  unit='K',
+                                  convention=convention))
 
         result.sort(key=lambda item: (item.l, abs(item.m)))
 
@@ -439,6 +499,22 @@ class CFCalculation:
                     print(f'{coeff.l:d}{coeff.m:>-3d}{coeff.spin_up:>+25.8f}{coeff.spin_down:>+25.8f}')
 
         return result
+
+    def performIntegration(self, convert=True):
+        """DEPRECATED: Use get_coefficients instead
+
+        Performs the integration to obtain the crystal field coefficients
+        If the data was not already interpolated, the interpolation will
+        be performed beforehand
+
+        Parameters:
+            :param convert: bool, converts to Steven's coefficients (if True)
+
+        :returns: list of CFCoefficient objects (namedtuple), with all the necessary information
+
+        """
+        warnings.warn('performIntegration is deprecated. Use get_coefficients instead', DeprecationWarning)
+        return self.get_coefficients(convention='Stevens' if convert else 'Wybourne')
 
 
 def plot_crystal_field_calculation(cfcalc,
