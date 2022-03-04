@@ -682,7 +682,7 @@ class InputSchemaDict(SchemaDict):
         :return: InputSchemaDict object with the information for the provided file
         """
         schema_dict = create_inpschema_dict(path)
-        xmlschema = etree.XMLSchema(file=path)  #type:ignore
+        xmlschema = etree.XMLSchema(file=path)
 
         return cls(schema_dict, xmlschema=xmlschema)
 
@@ -857,7 +857,7 @@ class OutputSchemaDict(SchemaDict):
             temp_output_schema_path = td_path / 'FleurOutputSchema.xsd'
             shutil.copy(path, temp_output_schema_path)
 
-            xmlschema = etree.XMLSchema(file=temp_output_schema_path)  #type:ignore
+            xmlschema = etree.XMLSchema(file=temp_output_schema_path)
 
         return cls(schema_dict, xmlschema=xmlschema)
 

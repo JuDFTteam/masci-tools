@@ -836,7 +836,7 @@ def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, outp
 
     #We want to leave comments in so we cannot use clear_xml for the xinclude feature
     #Here we just include and write out the complete xml file
-    xmltree.xinclude()  #type:ignore
+    xmltree.xinclude()
 
     from_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion')
 
@@ -929,8 +929,8 @@ def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, outp
 
     #If there was no relax.xml included we need to rewrite the xinclude tag for it
     if not tag_exists(xmltree, schema_dict_target, 'relaxation'):
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
         xmltree.getroot().append(xinclude_elem)
 
     etree.indent(xmltree)

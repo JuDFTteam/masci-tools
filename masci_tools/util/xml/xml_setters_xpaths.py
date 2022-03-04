@@ -74,7 +74,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag  #type:ignore
+        element_name = element.tag
 
     if len(tag_info['order']) == 0:
         tag_order = None

@@ -65,7 +65,7 @@ def create_tag(xmltree: XMLLike,
     from masci_tools.util.xml.common_functions import split_off_tag
 
     if etree.iselement(tag):
-        tag_name: str = tag.tag  #type:ignore
+        tag_name: str = tag.tag
     else:
         tag_name = tag  #type:ignore
 

@@ -67,7 +67,7 @@ def load_inpxml(inpxmlfile: XMLFileLike,
             raise ValueError(f'Failed to parse input file: {msg}') from msg
 
     if etree.iselement(xmltree):
-        xmltree = xmltree.getroottree()  #type:ignore
+        xmltree = xmltree.getroottree()
 
     if xmltree is None:
         if logger is not None:
@@ -152,7 +152,7 @@ def load_outxml(outxmlfile: XMLFileLike,
                 raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
 
     if etree.iselement(xmltree):
-        xmltree = xmltree.getroottree()  #type:ignore
+        xmltree = xmltree.getroottree()
 
     if xmltree is None:
         if logger is not None:

@@ -100,7 +100,7 @@ def inpxml_parser(inpxmlfile: XMLFileLike,
                 logger.exception(errmsg)
             raise ValueError(errmsg) from err
 
-    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:  #type:ignore
+    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
         inp_dict = inpxml_todict(root, schema_dict, constants, logger=logger)
     else:
         msg = 'Input file does not validate against the schema: Reason is unknown'

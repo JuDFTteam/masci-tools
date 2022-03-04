@@ -66,7 +66,7 @@ def xml_replace_tag(xmltree: XMLLike,
         parent = node.getparent()
         if parent is None:
             raise ValueError('Could not find parent of node')
-        index = parent.index(node)  #type:ignore
+        index = parent.index(node)
         parent.remove(node)
         parent.insert(index, copy.deepcopy(element))
 
@@ -186,7 +186,7 @@ def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
     parent = node.getparent()
     if parent is None:
         raise ValueError('Could not find parent of node')
-    index = parent.index(node)  #type:ignore
+    index = parent.index(node)
     parent.remove(node)
     parent.insert(index, ordered_node)
     return ordered_node
@@ -234,7 +234,7 @@ def xml_create_tag(xmltree: XMLLike,
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag  #type:ignore
+        element_name = element.tag
 
     parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
@@ -251,7 +251,7 @@ def xml_create_tag(xmltree: XMLLike,
             raise ValueError('Wrong value for occurrences') from exc
 
     for parent in parent_nodes:
-        element_to_write: etree._Element = copy.deepcopy(element)  #type:ignore
+        element_to_write: etree._Element = copy.deepcopy(element)
         if tag_order is not None:
             try:
                 tag_index = tag_order.index(element_name)
@@ -291,7 +291,7 @@ def xml_create_tag(xmltree: XMLLike,
                 existing_tags = list(parent.iterchildren(tag=tag))
 
                 if len(existing_tags) != 0:
-                    insert_index = parent.index(existing_tags[-1]) + 1  #type:ignore
+                    insert_index = parent.index(existing_tags[-1]) + 1
                     try:
                         parent.insert(insert_index, element_to_write)
                     except ValueError as exc:

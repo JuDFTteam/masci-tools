@@ -100,11 +100,11 @@ def create_outschema_dict(path: os.PathLike,
     schema_patches = [fix_qpoints_typo, patch_text_types]
 
     #print(f'processing: {path}/FleurOutputSchema.xsd')
-    xmlschema = etree.parse(path)  #type: ignore
+    xmlschema = etree.parse(path)
     xmlschema, _ = clear_xml(xmlschema)
 
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
-    out_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
+    out_version = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/@version')
     out_version_tuple = convert_str_version_number(out_version)
 
     input_basic_types = inpschema_dict['_basic_types'].get_unlocked()
