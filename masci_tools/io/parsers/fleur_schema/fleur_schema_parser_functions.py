@@ -104,8 +104,8 @@ def _cache_xpath_construction(func: Callable[..., set[str]]) -> Callable[..., se
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
-        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])
+        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])  #type:ignore[index]
+        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])  #type:ignore[index]
 
         arg_tuple = (version, root_tag, name, kwargs.get('enforce_end_type', ''), kwargs.get('ref', '')) + \
                     tuple(key for key in kwargs if kwargs.get(key, False))
@@ -143,8 +143,8 @@ def _cache_xpath_eval(func: Callable) -> Callable:
         is different than before or the dict contains more than 1024 entries the cache is cleared
         """
 
-        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
-        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])
+        version = str(xmlschema_evaluator('/xsd:schema/@version')[0])  #type:ignore[index]
+        root_tag = str(xmlschema_evaluator('/xsd:schema/xsd:element/@name')[0])  #type:ignore[index]
 
         arg_tuple = (version, root_tag, xpath, *variables.items())
 

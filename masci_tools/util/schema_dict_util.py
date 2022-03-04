@@ -1031,15 +1031,15 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
         if parent is None:
             raise ValueError('Could not find parent of included tag')
 
-        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)  #type:ignore
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
 
         parent.replace(included_tag, xinclude_elem)
 
     if 'relax.xml' not in included_trees:
         #The relax.xml include should always be there
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)  #type:ignore
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))  #type:ignore
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
         root.append(xinclude_elem)
 
     etree.indent(excluded_tree)

@@ -67,7 +67,7 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
 
     # replace XInclude parts to validate against schema
     if len(include_tags) != 0:
-        cleared_tree.xinclude()  #type:ignore
+        cleared_tree.xinclude()
 
     all_included_tags: set[str] = set()
     # get rid of xml:base attribute in the included parts
@@ -217,12 +217,12 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
         )
 
     try:
-        if isinstance(xpath, etree.XPath):
-            return_value = xpath(node, **variables)
-        elif isinstance(node, etree.XPathElementEvaluator):
+        if isinstance(node, etree.XPathElementEvaluator):
             return_value = node(xpath, **variables)
+        elif isinstance(xpath, etree.XPath):
+            return_value = xpath(node, **variables)
         else:
-            return_value = node.xpath(xpath, namespaces=namespaces, **variables)
+            return_value = node.xpath(xpath, namespaces=namespaces, smart_strings=True, extensions=None, **variables)
     except etree.XPathEvalError as err:
         if logger is not None:
             logger.exception(
@@ -286,7 +286,7 @@ def split_off_tag(xpath: TXPathLike) -> tuple[TXPathLike, str]:
         return xpath, tag
 
     if isinstance(xpath, etree.XPath):
-        xpath_str = xpath.path  #type:ignore
+        xpath_str = xpath.path
     else:
         xpath_str = xpath
 
@@ -321,7 +321,7 @@ def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
         xpath = copy.deepcopy(xpath)
         xpath.append_tag(tag)
     elif isinstance(xpath, etree.XPath):
-        xpath = etree.XPath(f'{str(xpath.path)}/{tag}')  #type:ignore [attr-defined,assignment]
+        xpath = etree.XPath(f'{str(xpath.path)}/{tag}')  #type:ignore [assignment]
     else:
         xpath = f"{str(xpath).rstrip('/')}/{tag}"
     return xpath
@@ -345,7 +345,7 @@ def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
         return xpath, attrib.lstrip('@')
 
     if isinstance(xpath, etree.XPath):
-        xpath_str = xpath.path  #type: ignore [attr-defined]
+        xpath_str = xpath.path
     else:
         xpath_str = xpath
 
@@ -434,7 +434,7 @@ def contains_tag(xpath: XPathLike, tag: str) -> bool:
         return tag in xpath.components
 
     if isinstance(xpath, etree.XPath):
-        xpath_str = xpath.path  #type:ignore
+        xpath_str = xpath.path
     else:
         xpath_str = str(xpath)
 

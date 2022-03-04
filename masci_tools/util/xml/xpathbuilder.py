@@ -15,7 +15,7 @@ general attribute conditions from simple XPath expressions
 """
 from __future__ import annotations
 
-from typing import Any, Iterable, cast
+from typing import Any, Iterable
 try:
     from typing import TypeAlias  #type: ignore[attr-defined]
 except ImportError:
@@ -113,7 +113,7 @@ class XPathBuilder:
     }
 
     def __init__(self,
-                 simple_path: etree._xpath,
+                 simple_path: str | bytes | etree.XPath,
                  filters: dict[str, FilterType] | None = None,
                  compile_path: bool = False,
                  strict: bool = False,
@@ -125,7 +125,7 @@ class XPathBuilder:
         if isinstance(simple_path, str):
             self.components = simple_path.rstrip('/').split('/')
         elif isinstance(simple_path, etree.XPath):
-            self.components = simple_path.path.split('/')  #type: ignore
+            self.components = simple_path.path.split('/')
         else:
             raise TypeError(f'Wrong type for simple path. Expected str or etree.XPath. Got {type(simple_path)}')
 
@@ -325,7 +325,7 @@ class XPathBuilder:
         return '/'.join(path_variable)
 
     @property
-    def path(self) -> etree._xpath:
+    def path(self) -> str | etree.XPath:
         """
         Property for constructing the complex Xpath
         """
@@ -352,8 +352,7 @@ class XPathBuilder:
             raise ValueError(f'Implicit string conversion for {self.__class__.__qualname__}.')
         path = self.path
         if isinstance(path, etree.XPath):
-            path = path.path  #type: ignore
-        path = cast(str, path)
+            path = path.path
 
         for name, value in sorted(self.path_variables.items(), key=lambda x: len(x[0]), reverse=True):
             path = path.replace(f'${name}', f'{value!r}')

@@ -43,14 +43,15 @@ dependencies = [
 
 [project.optional-dependencies]
 pre-commit = [
-    'mypy==0.930',
+    'mypy==0.931',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.11.1',
     'pytest~=6.0',
-    'lxml-stubs',
+    'lxml-stubs~=0.4.0',
     'types-pytz',
-    'types-tabulate'
+    'types-tabulate',
+    'types-click'
     ]
 docs = [
     'Sphinx',

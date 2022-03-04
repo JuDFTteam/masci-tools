@@ -168,7 +168,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
                 logger.exception(errmsg)
             raise ValueError(errmsg) from err
 
-    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':  #type:ignore
+    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         msg = 'Output file does not validate against the schema: Reason is unknown'
         if logger is not None:
             logger.warning(msg)

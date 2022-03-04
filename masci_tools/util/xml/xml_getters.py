@@ -1093,11 +1093,7 @@ def get_special_kpoints(
                                             list_return=True,
                                             logger=logger)
 
-        special_kpoints[label] = [
-            (
-                kpointlist.index(kpoint),  #type:ignore[attr-defined]
-                str(kpoint.attrib['label'])) for kpoint in labelled_points
-        ]
+        special_kpoints[label] = [(kpointlist.index(kpoint), str(kpoint.attrib['label'])) for kpoint in labelled_points]
 
     if len(special_kpoints) == 1:
         _, special_kpoints = special_kpoints.popitem()  #type:ignore[assignment]
