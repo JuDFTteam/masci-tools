@@ -564,7 +564,8 @@ def plot_crystal_field_calculation(cfcalc,
                                    labelsize=12,
                                    pot_colors=None,
                                    save=False,
-                                   show=True):
+                                   show=True,
+                                   figure=None):
     """
     Plot the given potentials and charge densities
 
@@ -590,8 +591,11 @@ def plot_crystal_field_calculation(cfcalc,
 
     color_iter = iter(pot_colors)
 
-    fig, axs = plt.subplots(1, 2)
-    ax = axs[0]
+    if figure is None:
+        figure = plt.figure()
+
+    gs = figure.add_gridspec(1,2)
+    ax = figure.add_subplot(gs[0])
 
     for l, m in nonzero_coefficients:
         vlm = cfcalc.int[(l, m)]
@@ -613,7 +617,7 @@ def plot_crystal_field_calculation(cfcalc,
     ax.tick_params(labelsize=labelsize)
     ax.set_title(pot_title, fontsize=fontsize)
 
-    ax = axs[1]
+    ax = figure.add_subplot(gs[1])
     ax.plot(cfcalc.cdn['rmesh'], cfcalc.cdn['data'], '-', color='black', label=r'$n(r)$')
     ax.plot(cfcalc.int['rmesh'], cfcalc.int['cdn'](cfcalc.int['rmesh']), '--', color='blue')
     ax.set_xlabel(xlabel, fontsize=fontsize)
@@ -622,12 +626,13 @@ def plot_crystal_field_calculation(cfcalc,
     ax.tick_params(labelsize=labelsize)
     ax.set_title(cdn_title, fontsize=fontsize)
 
-    fig.set_size_inches(14.0, 10.0)
-    fig.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
+    figure.set_size_inches(14.0, 10.0)
+    figure.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
     if save:
         plt.savefig(filename, format='png')
     if show:
         plt.show()
+    return figure
 
 
 def plot_crystal_field_potential(cfcoeffs,
@@ -635,7 +640,8 @@ def plot_crystal_field_potential(cfcoeffs,
                                  spin='avg',
                                  phi=0.0,
                                  save=False,
-                                 show=True):
+                                 show=True,
+                                 figure=None):
     """
     Plots the angular dependence of the calculated CF potential as well
     as a plane defined by phi.
@@ -677,7 +683,8 @@ def plot_crystal_field_potential(cfcoeffs,
     tickFontsize = 14
     labelFontsize = 20
     #Angular dependence plot
-    fig = plt.figure(figsize=(15, 5))
+    if figure is None:
+        figure = plt.figure(figsize=(15, 5))
     gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
     ax = plt.subplot(gs[0])
     plt.sca(ax)
