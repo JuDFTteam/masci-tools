@@ -203,6 +203,35 @@ class CFCalculation:
             else:
                 self.__readpotHDF(file, atom_type)
 
+    @classmethod
+    def from_arrays(cls, charge_density: np.ndarray, potentials: dict[tuple[int, int], np.ndarray],
+                    radial_mesh: dict[str, np.ndarray], **kwargs: Any) -> CFCalculation:
+        """
+        Create a CFCalculation instance from arrays
+
+        .. warning::
+            Using this classmethod will not check that the charge density and potential have the same bravais
+            matrix
+
+        :param charge_density: Array for the normed charge density
+        :param potentials: Data for the potentials (dict mapping (l,m) tuples to the corresponding data)
+        :param radial_mesh: dict for the data for the used radial meshs (keys 'cdn' and 'pot')
+
+        Other Kwargs are passed on to the constructor
+        """
+
+        cfcalc = cls(**kwargs)
+
+        cfcalc.cdn['data'] = charge_density
+        cfcalc.cdn['rmesh'] = radial_mesh['cdn']
+        cfcalc.cdn['RMT'] = np.max(radial_mesh['cdn'])
+
+        cfcalc.vlm = potentials
+        cfcalc.vlm['rmesh'] = radial_mesh['pot']
+        cfcalc.vlm['RMT'] = np.max(radial_mesh['pot'])
+
+        return cfcalc
+
     def readCDN(self, *args, **kwargs):
         """DEPRECATED: Use read_charge_density instead"""
         warnings.warn('readCDN is deprecated. Use read_charge_density instead', DeprecationWarning)
@@ -473,7 +502,7 @@ class CFCalculation:
 
                 if self.coefficient_cutoff is not None:
                     if all(np.abs(value) < self.coefficient_cutoff for value in integral.values()):
-                        logger.info(f'Dismissing coefficient for (%i,%i): %s', l, m, integral)
+                        logger.info('Dismissing coefficient for (%i,%i): %s', l, m, integral)
                         continue
 
                 results.append(
@@ -552,9 +581,9 @@ def plot_crystal_field_calculation(cfcalc,
     """
 
     cfcalc.validate()
-
-    if not cfcalc.interpolated:
-        cfcalc.interpolate()
+    #Calculate the coeffcients to find the potentials that contribute to non-zero coefficients
+    #This also makes sure that the interpolated quantities are available
+    nonzero_coefficients = [(coeff.l, coeff.m) for coeff in cfcalc.get_coefficients()]
 
     if pot_colors is None:
         pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
@@ -564,8 +593,8 @@ def plot_crystal_field_calculation(cfcalc,
     fig, axs = plt.subplots(1, 2)
     ax = axs[0]
 
-    for lmkey, vlm in [(key, val) for key, val in cfcalc.int.items() if isinstance(key, tuple)]:
-        l, m = lmkey
+    for l, m in nonzero_coefficients:
+        vlm = cfcalc.vlm[(l, m)]
         if not cfcalc.only_m0 or m == 0:
             try:
                 color = next(color_iter)
