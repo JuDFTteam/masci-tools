@@ -740,11 +740,11 @@ def plot_crystal_field_potential(cfcoeffs,
     ax.set_ylabel(r'y [Bohr]', fontsize=labelFontsize)
     ax.set_yticks([0, ny / 4.0, ny / 2.0, 3.0 * ny / 4.0, ny - 1])
     ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
-    fig.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
+    figure.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
 
     if save:
         plt.savefig(filename, format='png')
     if show:
         plt.show()
 
-    return fig
+    return figure
