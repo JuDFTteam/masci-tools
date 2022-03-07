@@ -594,7 +594,7 @@ def plot_crystal_field_calculation(cfcalc,
     if figure is None:
         figure = plt.figure()
 
-    gs = figure.add_gridspec(1,2)
+    gs = figure.add_gridspec(1, 2)
     ax = figure.add_subplot(gs[0])
 
     for l, m in nonzero_coefficients:
@@ -746,3 +746,5 @@ def plot_crystal_field_potential(cfcoeffs,
         plt.savefig(filename, format='png')
     if show:
         plt.show()
+
+    return fig
