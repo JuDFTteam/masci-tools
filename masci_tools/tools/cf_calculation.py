@@ -594,7 +594,7 @@ def plot_crystal_field_calculation(cfcalc,
     ax = axs[0]
 
     for l, m in nonzero_coefficients:
-        vlm = cfcalc.vlm[(l, m)]
+        vlm = cfcalc.int[(l, m)]
         if not cfcalc.only_m0 or m == 0:
             try:
                 color = next(color_iter)
