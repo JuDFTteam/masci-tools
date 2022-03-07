@@ -17,7 +17,7 @@
 
 """
 #TODO: Replace double underscore methods for reading
-#TODO: replace print statements with proper logging
+#TODO: Refactor plotting methods to use general plot_methods
 
 from __future__ import annotations
 
