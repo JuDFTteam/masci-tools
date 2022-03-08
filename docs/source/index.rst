@@ -83,7 +83,7 @@ Reference
 .. toctree::
    :maxdepth: 1
 
-   _changelog.md
+   reference/index
 
 
 Indices and tables
