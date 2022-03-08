@@ -581,6 +581,39 @@ def test_plot_spinpol_dos_non_spinpol_bokeh(check_bokeh_plot):
     check_bokeh_plot(fig)
 
 
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='spinpol_dos_only_spin.png')
+def test_plot_spinpol_dos_only_spin_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    gcf().clear()
+
+    plot_fleur_dos(data, attributes, show=False, only_spin='down')
+
+    return gcf()
+
+
+def test_plot_spinpol_dos_only_spin_bokeh(check_bokeh_plot):
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    fig = plot_fleur_dos(data, attributes, show=False, backend='bokeh', only_spin='down')
+
+    check_bokeh_plot(fig)
+
+
 @pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_character.png')
 def test_plot_bands_characterize_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
