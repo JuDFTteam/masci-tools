@@ -3,7 +3,7 @@ This module defines some aliases used in typing
 """
 from __future__ import annotations
 
-from typing import TypeVar, Any, IO
+from typing import TypeVar, Any, IO, Union
 import sys
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -16,7 +16,7 @@ import os
 #Type for xml setters/getters for xpath objects that can be used in `eval_xpath`
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
-XPathLike: TypeAlias = 'str | bytes | etree.XPath | XPathBuilder'
+XPathLike: TypeAlias = Union[str, bytes, etree.XPath, XPathBuilder]
 """
 Type for xpath expressions
 """

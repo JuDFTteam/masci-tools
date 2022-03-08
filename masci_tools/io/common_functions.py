@@ -16,7 +16,7 @@ without a database) are collected.
 from __future__ import annotations
 
 import io
-from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar
+from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar, Union, Tuple, List
 import sys
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -447,7 +447,7 @@ def is_sequence(arg: Any) -> bool:
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-VectorType: TypeAlias = 'tuple[float, float, float] | list[float] |  np.ndarray'
+VectorType: TypeAlias = Union[Tuple[float,float,float], List[float], np.ndarray]
 _TVectorType = TypeVar('_TVectorType', bound=VectorType)
 """Generic type variable for atom position types"""
 
