@@ -27,7 +27,8 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
+extensions = ['myst_parser',
+              'sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.todo',
               'sphinx.ext.coverage',
@@ -45,13 +46,12 @@ intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'lxml': ('https://lxml.de/apidoc/',None),
                        'h5py': ('https://docs.h5py.org/en/latest/', None)}
 
+myst_enable_extensions = []
+
 todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-# The suffix of source filenames.
-source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'

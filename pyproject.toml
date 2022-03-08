@@ -54,12 +54,12 @@ pre-commit = [
     'types-click'
     ]
 docs = [
-    'Sphinx',
-    'docutils',
+    'sphinx~=4.1',
     'sphinx_rtd_theme',
     'sphinx-click',
     'sphinx-toolbox<=2.15.2',
-    'sphinx-autodoc-typehints'
+    'sphinx-autodoc-typehints',
+    "myst-parser~=0.15.2",
     ]
 testing = [
     'pytest~=6.0',
