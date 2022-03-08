@@ -131,7 +131,7 @@ def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
 
     :raises ValueError: if the tag can not be found in the given xmltree
     """
-    from masci_tools.util.schema_dict_util import reverse_xinclude
+    from masci_tools.util.schema_dict_util import reverse_xinclude  #pylint: disable=redefined-outer-name
     warnings.warn('DEPRECATED: reverse_xinclude moved to masci_tools.util.schema_dict_util', DeprecationWarning)
     return reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs)
 
