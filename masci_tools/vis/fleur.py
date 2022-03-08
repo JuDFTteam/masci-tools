@@ -294,6 +294,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 def plot_fleur_dos(dosdata,
                    attributes,
                    spinpol=True,
+                   only_spin=None,
                    multiply_by_equiv_atoms=True,
                    plot_keys=None,
                    show_total=True,
@@ -318,6 +319,7 @@ def plot_fleur_dos(dosdata,
     :param dosdata: dataset dict produced by the `FleurDOS` recipe
     :param attributes: attributes dict produced by the `FleurDOS` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
+    :param only_spin: optional str, if given only the specified spin components are plotted
     :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
 
     Arguments for selecting the DOS components to plot:
@@ -353,6 +355,18 @@ def plot_fleur_dos(dosdata,
                     after = key[len(f'MT:{natom}'):]
                     if after == '' or not after[0].isdecimal():
                         dosdata[key] *= n_equiv[natom]
+
+    if only_spin is not None:
+        if only_spin not in ('up', 'down'):
+            raise ValueError(f'Invalid value for only spin {only_spin} (Valid are up or down)')
+
+        if not any(f'_{only_spin}' in key for key in dosdata.keys()):
+            raise ValueError(f'No data for spin {only_spin} available')
+
+        dosdata = dosdata[[key for key in dosdata.keys() if f'_{only_spin}' in key or key in ('energy_grid')]]
+
+        if only_spin == 'down':
+            dosdata = dosdata.rename(columns={key: key.replace('_down', '_up') for key in dosdata.columns})
 
     spinpol_data = attributes['spins'] == 2 and any('_down' in key for key in dosdata.keys())
 
