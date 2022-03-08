@@ -76,7 +76,14 @@ Module reference (API)
    :maxdepth: 4
 
    module_guide/mg_index
-      
+
+Reference
+##########
+
+.. toctree::
+   :maxdepth: 1
+
+   _changelog.md
 
 
 Indices and tables
