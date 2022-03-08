@@ -218,7 +218,7 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
 
     try:
         if isinstance(node, etree.XPathElementEvaluator):
-            return_value = node(xpath, **variables)
+            return_value = node(xpath, **variables)  #type:ignore[arg-type]
         elif isinstance(xpath, etree.XPath):
             return_value = xpath(node, **variables)
         else:
@@ -410,7 +410,7 @@ def normalize_xmllike(xmllike: XMLLike) -> etree._Element:
     """
     if etree.iselement(xmllike):
         return xmllike
-    xmllike, _ = clear_xml(xmllike)
+    xmllike, _ = clear_xml(xmllike)  #type:ignore[arg-type]
     return xmllike.getroot()
 
 

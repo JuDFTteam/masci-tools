@@ -811,7 +811,7 @@ def listElements(hdffile: FileLike, show: bool = False) -> list[GreensfElement]:
             elements.append(_read_element_header(h5_file, index))
 
     if show:
-        print(f'These Elements are found in {hdffile}:')
+        print(f'These Elements are found in {hdffile!r}:')
         printElements(elements)
 
     return elements

@@ -15,10 +15,15 @@ Common functions for converting types to and from XML files
 from __future__ import annotations
 
 from typing import Iterable, Any, cast
+import sys
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 try:
-    from typing import Literal, TypeAlias  #type:ignore
+    from typing import Literal
 except ImportError:
-    from typing_extensions import Literal, TypeAlias  #type:ignore
+    from typing_extensions import Literal  #type: ignore[misc]
 from lxml import etree
 import logging
 from masci_tools.io.parsers import fleur_schema
@@ -172,7 +177,8 @@ def convert_from_xml_explicit(
             all_success = False
             continue
 
-        types: tuple[BaseType, ...] = tuple(definition.base_type for definition in text_definitions)
+        types: tuple[BaseType,
+                     ...] = tuple(definition.base_type for definition in text_definitions)  #type: ignore[misc]
         lengths = {definition.length for definition in text_definitions}
 
         if len(text_definitions) == 1:
@@ -184,7 +190,7 @@ def convert_from_xml_explicit(
         all_success = all_success and suc
 
         if len(converted_text) == 1 and 'unbounded' not in lengths:
-            converted_text = converted_text[0]
+            converted_text = converted_text[0]  #type:ignore[assignment]
         elif len(converted_text) == 0 and 'unbounded' not in lengths:
             converted_text = ''  #type:ignore
 
@@ -192,7 +198,7 @@ def convert_from_xml_explicit(
 
     ret_value = converted_list
     if len(converted_list) == 1 and not list_return:
-        ret_value = converted_list[0]
+        ret_value = converted_list[0]  #type:ignore[assignment]
 
     return ret_value, all_success
 
@@ -254,7 +260,7 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
             all_success = False
             continue
 
-        types: tuple[BaseType, ...] = tuple(definition.base_type for definition in text_definitions)
+        types: tuple[BaseType, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore[misc]
 
         converted_text, suc = convert_to_xml_single_values(val, types, logger=logger, float_format=float_format)
         all_success = all_success and suc

@@ -144,7 +144,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
                    orbital: int,
                    phi: float,
                    theta: float,
-                   filters: FilterType = None) -> list[str]:
+                   filters: FilterType | None = None) -> list[str]:
     """
     Rotate the density matrix with the given angles phi and theta
 
