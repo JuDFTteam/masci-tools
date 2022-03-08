@@ -447,7 +447,7 @@ def is_sequence(arg: Any) -> bool:
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-VectorType: TypeAlias = Union[Tuple[float,float,float], List[float], np.ndarray]
+VectorType: TypeAlias = Union[Tuple[float, float, float], List[float], np.ndarray]
 _TVectorType = TypeVar('_TVectorType', bound=VectorType)
 """Generic type variable for atom position types"""
 
