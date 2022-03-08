@@ -354,7 +354,23 @@ def plot_fleur_dos(dosdata,
                     if after == '' or not after[0].isdecimal():
                         dosdata[key] *= n_equiv[natom]
 
-    spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
+    spinpol_data = attributes['spins'] == 2 and any('_down' in key for key in dosdata.keys())
+
+    if spinpol_data and not spinpol:
+        #Add the the _up and _down columns into the _up columns
+        spin_up = dosdata[[label for label in dosdata.columns if label.endswith('_up')]]
+        spin_dn = dosdata[[label for label in dosdata.columns if label.endswith('_down')]]
+        energy_grid = dosdata['energy_grid']
+
+        spin_dn = spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns})
+        complete_spin = pd.concat([energy_grid, spin_up, spin_dn], axis=1)
+
+        #Sum up the columns with the same name (since we renamed _down to _up this adds both spins)
+        new_dosdata = complete_spin.groupby(complete_spin.columns, axis=1).sum()
+        dosdata = new_dosdata
+
+    spinpol = spinpol_data and spinpol
+
     legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
 
     if key_mask is None:
