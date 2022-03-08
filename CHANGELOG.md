@@ -15,6 +15,7 @@
   
   The old signatures are still supported with deprecations if called via the `FleurXMLModifier` [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Remove constraint on `bokeh` version (previously `<=1.4.0`) [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
+- Add `only_spin` option and calculate complete non-spinpolarized DOS for `spinpol=False` in `plot_fleur_dos` [[#125]](https://github.com/JuDFTteam/masci-tools/pull/125)
 
 ### Bugfixes
 - Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
