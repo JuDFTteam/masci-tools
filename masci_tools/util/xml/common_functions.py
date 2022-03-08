@@ -281,14 +281,14 @@ def split_off_tag(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     :param xpath:  xpath to split up
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = copy.deepcopy(xpath)
+        xpath = copy.deepcopy(xpath)  #type:ignore[assignment]
         tag = xpath.strip_off_tag()
-        return xpath, tag
+        return xpath, tag  #type:ignore[return-value]
 
     if isinstance(xpath, etree.XPath):
         xpath_str = xpath.path
     else:
-        xpath_str = xpath
+        xpath_str = xpath  #type:ignore[assignment]
 
     split_xpath = xpath_str.split('/')
     if split_xpath[-1] == '':
@@ -299,7 +299,7 @@ def split_off_tag(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     if isinstance(xpath, etree.XPath):
         xpath = etree.XPath(xpath_str)  #type:ignore [assignment]
     else:
-        xpath = xpath_str
+        xpath = xpath_str  #type:ignore[assignment]
 
     return xpath, tag
 
@@ -318,12 +318,12 @@ def add_tag(xpath: TXPathLike, tag: str) -> TXPathLike:
     :returns: xpath with the form {old_xpath}/tag
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = copy.deepcopy(xpath)
+        xpath = copy.deepcopy(xpath)  #type:ignore[assignment]
         xpath.append_tag(tag)
     elif isinstance(xpath, etree.XPath):
         xpath = etree.XPath(f'{str(xpath.path)}/{tag}')  #type:ignore [assignment]
     else:
-        xpath = f"{str(xpath).rstrip('/')}/{tag}"
+        xpath = f"{str(xpath).rstrip('/')}/{tag}"  #type:ignore[assignment]
     return xpath
 
 
@@ -338,16 +338,16 @@ def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     :param xpath: xpath to split up
     """
     if isinstance(xpath, XPathBuilder):
-        xpath = copy.deepcopy(xpath)
+        xpath = copy.deepcopy(xpath)  #type:ignore[assignment]
         attrib = xpath.strip_off_tag()
         if '@' not in attrib:
             raise ValueError('Path does not end with an attribute')
-        return xpath, attrib.lstrip('@')
+        return xpath, attrib.lstrip('@')  #type:ignore[return-value]
 
     if isinstance(xpath, etree.XPath):
         xpath_str = xpath.path
     else:
-        xpath_str = xpath
+        xpath_str = xpath  #type:ignore[assignment]
 
     split_xpath = xpath_str.split('/@')
     if len(split_xpath) != 2:
@@ -357,7 +357,7 @@ def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     if isinstance(xpath, etree.XPath):
         xpath = etree.XPath(xpath_str)  #type:ignore [assignment]
     else:
-        xpath = xpath_str
+        xpath = xpath_str  #type:ignore[assignment]
 
     return xpath, attrib
 

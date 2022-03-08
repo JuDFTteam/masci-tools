@@ -21,12 +21,12 @@ XPathLike: TypeAlias = 'str | bytes | etree.XPath | XPathBuilder'
 Type for xpath expressions
 """
 
-TXPathLike = TypeVar('TXPathLike', str, etree.XPath, XPathBuilder)
+TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
 """
 Type for xpath expressions
 """
 
-FileLike: TypeAlias = 'str | bytes | Path | os.PathLike[Any] | IO'
+FileLike: TypeAlias = 'str | bytes | Path | os.PathLike[Any] | IO[Any]'
 """
 Type used for functions accepting file-like objects, i.e. handles or file paths
 """
