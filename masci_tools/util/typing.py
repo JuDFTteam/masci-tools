@@ -4,9 +4,10 @@ This module defines some aliases used in typing
 from __future__ import annotations
 
 from typing import TypeVar, Any, IO
-try:
-    from typing import TypeAlias  #type: ignore[attr-defined]
-except ImportError:
+import sys
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
     from typing_extensions import TypeAlias
 from lxml import etree
 from pathlib import Path

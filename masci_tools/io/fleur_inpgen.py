@@ -374,7 +374,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
         if isinstance(file, io.IOBase):
             file.write(inpgen_file_content_str)
         else:
-            with open(file, 'w', encoding='utf-8') as inpfile:
+            with open(file, 'w', encoding='utf-8') as inpfile:  #type:ignore[arg-type]
                 inpfile.write(inpgen_file_content_str)
 
     return inpgen_file_content_str
@@ -493,8 +493,8 @@ def read_inpgen_file(
     if isinstance(file, io.IOBase):
         contents = file.read()
     else:
-        if os.path.exists(file):
-            with open(file, encoding='utf-8') as f:
+        if os.path.exists(file):  #type:ignore[arg-type]
+            with open(file, encoding='utf-8') as f:  #type:ignore[arg-type]
                 contents = f.read()
         else:
             contents = file

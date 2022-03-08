@@ -319,7 +319,7 @@ class FleurXMLModifier:
                 with open(original_nmmp_file, encoding='utf-8') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
-                original_nmmp_lines = original_nmmp_file
+                original_nmmp_lines = original_nmmp_file  #type:ignore[assignment]
         else:
             original_nmmp_lines = None
 

@@ -91,7 +91,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
     if len(parent_nodes) == 0:
         if create_parents:
             parent_xpath, parent_name = split_off_tag(base_xpath)
-            complex_parent_xpath, _ = split_off_tag(xpath)
+            complex_parent_xpath, _ = split_off_tag(xpath)  #type:ignore[type-var]
             xmltree = xml_create_tag_schema_dict(xmltree,
                                                  schema_dict,
                                                  complex_parent_xpath,
@@ -139,7 +139,7 @@ def eval_xpath_create(xmltree: XMLLike,
 
     if len(nodes) == 0:
         parent_xpath, tag_name = split_off_tag(base_xpath)
-        complex_parent_xpath, _ = split_off_tag(xpath)
+        complex_parent_xpath, _ = split_off_tag(xpath)  #type:ignore[type-var]
         xmltree = xml_create_tag_schema_dict(xmltree,
                                              schema_dict,
                                              complex_parent_xpath,
@@ -387,7 +387,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     possible_types = schema_dict['attrib_types'][name]
 
     if not etree.iselement(xmltree):
-        constants = read_constants(xmltree.getroot(), schema_dict)
+        constants = read_constants(xmltree.getroot(), schema_dict)  #type:ignore[union-attr]
     else:
         constants = read_constants(xmltree, schema_dict)
 
@@ -412,7 +412,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
 
     stringattribute: list[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
-    tag_xpath, name = split_off_attrib(xpath)
+    tag_xpath, name = split_off_attrib(xpath)  #type:ignore[type-var]
 
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{name}'. Cannot add number")
@@ -528,7 +528,7 @@ def xml_set_simple_tag(xmltree: XMLLike,
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
-    tag_xpath = add_tag(xpath, tag_name)
+    tag_xpath = add_tag(xpath, tag_name)  #type:ignore[type-var]
     tag_base_xpath = f'{base_xpath}/{tag_name}'
 
     if tag_name in tag_info['several']:
@@ -628,7 +628,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
 
         key = (tag_info['complex'] | tag_info['simple'] | tag_info['attribs']).original_case[key]
 
-        sub_xpath = add_tag(xpath, key)
+        sub_xpath = add_tag(xpath, key)  #type:ignore[type-var]
         sub_base_xpath = f'{base_xpath}/{key}'
         if key in tag_info['attribs']:
             xml_set_attrib_value(xmltree, schema_dict, xpath, base_xpath, key, val, create=create)

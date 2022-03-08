@@ -43,7 +43,7 @@ def xml_replace_tag(xmltree: XMLLike,
     import copy
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
@@ -89,7 +89,7 @@ def xml_delete_att(xmltree: XMLLike,
     """
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
@@ -125,7 +125,7 @@ def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterab
     """
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
@@ -340,7 +340,7 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
@@ -392,7 +392,7 @@ def xml_set_text_no_create(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 

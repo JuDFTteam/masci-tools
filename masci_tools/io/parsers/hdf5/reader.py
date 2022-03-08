@@ -103,7 +103,7 @@ class HDF5Reader:
         self.file: h5py.File = None
 
         if isinstance(self._original_file, (io.IOBase, Path)):
-            self.filename = self._original_file.name  # type: ignore
+            self.filename = self._original_file.name
         elif isinstance(self._original_file, bytes):
             self.filename = os.fsdecode(self._original_file)
         else:

@@ -17,9 +17,10 @@ from __future__ import annotations
 
 import io
 from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar
-try:
-    from typing import TypeAlias  #type:ignore
-except ImportError:
+import sys
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
     from typing_extensions import TypeAlias
 import numpy as np
 from collections.abc import Sequence
@@ -47,9 +48,9 @@ def open_general(filename_or_handle: FileLike, iomode: str | None = None) -> IO[
     if reopen_file:
         if iomode is None:
             iomode = 'r'
-        f = open(filename_or_handle, iomode, encoding='utf8')
+        f = open(filename_or_handle, iomode, encoding='utf8')  #type:ignore[arg-type]
     else:
-        f = filename_or_handle
+        f = filename_or_handle  #type:ignore[assignment]
         if f.closed:  # reopen file if it was closed before
             if iomode is None:
                 f = open(f.name, f.mode, encoding='utf8')
@@ -607,11 +608,11 @@ def find_symmetry_relation(from_pos: VectorType,
 
     if not relative_pos:
         if film:
-            from_pos = abs_to_rel_f(from_pos, cell, (True, True, False))
-            to_pos = abs_to_rel_f(to_pos, cell, (True, True, False))
+            from_pos = abs_to_rel_f(from_pos, cell, (True, True, False))  #type: ignore[type-var]
+            to_pos = abs_to_rel_f(to_pos, cell, (True, True, False))  #type: ignore[type-var]
         else:
-            from_pos = abs_to_rel(from_pos, cell)
-            to_pos = abs_to_rel(to_pos, cell)
+            from_pos = abs_to_rel(from_pos, cell)  #type: ignore[type-var]
+            to_pos = abs_to_rel(to_pos, cell)  #type: ignore[type-var]
 
     cell = np.array(cell)
     cell_square = np.matmul(cell.T, cell)

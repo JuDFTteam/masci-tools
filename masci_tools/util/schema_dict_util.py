@@ -361,8 +361,11 @@ def evaluate_text(node: XMLLike,
 
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
-                                       list_return=True)  #type:ignore
+    stringtext: list[str] = eval_xpath(
+        node,
+        add_tag(complex_xpath, 'text()'),  #type:ignore[type-var]
+        logger=logger,
+        list_return=True)  #type:ignore
 
     for text in stringtext.copy():
         if text.strip() == '':
@@ -498,10 +501,11 @@ def evaluate_tag(node: XMLLike,
 
     for attrib in attrib_list:
 
-        stringattribute: list[str] = eval_xpath(node,
-                                                add_tag(complex_xpath, f'@{attrib}'),
-                                                logger=logger,
-                                                list_return=True)  #type:ignore
+        stringattribute: list[str] = eval_xpath(
+            node,
+            add_tag(complex_xpath, f'@{attrib}'),  #type:ignore[type-var]
+            logger=logger,
+            list_return=True)  #type:ignore
 
         if len(stringattribute) == 0:
             if logger is None:
@@ -530,8 +534,11 @@ def evaluate_tag(node: XMLLike,
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
-                                           list_return=True)  #type:ignore
+        stringtext: list[str] = eval_xpath(
+            node,
+            add_tag(complex_xpath, 'text()'),  #type:ignore[type-var]
+            logger=logger,
+            list_return=True)  #type:ignore
 
         for textval in stringtext.copy():
             if textval.strip() == '':
