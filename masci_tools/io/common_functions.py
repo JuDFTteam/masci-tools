@@ -447,9 +447,9 @@ def is_sequence(arg: Any) -> bool:
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-_TVectorType = TypeVar('_TVectorType', 'tuple[float, float, float]', 'list[float]', np.ndarray)
-"""Generic type variable for atom position types"""
 VectorType: TypeAlias = 'tuple[float, float, float] | list[float] |  np.ndarray'
+_TVectorType = TypeVar('_TVectorType', bound=VectorType)
+"""Generic type variable for atom position types"""
 
 
 def abs_to_rel(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
@@ -477,7 +477,7 @@ def abs_to_rel(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _T
         return relative_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(relative_vector)  #type:ignore
-    return relative_vector
+    return relative_vector  #type:ignore[return-value]
 
 
 def abs_to_rel_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray, pbc: tuple[bool, bool,
@@ -515,7 +515,7 @@ def abs_to_rel_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray, pbc
         return relative_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(relative_vector)  #type:ignore
-    return relative_vector
+    return relative_vector  #type:ignore[return-value]
 
 
 def rel_to_abs(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
@@ -573,7 +573,7 @@ def rel_to_abs_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> 
         return absolute_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(absolute_vector)  #type:ignore
-    return absolute_vector
+    return absolute_vector  #type:ignore[return-value]
 
 
 def find_symmetry_relation(from_pos: VectorType,
@@ -608,11 +608,11 @@ def find_symmetry_relation(from_pos: VectorType,
 
     if not relative_pos:
         if film:
-            from_pos = abs_to_rel_f(from_pos, cell, (True, True, False))  #type: ignore[type-var]
-            to_pos = abs_to_rel_f(to_pos, cell, (True, True, False))  #type: ignore[type-var]
+            from_pos = abs_to_rel_f(from_pos, cell, (True, True, False))
+            to_pos = abs_to_rel_f(to_pos, cell, (True, True, False))
         else:
-            from_pos = abs_to_rel(from_pos, cell)  #type: ignore[type-var]
-            to_pos = abs_to_rel(to_pos, cell)  #type: ignore[type-var]
+            from_pos = abs_to_rel(from_pos, cell)
+            to_pos = abs_to_rel(to_pos, cell)
 
     cell = np.array(cell)
     cell_square = np.matmul(cell.T, cell)
