@@ -436,7 +436,11 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
     from .common import get_plotter
 
     params = get_plotter(backend)
-    ordered_keys_without_spin = [key.removesuffix('_up').removesuffix('_down') for key in ordered_keys]
+    #TODO: This should be replaced with key.removesuffix() on python 3.9+
+    ordered_keys_without_spin = [key[:len('_up') + 1] if key.endswith('_up') else key for key in ordered_keys]
+    ordered_keys_without_spin = [
+        key[:len('_down') + 1] if key.endswith('_down') else key for key in ordered_keys_without_spin
+    ]
 
     for key, value in kwargs.items():
         if params.is_general(key):
