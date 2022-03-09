@@ -120,6 +120,7 @@ class CFCalculation:
         self.interpolated: bool = False
         self.int = {}
         self.bravaisMat = {}
+        self.atom_type: int | None = None
 
         self.radial_points = radial_points
         self.reference_radius = reference_radius
@@ -290,6 +291,14 @@ class CFCalculation:
             pot_group = f'pot-{atom_type}'
         else:
             pot_group = potential_groups.pop()
+            _, _, atom_type = pot_group.partition('-')
+
+        if self.atom_type is not None and self.atom_type != atom_type:
+            logger.warning('atom_type %s for potential does not correspond to previously read in data (%s)', atom_type,
+                           self.atom_type)
+
+        if self.atom_type is None:
+            self.atom_type = atom_type
 
         if pot_group in hdffile:
             _pot = hdffile.get(pot_group)
@@ -370,6 +379,14 @@ class CFCalculation:
             cdn_group = f'cdn-{atom_type}'
         else:
             cdn_group = cdn_groups.pop()
+            _, _, atom_type = cdn_group.partition('-')
+
+        if self.atom_type is not None and self.atom_type != atom_type:
+            logger.warning('atom_type %s for density does not correspond to previously read in data (%s)', atom_type,
+                           self.atom_type)
+
+        if self.atom_type is None:
+            self.atom_type = atom_type
 
         if cdn_group in hdffile:
             _cdn = hdffile.get(cdn_group)
