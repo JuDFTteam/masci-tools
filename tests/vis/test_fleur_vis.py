@@ -655,3 +655,21 @@ def test_plot_bands_characterize_bokeh(check_bokeh_plot):
                                         only_spin='up')
 
     check_bokeh_plot(fig)
+
+#See issue https://github.com/JuDFTteam/masci-tools/issues/129
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='spinpol_dos_area.png')
+def test_plot_spinpol_dos_area_plot():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    gcf().clear()
+
+    plot_fleur_dos(data, attributes, show=False, area_plot={'MT:1_up': True,'MT:1_down': True}, area_alpha=0.3)
+
+    return gcf()
