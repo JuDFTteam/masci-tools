@@ -358,6 +358,8 @@ def multiple_scatterplots(xdata,
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
         if plot_params[('area_plot', indx)]:
+            #Workaround for https://github.com/JuDFTteam/masci-tools/issues/129
+            #fill_between does not advance the color cycle messing up the following colors
             if 'color' not in params:
                 params['color'] = ax._get_lines.get_next_color()
             linecolor = params.pop('area_linecolor', None)
