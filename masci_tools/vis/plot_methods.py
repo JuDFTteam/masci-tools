@@ -358,6 +358,8 @@ def multiple_scatterplots(xdata,
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
         if plot_params[('area_plot', indx)]:
+            if 'color' not in params:
+                params['color'] = ax._get_lines.get_next_color()
             linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
                 result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
@@ -1856,6 +1858,9 @@ def plot_spinpol_dos(energy_grid,
     sources = plot_data.data
     if isinstance(sources, list):
         sources = sources * 2
+
+    plot_params.num_plots = len(plot_data) * 2
+    kwargs = plot_params.expand_parameters(original_length=len(plot_data), **kwargs)
 
     if xyswitch:
         x, y = dos_entries, energy_entries
