@@ -37,6 +37,9 @@ from masci_tools.util.constants import HTR_TO_KELVIN
 from masci_tools.io.common_functions import skipHeader
 from masci_tools.util.typing import FileLike
 
+from masci_tools.vis.plot_methods import plot_params as mpl_plotter
+from masci_tools.vis.parameters import ensure_plotter_consistency, NestedPlotParameters
+
 from typing import NamedTuple, Any
 try:
     from typing import Literal
@@ -552,44 +555,129 @@ class CFCalculation:
         warnings.warn('performIntegration is deprecated. Use get_coefficients instead', DeprecationWarning)
         return self.get_coefficients(convention='Stevens' if convert else 'Wybourne')
 
+    @property
+    def nonzero_coefficients_lm(self) -> list[tuple[int, int]]:
+        """
+        Return the lm indices of coefficients that are bigger than the set cutoff
+        """
+        if self.coefficient_cutoff is None:
+            warnings.warn('Coefficient cutoff not set. All coefficients are returned', UserWarning)
+        return [(coeff.l, coeff.m) for coeff in self.get_coefficients()]
 
+    @property
+    def spin_polarized(self) -> bool:
+        """
+        Return whether the potentials have a spin-down component
+        """
+        return any(entry.shape[0] == 2 for key, entry in self.vlm.items() if key not in ('RMT', 'rmesh'))
+
+    def get_potentials(self,
+                       spin: Literal['up', 'down'],
+                       interpolated: bool = True,
+                       only_nonzero: bool = True,
+                       complex_data: bool = True) -> tuple[np.ndarray, dict[tuple[int, int], np.ndarray]]:
+        """
+        Return the potentials and the corresponding radial mesh
+
+        :param spin: which spin to return
+        :param interpolated: bool, if True the interpolated mesh and potentials are returned
+        :param only_nonzero: bool, if True only the potentials corresponding to a non-zero coefficient are returned
+        :param complex_data: bool, if False only the real part of the potentials is returned
+        """
+        if only_nonzero:
+            indices = self.nonzero_coefficients_lm
+        else:
+            indices = [key for key in self.vlm.keys() if key not in ('RMT', 'rmesh')]
+
+        if interpolated:
+            rmesh = self.int['rmesh']
+            potentials = {key: self.int[key][f'spin-{spin}'](rmesh) for key in indices}
+        else:
+            rmesh = self.vlm['rmesh']
+            spin_index = 0 if spin == 'up' else 1
+            potentials = {key: self.vlm[key][spin_index] for key in indices}
+
+        if not complex_data:
+            potentials = {key: pot.real for key, pot in potentials.items()}
+
+        return rmesh, potentials
+
+    def get_charge_density(self, interpolated=True) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Return the charge density and the corresponding radial mesh
+
+        :param spin: which spin to return
+        :param interpolated: bool, if True the interpolated mesh and density are returned
+        """
+
+        if interpolated:
+            rmesh = self.int['rmesh']
+            density = self.int['cdn'](rmesh)
+        else:
+            rmesh = self.vlm['rmesh']
+            density = self.cdn['data']
+
+        return rmesh, density
+
+
+@ensure_plotter_consistency(mpl_plotter)
 def plot_crystal_field_calculation(cfcalc,
-                                   filename='crystal_field_calc',
-                                   pot_title='Potential',
-                                   cdn_title='Density',
+                                   *,
+                                   saveas='crystal_field_calc',
+                                   potential_title='Potential',
+                                   density_title='Density',
                                    xlabel='$R$ (Bohr)',
-                                   pot_ylabel='$Vpot$ (Hartree)',
-                                   cdn_ylabel='Density',
-                                   fontsize=12,
-                                   labelsize=12,
-                                   pot_colors=None,
-                                   save=False,
-                                   show=True,
-                                   figure=None):
+                                   potential_ylabel='$Vpot$ (Hartree)',
+                                   density_ylabel='Density',
+                                   figure=None,
+                                   density_kwargs=None,
+                                   **kwargs):
     """
-    Plot the given potentials and charge densities
+    Plot the given potentials and charge densities used in the given
+    :py:class:`CFCalculation`
 
     :param cfcalc: CFcalculation containing the data to plot
-    :param filename: str, Define the filename to save the figure
-    :param pot_title: Title for the potential subplot
-    :param cdn_title: Title for the charge density subplot
+    :param saveas: str, Define the filename to save the figure
+    :param potential_title: Title for the potential subplot
+    :param density_title: Title for the charge density subplot
     :param xlabel: label for the x axis of both subplots
-    :param pot_ylabel: label for the y axis of the potential subplot
-    :param cdn_ylabel: label for the y axis f the charge density subplot
-    :param fontsize: fontsize for titles and labels on the axis
-    :param labelsize: fontsize for the ticks on the axis,
+    :param potential_ylabel: label for the y axis of the potential subplot
+    :param density_ylabel: label for the y axis f the charge density subplot
 
     """
+    from masci_tools.vis.plot_methods import multiple_scatterplots
 
-    cfcalc.validate()
-    #Calculate the coeffcients to find the potentials that contribute to non-zero coefficients
-    #This also makes sure that the interpolated quantities are available
-    nonzero_coefficients = [(coeff.l, coeff.m) for coeff in cfcalc.get_coefficients()]
+    if density_kwargs is None:
+        density_kwargs = {}
 
-    if pot_colors is None:
-        pot_colors = ['black', 'red', 'blue', 'orange', 'green', 'purple']
+    if 'filename' in kwargs:
+        warnings.warn('filename is deprecated. Use saveas instead', DeprecationWarning)
+        saveas = kwargs.pop('filename')
 
-    color_iter = iter(pot_colors)
+    if 'pot_ylabel' in kwargs:
+        warnings.warn('pot_ylabel is deprecated. Use potential_ylabel instead', DeprecationWarning)
+        potential_ylabel = kwargs.pop('pot_ylabel')
+
+    if 'cdn_ylabel' in kwargs:
+        warnings.warn('cdn_ylabel is deprecated. Use density_ylabel instead', DeprecationWarning)
+        density_ylabel = kwargs.pop('cdn_ylabel')
+
+    if 'pot_title' in kwargs:
+        warnings.warn('pot_title is deprecated. Use potential_title instead', DeprecationWarning)
+        potential_title = kwargs.pop('pot_title')
+
+    if 'cdn_title' in kwargs:
+        warnings.warn('cdn_title is deprecated. Use density_title instead', DeprecationWarning)
+        density_title = kwargs.pop('cdn_title')
+
+    if 'save' in kwargs:
+        warnings.warn('save is deprecated. Use save_plots instead', DeprecationWarning)
+        kwargs['save_plots'] = kwargs.pop('save')
+
+    rmesh, potentials = cfcalc.get_potentials('up', complex_data=False)
+
+    indices, ydata = zip(*sorted(potentials.items(), key=lambda x: x[0]))
+    labels = [rf'$V_{{{l}{m}}}$' for l, m in indices]
 
     if figure is None:
         figure = plt.figure()
@@ -597,41 +685,90 @@ def plot_crystal_field_calculation(cfcalc,
     gs = figure.add_gridspec(1, 2)
     ax = figure.add_subplot(gs[0])
 
-    for l, m in nonzero_coefficients:
-        vlm = cfcalc.int[(l, m)]
-        if not cfcalc.only_m0 or m == 0:
-            try:
-                color = next(color_iter)
-            except StopIteration:
-                color = None
-            line, = ax.plot(cfcalc.int['rmesh'],
-                            vlm['spin-up'](cfcalc.int['rmesh']).real,
-                            '-',
-                            color=color,
-                            label=rf'$V_{{{l}{m}}}$')
-            if 'spin-down' in vlm:
-                ax.plot(cfcalc.int['rmesh'], vlm['spin-down'](cfcalc.int['rmesh']).real, '--', color=line.get_color())
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(pot_ylabel, fontsize=fontsize)
-    ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
-    ax.tick_params(labelsize=labelsize)
-    ax.set_title(pot_title, fontsize=fontsize)
+    mpl_plotter.single_plot = False
+    mpl_plotter.num_plots = len(indices)
+
+    mpl_plotter.set_defaults(
+        default_type='function',
+        plot_label=labels,
+        legend=True,
+        legend_options={
+            'loc': 'upper left',
+            'ncol': 1,
+            'borderaxespad': 0.0,
+            'linewidth': None,
+        },
+        marker=None,
+        color_cycle=['black', 'red', 'blue', 'orange', 'green', 'purple'],
+    )
+
+    save_keys = {'show', 'save_plots', 'save_format', 'save_options'}
+    save_options = {key: val for key, val in kwargs.items() if key in save_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in save_keys}
+
+    mpl_plotter.set_parameters(**save_options)
+
+    with NestedPlotParameters(mpl_plotter):
+        ax = multiple_scatterplots(rmesh,
+                                   ydata,
+                                   xlabel=xlabel,
+                                   ylabel=potential_ylabel,
+                                   title=potential_title,
+                                   show=False,
+                                   save_plots=False,
+                                   axis=ax,
+                                   **kwargs)
+
+    mpl_plotter.set_defaults(default_type='function', plot_label=None, linestyle='--', legend=False)
+
+    if cfcalc.spin_polarized:
+        rmesh, potentials = cfcalc.get_potentials('down', complex_data=False)
+
+        _, ydata = zip(*sorted(potentials.items(), key=lambda x: x[0]))
+        with NestedPlotParameters(mpl_plotter):
+            ax = multiple_scatterplots(rmesh,
+                                       ydata,
+                                       xlabel=xlabel,
+                                       ylabel=potential_ylabel,
+                                       title=potential_title,
+                                       show=False,
+                                       save_plots=False,
+                                       axis=ax,
+                                       **kwargs)
 
     ax = figure.add_subplot(gs[1])
-    ax.plot(cfcalc.cdn['rmesh'], cfcalc.cdn['data'], '-', color='black', label=r'$n(r)$')
-    ax.plot(cfcalc.int['rmesh'], cfcalc.int['cdn'](cfcalc.int['rmesh']), '--', color='blue')
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(cdn_ylabel, fontsize=fontsize)
-    ax.legend(loc=2, ncol=1, borderaxespad=0.0, fontsize=fontsize)
-    ax.tick_params(labelsize=labelsize)
-    ax.set_title(cdn_title, fontsize=fontsize)
+
+    rmesh_int, density_int = cfcalc.get_charge_density()
+    rmesh, density = cfcalc.get_charge_density(interpolated=False)
+
+    xdata = [rmesh, rmesh_int]
+    ydata = [density, density_int]
+
+    mpl_plotter.single_plot = False
+    mpl_plotter.num_plots = 2
+
+    mpl_plotter.set_defaults(default_type='function',
+                             plot_label=[r'$n(r)$', None],
+                             linestyle=['-', '--'],
+                             color=['black', 'blue'],
+                             legend=True)
+
+    with NestedPlotParameters(mpl_plotter):
+        ax = multiple_scatterplots(xdata,
+                                   ydata,
+                                   xlabel=xlabel,
+                                   ylabel=density_ylabel,
+                                   title=density_title,
+                                   show=False,
+                                   save_plots=False,
+                                   axis=ax,
+                                   **density_kwargs)
 
     figure.set_size_inches(14.0, 10.0)
     figure.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
-    if save:
-        plt.savefig(filename, format='png')
-    if show:
-        plt.show()
+
+    mpl_plotter.save_plot(saveas)
+
     return figure
 
 
