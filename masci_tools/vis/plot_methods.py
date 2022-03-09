@@ -1866,8 +1866,9 @@ def plot_spinpol_dos(energy_grid,
     if isinstance(sources, list):
         sources = sources * 2
 
-    plot_params.num_plots = len(plot_data) * 2
-    kwargs = plot_params.expand_parameters(original_length=len(plot_data), **kwargs)
+    for name, value in kwargs.items():
+        if isinstance(value, list) and len(value) == len(plot_data):
+            kwargs[name] += value
 
     if xyswitch:
         x, y = dos_entries, energy_entries

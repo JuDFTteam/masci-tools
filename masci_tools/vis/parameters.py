@@ -149,8 +149,11 @@ def _generate_plot_parameters_table(defaults, descriptions):
             string_value = [f"'{key}': '{val}'," if isinstance(val, str)
                             else f"'{key}': {val},"
                             for key, val in value.items()]
-            string_value[0] = '{' + string_value[0]
-            string_value[-1] = string_value[-1].rstrip(',') + '}'
+            if string_value:
+                string_value[0] = '{' + string_value[0]
+                string_value[-1] = string_value[-1].rstrip(',') + '}'
+            else:
+                string_value = ['{}']
 
             table.extend(['         - .. code-block::', ''] + \
                          [f'                {string}' for string in string_value])
