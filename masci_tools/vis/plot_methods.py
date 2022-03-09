@@ -361,7 +361,9 @@ def multiple_scatterplots(xdata,
             #Workaround for https://github.com/JuDFTteam/masci-tools/issues/129
             #fill_between does not advance the color cycle messing up the following colors
             if 'color' not in params:
-                params['color'] = ax._get_lines.get_next_color()
+                #This is not ideal but it is the only way I found
+                #of accessing the state of the color cycle
+                params['color'] = ax._get_lines.get_next_color()  #pylint: disable=protected-access
             linecolor = params.pop('area_linecolor', None)
             if plot_params[('area_vertical', indx)]:
                 result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
