@@ -54,6 +54,7 @@ class MatplotlibPlotter(Plotter):
         'invert_xaxis': False,
         'invert_yaxis': False,
         'color_cycle': None,
+        'color_cycle_always_advance': False,
         'sub_colormap': None,
 
         # plot properties
@@ -183,6 +184,8 @@ class MatplotlibPlotter(Plotter):
         'color_cycle':
         'If set this will override the default color cycle of matplotlib. '
         'Can be given as name of a colormap cycle or list of colors',
+        'color_cycle_always_advance':
+        'Always advance the color cycle even if the color was specified',
         'sub_colormap':
         'If a colormap is used this can be used to cut out a part of the colormap. '
         'For example (0.5,1.0) will only use the upper half of the colormap',
@@ -295,7 +298,8 @@ class MatplotlibPlotter(Plotter):
         'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
         'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after',
-        'color_cycle', 'sub_colormap', 'save_options'
+        'color_cycle', 'color_cycle_always_advance'
+        'sub_colormap', 'save_options'
     }
 
     _TYPE_TO_KWARGS = {
