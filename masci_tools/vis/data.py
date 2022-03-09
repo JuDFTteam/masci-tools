@@ -820,13 +820,13 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
                 out_data = new_list
 
             return out_data
-        if isinstance(out_data, (list,tuple)):
+        if isinstance(out_data, (list, tuple)):
             if len(out_data) == len(data):
                 for indx, (entry, new_data) in enumerate(zip(out_data, data)):
                     entry[f'{key}_{indx}'] = new_data
                 return out_data
 
-    if isinstance(out_data, (list,tuple)):
+    if isinstance(out_data, (list, tuple)):
         for indx, entry in enumerate(out_data):
             entry[f'{key}_{indx}'] = data
     else:

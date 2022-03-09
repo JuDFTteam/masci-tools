@@ -127,6 +127,7 @@ class MatplotlibPlotter(Plotter):
         },
         'colorbar': True,
         'colorbar_padding': 0.1,
+        'colorbar_options': {},
         # legend properties
         'legend': False,
         'legend_show_data_labels': False,
@@ -265,6 +266,8 @@ class MatplotlibPlotter(Plotter):
         'If True and the function implements color mapping, a colorbar is shown',
         'colorbar_padding':
         'Specifies the space between plot and colorbar',
+        'colorbar_options':
+        'Parameters for displaying the colorbar (Fontsize, ...)',
         # legend properties
         'legend':
         'If True a legend for the plot is shown',
@@ -295,7 +298,7 @@ class MatplotlibPlotter(Plotter):
 
     _MATPLOTLIB_GENERAL_ARGS = {
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
-        'legend_options', 'colorbar', 'colorbar_padding', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
+        'legend_options', 'colorbar', 'colorbar_padding', 'colorbar_options', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
         'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
         'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after',
         'color_cycle', 'color_cycle_always_advance'
@@ -638,7 +641,11 @@ class MatplotlibPlotter(Plotter):
                     cmax = self['limits']['color'][1]
                     mappable.set_clim(cmin, cmax)
 
-            plt.colorbar(mappable, ax=ax, pad=self['colorbar_padding'])
+            coptions = copy.deepcopy(self['colorbar_options'])
+            labelsize = coptions.pop('labelsize', None)
+            cbar = plt.colorbar(mappable, ax=ax, pad=self['colorbar_padding'], **coptions)
+            if labelsize is not None:
+                cbar.ax.tick_params(labelsize=labelsize)
 
     @staticmethod
     def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):

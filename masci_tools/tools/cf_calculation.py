@@ -643,7 +643,12 @@ def plot_crystal_field_calculation(cfcalc,
     :param xlabel: label for the x axis of both subplots
     :param potential_ylabel: label for the y axis of the potential subplot
     :param density_ylabel: label for the y axis f the charge density subplot
+    :param density_kwargs: dict with keyword argument passed to the plotting of the
+                           density
+    :param figure: Use this preexisting matplotlib figure to produce the plots
 
+    All other Kwargs are passed on to the :py:func:`~masci_tools.vis.plot_methods.multiple_scatterplots()`
+    calls for plotting the potentials
     """
     from masci_tools.vis.plot_methods import multiple_scatterplots
 
@@ -772,67 +777,104 @@ def plot_crystal_field_calculation(cfcalc,
     return figure
 
 
+@ensure_plotter_consistency(mpl_plotter)
 def plot_crystal_field_potential(cfcoeffs,
-                                 filename='crystal_field_potential_areaplot',
+                                 *,
+                                 saveas='crystal_field_potential_areaplot',
                                  spin='avg',
                                  phi=0.0,
-                                 save=False,
-                                 show=True,
-                                 figure=None):
+                                 figure=None,
+                                 **kwargs):
     """
     Plots the angular dependence of the calculated CF potential as well
     as a plane defined by phi.
 
     :param cfcoeffs: list of CFCoefficients to construct the potential
-    :param filename: str, defines the filename to save the figure
+    :param saveas: str, defines the filename to save the figure
     :param spin: str; Either 'up', 'dn' or 'avg'. Which spin direction to plot
                     ('avg'-> ('up'+'dn')/2.0)
     :param phi: float, defines the phi angle of the plane
 
     :raises AssertionError: When coefficients are provided as wrong types or in the wrong convention
+    :raises ValueError: When coefficients are provided in the wrong convention
 
     """
+    from masci_tools.vis.plot_methods import colormesh_plot
 
     assert all(isinstance(coeff, CFCoefficient) for coeff in cfcoeffs), \
            'Only provide a list of CFCoefficients to plot_crystal_field_potential'
 
-    #generate the thetha phi meshgrid
+    if 'filename' in kwargs:
+        warnings.warn('filename is deprecated. Use saveas instead', DeprecationWarning)
+        saveas = kwargs.pop('filename')
+
+    if 'save' in kwargs:
+        warnings.warn('save is deprecated. Use save_plots instead', DeprecationWarning)
+        kwargs['save_plots'] = kwargs.pop('save')
+
+    if spin not in ('up', 'down', 'avg'):
+        raise ValueError(f"Invalid Argument for spin: '{spin}'")
+
+    if not all(coeff.convention == 'Wybourne' for coeff in cfcoeffs):
+        raise ValueError('Wrong convention for plotting in spherical harmonics basis')
+
+    #generate the theta/phi meshgrid
     theta_grid = np.linspace(0, np.pi, 181)
     phi_grid = np.linspace(0.0, 2.0 * np.pi, 361)
     xv, yv = np.meshgrid(phi_grid, theta_grid)
     cf_grid = np.zeros((181, 361), dtype='complex')
 
     for coeff in cfcoeffs:
-        assert coeff.convention == 'Wybourne', 'Wrong convention for plotting in spherical harmonics basis'
         if spin == 'avg':
             value = 0.5 * (coeff.spin_up + coeff.spin_down)
         elif spin == 'up':
             value = coeff.spin_up
         elif spin == 'down':
             value = coeff.spin_down
-        else:
-            raise ValueError(f"Invalid Argument for spin: '{spin}'")
         if coeff.m >= 0:
             cf_grid += value * sph_harm(coeff.m, coeff.l, xv, yv)
 
     #Plot the angular dependence
     maxv = max(cf_grid.real.max(), abs(cf_grid.real.min()))
-    tickFontsize = 14
-    labelFontsize = 20
-    #Angular dependence plot
+
     if figure is None:
         figure = plt.figure(figsize=(15, 5))
+
     gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
     ax = plt.subplot(gs[0])
-    plt.sca(ax)
-    plt.imshow(cf_grid.real, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
-    ax.set_title('Angular Dependence', fontsize=labelFontsize)
-    ax.set_xlabel(r'$\phi$', fontsize=labelFontsize)
-    ax.set_xticks([0.0, 90.0, 180.0, 270.0, 360.0])
-    ax.set_xticklabels([r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$', r'$2\pi$'], fontsize=tickFontsize)
-    ax.set_ylabel(r'$\theta$', fontsize=labelFontsize)
-    ax.set_yticks([0.0, 45.0, 90.0, 135.0, 180.0])
-    ax.set_yticklabels([r'$\pi/2$', r'$\pi/4$', r'$0.0$', r'$-\pi/4$', r'$-\pi/2$'], fontsize=tickFontsize)
+
+    mpl_plotter.set_defaults(default_type='function',
+                             cmap='coolwarm',
+                             limits={'color': (-maxv, maxv)},
+                             xticks=[0.0, np.pi / 2.0, np.pi, 3 * np.pi / 2.0, 2 * np.pi],
+                             xticklabels=[r'0', r'$\pi/2$', r'$\pi$', r'$3\pi/2$', r'$2\pi$'],
+                             yticks=[0.0, np.pi / 4.0, np.pi / 2.0, 3 * np.pi / 4.0, np.pi],
+                             yticklabels=[r'$\pi/2$', r'$\pi/4$', r'$0.0$', r'$-\pi/4$', r'$-\pi/2$'])
+
+    outer_keys = {'show', 'save_plots', 'save_format', 'save_options', 'colorbar'}
+    outer_options = {key: val for key, val in kwargs.items() if key in outer_keys}
+    kwargs = {key: val for key, val in kwargs.items() if key not in outer_keys}
+
+    mpl_plotter.set_parameters(**outer_options)
+
+    #Angular dependence plot
+
+    gs = mpl.gridspec.GridSpec(1, 2, width_ratios=[2.0, 1.5])
+    ax = plt.subplot(gs[0])
+    with NestedPlotParameters(mpl_plotter):
+        ax = colormesh_plot(xv,
+                            yv,
+                            cf_grid.real,
+                            xlabel=r'$\phi$',
+                            ylabel=r'$\theta$',
+                            title='Angular Dependence',
+                            axis=ax,
+                            show=False,
+                            save_plots=False,
+                            colorbar=False,
+                            vmin=-maxv,
+                            vmax=maxv,
+                            **kwargs)
 
     if np.abs(phi_grid - phi).min() > 1e-5:
         raise ValueError(f'Angle {phi} not found in grid')
@@ -856,32 +898,40 @@ def plot_crystal_field_potential(cfcoeffs,
     x = np.linspace(-1, 1, nx)
     y = np.linspace(-1, 1, ny)
     xv, yv = np.meshgrid(x, y)
-
     z = theta_cf(np.arctan(xv / yv))
 
     phi_fract = phi / np.pi
 
-    labelFontsize = 14
-    tickFontsize = 14
-
     ax = plt.subplot(gs[1])
-    plt.sca(ax)
-    plt.imshow(z, origin='upper', cmap='coolwarm', vmin=-maxv, vmax=maxv, aspect='auto')
-    cbar = plt.colorbar(shrink=0.8)
-    cbar.set_label(r'$V_{{CF}}$ [K]', fontsize=labelFontsize)
-    cbar.ax.tick_params(labelsize=14)
-    ax.set_title(rf'Crystal Field potential for $\phi={{{phi_fract:.2f}}}\pi$', fontsize=labelFontsize)
-    ax.set_xlabel(r'x [Bohr]', fontsize=labelFontsize)
-    ax.set_xticks([0, nx / 4.0, nx / 2.0, 3.0 * nx / 4.0, nx - 1])
-    ax.set_xticklabels([r'-1.0', r'-0.5', r'0.0', r'0.5', r'1.0'], fontsize=tickFontsize)
-    ax.set_ylabel(r'y [Bohr]', fontsize=labelFontsize)
-    ax.set_yticks([0, ny / 4.0, ny / 2.0, 3.0 * ny / 4.0, ny - 1])
-    ax.set_yticklabels([r'1.0', r'0.5', r'0.0', r'-0.5', r'-1.0'], fontsize=tickFontsize)
+    mpl_plotter.set_defaults(default_type='function',
+                             cmap='coolwarm',
+                             limits={'color': (-maxv, maxv)},
+                             xticks=[-1.0, -0.5, 0.0, 0.5, 1.0],
+                             yticks=[-1.0, -0.5, 0.0, 0.5, 1.0],
+                             colorbar_options={
+                                 'shrink': 0.8,
+                                 'label': r'$V_{{CF}}$ [K]',
+                                 'labelsize': 14
+                             })
+
+    with NestedPlotParameters(mpl_plotter):
+        ax = colormesh_plot(xv,
+                            yv,
+                            z,
+                            xlabel=r'x [Bohr]',
+                            ylabel=r'y [Bohr]',
+                            title=rf'Crystal Field potential for $\phi={{{phi_fract:.2f}}}\pi$',
+                            axis=ax,
+                            show=False,
+                            save_plots=False,
+                            colorbar=False,
+                            vmin=-maxv,
+                            vmax=maxv,
+                            **kwargs)
+
+    mpl_plotter.show_colorbar(ax)
     figure.set_constrained_layout_pads(w_pad=0., h_pad=0.0, hspace=0., wspace=0.)
 
-    if save:
-        plt.savefig(filename, format='png')
-    if show:
-        plt.show()
+    mpl_plotter.save_plot(saveas)
 
     return figure
