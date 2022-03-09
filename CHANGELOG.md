@@ -216,7 +216,7 @@ This release contains bugifxes for the visualization routines
 - Tool to analyze/work with greensfunctions calculated by Fleur `masci_tools.tools.greensfunction`
 ### Improvements
 - Several improvements of KKR parsers/parameters [[#13]](https://github.com/JuDFTteam/masci-tools/pull/13)
-- Introduced patching functions for the schema dictionaries to manually correct ambiguities (#48)
+- Introduced patching functions for the schema dictionaries to manually correct ambiguities [[#48]](https://github.com/JuDFTteam/masci-tools/pull/48)
 - Improvements of the `HDF5Reader` and  recipes for Fleur DOS/bandstructure calculation
 - For devs:
    - pylint warnings are no longer fatal for the CI jobs
