@@ -360,7 +360,7 @@ def multiple_scatterplots(xdata,
         if plot_params[('area_plot', indx)]:
             #Workaround for https://github.com/JuDFTteam/masci-tools/issues/129
             #fill_between does not advance the color cycle messing up the following colors
-            if 'color' not in params:
+            if params.get('color') is None:
                 #This is not ideal but it is the only way I found
                 #of accessing the state of the color cycle
                 params['color'] = ax._get_lines.get_next_color()  #pylint: disable=protected-access
@@ -387,6 +387,8 @@ def multiple_scatterplots(xdata,
                             **params,
                             **kwargs)
         else:
+            if params.get('color') is not None and plot_params['color_cycle_always_advance']:
+                ax._get_lines.get_next_color()  #pylint: disable=protected-access
             result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **params, **kwargs)
             colors.append(result.lines[0].get_color())
 
@@ -1843,7 +1845,8 @@ def plot_spinpol_dos(energy_grid,
                              lines=lines,
                              limits=limits,
                              repeat_parameters=len(plot_data),
-                             color_cycle=color_cycle)
+                             color_cycle=color_cycle,
+                             color_cycle_always_advance=True)
 
     if xyswitch:
         figsize = plot_params['figure_kwargs']['figsize']

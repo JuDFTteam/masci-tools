@@ -436,6 +436,7 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
     from .common import get_plotter
 
     params = get_plotter(backend)
+    ordered_keys_without_spin = [key.removesuffix('_up').removesuffix('_down') for key in ordered_keys]
 
     for key, value in kwargs.items():
         if params.is_general(key):
@@ -446,6 +447,11 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
                 if not isinstance(plot_label, int):
                     if plot_label in ordered_keys:
                         new_dict[ordered_keys.index(plot_label)] = new_dict.pop(plot_label)
+                    elif plot_label in ordered_keys_without_spin:
+                        all_occurrences = [i for i, name in enumerate(ordered_keys_without_spin) if plot_label == name]
+                        param = new_dict.pop(plot_label)
+                        for index in all_occurrences:
+                            new_dict[index] = param
                     else:
                         raise ValueError(f'The label {plot_label} is not a valid label for the current plot')
             kwargs[key] = new_dict
