@@ -4412,7 +4412,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      axis_label: E-E_F [eV]
+      axis_label: $$E-E_F [eV]$$
       axis_label_text_font_size: 18pt
       axis_line_width: 2
       major_label_text_font_size: 16pt
