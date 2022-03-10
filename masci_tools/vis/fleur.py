@@ -385,7 +385,8 @@ def plot_fleur_dos(dosdata,
 
     spinpol = spinpol_data and spinpol
 
-    legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
+    backend = PlotBackend.from_str(backend)
+    legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol, latex=backend != PlotBackend.bokeh)
 
     if key_mask is None:
         key_mask = _select_entries(keys,
@@ -406,8 +407,6 @@ def plot_fleur_dos(dosdata,
     if spinpol:
         dosdata_up = [key for key in keys if '_up' in key]
         dosdata_dn = [key for key in keys if '_down' in key]
-
-    backend = PlotBackend.from_str(backend)
 
     if backend == PlotBackend.bokeh:
         if 'legend_label' not in kwargs:
@@ -502,7 +501,7 @@ def _dos_order(key):
     return None
 
 
-def _generate_dos_labels(dosdata, attributes, spinpol):
+def _generate_dos_labels(dosdata, attributes, spinpol, latex=True):
     """
     Generate nice labels for the weights in the dictionary. Only
     processes standard names
@@ -517,6 +516,11 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     labels = []
     plot_order = []
     only_spin_up = not spinpol and any('_down' in key for key in dosdata.keys())
+
+    if latex:
+        SPIN_ARROWS = r'$\uparrow/\downarrow$'
+    else:
+        SPIN_ARROWS = 'up/down'
 
     types_elements = []
     for itype in range(1, attributes['n_types'] + 1):
@@ -534,7 +538,7 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
         if 'INT' in key:
             key = 'Interstitial'
             if spinpol:
-                key = 'Interstitial up/down'
+                key = f'Interstitial {SPIN_ARROWS}'
             labels.append(key)
         elif ':' in key:  #Atom specific DOS
 
@@ -558,11 +562,11 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
             if '_up' in tail:
                 tail = tail.split('_up')[0]
                 if spinpol:
-                    tail = f'{tail} up/down'
+                    tail = f'{tail} {SPIN_ARROWS}'
             else:
                 tail = tail.split('_down')[0]
                 if spinpol:
-                    tail = f'{tail} up/down'
+                    tail = f'{tail} {SPIN_ARROWS}'
             label += ' ' + tail
 
             labels.append(label)
@@ -571,11 +575,11 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
             if '_up' in key:
                 key = key.split('_up')[0]
                 if spinpol:
-                    key = f'{key} up/down'
+                    key = f'{key} {SPIN_ARROWS}'
             elif '_down' in key:
                 key = key.split('_down')[0]
                 if spinpol:
-                    key = f'{key} up/down'
+                    key = f'{key} {SPIN_ARROWS}'
             labels.append(key)
 
     return labels, plot_order
