@@ -743,8 +743,8 @@ def bokeh_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -929,8 +929,8 @@ def bokeh_spinpol_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -1029,8 +1029,8 @@ def bokeh_spectral_function(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label

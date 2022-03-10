@@ -4420,11 +4420,11 @@ roots:
       major_label_overrides:
         '0': X
         '0.325724555583458': K
-        '1.302898222333832': g
+        '1.302898222333832': $$\Gamma$$
         '2.1007571802081184': L
         '2.7522062913750363': W
         '3.2128503754791113': X
-        '4.134138543687261': g
+        '4.134138543687261': $$\Gamma$$
       major_label_text_font_size: 16pt
     type: LinearAxis
   - type: LinearScale
