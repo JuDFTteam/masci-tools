@@ -344,7 +344,7 @@ def bokeh_dos(energy_grid,
               dos_data=None,
               *,
               data=None,
-              energy_label=r'E-E_F [eV]',
+              energy_label='$$E-E_F [eV]$$',
               dos_label=r'DOS [1/eV]',
               title=r'Density of states',
               xyswitch=False,
@@ -444,7 +444,7 @@ def bokeh_spinpol_dos(energy_grid,
                       *,
                       data=None,
                       spin_dn_negative=True,
-                      energy_label=r'E-E_F [eV]',
+                      energy_label='$$E-E_F [eV]$$',
                       dos_label=r'DOS [1/eV]',
                       title=r'Density of states',
                       xyswitch=False,
@@ -622,7 +622,7 @@ def bokeh_bands(kpath,
                 size_data=None,
                 color_data=None,
                 xlabel='',
-                ylabel=r'E-E_F [eV]',
+                ylabel='$$E-E_F [eV]$$',
                 title='',
                 special_kpoints=None,
                 markersize_min=3.0,
@@ -743,8 +743,8 @@ def bokeh_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -771,7 +771,7 @@ def bokeh_bands(kpath,
         return bokeh_line(plot_data.get_keys('kpath'),
                           plot_data.get_keys('bands'),
                           data=plot_data.data,
-                          xlabel='',
+                          xlabel=xlabel,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
@@ -780,7 +780,7 @@ def bokeh_bands(kpath,
     return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
-                               xlabel='',
+                               xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
                                set_default_legend=False,
@@ -797,7 +797,7 @@ def bokeh_spinpol_bands(kpath,
                         color_data=None,
                         data=None,
                         xlabel='',
-                        ylabel=r'E-E_F [eV]',
+                        ylabel='$$E-E_F [eV]$$',
                         title='',
                         special_kpoints=None,
                         markersize_min=3.0,
@@ -929,8 +929,8 @@ def bokeh_spinpol_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -962,7 +962,7 @@ def bokeh_spinpol_bands(kpath,
         return bokeh_line(plot_data.get_keys('kpath'),
                           plot_data.get_keys('bands'),
                           data=plot_data.data,
-                          xlabel='',
+                          xlabel=xlabel,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
@@ -971,7 +971,7 @@ def bokeh_spinpol_bands(kpath,
     return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
-                               xlabel='',
+                               xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
                                set_default_legend=False,
@@ -988,7 +988,7 @@ def bokeh_spectral_function(kpath,
                             special_kpoints=None,
                             e_fermi=0,
                             xlabel='',
-                            ylabel=r'$E-E_F$ [eV]',
+                            ylabel='$$E-E_F [eV]$$',
                             title='',
                             saveas='spectral_function',
                             copy_data=False,
@@ -1029,14 +1029,14 @@ def bokeh_spectral_function(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
         xticks.append(pos)
 
-    lines = {'horizontal': 0}
+    lines = {'horizontal': e_fermi}
     lines['vertical'] = xticks
 
     limits = {'y': (plot_data.min('energy'), plot_data.max('energy'))}

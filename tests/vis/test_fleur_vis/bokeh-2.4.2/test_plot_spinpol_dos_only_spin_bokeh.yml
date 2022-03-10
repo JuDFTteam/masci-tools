@@ -267,15 +267,15 @@ roots:
     type: Legend
   - attributes:
       label:
-        value: Interstitial
+        value: Interstitial down
     type: LegendItem
   - attributes:
       label:
-        value: 'Sm '
+        value: Sm  down
     type: LegendItem
   - attributes:
       label:
-        value: Total
+        value: Total down
     type: LegendItem
   - attributes:
       line_color: '#ff7f0e'
@@ -356,13 +356,13 @@ roots:
         field: Total_up
     type: Line
   - attributes:
-      axis_label: DOS [1/eV]
+      axis_label: $$E-E_F [eV]$$
       axis_label_text_font_size: 18pt
       axis_line_width: 2
       major_label_text_font_size: 16pt
     type: LinearAxis
   - attributes:
-      axis_label: E-E_F [eV]
+      axis_label: DOS [1/eV]
       axis_label_text_font_size: 18pt
       axis_line_width: 2
       major_label_text_font_size: 16pt

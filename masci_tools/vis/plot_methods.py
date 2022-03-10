@@ -1736,7 +1736,17 @@ def plot_dos(energy_grid,
         lines['vertical'], lines['horizontal'] = lines['horizontal'], lines['vertical']
 
     color_cycle = ('black',) + tuple(sns.color_palette('muted'))
-    plot_params.set_defaults(default_type='function', marker=None, legend=True, lines=lines, color_cycle=color_cycle)
+    plot_params.set_defaults(default_type='function',
+                             marker=None,
+                             legend=True,
+                             legend_options={
+                                 'loc': 'upper center',
+                                 'bbox_to_anchor': (0.5, -0.15),
+                                 'ncol': 5
+                             },
+                             figure_kwargs={'constrained_layout': True},
+                             lines=lines,
+                             color_cycle=color_cycle)
 
     if xyswitch:
         figsize = plot_params['figure_kwargs']['figsize']
@@ -1842,6 +1852,12 @@ def plot_spinpol_dos(energy_grid,
                              marker=None,
                              legend=True,
                              legend_remove_duplicates=True,
+                             legend_options={
+                                 'loc': 'upper center',
+                                 'bbox_to_anchor': (0.5, -0.15),
+                                 'ncol': 5
+                             },
+                             figure_kwargs={'constrained_layout': True},
                              lines=lines,
                              limits=limits,
                              repeat_parameters=len(plot_data),
