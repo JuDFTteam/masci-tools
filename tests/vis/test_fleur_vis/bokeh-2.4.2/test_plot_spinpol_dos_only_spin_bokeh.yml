@@ -267,15 +267,15 @@ roots:
     type: Legend
   - attributes:
       label:
-        value: Interstitial
+        value: Interstitial down
     type: LegendItem
   - attributes:
       label:
-        value: 'Sm '
+        value: Sm  down
     type: LegendItem
   - attributes:
       label:
-        value: Total
+        value: Total down
     type: LegendItem
   - attributes:
       line_color: '#ff7f0e'
