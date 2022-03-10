@@ -33,6 +33,8 @@ from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
+from .helpers import exclude_points
+
 import warnings
 import copy
 import typing
@@ -327,26 +329,9 @@ def multiple_scatterplots(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+    if exclude_points_outside_plot_area:
         #Mask the values to exclude the ones outside the plotting area
-        mask = None
-        if 'y' in plot_params['limits']:
-            ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
-            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
-            mask = plot_data.get_mask(y_mask, data_key='y')
-        if 'x' in plot_params['limits']:
-            xlimits = plot_params['limits']['x']
-            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
-            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
-            x_mask = plot_data.get_mask(x_mask, data_key='x')
-            if mask is None:
-                mask = x_mask
-            else:
-                mask = [x & y for x, y, in zip(x_mask, mask)]
-
-        if mask is not None:
-            plot_data.mask_data(mask)
+        exclude_points(plot_data, 'x', 'y', limits=plot_params['limits'])
 
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
@@ -495,26 +480,9 @@ def multi_scatter_plot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+    if exclude_points_outside_plot_area:
         #Mask the values to exclude the ones outside the plotting area
-        mask = None
-        if 'y' in plot_params['limits']:
-            ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
-            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
-            mask = plot_data.get_mask(y_mask, data_key='y')
-        if 'x' in plot_params['limits']:
-            xlimits = plot_params['limits']['x']
-            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
-            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
-            x_mask = plot_data.get_mask(x_mask, data_key='x')
-            if mask is None:
-                mask = x_mask
-            else:
-                mask = [x & y for x, y, in zip(x_mask, mask)]
-
-        if mask is not None:
-            plot_data.mask_data(mask)
+        exclude_points(plot_data, 'x', 'y', limits=plot_params['limits'])
 
     plot_kwargs = plot_params.plot_kwargs('colormap_scatter', ignore='markersize')
 
