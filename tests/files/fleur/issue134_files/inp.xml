@@ -21,11 +21,19 @@
    <cell>
       <bzIntegration valenceElectrons="44.00000000" mode="hist" fermiSmearingEnergy=".00100000">
          <kPointListSelection listName="default-1"/>
-         <!-- k-points included here -->
-         <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="kpts.xml"> </xi:include>
+         <kPointLists>
+            <kPointList name="default-1" count="1" nx="1" ny="1" nz="0" type="mesh">
+               <kPoint weight="     1.0000000000000"> 0.00 0.00 0.00</kPoint>
+            </kPointList>
+         </kPointLists>
       </bzIntegration>
-      <!-- symmetry operations included here -->
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="sym.xml"> </xi:include>
+      <symmetryOperations>
+         <symOp>
+            <row-1>1 0 0 .0000000000</row-1>
+            <row-2>0 1 0 .0000000000</row-2>
+            <row-3>0 0 1 .0000000000</row-3>
+         </symOp>
+      </symmetryOperations>
       <filmLattice scale="1.00000000" dVac="11.80000000" dTilda="14.30000000">
          <bravaisMatrix>
             <row-1>   -6.9730633462     4.0259000000     0.0000000000</row-1>
