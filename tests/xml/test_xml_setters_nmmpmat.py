@@ -185,7 +185,8 @@ def test_validate_nmmpmat(load_inpxml, test_file):
     with pytest.raises(ValueError):
         validate_nmmpmat(xmltree, nmmp_lines, schema_dict)
 
-def test_validate_mmpmat_issue134(load_inpxml,test_file):
+
+def test_validate_mmpmat_issue134(load_inpxml, test_file):
     """
     Test for the bug reported in
     https://github.com/JuDFTteam/masci-tools/issues/134
