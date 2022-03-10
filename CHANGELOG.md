@@ -19,7 +19,7 @@
 - Refactored `CFCalculation`, i.e. naming of attributes handling of cutoffs. Added classmethod to construct instance directly from numpy arrays [[#127]](https://github.com/JuDFTteam/masci-tools/pull/127)
 - Refactored plotting methods for `CFCalculation` to allow the same parameter freedom as for the other matplolib routines [[#127]](https://github.com/JuDFTteam/masci-tools/pull/127)
 - Improvement to labels and legends in DOS/bandstructure plots. Matplotlib plots now put the legend centered below the plot and added latex labels to axis and ticks in bokeh (version `2.4.0` needed) [[#133]](https://github.com/JuDFTteam/masci-tools/pull/133)
-
+- `io_nmmpmat`: Allow negative indices in `read_nmmpmat_block` and raise error for invalid index
 ### Bugfixes
 - Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)

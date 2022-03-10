@@ -182,9 +182,17 @@ def read_nmmpmat_block(nmmp_lines: list[str], block_index: int) -> np.ndarray:
     """
     denmat = np.zeros((7, 7), dtype=complex)
 
-    start_row = block_index * 14
+    LINES_PER_BLOCK = 14
 
-    for index, line in enumerate(nmmp_lines[start_row:start_row + 14]):
+    if block_index < 0:
+        start_row = (len(nmmp_lines) // LINES_PER_BLOCK + block_index) * LINES_PER_BLOCK
+    else:
+        start_row = block_index * LINES_PER_BLOCK
+
+    if start_row >= len(nmmp_lines) or start_row < 0:
+        raise ValueError(f'Invalid block_index {block_index}: Only {len(nmmp_lines)//LINES_PER_BLOCK} available')
+
+    for index, line in enumerate(nmmp_lines[start_row:start_row + LINES_PER_BLOCK]):
         currentRow = index // 2
         if index % 2 == 0:
             rowData = [float(x) for x in line.split()]
