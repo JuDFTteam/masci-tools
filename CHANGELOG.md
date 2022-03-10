@@ -25,6 +25,7 @@
 - Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fixed problems in `masci_tools.testing.bokeh` when adding files for new bokeh versions [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
 - Several fixes for `plot_fleur_dos`. Using the `area_plot` or specifying `color` explicitely could mess up the color order [[#132]](https://github.com/JuDFTteam/masci-tools/pull/132)
+- Fixed bug in `validate_nmmpmat` and consequently `FleurXMLModifier` not correctly validating denisty matrix files with certain off-diagonal elements being negative [[#135]](https://github.com/JuDFTteam/masci-tools/pull/135)
 
 ### For developers
 - Fixed upload of pytest-mpl results artifacts to include the whole directory with images and not just the HTML file [[#117]](https://github.com/JuDFTteam/masci-tools/pull/117)
