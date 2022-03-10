@@ -33,7 +33,7 @@ from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
-from .helpers import exclude_points
+from .helpers import exclude_points, _mpl_single_line_or_area
 
 import warnings
 import copy
@@ -189,41 +189,19 @@ def single_scatterplot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
-    #if yerr or xerr:
-    #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g, yerr=yerr, xerr=xerr)
-    #else:
-    #    p1 = ax.plot(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g)
-    # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
-    # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
     entry, source = plot_data.items(first=True)
 
-    if plot_params['area_plot']:
-        linecolor = plot_kwargs.pop('area_linecolor', None)
-        if plot_params['area_vertical']:
-            result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kwargs, **kwargs)
-        else:
-            result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kwargs, **kwargs)
-        plot_kwargs.pop('alpha', None)
-        plot_kwargs.pop('label', None)
-        plot_kwargs.pop('color', None)
-        if plot_params['area_enclosing_line']:
-            if linecolor is None:
-                linecolor = result.get_facecolor()[0]
-            ax.errorbar(entry.x,
-                        entry.y,
-                        yerr=entry.yerr,
-                        xerr=entry.xerr,
-                        alpha=plot_params['plot_alpha'],
-                        color=linecolor,
-                        data=source,
-                        **plot_kwargs,
-                        **kwargs)
-    else:
-        ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kwargs, **kwargs)
+    ax = _mpl_single_line_or_area(ax,
+                                  entry,
+                                  source,
+                                  area=plot_params['area_plot'],
+                                  area_vertical=plot_params['area_vertical'],
+                                  area_enclosing_line=plot_params['area_enclosing_line'],
+                                  area_line_alpha=plot_params['plot_alpha'],
+                                  advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                  **plot_kwargs,
+                                  **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -337,44 +315,19 @@ def multiple_scatterplots(xdata,
     # allow all arguments as value then use for all or as lists with the righ length.
 
     plot_kwargs = plot_params.plot_kwargs()
-    colors = []
 
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        if plot_params[('area_plot', indx)]:
-            #Workaround for https://github.com/JuDFTteam/masci-tools/issues/129
-            #fill_between does not advance the color cycle messing up the following colors
-            if params.get('color') is None:
-                #This is not ideal but it is the only way I found
-                #of accessing the state of the color cycle
-                params['color'] = ax._get_lines.get_next_color()  #pylint: disable=protected-access
-            linecolor = params.pop('area_linecolor', None)
-            if plot_params[('area_vertical', indx)]:
-                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
-            else:
-                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **params, **kwargs)
-            colors.append(result.get_facecolor()[0])
-            params.pop('alpha', None)
-            params.pop('label', None)
-            params.pop('color', None)
-            if plot_params[('area_enclosing_line', indx)]:
-                if linecolor is None:
-                    linecolor = result.get_facecolor()[0]
-                ax.errorbar(entry.x,
-                            entry.y,
-                            yerr=entry.yerr,
-                            xerr=entry.xerr,
-                            alpha=plot_params[('plot_alpha', indx)],
-                            color=linecolor,
-                            data=source,
-                            label=None,
-                            **params,
-                            **kwargs)
-        else:
-            if params.get('color') is not None and plot_params['color_cycle_always_advance']:
-                ax._get_lines.get_next_color()  #pylint: disable=protected-access
-            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **params, **kwargs)
-            colors.append(result.lines[0].get_color())
+        ax = _mpl_single_line_or_area(ax,
+                                      entry,
+                                      source,
+                                      area=plot_params[('area_plot', indx)],
+                                      area_vertical=plot_params[('area_vertical', indx)],
+                                      area_enclosing_line=plot_params[('area_enclosing_line', indx)],
+                                      area_line_alpha=plot_params[('plot_alpha', indx)],
+                                      advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                      **params,
+                                      **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
