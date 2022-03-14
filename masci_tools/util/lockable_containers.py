@@ -18,8 +18,12 @@ from __future__ import annotations
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Any, Callable, Iterator, Iterable, SupportsIndex, cast, TypeVar, Generic
+from typing import Any, Callable, Iterator, Iterable, cast, TypeVar, Generic
 from typing import TYPE_CHECKING
+try:
+    from typing import SupportsIndex
+except ImportError:
+    from typing_extensions import SupportsIndex
 if TYPE_CHECKING:
     from _typeshed import SupportsRichComparison
 
