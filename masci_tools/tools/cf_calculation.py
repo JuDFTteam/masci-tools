@@ -646,8 +646,11 @@ def plot_crystal_field_calculation(cfcalc,
                                    xlabel='$R$ (Bohr)',
                                    potential_ylabel='$Vpot$ (Hartree)',
                                    density_ylabel='Density',
-                                   figure=None,
                                    density_kwargs=None,
+                                   potential=True,
+                                   density=True,
+                                   axis_potential=None,
+                                   axis_density=None,
                                    **kwargs):
     """
     Plot the given potentials and charge densities used in the given
@@ -701,11 +704,12 @@ def plot_crystal_field_calculation(cfcalc,
     indices, ydata = zip(*sorted(potentials.items(), key=lambda x: x[0]))
     labels = [rf'$V_{{{l}{m}}}$' for l, m in indices]
 
-    if figure is None:
+    figure = None
+    if potential and density and axis_potential is None and axis_density is None:
         figure = plt.figure()
-
-    gs = figure.add_gridspec(1, 2)
-    ax = figure.add_subplot(gs[0])
+        gs = figure.add_gridspec(1, 2)
+        axis_potential = figure.add_subplot(gs[0])
+        axis_density = figure.add_subplot(gs[1])
 
     mpl_plotter.single_plot = False
     mpl_plotter.num_plots = len(indices)
@@ -730,68 +734,69 @@ def plot_crystal_field_calculation(cfcalc,
 
     mpl_plotter.set_parameters(**save_options)
 
-    with NestedPlotParameters(mpl_plotter):
-        ax = multiple_scatterplots(rmesh,
-                                   ydata,
-                                   xlabel=xlabel,
-                                   ylabel=potential_ylabel,
-                                   title=potential_title,
-                                   show=False,
-                                   save_plots=False,
-                                   axis=ax,
-                                   **kwargs)
-
-    mpl_plotter.set_defaults(default_type='function', plot_label=None, linestyle='--', legend=False)
-
-    if cfcalc.spin_polarized:
-        rmesh, potentials = cfcalc.get_potentials('down', complex_data=False)
-
-        _, ydata = zip(*sorted(potentials.items(), key=lambda x: x[0]))
+    if potential:
         with NestedPlotParameters(mpl_plotter):
-            ax = multiple_scatterplots(rmesh,
-                                       ydata,
-                                       xlabel=xlabel,
-                                       ylabel=potential_ylabel,
-                                       title=potential_title,
-                                       show=False,
-                                       save_plots=False,
-                                       axis=ax,
-                                       **kwargs)
+            axis_potential = multiple_scatterplots(rmesh,
+                                                   ydata,
+                                                   xlabel=xlabel,
+                                                   ylabel=potential_ylabel,
+                                                   title=potential_title,
+                                                   show=False,
+                                                   save_plots=False,
+                                                   axis=axis_potential,
+                                                   **kwargs)
 
-    ax = figure.add_subplot(gs[1])
+        mpl_plotter.set_defaults(default_type='function', plot_label=None, linestyle='--', legend=False)
+
+        if cfcalc.spin_polarized:
+            rmesh, potentials = cfcalc.get_potentials('down', complex_data=False)
+
+            _, ydata = zip(*sorted(potentials.items(), key=lambda x: x[0]))
+            with NestedPlotParameters(mpl_plotter):
+                axis_potential = multiple_scatterplots(rmesh,
+                                                       ydata,
+                                                       xlabel=xlabel,
+                                                       ylabel=potential_ylabel,
+                                                       title=potential_title,
+                                                       show=False,
+                                                       save_plots=False,
+                                                       axis=axis_potential,
+                                                       **kwargs)
 
     rmesh_int, density_int = cfcalc.get_charge_density()
-    rmesh, density = cfcalc.get_charge_density(interpolated=False)
+    rmesh, charge_density = cfcalc.get_charge_density(interpolated=False)
 
     xdata = [rmesh, rmesh_int]
-    ydata = [density, density_int]
+    ydata = [charge_density, density_int]
 
-    mpl_plotter.single_plot = False
-    mpl_plotter.num_plots = 2
+    if density:
+        mpl_plotter.single_plot = False
+        mpl_plotter.num_plots = 2
 
-    mpl_plotter.set_defaults(default_type='function',
-                             plot_label=[r'$n(r)$', None],
-                             linestyle=['-', '--'],
-                             color=['black', 'blue'],
-                             legend=True)
+        mpl_plotter.set_defaults(default_type='function',
+                                 plot_label=[r'$n(r)$', None],
+                                 linestyle=['-', '--'],
+                                 color=['black', 'blue'],
+                                 legend=True)
 
-    with NestedPlotParameters(mpl_plotter):
-        ax = multiple_scatterplots(xdata,
-                                   ydata,
-                                   xlabel=xlabel,
-                                   ylabel=density_ylabel,
-                                   title=density_title,
-                                   show=False,
-                                   save_plots=False,
-                                   axis=ax,
-                                   **density_kwargs)
+        with NestedPlotParameters(mpl_plotter):
+            axis_density = multiple_scatterplots(xdata,
+                                                 ydata,
+                                                 xlabel=xlabel,
+                                                 ylabel=density_ylabel,
+                                                 title=density_title,
+                                                 show=False,
+                                                 save_plots=False,
+                                                 axis=axis_density,
+                                                 **density_kwargs)
 
-    figure.set_size_inches(14.0, 10.0)
-    figure.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
+    if figure is not None:
+        figure.set_size_inches(14.0, 10.0)
+        figure.subplots_adjust(left=0.10, bottom=0.2, right=0.90, wspace=0.4, hspace=0.4)
 
     mpl_plotter.save_plot(saveas)
 
-    return figure
+    return [axis_potential, axis_density]
 
 
 @ensure_plotter_consistency(mpl_plotter)

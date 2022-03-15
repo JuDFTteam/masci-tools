@@ -236,6 +236,42 @@ def test_plot_crystal_field_calculation(test_file):
     return plt.gcf()
 
 
+@pytest.mark.mpl_image_compare(baseline_dir='files/cf_calculation/', filename='cf_calculation_only_potential.png')
+def test_plot_crystal_field_calculation_only_potential(test_file):
+    """
+    Test of the plot illustrating the potential and charge density going into the calculation
+    """
+    from masci_tools.tools.cf_calculation import CFCalculation, plot_crystal_field_calculation
+
+    cf = CFCalculation()
+    cf.read_potential(test_file('cf_calculation/CFdata.hdf'))
+    cf.read_charge_density(test_file('cf_calculation/CFdata.hdf'))
+
+    plt.gcf().clear()
+
+    plot_crystal_field_calculation(cf, show=False, density=False)
+
+    return plt.gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir='files/cf_calculation/', filename='cf_calculation_only_density.png')
+def test_plot_crystal_field_calculation_only_density(test_file):
+    """
+    Test of the plot illustrating the potential and charge density going into the calculation
+    """
+    from masci_tools.tools.cf_calculation import CFCalculation, plot_crystal_field_calculation
+
+    cf = CFCalculation()
+    cf.read_potential(test_file('cf_calculation/CFdata.hdf'))
+    cf.read_charge_density(test_file('cf_calculation/CFdata.hdf'))
+
+    plt.gcf().clear()
+
+    plot_crystal_field_calculation(cf, show=False, potential=False)
+
+    return plt.gcf()
+
+
 @pytest.mark.mpl_image_compare(baseline_dir='files/cf_calculation/', filename='cf_potential.png')
 def test_plot_crystal_field_potential():
     """
