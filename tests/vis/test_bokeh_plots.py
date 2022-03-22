@@ -460,3 +460,42 @@ def test_matrix_plot_categorical_axis(check_bokeh_plot):
                     text_font_style='bold')
 
     check_bokeh_plot(p)
+
+
+def test_matrix_plot_categorical_axis_secondary_color(check_bokeh_plot):
+    """
+    Test with categorical axis
+    """
+    pytest.importorskip('bokeh', minversion='2.0.0')
+    from masci_tools.vis.bokeh_plots import matrix_plot
+
+    x_names = ['Apple', 'Orange', 'Banana', 'Pear', 'Cherry']
+    y_names = ['New York', 'Chicago', 'Boston', 'Los Angeles', 'Washington D.C.', 'Houston', 'Philadelphia']
+
+    x = np.linspace(-1, 1, 5)
+    y = np.linspace(-1, 1, 7)
+
+    xv, yv = np.meshgrid(x, y)
+    z = 10 * np.exp(-xv**2 - yv**2)
+    z = z.flatten()
+    z2 = 10 * np.sin(xv)
+    z2 = z2.flatten()
+    xv, yv = np.meshgrid(x_names, y_names)
+    xv, yv = xv.flatten(), yv.flatten()
+
+    #Dont be confused that the output does not habe the same
+    #shape as e^(-r^2). The categories are ordered in the function
+    p = matrix_plot([f'{x:.1f}' for x in z],
+                    xv,
+                    yv,
+                    positions=[0.0],
+                    x_offset=0.0,
+                    color_data=z,
+                    secondary_color_data=z2,
+                    show=False,
+                    categorical_axis=True,
+                    block_size_pixel=150,
+                    text_font_size='14pt',
+                    text_font_style='bold')
+
+    check_bokeh_plot(p)
