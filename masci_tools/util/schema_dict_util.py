@@ -185,7 +185,7 @@ def get_tag_info(schema_dict,
                                 parent=parent)
 
 
-def read_constants(root: XMLLike,
+def read_constants(root: XMLLike | etree.XPathElementEvaluator,
                    schema_dict: fleur_schema.SchemaDict,
                    logger: Logger | None = None) -> dict[str, float]:
     """
@@ -229,7 +229,7 @@ def read_constants(root: XMLLike,
 
 
 @register_parsing_function('attrib')
-def evaluate_attribute(node: XMLLike,
+def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
                        constants: dict[str, float] | None = None,
@@ -311,7 +311,7 @@ def evaluate_attribute(node: XMLLike,
 
 
 @register_parsing_function('text')
-def evaluate_text(node: XMLLike,
+def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
                   constants: dict[str, float] | None = None,
@@ -395,7 +395,7 @@ def evaluate_text(node: XMLLike,
 
 
 @register_parsing_function('allAttribs', all_attribs_keys=True)
-def evaluate_tag(node: XMLLike,
+def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
                  constants: dict[str, float] | None = None,
@@ -598,7 +598,7 @@ def evaluate_tag(node: XMLLike,
 
 
 @register_parsing_function('singleValue', all_attribs_keys=True)
-def evaluate_single_value_tag(node: XMLLike,
+def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
                               constants: dict[str, float] | None = None,
@@ -657,7 +657,7 @@ def evaluate_single_value_tag(node: XMLLike,
 
 
 @register_parsing_function('parentAttribs', all_attribs_keys=True)
-def evaluate_parent_tag(node: XMLLike,
+def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
                         constants: dict[str, float] | None = None,
@@ -796,7 +796,7 @@ def evaluate_parent_tag(node: XMLLike,
 
 
 @register_parsing_function('attrib_exists')
-def attrib_exists(node: XMLLike,
+def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
                   logger: Logger | None = None,
@@ -836,7 +836,7 @@ def attrib_exists(node: XMLLike,
 
 
 @register_parsing_function('exists')
-def tag_exists(node: XMLLike,
+def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
                logger: Logger | None = None,
@@ -864,7 +864,7 @@ def tag_exists(node: XMLLike,
 
 
 @register_parsing_function('numberNodes')
-def get_number_of_nodes(node: XMLLike,
+def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
                         logger: Logger | None = None,
@@ -895,7 +895,7 @@ def get_number_of_nodes(node: XMLLike,
 
 
 @overload
-def eval_simple_xpath(node: XMLLike,
+def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger | None = ...,
@@ -907,7 +907,7 @@ def eval_simple_xpath(node: XMLLike,
 
 
 @overload
-def eval_simple_xpath(node: XMLLike,
+def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger | None = ...,
@@ -918,7 +918,7 @@ def eval_simple_xpath(node: XMLLike,
     ...
 
 
-def eval_simple_xpath(node: XMLLike,
+def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       logger: Logger | None = None,
@@ -1049,7 +1049,7 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
     return excluded_tree, included_trees
 
 
-def _select_tag_xpath(node: XMLLike,
+def _select_tag_xpath(node: XMLLike | etree.XPathElementEvaluator,
                       schema_dict: fleur_schema.SchemaDict,
                       name: str,
                       iteration_path: bool = False,
@@ -1103,7 +1103,7 @@ def _select_tag_xpath(node: XMLLike,
     return xpath
 
 
-def _select_attrib_xpath(node: XMLLike,
+def _select_attrib_xpath(node: XMLLike | etree.XPathElementEvaluator,
                          schema_dict: fleur_schema.SchemaDict,
                          name: str,
                          iteration_path: bool = False,
@@ -1160,7 +1160,7 @@ def _select_attrib_xpath(node: XMLLike,
     return xpath
 
 
-def _select_tag_info(node: XMLLike,
+def _select_tag_info(node: XMLLike | etree.XPathElementEvaluator,
                      schema_dict: fleur_schema.SchemaDict,
                      name: str,
                      iteration_path: bool = False,

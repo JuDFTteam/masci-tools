@@ -362,7 +362,7 @@ def split_off_attrib(xpath: TXPathLike) -> tuple[TXPathLike, str]:
     return xpath, attrib
 
 
-def check_complex_xpath(node: XMLLike, base_xpath: XPathLike, complex_xpath: XPathLike) -> None:
+def check_complex_xpath(node: XMLLike | etree.XPathElementEvaluator, base_xpath: XPathLike, complex_xpath: XPathLike) -> None:
     """
     Check that the given complex xpath produces a subset of the results
     for the simple xpath
