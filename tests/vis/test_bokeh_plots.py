@@ -478,7 +478,7 @@ def test_matrix_plot_categorical_axis_secondary_color(check_bokeh_plot):
     xv, yv = np.meshgrid(x, y)
     z = 10 * np.exp(-xv**2 - yv**2)
     z = z.flatten()
-    z2 = 10 * np.sin(xv)
+    z2 = 10 * xv
     z2 = z2.flatten()
     xv, yv = np.meshgrid(x_names, y_names)
     xv, yv = xv.flatten(), yv.flatten()
