@@ -1869,11 +1869,26 @@ def matrix_plot(
 
     entry, source = plot_data.items(first=True)
     if any(entry.secondary_color is not None for entry in plot_data.keys()):
+        #Explanation of what is happening here:
+        #For plotting two colors the plan is to split up the rectangle at the
+        #upwards diagonal and coloring each side with one color
+        #Unfortunately there is no direct glyph to do this so we need to use the
+        #generic patches method that needs vertices for polygons to draw
+        #Here we define a custom Transform that takes the center point of the rectangle
+        #and it's size and spits out a list of lists with the coordinates either x or y
+        #and for either the upper/lower triangle
+        #the strings in the function are the bodies of javascript functions that are inserted into the
+        #bokeh framework via CustomJSTransform model
+        #x/xs refers to the actual data passed in (defined by bokeh)
+        #and all other arguments are defined in arg_dict
+
         from bokeh.models import CustomJSTransform, Dodge
         from bokeh.transform import transform
 
         def TriangleTransform(size, data_range, xdata=True, upper=False):
-            """Performs a tranformation from anchor points and a block size to triangle coordinates."""
+            """Performs a tranformation from center points and a block size to triangle coordinates
+            to divide a rectangle around this point along the upwards diagonal."""
+            #single value transformation
             transform_func = """
                 var x_neg = dodge_neg.compute(x)
                 var x_pos = dodge_pos.compute(x)
@@ -1885,7 +1900,7 @@ def matrix_plot(
 
                 return res
             """
-
+            #vectorized transformation (for array data)
             transform_v_func = """
                 const zip= rows=>Array.from(rows[0]).map((_,c)=> rows.map(row=>row[c]));
                 var res;
