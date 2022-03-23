@@ -402,6 +402,8 @@ nitpick_ignore = [
     ('py:class', 'TypeAlias'),
     ('py:class', 'Logger'),
     ('py:class', 'FilterType'),
+    ('py:class', 'XMLLike'),
+    ('py:class', 'etree.XPathElementEvaluator'),
 ]
 
 
