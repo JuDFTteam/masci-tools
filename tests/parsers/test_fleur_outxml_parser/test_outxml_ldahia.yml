@@ -147,5 +147,10 @@ output_dict:
   - 1.3862279999999956
   - 15.573215300000001
   - 15.580040799999999
+  ts_energy:
+  - 0.0
+  - 0.0
+  - 0.0
+  ts_energy_units: eV
   walltime: 21
   walltime_units: seconds

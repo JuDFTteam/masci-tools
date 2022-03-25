@@ -68,12 +68,14 @@ output_dict:
   sum_of_eigenvalues: -316.3770860013
   title: Si bulk
   total_charge: 28.0000000002
+  ts_energy: 0.0
+  ts_energy_units: eV
   walltime: 2
   walltime_units: seconds
 warnings:
   parser_errors: []
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.6.0
+  - Masci-Tools Fleur out.xml Parser v0.7.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':

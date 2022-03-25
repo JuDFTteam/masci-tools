@@ -5,6 +5,7 @@
 
 ### Added
 - New `bokeh` plot routine for matrix plot of rectangle patches with added texts [[#124]](https://github.com/JuDFTteam/masci-tools/pull/124)
+- Added TS contribution to free energy to output of `outxml_parser`
 
 ### Improvements
 - Several arguments in XML setter functions were renamed for more consistent signatures.

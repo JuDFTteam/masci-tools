@@ -133,5 +133,13 @@ output_dict:
   - 28.0000000002
   - 28.0000000002
   - 28.0000000002
+  ts_energy:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  ts_energy_units: eV
   walltime: 2
   walltime_units: seconds

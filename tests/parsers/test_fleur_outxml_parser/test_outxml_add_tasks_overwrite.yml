@@ -54,5 +54,7 @@ output_dict:
   sum_of_eigenvalues: -316.3770860013
   title: Si bulk
   total_charge: 28.0000000002
+  ts_energy: 0.0
+  ts_energy_units: eV
   walltime: 2
   walltime_units: seconds

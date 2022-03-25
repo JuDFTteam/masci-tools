@@ -317,6 +317,11 @@ TASKS_DEFINITION = {
         [Conversion(name='convert_htr_to_ev', kwargs={
             'name': 'energy_hartree',
             'converted_name': 'energy',
+        }),
+        Conversion(name='convert_htr_to_ev', kwargs={
+            'name': 'ts_energy_hartree',
+            'converted_name': 'ts_energy',
+            'pop': True
         })],
         'energy_hartree': {
             'parse_type': 'attrib',
@@ -333,6 +338,13 @@ TASKS_DEFINITION = {
             },
             'overwrite_last': True,
         },
+        'ts_energy_hartree': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'value',
+                'tag_name': 'tkbtimesentropy'
+            }
+        }
     },
     'distances': {
         '_minimal': True,

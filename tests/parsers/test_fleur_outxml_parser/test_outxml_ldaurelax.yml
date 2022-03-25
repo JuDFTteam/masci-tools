@@ -170,5 +170,9 @@ output_dict:
   total_charge:
   - 63.9999999893
   - 63.9999999893
+  ts_energy:
+  - 0.0
+  - 0.0
+  ts_energy_units: eV
   walltime: 1
   walltime_units: seconds
