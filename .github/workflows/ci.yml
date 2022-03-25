@@ -21,7 +21,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-docs-${{ hashFiles('**/setup.json') }}
+        key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           pip-docs-
 
@@ -65,7 +65,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-pre-commit-${{ hashFiles('**/setup.json') }}
+        key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           pip-pre-commit-
 
@@ -106,7 +106,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/setup.json') }}
+        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml')) }}
         restore-keys: |
           pip-${{ matrix.python-version }}-tests
 
