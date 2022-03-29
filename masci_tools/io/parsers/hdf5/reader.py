@@ -109,7 +109,9 @@ class HDF5Reader:
         else:
             self.filename = cast(str, self._original_file)
 
-        if not self.filename.endswith('.hdf'):
+        extension = Path(self.filename).suffix
+
+        if extension and extension != '.hdf':
             logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self.filename)
             raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self.filename}')
 
