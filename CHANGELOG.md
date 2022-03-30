@@ -3,7 +3,8 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...develop)
 
-Nothing here yet
+### Bugfixes
+- Fixed bug in bokeh testing fixtures using the wrong folder for fallback versions
 
 ## v.0.9.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...v0.9.0)
