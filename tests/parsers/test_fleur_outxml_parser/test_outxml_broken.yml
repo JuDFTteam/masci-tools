@@ -75,13 +75,15 @@ output_dict:
   title: Fe fcc 2
   total_charge: 52.0000003806
   total_magnetic_moment_cell: 3.8652096
+  ts_energy: 0.017642924049073132
+  ts_energy_units: eV
   walltime: -60787
   walltime_units: seconds
 warnings:
   parser_errors:
   - Failed to parse output file with recover=False
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.6.0
+  - Masci-Tools Fleur out.xml Parser v0.7.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':

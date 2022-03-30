@@ -1,16 +1,11 @@
 roots:
   references:
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
   - attributes:
       axis_label_text_font_size:
         value: 18pt
-      axis_line_color:
-        value: null
       axis_line_width:
         value: 2
       formatter:
@@ -18,8 +13,6 @@ roots:
       major_label_standoff: 0
       major_label_text_font_size:
         value: 16pt
-      major_tick_line_color:
-        value: null
       ticker:
         type: BasicTicker
       visible: false
@@ -27,8 +20,6 @@ roots:
   - attributes:
       axis_label_text_font_size:
         value: 18pt
-      axis_line_color:
-        value: null
       axis_line_width:
         value: 2
       formatter:
@@ -36,27 +27,21 @@ roots:
       major_label_standoff: 0
       major_label_text_font_size:
         value: 22pt
-      major_tick_line_color:
-        value: null
       ticker:
         type: BasicTicker
       visible: false
     type: LinearAxis
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       desired_num_ticks: 10
     type: BasicTicker
   - attributes:
-      grid_line_color: null
       ticker:
         type: BasicTicker
     type: Grid
   - attributes:
       dimension: 1
-      grid_line_color: null
       ticker:
         type: BasicTicker
     type: Grid
@@ -85,10 +70,8 @@ roots:
       overlay:
         type: BoxAnnotation
     type: BoxZoomTool
-  - attributes: {}
-    type: CategoricalScale
-  - attributes: {}
-    type: CategoricalScale
+  - type: CategoricalScale
+  - type: CategoricalScale
   - attributes:
       source:
         type: ColumnDataSource
@@ -114,11 +97,8 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Rect
-      hover_glyph: null
-      muted_glyph: null
       nonselection_glyph:
         type: Rect
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -127,11 +107,8 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Text
-      hover_glyph: null
-      muted_glyph: null
       nonselection_glyph:
         type: Text
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -140,11 +117,8 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Text
-      hover_glyph: null
-      muted_glyph: null
       nonselection_glyph:
         type: Text
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -153,11 +127,8 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Text
-      hover_glyph: null
-      muted_glyph: null
       nonselection_glyph:
         type: Text
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -166,16 +137,12 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Text
-      hover_glyph: null
-      muted_glyph: null
       nonselection_glyph:
         type: Text
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
   - attributes:
       text:
         field: atomic number
@@ -323,7 +290,6 @@ roots:
           type: Dodge
     type: Text
   - attributes:
-      callback: null
       factors:
       - '1'
       - '2'
@@ -345,7 +311,6 @@ roots:
       - '18'
     type: FactorRange
   - attributes:
-      callback: null
       factors:
       - VII
       - VI
@@ -386,7 +351,6 @@ roots:
       value: 0.3
     type: Dodge
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -686,8 +650,6 @@ roots:
       - '#EFF821'
     type: LinearColorMapper
   - attributes:
-      background_fill_color:
-        value: null
       color_mapper:
         type: LinearColorMapper
       formatter:
@@ -744,8 +706,6 @@ roots:
         type: OpenHead
       line_width:
         value: 2
-      source: null
-      start: null
       x_end:
         value: 7.0
       x_start:
@@ -760,8 +720,6 @@ roots:
         type: OpenHead
       line_width:
         value: 2
-      source: null
-      start: null
       x_end:
         value: 7.0
       x_start:
@@ -771,8 +729,7 @@ roots:
       y_start:
         value: 5.6
     type: Arrow
-  - attributes: {}
-    type: PanTool
+  - type: PanTool
   - attributes:
       fill_alpha:
         value: 0.5
@@ -792,7 +749,6 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      callback: null
       overlay:
         type: PolyAnnotation
     type: PolySelectTool
@@ -816,24 +772,15 @@ roots:
       y:
         field: period
     type: Rect
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
   - attributes:
-      callback: null
       data:
         CPK:
         - '#C2FF00'
@@ -3251,7 +3198,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         CPK:
         - '#C2FF00'
@@ -5669,7 +5615,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         CPK:
         - '#C2FF00'
@@ -8087,7 +8032,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         CPK:
         - '#C2FF00'
@@ -10505,7 +10449,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         CPK:
         - '#C2FF00'
@@ -12922,9 +12865,7 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes:
-      callback: null
-    type: TapTool
+  - type: TapTool
   - attributes:
       text: ''
     type: Title
@@ -12941,8 +12882,6 @@ roots:
       - type: Label
       left:
       - type: LinearAxis
-      outline_line_color:
-        value: null
       plot_height: 675
       plot_width: 1475
       renderers:
@@ -12969,7 +12908,6 @@ roots:
       active_drag: auto
       active_inspect:
       - type: HoverTool
-      active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
@@ -12987,23 +12925,14 @@ roots:
       - type: ZoomInTool
       - type: ZoomOutTool
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0

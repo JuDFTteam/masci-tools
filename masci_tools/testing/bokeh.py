@@ -35,7 +35,9 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
         else:
             if not (datadir / basename).parent.is_dir():
                 filename = basename.name
-                prev_version = previous_bokeh_results(basename.parent)
+                _, _, current_version = basename.parent.name.partition('-')
+                current_version = tuple(int(x) for x in current_version.split('.'))
+                prev_version = previous_bokeh_results(current_version)
 
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
@@ -163,10 +165,10 @@ def fixture_clean_bokeh_json():
             array = np.around(array, decimals=np_precision)
             data = encode_base64_dict(array)
 
-        for key, val in list(data.items()):
-            if key in ('id', 'root_ids'):
-                data.pop(key)
-            elif isinstance(val, dict):
+        data = {key: val for key, val in data.items() if key not in ('id', 'root_ids')}
+
+        for key, val in data.items():
+            if isinstance(val, dict):
                 data[key] = _clean_bokeh_json(val, np_precision=np_precision, data_entry=key == 'data')
             elif isinstance(val, list):
 
@@ -176,12 +178,17 @@ def fixture_clean_bokeh_json():
                     elif isinstance(entry, list):
                         val[index] = [_clean_bokeh_json(x) if isinstance(x, dict) else x for x in entry]
 
+                #Filter out empty dictionaries
+                while {} in val:
+                    val.remove({})
+
                 if all(isinstance(x, dict) for x in val):
                     data[key] = normalize_list_of_dicts(val)
                 elif all(isinstance(x, int) for x in val) and data_entry:
                     data[key] = encode_base64_dict(np.array(val))
                 else:
                     data[key] = val
+        data = {key: val for key, val in data.items() if val not in (None, [], {})}
 
         return data
 

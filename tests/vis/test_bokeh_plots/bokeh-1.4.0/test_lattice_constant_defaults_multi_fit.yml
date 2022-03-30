@@ -1,9 +1,7 @@
 roots:
   references:
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
   - attributes:
       axis_label: Relative Volume
       axis_label_text_font_size:
@@ -30,10 +28,8 @@ roots:
       ticker:
         type: BasicTicker
     type: LinearAxis
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       ticker:
         type: BasicTicker
@@ -153,12 +149,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy_0
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -167,12 +160,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy_1
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -181,12 +171,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy_2
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -195,12 +182,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy_3
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -209,12 +193,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy_4
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -223,12 +204,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: fit_0
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -237,12 +215,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: fit_1
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -251,12 +226,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: fit_2
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -265,12 +237,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: fit_3
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -279,12 +248,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: fit_4
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -293,12 +259,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy_0
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -307,12 +270,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy_1
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -321,12 +281,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy_2
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -335,12 +292,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy_3
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -349,12 +303,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy_4
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -363,12 +314,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: fit_0
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -377,12 +325,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: fit_1
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -391,12 +336,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: fit_2
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -405,12 +347,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: fit_3
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -419,25 +358,16 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: fit_4
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
   - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -448,7 +378,6 @@ roots:
         - '@energy_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -459,7 +388,6 @@ roots:
         - '@fit_0'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -470,7 +398,6 @@ roots:
         - '@energy_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -481,7 +408,6 @@ roots:
         - '@fit_1'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -492,7 +418,6 @@ roots:
         - '@energy_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -503,7 +428,6 @@ roots:
         - '@fit_2'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -514,7 +438,6 @@ roots:
         - '@energy_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -525,7 +448,6 @@ roots:
         - '@fit_3'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -536,7 +458,6 @@ roots:
         - '@energy_4'
     type: HoverTool
   - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -754,12 +675,9 @@ roots:
       y:
         field: fit_4
     type: Line
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       fill_alpha:
         value: 0.5
@@ -779,16 +697,12 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      callback: null
       overlay:
         type: PolyAnnotation
     type: PolySelectTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_color:
         value: '#1f77b4'
@@ -1109,48 +1023,27 @@ roots:
       y:
         field: fit_4
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
   - attributes:
-      callback: null
       data:
         energy_1:
           __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
@@ -1173,7 +1066,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_1:
           __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
@@ -1196,7 +1088,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_1:
           __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
@@ -1219,7 +1110,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_1:
           __ndarray__: /YLdsO0zf8Ch+DHmLjR/wBrAWyBBNH/ALgQ5KGE0f8DvrN12ITR/wCnLEMc6NH/AkdCWcyk0f8BDBBxClTN/wGrZWl8kNH/AntLB+r8zf8A=
@@ -1242,7 +1132,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_4:
           __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
@@ -1265,7 +1154,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_4:
           __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
@@ -1288,7 +1176,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_4:
           __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
@@ -1311,7 +1198,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_4:
           __ndarray__: FCLgEKouf8AEIVnAhC9/wGXkLOzpL3/AQ8pPqn0wf8DwMy4ciDB/wKdc4V0uMH/A4XoUrkcwf8DPSe8b3y9/wGUBE7h1L3/A3IDPDyMvf8A=
@@ -1334,7 +1220,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_3:
           __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
@@ -1357,7 +1242,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_3:
           __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
@@ -1380,7 +1264,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_3:
           __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
@@ -1403,7 +1286,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_3:
           __ndarray__: Ub01sNU0f8Dn49pQsTV/wOSghJm2NX/ALnO6LKY2f8BxyXGndDZ/wCQLmMCtNn/ApfeNrz03f8BBguLHmDZ/wHGPpQ9dNn/A27+y0qQ2f8A=
@@ -1426,7 +1308,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_2:
           __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
@@ -1449,7 +1330,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_2:
           __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
@@ -1472,7 +1352,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_2:
           __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
@@ -1495,7 +1374,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_2:
           __ndarray__: dVlMbL4zf8DAJmvUwzN/wIVf6udNNH/ABoGVQ4s0f8CDNGPRdDR/wKiMf5/xNH/AnDOitLc0f8CCHJQwUzR/wEax3NLqNH/Ah/nyAmw0f8A=
@@ -1518,7 +1396,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_0:
           __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
@@ -1541,7 +1418,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_0:
           __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
@@ -1564,7 +1440,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_0:
           __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
@@ -1587,7 +1462,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy_0:
           __ndarray__: j+TyH9Izf8D2I0VkWDR/wNc07zhFNH/AS+oENJE0f8CBBMWPsTR/wEJD/wSXNH/AIk+Srpk0f8DvycNCLTR/wGQ730+NM3/AbD6uDRUzf8A=
@@ -1609,9 +1483,7 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes:
-      callback: null
-    type: TapTool
+  - type: TapTool
   - attributes:
       text: Equation of states
     type: Title
@@ -1672,7 +1544,6 @@ roots:
       - type: HoverTool
       - type: HoverTool
       - type: HoverTool
-      active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
@@ -1699,53 +1570,29 @@ roots:
       - type: ZoomInTool
       - type: ZoomOutTool
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0

@@ -313,11 +313,18 @@ TASKS_DEFINITION = {
     'total_energy': {
         '_minimal':
         True,
-        '_conversions':
-        [Conversion(name='convert_htr_to_ev', kwargs={
-            'name': 'energy_hartree',
-            'converted_name': 'energy',
-        })],
+        '_conversions': [
+            Conversion(name='convert_htr_to_ev', kwargs={
+                'name': 'energy_hartree',
+                'converted_name': 'energy',
+            }),
+            Conversion(name='convert_htr_to_ev',
+                       kwargs={
+                           'name': 'ts_energy_hartree',
+                           'converted_name': 'ts_energy',
+                           'pop': True
+                       })
+        ],
         'energy_hartree': {
             'parse_type': 'attrib',
             'path_spec': {
@@ -333,6 +340,13 @@ TASKS_DEFINITION = {
             },
             'overwrite_last': True,
         },
+        'ts_energy_hartree': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'value',
+                'tag_name': 'tkbtimesentropy'
+            }
+        }
     },
     'distances': {
         '_minimal': True,
@@ -544,6 +558,13 @@ TASKS_DEFINITION = {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'Entry',
+                'contains': 'DMI'
+            }
+        },
+        'dmi_force_so': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'allAtoms',
                 'contains': 'DMI'
             }
         },

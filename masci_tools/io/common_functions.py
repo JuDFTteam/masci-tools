@@ -16,10 +16,11 @@ without a database) are collected.
 from __future__ import annotations
 
 import io
-from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar
-try:
-    from typing import TypeAlias  #type:ignore
-except ImportError:
+from typing import IO, Any, Generator, Iterable, NamedTuple, TypeVar, Union, Tuple, List
+import sys
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
     from typing_extensions import TypeAlias
 import numpy as np
 from collections.abc import Sequence
@@ -47,9 +48,9 @@ def open_general(filename_or_handle: FileLike, iomode: str | None = None) -> IO[
     if reopen_file:
         if iomode is None:
             iomode = 'r'
-        f = open(filename_or_handle, iomode, encoding='utf8')
+        f = open(filename_or_handle, iomode, encoding='utf8')  #type:ignore[arg-type]
     else:
-        f = filename_or_handle
+        f = filename_or_handle  #type:ignore[assignment]
         if f.closed:  # reopen file if it was closed before
             if iomode is None:
                 f = open(f.name, f.mode, encoding='utf8')
@@ -446,9 +447,9 @@ def is_sequence(arg: Any) -> bool:
     return isinstance(arg, Sequence) and not isinstance(arg, str)
 
 
-_TVectorType = TypeVar('_TVectorType', 'tuple[float, float, float]', 'list[float]', np.ndarray)
+VectorType: TypeAlias = Union[Tuple[float, float, float], List[float], np.ndarray]
+_TVectorType = TypeVar('_TVectorType', bound=VectorType)
 """Generic type variable for atom position types"""
-VectorType: TypeAlias = 'tuple[float, float, float] | list[float] |  np.ndarray'
 
 
 def abs_to_rel(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
@@ -476,7 +477,7 @@ def abs_to_rel(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _T
         return relative_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(relative_vector)  #type:ignore
-    return relative_vector
+    return relative_vector  #type:ignore[return-value]
 
 
 def abs_to_rel_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray, pbc: tuple[bool, bool,
@@ -514,7 +515,7 @@ def abs_to_rel_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray, pbc
         return relative_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(relative_vector)  #type:ignore
-    return relative_vector
+    return relative_vector  #type:ignore[return-value]
 
 
 def rel_to_abs(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> _TVectorType:
@@ -572,7 +573,7 @@ def rel_to_abs_f(vector: _TVectorType, cell: list[list[float]] | np.ndarray) -> 
         return absolute_vector.tolist()
     if isinstance(vector, tuple):
         return tuple(absolute_vector)  #type:ignore
-    return absolute_vector
+    return absolute_vector  #type:ignore[return-value]
 
 
 def find_symmetry_relation(from_pos: VectorType,

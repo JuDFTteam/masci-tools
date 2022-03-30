@@ -17,49 +17,46 @@ to do these operations robustly
 """
 from __future__ import annotations
 
-from typing import Iterable, Any, cast
+from typing import Iterable, Any
 from lxml import etree
 import warnings
 
 from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.common_functions import eval_xpath
-from masci_tools.util.xml.xpathbuilder import XPathBuilder
 
 
 def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
-                    newelement: etree._Element,
+                    element: etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     replaces xml tags by another tag on an xmletree in place
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
-    :param newelement: a new tag
+    :param element: an Element to replace the found tags with
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     :returns: xmltree with replaced tag
     """
     import copy
-    from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(
-            f'No nodes to replace found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}')
+        warnings.warn(f'No nodes to replace found on xpath: {xpath!r}')
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
@@ -67,9 +64,9 @@ def xml_replace_tag(xmltree: XMLLike,
         parent = node.getparent()
         if parent is None:
             raise ValueError('Could not find parent of node')
-        index = parent.index(node)  #type:ignore
+        index = parent.index(node)
         parent.remove(node)
-        parent.insert(index, copy.deepcopy(newelement))
+        parent.insert(index, copy.deepcopy(element))
 
     etree.indent(xmltree)
     return xmltree
@@ -77,43 +74,40 @@ def xml_replace_tag(xmltree: XMLLike,
 
 def xml_delete_att(xmltree: XMLLike,
                    xpath: XPathLike,
-                   attrib: str,
+                   name: str,
                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Deletes an xml attribute in an xmletree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
-    :param attrib: the name of an attribute
+    :param name: the name of an attribute to delete
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
     :returns: xmltree with deleted attribute
     """
-    from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(
-            f'No nodes to delete attributes on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
-        )
+        warnings.warn(f'No nodes to delete attributes on found on xpath: {xpath!r}')
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for node in nodes:
-        node.attrib.pop(attrib, None)  #type:ignore
+        node.attrib.pop(name, '')
 
     return xmltree
 
@@ -129,24 +123,22 @@ def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterab
 
     :returns: xmltree with deleted tag
     """
-    from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(
-            f'No nodes to delete found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}')
+        warnings.warn(f'No nodes to delete found on xpath: {xpath!r}')
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
@@ -189,7 +181,7 @@ def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
     parent = node.getparent()
     if parent is None:
         raise ValueError('Could not find parent of node')
-    index = parent.index(node)  #type:ignore
+    index = parent.index(node)
     parent.remove(node)
     parent.insert(index, ordered_node)
     return ordered_node
@@ -229,7 +221,6 @@ def xml_create_tag(xmltree: XMLLike,
     """
     import copy
     from more_itertools import unique_justseen
-    from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(element):
         element_name: str = element  #type:ignore
@@ -238,7 +229,7 @@ def xml_create_tag(xmltree: XMLLike,
         except ValueError as exc:
             raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
     else:
-        element_name = element.tag  #type:ignore
+        element_name = element.tag
 
     parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
 
@@ -247,15 +238,15 @@ def xml_create_tag(xmltree: XMLLike,
                          'Use create=True to create the subtags')
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            parent_nodes = [parent_nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            parent_nodes = [parent_nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
     for parent in parent_nodes:
-        element_to_write: etree._Element = copy.deepcopy(element)  #type:ignore
+        element_to_write: etree._Element = copy.deepcopy(element)
         if tag_order is not None:
             try:
                 tag_index = tag_order.index(element_name)
@@ -295,7 +286,7 @@ def xml_create_tag(xmltree: XMLLike,
                 existing_tags = list(parent.iterchildren(tag=tag))
 
                 if len(existing_tags) != 0:
-                    insert_index = parent.index(existing_tags[-1]) + 1  #type:ignore
+                    insert_index = parent.index(existing_tags[-1]) + 1
                     try:
                         parent.insert(insert_index, element_to_write)
                     except ValueError as exc:
@@ -329,8 +320,8 @@ def xml_create_tag(xmltree: XMLLike,
 
 def xml_set_attrib_value_no_create(xmltree: XMLLike,
                                    xpath: XPathLike,
-                                   attributename: str,
-                                   attribv: Any,
+                                   name: str,
+                                   value: Any,
                                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     Sets an attribute in a xmltree to a given value. By default the attribute will be set
@@ -338,8 +329,8 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path where to set the attributes
-    :param attributename: the attribute name to set
-    :param attribv: value or list of values to set (if not str they will be converted with `str(value)`)
+    :param name: the attribute name to set
+    :param value: value or list of values to set (if not str they will be converted with `str(value)`)
     :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     :raises ValueError: If the lengths of attribv or occurrences do not match number of nodes
@@ -349,36 +340,34 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(
-            f'No nodes to set attribute {attributename} on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
-        )
+        warnings.warn(f'No nodes to set attribute {name} on found on xpath: {xpath!r}')
         return xmltree
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 
-    if is_sequence(attribv):
-        if len(attribv) != len(nodes):
-            raise ValueError(f'Wrong length for attribute values. Expected {len(nodes)} items. Got: {len(attribv)}')
+    if is_sequence(value):
+        if len(value) != len(nodes):
+            raise ValueError(f'Wrong length for attribute values. Expected {len(nodes)} items. Got: {len(value)}')
     else:
-        attribv = [attribv] * len(nodes)
+        value = [value] * len(nodes)
 
-    attribv = [val if isinstance(val, str) else str(val) for val in attribv]
+    value = [val if isinstance(val, str) else str(val) for val in value]
 
-    for node, value in zip(nodes, attribv):
-        node.set(attributename, value)
+    for node, val in zip(nodes, value):
+        node.set(name, val)
 
     return xmltree
 
@@ -403,23 +392,21 @@ def xml_set_text_no_create(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     if not etree.iselement(xmltree):
-        root = xmltree.getroot()
+        root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
     if len(nodes) == 0:
-        warnings.warn(
-            f'No nodes to set text on found on xpath: {str(xpath.path) if isinstance(xpath, XPathBuilder) else str(xpath)}'
-        )
+        warnings.warn(f'No nodes to set text on found on xpath: {xpath!r}')
         return xmltree
 
     if occurrences is not None:
-        if not is_sequence(occurrences):
-            occurrences = [occurrences]  #type:ignore
+        if not isinstance(occurrences, Iterable):
+            occurrences = [occurrences]
         try:
-            nodes = [nodes[occ] for occ in cast(Iterable[int], occurrences)]
+            nodes = [nodes[occ] for occ in occurrences]
         except IndexError as exc:
             raise ValueError('Wrong value for occurrences') from exc
 

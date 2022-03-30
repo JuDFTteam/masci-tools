@@ -186,6 +186,21 @@ def test_validate_nmmpmat(load_inpxml, test_file):
         validate_nmmpmat(xmltree, nmmp_lines, schema_dict)
 
 
+def test_validate_mmpmat_issue134(load_inpxml, test_file):
+    """
+    Test for the bug reported in
+    https://github.com/JuDFTteam/masci-tools/issues/134
+    """
+    from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
+
+    xmltree, schema_dict = load_inpxml('fleur/issue134_files/inp.xml', absolute=False)
+
+    with open(test_file('fleur/issue134_files/input_nmmpmat.txt'), encoding='utf-8') as nmmpfile:
+        nmmp_lines = nmmpfile.read().split('\n')
+
+    validate_nmmpmat(xmltree, nmmp_lines, schema_dict)  #should not raise
+
+
 def prepare_for_file_dump(file_lines):
     """
     Join lines together with linebreaks and remove negative zeros

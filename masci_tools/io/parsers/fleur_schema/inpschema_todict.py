@@ -15,11 +15,12 @@ FleurInputSchema.xsd
 """
 from __future__ import annotations
 
+import os
 from .fleur_schema_parser_functions import *  #pylint: disable=unused-wildcard-import
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from masci_tools.util.lockable_containers import LockableDict, LockableList
-from typing import AnyStr, Callable
+from typing import Callable
 try:
     from typing import TypedDict, Literal
 except ImportError:
@@ -49,7 +50,7 @@ KEYS = Literal['root_tag', 'tag_paths', '_basic_types', 'attrib_types', 'text_ty
                'unique_path_attribs', 'other_attribs', 'omitt_contained_tags', 'tag_info']
 
 
-def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSchemaData:
+def create_inpschema_dict(path: os.PathLike, apply_patches: bool = True) -> InputSchemaData:
     """
     Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys
@@ -81,7 +82,8 @@ def create_inpschema_dict(path: AnyStr, apply_patches: bool = True) -> InputSche
 
     xmlschema_evaluator = etree.XPathEvaluator(xmlschema, namespaces=NAMESPACES)
 
-    inp_version = str(xmlschema_evaluator('/xsd:schema/@version')[0])
+    inp_version = eval_single_string_attribute(xmlschema_evaluator, '/xsd:schema/@version')
+
     inp_version_tuple = convert_str_version_number(inp_version)
 
     schema_dict: InputSchemaData = {}

@@ -33,8 +33,8 @@ from lxml import etree
 def create_tag(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                tag: str | etree._Element,
-               complex_xpath: XPathLike = None,
-               filters: FilterType = None,
+               complex_xpath: XPathLike | None = None,
+               filters: FilterType | None = None,
                create_parents: bool = False,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
@@ -65,12 +65,11 @@ def create_tag(xmltree: XMLLike,
     from masci_tools.util.xml.common_functions import split_off_tag
 
     if etree.iselement(tag):
-        tag_name: str = tag.tag  #type:ignore
+        tag_name: str = tag.tag
     else:
         tag_name = tag  #type:ignore
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
     if complex_xpath is None:
@@ -96,8 +95,8 @@ def create_tag(xmltree: XMLLike,
 def delete_tag(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
                tag_name: str,
-               complex_xpath: XPathLike = None,
-               filters: FilterType = None,
+               complex_xpath: XPathLike | None = None,
+               filters: FilterType | None = None,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
     """
@@ -138,9 +137,9 @@ def delete_tag(xmltree: XMLLike,
 
 def delete_att(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
-               attrib_name: str,
-               complex_xpath: XPathLike = None,
-               filters: FilterType = None,
+               name: str,
+               complex_xpath: XPathLike | None = None,
+               filters: FilterType | None = None,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
     """
@@ -148,7 +147,7 @@ def delete_att(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param tag: str of the attribute to delete
+    :param name: str of the attribute to delete
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -167,8 +166,8 @@ def delete_att(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib
 
-    base_xpath = schema_dict.attrib_xpath(attrib_name, **kwargs)
-    tag_xpath, attrib_name = split_off_attrib(base_xpath)
+    base_xpath = schema_dict.attrib_xpath(name, **kwargs)
+    tag_xpath, name = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
         complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
@@ -180,15 +179,15 @@ def delete_att(xmltree: XMLLike,
             complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, tag_xpath, complex_xpath)
 
-    return xml_delete_att(xmltree, complex_xpath, attrib_name, occurrences=occurrences)
+    return xml_delete_att(xmltree, complex_xpath, name, occurrences=occurrences)
 
 
 def replace_tag(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 tag_name: str,
-                newelement: etree._Element,
-                complex_xpath: XPathLike = None,
-                filters: FilterType = None,
+                element: etree._Element,
+                complex_xpath: XPathLike | None = None,
+                filters: FilterType | None = None,
                 occurrences: int | Iterable[int] | None = None,
                 **kwargs: Any) -> XMLLike:
     """
@@ -197,7 +196,7 @@ def replace_tag(xmltree: XMLLike,
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to replace
-    :param newelement: etree Element to replace the tag
+    :param element: etree Element to replace the tag
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -225,16 +224,16 @@ def replace_tag(xmltree: XMLLike,
             complex_xpath.add_filter(key, val)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
-    return xml_replace_tag(xmltree, complex_xpath, newelement, occurrences=occurrences)
+    return xml_replace_tag(xmltree, complex_xpath, element, occurrences=occurrences)
 
 
 def add_number_to_attrib(xmltree: XMLLike,
                          schema_dict: fleur_schema.SchemaDict,
-                         attributename: str,
-                         add_number: Any,
-                         complex_xpath: XPathLike = None,
-                         filters: FilterType = None,
-                         mode: Literal['abs', 'rel'] = 'abs',
+                         name: str,
+                         number_to_add: Any,
+                         complex_xpath: XPathLike | None = None,
+                         filters: FilterType | None = None,
+                         mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                          occurrences: int | Iterable[int] | None = None,
                          **kwargs: Any) -> XMLLike:
     """
@@ -244,14 +243,14 @@ def add_number_to_attrib(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributename: the attribute name to change
-    :param add_number: number to add/multiply with the old attribute value
+    :param name: the attribute name to change
+    :param number_to_add: number to add/multiply with the old attribute value
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
-    :param mode: str (either `rel` or `abs`).
-                 `rel` multiplies the old value with `add_number`
-                 `abs` adds the old value and `add_number`
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with `number_to_add`
+                 `abs`/`absolute` adds the old value and `number_to_add`
     :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
     Kwargs:
@@ -266,8 +265,8 @@ def add_number_to_attrib(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_attrib
     from masci_tools.util.xml.common_functions import split_off_attrib
 
-    attrib_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
-    base_xpath, attributename = split_off_attrib(attrib_xpath)
+    attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
+    base_xpath, name = split_off_attrib(attrib_xpath)
 
     if complex_xpath is None:
         complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
@@ -282,19 +281,19 @@ def add_number_to_attrib(xmltree: XMLLike,
                                     schema_dict,
                                     complex_xpath,
                                     base_xpath,
-                                    attributename,
-                                    add_number,
+                                    name,
+                                    number_to_add,
                                     mode=mode,
                                     occurrences=occurrences)
 
 
 def add_number_to_first_attrib(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
-                               attributename: str,
-                               add_number: Any,
-                               complex_xpath: XPathLike = None,
-                               filters: FilterType = None,
-                               mode: Literal['abs', 'rel'] = 'abs',
+                               name: str,
+                               number_to_add: Any,
+                               complex_xpath: XPathLike | None = None,
+                               filters: FilterType | None = None,
+                               mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                                **kwargs: Any) -> XMLLike:
     """
     Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
@@ -303,12 +302,12 @@ def add_number_to_first_attrib(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributename: the attribute name to change
-    :param add_number: number to add/multiply with the old attribute value
+    :param name: the attribute name to change
+    :param number_to_add: number to add/multiply with the old attribute value
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
-    :param mode: str (either `rel` or `abs`).
-                 `rel` multiplies the old value with `add_number`
-                 `abs` adds the old value and `add_number`
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with `number_to_add`
+                 `abs`/`absolute` adds the old value and `number_to_add`
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -321,8 +320,8 @@ def add_number_to_first_attrib(xmltree: XMLLike,
     """
     return add_number_to_attrib(xmltree,
                                 schema_dict,
-                                attributename,
-                                add_number,
+                                name,
+                                number_to_add,
                                 complex_xpath=complex_xpath,
                                 mode=mode,
                                 occurrences=0,
@@ -332,10 +331,10 @@ def add_number_to_first_attrib(xmltree: XMLLike,
 
 def set_attrib_value(xmltree: XMLLike,
                      schema_dict: fleur_schema.SchemaDict,
-                     attributename: str,
-                     attribv: Any,
-                     complex_xpath: XPathLike = None,
-                     filters: FilterType = None,
+                     name: str,
+                     value: Any,
+                     complex_xpath: XPathLike | None = None,
+                     filters: FilterType | None = None,
                      occurrences: int | Iterable[int] | None = None,
                      create: bool = False,
                      **kwargs: Any) -> XMLLike:
@@ -349,8 +348,8 @@ def set_attrib_value(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributename: the attribute name to set
-    :param attribv: value or list of values to set
+    :param name: the attribute name to set
+    :param value: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -371,12 +370,12 @@ def set_attrib_value(xmltree: XMLLike,
 
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
-    if attributename == 'xcFunctional':
-        attributename = 'name'
+    if name == 'xcFunctional':
+        name = 'name'
         kwargs.setdefault('exclude', []).append('other')
 
-    base_xpath = schema_dict.attrib_xpath(attributename, **kwargs)
-    base_xpath, attributename = split_off_attrib(base_xpath)
+    base_xpath = schema_dict.attrib_xpath(name, **kwargs)
+    base_xpath, name = split_off_attrib(base_xpath)
 
     if complex_xpath is None:
         complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
@@ -391,18 +390,18 @@ def set_attrib_value(xmltree: XMLLike,
                                 schema_dict,
                                 complex_xpath,
                                 base_xpath,
-                                attributename,
-                                attribv,
+                                name,
+                                value,
                                 occurrences=occurrences,
                                 create=create)
 
 
 def set_first_attrib_value(xmltree: XMLLike,
                            schema_dict: fleur_schema.SchemaDict,
-                           attributename: str,
-                           attribv: Any,
-                           complex_xpath: XPathLike = None,
-                           filters: FilterType = None,
+                           name: str,
+                           value: Any,
+                           complex_xpath: XPathLike | None = None,
+                           filters: FilterType | None = None,
                            create: bool = False,
                            **kwargs: Any) -> XMLLike:
     """
@@ -415,8 +414,8 @@ def set_first_attrib_value(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributename: the attribute name to set
-    :param attribv: value or list of values to set
+    :param name: the attribute name to set
+    :param value: value or list of values to set
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -433,8 +432,8 @@ def set_first_attrib_value(xmltree: XMLLike,
     """
     return set_attrib_value(xmltree,
                             schema_dict,
-                            attributename,
-                            attribv,
+                            name,
+                            value,
                             complex_xpath=complex_xpath,
                             create=create,
                             occurrences=0,
@@ -446,8 +445,8 @@ def set_text(xmltree: XMLLike,
              schema_dict: fleur_schema.SchemaDict,
              tag_name: str,
              text: Any,
-             complex_xpath: XPathLike = None,
-             filters: FilterType = None,
+             complex_xpath: XPathLike | None = None,
+             filters: FilterType | None = None,
              occurrences: int | Iterable[int] | None = None,
              create: bool = False,
              **kwargs: Any) -> XMLLike:
@@ -493,10 +492,10 @@ def set_text(xmltree: XMLLike,
 
 def set_first_text(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
-                   attributename: str,
-                   attribv: Any,
-                   complex_xpath: XPathLike = None,
-                   filters: FilterType = None,
+                   tag_name: str,
+                   text: Any,
+                   complex_xpath: XPathLike | None = None,
+                   filters: FilterType | None = None,
                    create: bool = False,
                    **kwargs: Any) -> XMLLike:
     """
@@ -524,8 +523,8 @@ def set_first_text(xmltree: XMLLike,
     """
     return set_text(xmltree,
                     schema_dict,
-                    attributename,
-                    attribv,
+                    tag_name,
+                    text,
                     complex_xpath=complex_xpath,
                     create=create,
                     occurrences=0,
@@ -537,8 +536,8 @@ def set_simple_tag(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    tag_name: str,
                    changes: list[dict[str, Any]] | dict[str, Any],
-                   complex_xpath: XPathLike = None,
-                   filters: FilterType = None,
+                   complex_xpath: XPathLike | None = None,
+                   filters: FilterType | None = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> XMLLike:
     """
@@ -567,9 +566,8 @@ def set_simple_tag(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_simple_tag
     from masci_tools.util.xml.common_functions import split_off_tag
 
-    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
     #Since we can set multiple simple tags we need to provide the path for the parent
+    base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
     parent_xpath, tag_name = split_off_tag(base_xpath)
 
     tag_info = schema_dict['tag_info'][base_xpath]
@@ -598,8 +596,8 @@ def set_complex_tag(xmltree: XMLLike,
                     schema_dict: fleur_schema.SchemaDict,
                     tag_name: str,
                     changes: dict[str, Any],
-                    complex_xpath: XPathLike = None,
-                    filters: FilterType = None,
+                    complex_xpath: XPathLike | None = None,
+                    filters: FilterType | None = None,
                     create: bool = False,
                     **kwargs: Any) -> XMLLike:
     """
@@ -618,8 +616,8 @@ def set_complex_tag(xmltree: XMLLike,
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag_name: name of the tag to set
-    :param attributedict: Keys in the dictionary correspond to names of tags and the values are the modifications
-                          to do on this tag (attributename, subdict with changes to the subtag, ...)
+    :param changes: Keys in the dictionary correspond to names of tags and the values are the modifications
+                    to do on this tag (attributename, subdict with changes to the subtag, ...)
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -651,7 +649,7 @@ def set_complex_tag(xmltree: XMLLike,
 def set_species_label(xmltree: XMLLike,
                       schema_dict: fleur_schema.SchemaDict,
                       atom_label: str,
-                      attributedict: dict[str, Any],
+                      changes: dict[str, Any],
                       create: bool = False) -> XMLLike:
     """
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
@@ -668,7 +666,7 @@ def set_species_label(xmltree: XMLLike,
     from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
 
     if atom_label == 'all':
-        return set_species(xmltree, schema_dict, 'all', attributedict, create=create)
+        return set_species(xmltree, schema_dict, 'all', changes, create=create)
 
     film = tag_exists(xmltree, schema_dict, 'filmPos')
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
@@ -686,7 +684,7 @@ def set_species_label(xmltree: XMLLike,
                            optional=True))
 
     for species_name in species_to_set:
-        xmltree = set_species(xmltree, schema_dict, species_name, attributedict, create=create)
+        xmltree = set_species(xmltree, schema_dict, species_name, changes, create=create)
 
     return xmltree
 
@@ -694,8 +692,8 @@ def set_species_label(xmltree: XMLLike,
 def set_species(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
-                attributedict: dict[str, Any],
-                filters: FilterType = None,
+                changes: dict[str, Any],
+                filters: FilterType | None = None,
                 create: bool = False) -> XMLLike:
     """
     Method to set parameters of a species tag of the fleur inp.xml file.
@@ -704,7 +702,7 @@ def set_species(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the specie you want to change
                          Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
-    :param attributedict: a python dict specifying what you want to change.
+    :param changes: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -742,7 +740,7 @@ def set_species(xmltree: XMLLike,
     elif species_name != 'all':
         xpath_species.add_filter('species', {'name': {'=': species_name}})
 
-    return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, attributedict, create=create)
+    return xml_set_complex_tag(xmltree, schema_dict, xpath_species, base_xpath_species, changes, create=create)
 
 
 def clone_species(xmltree: XMLLike,
@@ -799,9 +797,9 @@ def clone_species(xmltree: XMLLike,
 def shift_value_species_label(xmltree: XMLLike,
                               schema_dict: fleur_schema.SchemaDict,
                               atom_label: str,
-                              attributename: str,
-                              value_given: Any,
-                              mode: Literal['abs', 'rel'] = 'abs',
+                              attribute_name: str,
+                              number_to_add: Any,
+                              mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                               **kwargs: Any) -> XMLLike:
     """
     Shifts the value of an attribute on a species by label
@@ -810,11 +808,13 @@ def shift_value_species_label(xmltree: XMLLike,
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param atom_label: string, a label of the atom which specie will be changed. 'all' if set up all species
-    :param attributename: name of the attribute to change
-    :param value_given: value to add or to multiply by
-    :param mode: 'rel' for multiplication or 'abs' for addition
+    :param attribute_name: name of the attribute to change
+    :param number_to_add: value to add or to multiply by
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with `number_to_add`
+                 `abs`/`absolute` adds the old value and `number_to_add`
 
-    Kwargs if the attributename does not correspond to a unique path:
+    Kwargs if the attribute_name does not correspond to a unique path:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
 
@@ -833,8 +833,8 @@ def shift_value_species_label(xmltree: XMLLike,
     else:
         kwargs['contains'] = 'species'
 
-    attr_base_path = schema_dict.attrib_xpath(attributename, **kwargs)
-    tag_base_xpath, attributename = split_off_attrib(attr_base_path)
+    attr_base_path = schema_dict.attrib_xpath(attribute_name, **kwargs)
+    tag_base_xpath, attribute_name = split_off_attrib(attr_base_path)
 
     film = tag_exists(xmltree, schema_dict, 'filmPos')
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
@@ -851,18 +851,15 @@ def shift_value_species_label(xmltree: XMLLike,
                                                  schema_dict,
                                                  tag_xpath,
                                                  tag_base_xpath,
-                                                 attributename,
-                                                 value_given,
+                                                 attribute_name,
+                                                 number_to_add,
                                                  mode=mode)
 
     return xmltree
 
 
-def set_atomgroup_label(xmltree: XMLLike,
-                        schema_dict: fleur_schema.SchemaDict,
-                        atom_label: str,
-                        attributedict: dict[str, Any],
-                        create: bool = False) -> XMLLike:
+def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, atom_label: str,
+                        changes: dict[str, Any]) -> XMLLike:
     """
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
     method for a certain atom species that corresponds to an atom with a given label.
@@ -870,21 +867,20 @@ def set_atomgroup_label(xmltree: XMLLike,
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
-    :param attributedict: a python dict specifying what you want to change.
-    :param create: bool, if species does not exist create it and all subtags?
+    :param changes: a python dict specifying what you want to change.
 
     :returns: xml etree of the new inp.xml
 
-    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    **changes** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
     can be done via::
 
-        'attributedict': {'nocoParams': {'beta': val}}
+        'changes': {'nocoParams': {'beta': val}}
 
     """
     from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
     if atom_label == 'all':
-        return set_atomgroup(xmltree, schema_dict, attributedict, species='all')
+        return set_atomgroup(xmltree, schema_dict, changes, species='all')
     film = tag_exists(xmltree, schema_dict, 'filmPos')
     label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
@@ -901,18 +897,17 @@ def set_atomgroup_label(xmltree: XMLLike,
                            optional=True))
 
     for species_name in species_to_set:
-        xmltree = set_atomgroup(xmltree, schema_dict, attributedict, species=species_name)
+        xmltree = set_atomgroup(xmltree, schema_dict, changes, species=species_name)
 
     return xmltree
 
 
 def set_atomgroup(xmltree: XMLLike,
                   schema_dict: fleur_schema.SchemaDict,
-                  attributedict: dict[str, Any],
+                  changes: dict[str, Any],
                   position: int | Literal['all'] | None = None,
                   species: str | None = None,
-                  filters: FilterType | None = None,
-                  create: bool = False) -> XMLLike:
+                  filters: FilterType | None = None) -> XMLLike:
     """
     Method to set parameters of an atom group of the fleur inp.xml file.
 
@@ -921,17 +916,16 @@ def set_atomgroup(xmltree: XMLLike,
     :param attributedict: a python dict specifying what you want to change.
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
-    :param create: bool, if species does not exist create it and all subtags?
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
 
-    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    **changes** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a beta noco parameter it
     can be done via::
 
-        'attributedict': {'nocoParams': {'beta': val}}
+        'changes': {'nocoParams': {'beta': val}}
 
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
@@ -950,12 +944,12 @@ def set_atomgroup(xmltree: XMLLike,
         else:
             atomgroup_xpath.add_filter('atomGroup', {'species': {'=': species}})
 
-    species_change = dict(attributedict).pop('species', None)  #dict to avoid mutating attributedict
+    species_change = dict(changes).pop('species', None)  #dict to avoid mutating changes
     if species_change is not None:
-        attributedict = {k: v for k, v in attributedict.items() if k != 'species'}
+        changes = {k: v for k, v in changes.items() if k != 'species'}
         xmltree = switch_species(xmltree, schema_dict, species_change, position=position, species=species)
 
-    return xml_set_complex_tag(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, attributedict, create=create)
+    return xml_set_complex_tag(xmltree, schema_dict, atomgroup_xpath, atomgroup_base_path, changes)
 
 
 def switch_species_label(xmltree: XMLLike,
@@ -1066,8 +1060,8 @@ def switch_species(xmltree: XMLLike,
 
 def shift_value(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
-                change_dict: dict[str, Any],
-                mode: Literal['abs', 'rel'] = 'abs',
+                changes: dict[str, Any],
+                mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                 path_spec: dict[str, Any] | None = None) -> XMLLike:
     """
     Shifts numerical values of attributes directly in the inp.xml file.
@@ -1076,15 +1070,17 @@ def shift_value(xmltree: XMLLike,
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param change_dict: a python dictionary with the keys to shift and the shift values.
-    :param mode: 'abs' if change given is absolute, 'rel' if relative
+    :param changes: a python dictionary with the keys to shift and the shift values.
+    :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
+                 `rel`/`relative` multiplies the old value with the given value
+                 `abs`/`absolute` adds the old value and the given value
     :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
     :returns: a xml tree with shifted values
 
-    An example of change_dict::
+    An example of changes::
 
-            change_dict = {'itmax' : 1, 'dVac': -0.123}
+            changes = {'itmax' : 1, 'dVac': -0.123}
     """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -1092,7 +1088,7 @@ def shift_value(xmltree: XMLLike,
         path_spec = {}
     path_spec_case: CaseInsensitiveDict[str, Any] = CaseInsensitiveDict(path_spec)
 
-    for key, value_given in change_dict.items():
+    for key, value_given in changes.items():
 
         key_spec = path_spec_case.get(key, {})
         #This method only support unique and unique_path attributes
@@ -1104,7 +1100,7 @@ def shift_value(xmltree: XMLLike,
 
 def set_inpchanges(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
-                   change_dict: dict[str, Any],
+                   changes: dict[str, Any],
                    path_spec: dict[str, Any] | None = None) -> XMLLike:
     """
     This method sets all the attribute and texts provided in the change_dict.
@@ -1113,15 +1109,15 @@ def set_inpchanges(xmltree: XMLLike,
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :params change_dict: dictionary {attrib_name : value} with all the wanted changes.
+    :params changes: dictionary {attrib_name : value} with all the wanted changes.
     :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
-    An example of change_dict::
+    An example of changes::
 
-            change_dict = {'itmax' : 1,
-                           'l_noco': True,
-                           'ctail': False,
-                           'l_ss': True}
+            changes = {'itmax' : 1,
+                       'l_noco': True,
+                       'ctail': False,
+                       'l_ss': True}
 
     :returns: an xmltree of the inp.xml file with changes.
     """
@@ -1133,7 +1129,7 @@ def set_inpchanges(xmltree: XMLLike,
         path_spec = {}
     path_spec_case: CaseInsensitiveDict[str, Any] = CaseInsensitiveDict(path_spec)
 
-    for key, change_value in change_dict.items():
+    for key, change_value in changes.items():
 
         #Special alias for xcFunctional since name is not a very telling attribute name
         if key == 'xcFunctional':

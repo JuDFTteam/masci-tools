@@ -78,7 +78,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     :raises KeyError: If an unknown task is encountered
     """
 
-    __parser_version__ = '0.6.0'
+    __parser_version__ = '0.7.0'
 
     logger: logging.Logger | None = logging.getLogger(__name__)
     if strict:
@@ -168,7 +168,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
                 logger.exception(errmsg)
             raise ValueError(errmsg) from err
 
-    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':  #type:ignore
+    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
         msg = 'Output file does not validate against the schema: Reason is unknown'
         if logger is not None:
             logger.warning(msg)

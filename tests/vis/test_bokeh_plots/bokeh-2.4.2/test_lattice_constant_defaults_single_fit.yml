@@ -1,0 +1,350 @@
+roots:
+  references:
+  - type: AllLabels
+  - type: AllLabels
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTicker
+  - type: BasicTicker
+  - attributes:
+      bottom_units: screen
+      fill_alpha: 0.5
+      fill_color: lightgrey
+      left_units: screen
+      level: overlay
+      line_alpha: 1.0
+      line_color: black
+      line_dash:
+      - 4
+      - 4
+      line_width: 2
+      right_units: screen
+      syncable: false
+      top_units: screen
+    type: BoxAnnotation
+  - type: BoxZoomTool
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - type: CDSView
+  - attributes:
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - attributes:
+      data:
+        energy:
+          __ndarray__: yjfb3Jgxf8CWJqWg2zZ/wCWvzjEgO3/AhQg4hKo+f8CJ6q2BLTx/wFk0nZ2MPX/Am6xRD9E+f8BD5zV2iTt/wNlfdk+eMX/Ak4ychT0qf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        fit:
+          __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+        scaling:
+          __ndarray__: ZmZmZmZm7j+4HoXrUbjuPwrXo3A9Cu8/XI/C9Shc7z+uR+F6FK7vPwAAAAAAAPA/KVyPwvUo8D9SuB6F61HwP3sUrkfhevA/pHA9Ctej8D8=
+          dtype: float64
+          order: little
+          shape:
+          - 10
+    type: ColumnDataSource
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
+  - attributes:
+      name: energy
+    type: GlyphRenderer
+  - attributes:
+      name: energy
+    type: GlyphRenderer
+  - attributes:
+      name: fit
+    type: GlyphRenderer
+  - attributes:
+      name: fit
+    type: GlyphRenderer
+  - type: Grid
+  - attributes:
+      dimension: 1
+    type: Grid
+  - attributes:
+      toggleable: false
+      tooltips:
+      - - X
+        - '@scaling'
+      - - Y
+        - '@energy'
+    type: HoverTool
+  - attributes:
+      toggleable: false
+      tooltips:
+      - - X
+        - '@scaling'
+      - - Y
+        - '@fit'
+    type: HoverTool
+  - attributes:
+      click_policy: hide
+      label_text_font_size: 14pt
+    type: Legend
+  - attributes:
+      label:
+        value: fit results
+    type: LegendItem
+  - attributes:
+      label:
+        value: simulation data
+    type: LegendItem
+  - attributes:
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes:
+      axis_label: Relative Volume
+      axis_label_text_font_size: 18pt
+      axis_line_width: 2
+      major_label_text_font_size: 16pt
+    type: LinearAxis
+  - attributes:
+      axis_label: Total energy [eV]
+      axis_label_text_font_size: 18pt
+      axis_line_width: 2
+      major_label_text_font_size: 16pt
+    type: LinearAxis
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
+  - subtype: Figure
+    type: Plot
+  - attributes:
+      fill_alpha: 0.5
+      fill_color: lightgrey
+      level: overlay
+      line_alpha: 1.0
+      line_color: black
+      line_dash:
+      - 4
+      - 4
+      line_width: 2
+      syncable: false
+      xs_units: screen
+      ys_units: screen
+    type: PolyAnnotation
+  - type: PolySelectTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.1
+      line_alpha:
+        value: 0.1
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.2
+      line_alpha:
+        value: 0.2
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: black
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.1
+      line_alpha:
+        value: 0.1
+      marker:
+        value: square
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.2
+      line_alpha:
+        value: 0.2
+      marker:
+        value: square
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: black
+      marker:
+        value: square
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Scatter
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: Selection
+  - type: TapTool
+  - attributes:
+      text: Equation of states
+    type: Title
+  - type: Toolbar
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
+title: Bokeh Application
+version: 2.4.2

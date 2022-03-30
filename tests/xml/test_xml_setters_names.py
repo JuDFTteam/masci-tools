@@ -671,11 +671,7 @@ def test_set_attrib_value_create(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
-    with pytest.raises(
-            ValueError,
-            match=
-            "Could not set attribute 'ne' on path '/fleurInput/calculationSetup/greensFunction/realAxis' because at least one subtag is missing."
-    ):
+    with pytest.raises(ValueError, match="Could not set attribute 'ne' on path"):
         set_attrib_value(xmltree, schema_dict, 'ne', 1000, contains='realAxis')
 
     set_attrib_value(xmltree, schema_dict, 'ne', 1000, contains='realAxis', create=True)
@@ -866,11 +862,7 @@ def test_set_first_attrib_value_create(load_inpxml):
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()
 
-    with pytest.raises(
-            ValueError,
-            match=
-            "Could not set attribute 'U' on path '/fleurInput/atomSpecies/species/ldaU' because at least one subtag is missing."
-    ):
+    with pytest.raises(ValueError, match="Could not set attribute 'U' on path"):
         set_first_attrib_value(xmltree, schema_dict, 'U', 42, contains={'species', 'ldaU'})
 
     set_first_attrib_value(xmltree, schema_dict, 'U', 42, contains={'species', 'ldaU'}, create=True)
@@ -906,11 +898,7 @@ def test_set_text_specification_create(load_inpxml):
     with pytest.raises(NoUniquePathFound):
         set_text(xmltree, schema_dict, 's', [False, False, False, True])
 
-    with pytest.raises(
-            ValueError,
-            match=
-            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because at least one subtag is missing."
-    ):
+    with pytest.raises(ValueError, match='Could not set text on path'):
         set_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
 
     set_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'}, create=True)
@@ -1089,11 +1077,7 @@ def test_set_first_text_create(load_inpxml):
     with pytest.raises(NoUniquePathFound):
         set_first_text(xmltree, schema_dict, 's', [False, False, False, True])
 
-    with pytest.raises(
-            ValueError,
-            match=
-            "Could not set text on path '/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s' because at least one subtag is missing."
-    ):
+    with pytest.raises(ValueError, match='Could not set text on path'):
         set_first_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'})
 
     set_first_text(xmltree, schema_dict, 's', [False, False, False, True], contains={'species', 'torgue'}, create=True)
@@ -1629,11 +1613,7 @@ def test_set_complex_tag_create_specification(load_inpxml):
             changes,
         )
 
-    with pytest.raises(
-            ValueError,
-            match=
-            "Could not set attribute 'kkintgrCutoff' on path '/fleurInput/atomSpecies/species/torgueCalculation' because at least one subtag is missing."
-    ):
+    with pytest.raises(ValueError, match="Could not set attribute 'kkintgrCutoff' on path"):
         set_complex_tag(xmltree, schema_dict, 'torgueCalculation', changes, not_contains='Group')
 
     set_complex_tag(xmltree, schema_dict, 'torgueCalculation', changes, not_contains='Group', create=True)

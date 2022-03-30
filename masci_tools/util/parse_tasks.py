@@ -22,10 +22,15 @@ import copy
 import os
 from pathlib import Path
 from typing import Callable, Iterable, Any
+import sys
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 try:
-    from typing import Literal, TypeAlias  #type: ignore
+    from typing import Literal
 except ImportError:
-    from typing_extensions import Literal, TypeAlias  #type:ignore
+    from typing_extensions import Literal  #type: ignore[misc]
 import warnings
 from logging import Logger, LoggerAdapter
 from lxml import etree

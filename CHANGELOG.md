@@ -1,6 +1,39 @@
 # Changelog
 
-# v.0.8.0
+## v.0.9.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...v0.9.0)
+
+### Added
+- New `bokeh` plot routine for matrix plot of rectangle patches with added texts [[#124]](https://github.com/JuDFTteam/masci-tools/pull/124)
+- Added TS contribution to free energy to output of `outxml_parser`
+
+### Improvements
+- Several arguments in XML setter functions were renamed for more consistent signatures.
+  The main changes are 
+   - `attributedict`/`change_dict` -> `changes`
+   - `attributename`/`attribv` -> `name`/`value`
+   - `add_number` -> `number_to_add`
+  
+  The old signatures are still supported with deprecations if called via the `FleurXMLModifier` [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
+- Remove constraint on `bokeh` version (previously `<=1.4.0`) [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
+- Add `only_spin` option and calculate complete non-spinpolarized DOS for `spinpol=False` in `plot_fleur_dos` [[#125]](https://github.com/JuDFTteam/masci-tools/pull/125)
+- Refactored `CFCalculation`, i.e. naming of attributes handling of cutoffs. Added classmethod to construct instance directly from numpy arrays [[#127]](https://github.com/JuDFTteam/masci-tools/pull/127)
+- Refactored plotting methods for `CFCalculation` to allow the same parameter freedom as for the other matplolib routines [[#127]](https://github.com/JuDFTteam/masci-tools/pull/127)
+- Improvement to labels and legends in DOS/bandstructure plots. Matplotlib plots now put the legend centered below the plot and added latex labels to axis and ticks in bokeh (version `2.4.0` needed) [[#133]](https://github.com/JuDFTteam/masci-tools/pull/133)
+- `io_nmmpmat`: Allow negative indices in `read_nmmpmat_block` and raise error for invalid index
+### Bugfixes
+- Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
+- Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
+- Fixed problems in `masci_tools.testing.bokeh` when adding files for new bokeh versions [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
+- Several fixes for `plot_fleur_dos`. Using the `area_plot` or specifying `color` explicitely could mess up the color order [[#132]](https://github.com/JuDFTteam/masci-tools/pull/132)
+- Fixed bug in `validate_nmmpmat` and consequently `FleurXMLModifier` not correctly validating denisty matrix files with certain off-diagonal elements being negative [[#135]](https://github.com/JuDFTteam/masci-tools/pull/135)
+- Fix for `HDF5Reader` for compatibility for file handles in `aiida-core` 2.0. The file handles coming from the file repository have no directly attached extension so the check if the file is a hdf file cannot be performed
+
+### For developers
+- Fixed upload of pytest-mpl results artifacts to include the whole directory with images and not just the HTML file [[#117]](https://github.com/JuDFTteam/masci-tools/pull/117)
+- Updated typing to newer version of `lxml-stubs` (`0.4.0`) [[#123]](https://github.com/JuDFTteam/masci-tools/pull/123)
+
+## v.0.8.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.2...v0.8.0)
 
 ### Added
@@ -29,13 +62,13 @@
 - Reorganized visualization tests, making the regeneration of baseline images with `pytest-mpl` easier [[#101]](https://github.com/JuDFTteam/masci-tools/pull/101)
 - Switched build system from `setuptools` to `flit`, since this way all the configuration can be specified in the `pyproject.toml` and a lot of duplication of information is avoided (e.g. version numbers) [[#102]](https://github.com/JuDFTteam/masci-tools/pull/102)
 
-# v.0.7.2
+## v.0.7.2
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.1...v0.7.2)
 
 ### Bugfixes
 - Fixed regression in ``set_atomgroup_label`` and ``set_species_label``. These functions could be used in previous versions with atom labels, that do not exist. This is not possible in ``v.0.7.1``. Since some parts of the ``aiida-fleur`` plugin relied on this the behaviour has to be kept.
 
-# v.0.7.1
+## v.0.7.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.7.0...v0.7.1)
 
 ### Added
@@ -190,7 +223,7 @@ This release contains bugifxes for the visualization routines
 - Tool to analyze/work with greensfunctions calculated by Fleur `masci_tools.tools.greensfunction`
 ### Improvements
 - Several improvements of KKR parsers/parameters [[#13]](https://github.com/JuDFTteam/masci-tools/pull/13)
-- Introduced patching functions for the schema dictionaries to manually correct ambiguities (#48)
+- Introduced patching functions for the schema dictionaries to manually correct ambiguities [[#48]](https://github.com/JuDFTteam/masci-tools/pull/48)
 - Improvements of the `HDF5Reader` and  recipes for Fleur DOS/bandstructure calculation
 - For devs:
    - pylint warnings are no longer fatal for the CI jobs

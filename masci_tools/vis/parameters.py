@@ -13,6 +13,7 @@
 Here basic functionality is provided for setting default parameters for plotting
 and ensuring consistent values for these
 """
+from __future__ import annotations
 
 import copy
 from functools import wraps
@@ -20,6 +21,8 @@ from contextlib import contextmanager
 from collections import ChainMap
 import warnings
 import json
+
+from typing import Any
 
 
 @contextmanager
@@ -146,8 +149,11 @@ def _generate_plot_parameters_table(defaults, descriptions):
             string_value = [f"'{key}': '{val}'," if isinstance(val, str)
                             else f"'{key}': {val},"
                             for key, val in value.items()]
-            string_value[0] = '{' + string_value[0]
-            string_value[-1] = string_value[-1].rstrip(',') + '}'
+            if string_value:
+                string_value[0] = '{' + string_value[0]
+                string_value[-1] = string_value[-1].rstrip(',') + '}'
+            else:
+                string_value = ['{}']
 
             table.extend(['         - .. code-block::', ''] + \
                          [f'                {string}' for string in string_value])
@@ -222,9 +228,23 @@ class Plotter:
 
     """
 
-    def __init__(self, default_parameters, general_keys=None, key_descriptions=None, **kwargs):
+    def __init__(self,
+                 default_parameters,
+                 general_keys=None,
+                 key_descriptions=None,
+                 type_kwargs_mapping=None,
+                 kwargs_postprocess_rename=None,
+                 **kwargs):
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
+
+        self._type_kwargs_mapping = {}
+        if type_kwargs_mapping is not None:
+            self._type_kwargs_mapping = type_kwargs_mapping
+
+        self._kwargs_postprocess_rename = {}
+        if type_kwargs_mapping is not None:
+            self._kwargs_postprocess_rename = kwargs_postprocess_rename
 
         #ChainMap with three dictionaries on top
         # 1. function parameters
@@ -303,6 +323,68 @@ class Plotter:
                 ret_dict[key] = self[key]
 
         return ret_dict
+
+    def plot_kwargs(self,
+                    plot_type: str = 'default',
+                    ignore: str | list[str] | None = None,
+                    extra_keys: set[str] | None = None,
+                    post_process: bool = True,
+                    list_of_dicts: bool = True,
+                    **kwargs: str) -> Any:
+        """
+        Creates a dict or list of dicts (for multiple plots) with the defined parameters
+        for the plotting calls of different types
+
+        :param plot_type: type of plot
+        :param ignore: str or list of str (optional), defines keys to ignore in the creation of the dict
+        :param extra_keys: optional set for additional keys to retrieve
+        :param post_process: bool, if True the parameters are cleaned up for inserting them directly into bokeh plotting functions
+
+        Kwargs are used to replace values by custom parameters:
+
+        Example for using a custom markersize::
+
+            p = Plotter(type_kwargs_mapping={'default': {'marker'}})
+            p.add_parameter('marker_custom', default_from='marker')
+            p.plot_kwargs(marker='marker_custom')
+
+        This code snippet will return the standard parameters for a plot, but the value
+        for the marker will be taken from the key `marker_custom`
+        """
+
+        if plot_type not in self._type_kwargs_mapping:
+            raise ValueError(
+                f'Unknown plot type {plot_type}. The following are known: {list(self._type_kwargs_mapping.keys())}')
+
+        kwargs_keys = self._type_kwargs_mapping[plot_type]
+        if extra_keys is not None:
+            kwargs_keys = kwargs_keys | extra_keys
+
+        #Insert custom keys to retrieve
+        kwargs_keys = kwargs_keys.copy()
+        for key, replace_key in kwargs.items():
+            kwargs_keys.remove(key)
+            kwargs_keys.add(replace_key)
+
+        plot_kwargs = self.get_multiple_kwargs(kwargs_keys, ignore=ignore)
+
+        #Rename replaced keys back to standard names
+        for key, replace_key in kwargs.items():
+            custom_val = plot_kwargs.pop(replace_key, None)
+            if custom_val is not None:
+                plot_kwargs[key] = custom_val
+
+        if not post_process:
+            return plot_kwargs
+
+        for old, new in self._kwargs_postprocess_rename.items():
+            if old in plot_kwargs:
+                plot_kwargs[new] = plot_kwargs.pop(old)
+
+        if list_of_dicts:
+            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
+
+        return plot_kwargs
 
     @staticmethod
     def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots, repeat_after=None, ignore_repeat=None):

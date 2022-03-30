@@ -60,13 +60,15 @@ output_dict:
   sum_of_eigenvalues: null
   title: Fe fcc 2
   total_charge: null
+  ts_energy: null
+  ts_energy_units: eV
   walltime: -60787
   walltime_units: seconds
 warnings:
   parser_errors:
   - Failed to parse output file with recover=False
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.6.0
+  - Masci-Tools Fleur out.xml Parser v0.7.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'
   - 'The following defined constants were found: {''Pi'': 3.141592653589793, ''Deg'':
     0.017453292519943295, ''Ang'': 1.889726124772898, ''nm'': 18.89726124772898, ''pm'':
@@ -85,7 +87,9 @@ warnings:
   - Enddate was unparsed, inp.xml prob not complete, do not believe the walltime!
   - '[Iteration 1] No values found for attribute value'
   - '[Iteration 1] No values found for attribute units'
+  - '[Iteration 1] No values found for attribute value'
   - '[Iteration 1] convert_htr_to_ev cannot convert None to eV (Name: energy_hartree)'
+  - '[Iteration 1] convert_htr_to_ev cannot convert None to eV (Name: ts_energy_hartree)'
   - '[Iteration 1] No values found for attribute distance'
   - '[Iteration 1] No values found for attribute units'
   - '[Iteration 1] No values found for attribute distance'

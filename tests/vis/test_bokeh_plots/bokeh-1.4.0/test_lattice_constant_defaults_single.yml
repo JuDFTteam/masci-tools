@@ -1,9 +1,7 @@
 roots:
   references:
-  - attributes: {}
-    type: BasicTickFormatter
-  - attributes: {}
-    type: BasicTickFormatter
+  - type: BasicTickFormatter
+  - type: BasicTickFormatter
   - attributes:
       axis_label: Relative Volume
       axis_label_text_font_size:
@@ -30,10 +28,8 @@ roots:
       ticker:
         type: BasicTicker
     type: LinearAxis
-  - attributes: {}
-    type: BasicTicker
-  - attributes: {}
-    type: BasicTicker
+  - type: BasicTicker
+  - type: BasicTicker
   - attributes:
       ticker:
         type: BasicTicker
@@ -81,12 +77,9 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Line
-      hover_glyph: null
-      muted_glyph: null
       name: energy
       nonselection_glyph:
         type: Line
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
@@ -95,25 +88,16 @@ roots:
         type: ColumnDataSource
       glyph:
         type: Scatter
-      hover_glyph: null
-      muted_glyph: null
       name: energy
       nonselection_glyph:
         type: Scatter
-      selection_glyph: null
       view:
         type: CDSView
     type: GlyphRenderer
-  - attributes: {}
-    type: CrosshairTool
+  - type: CrosshairTool
+  - type: DataRange1d
+  - type: DataRange1d
   - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
-    type: DataRange1d
-  - attributes:
-      callback: null
       renderers:
       - type: GlyphRenderer
       toggleable: false
@@ -153,12 +137,9 @@ roots:
       y:
         field: energy
     type: Line
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: LinearScale
-  - attributes: {}
-    type: PanTool
+  - type: LinearScale
+  - type: LinearScale
+  - type: PanTool
   - attributes:
       fill_alpha:
         value: 0.5
@@ -178,16 +159,12 @@ roots:
       ys_units: screen
     type: PolyAnnotation
   - attributes:
-      callback: null
       overlay:
         type: PolyAnnotation
     type: PolySelectTool
-  - attributes: {}
-    type: RedoTool
-  - attributes: {}
-    type: ResetTool
-  - attributes: {}
-    type: SaveTool
+  - type: RedoTool
+  - type: ResetTool
+  - type: SaveTool
   - attributes:
       fill_alpha:
         value: 0.1
@@ -216,12 +193,9 @@ roots:
       y:
         field: energy
     type: Scatter
-  - attributes: {}
-    type: Selection
-  - attributes: {}
-    type: Selection
+  - type: Selection
+  - type: Selection
   - attributes:
-      callback: null
       data:
         energy:
           __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
@@ -239,7 +213,6 @@ roots:
         type: UnionRenderers
     type: ColumnDataSource
   - attributes:
-      callback: null
       data:
         energy:
           __ndarray__: MzMzMzMzf8DNzMzMzDh/wM3MzMzMPH/AMzMzMzM/f8AAAAAAAEB/wDMzMzMzP3/AzczMzMw8f8DNzMzMzDh/wDMzMzMzM3/AAAAAAAAsf8A=
@@ -256,9 +229,7 @@ roots:
       selection_policy:
         type: UnionRenderers
     type: ColumnDataSource
-  - attributes:
-      callback: null
-    type: TapTool
+  - type: TapTool
   - attributes:
       text: Equation of states
     type: Title
@@ -292,7 +263,6 @@ roots:
       active_drag: auto
       active_inspect:
       - type: HoverTool
-      active_multi: null
       active_scroll: auto
       active_tap: auto
       tools:
@@ -310,17 +280,11 @@ roots:
       - type: ZoomInTool
       - type: ZoomOutTool
     type: Toolbar
-  - attributes: {}
-    type: UndoTool
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: UnionRenderers
-  - attributes: {}
-    type: WheelZoomTool
-  - attributes: {}
-    type: ZoomInTool
-  - attributes: {}
-    type: ZoomOutTool
+  - type: UndoTool
+  - type: UnionRenderers
+  - type: UnionRenderers
+  - type: WheelZoomTool
+  - type: ZoomInTool
+  - type: ZoomOutTool
 title: Bokeh Application
 version: 1.4.0

@@ -27,7 +27,7 @@ dependencies = [
             'matplotlib',
             'h5py',
             'pandas',
-            'lxml>=4.5',
+            'lxml~=4.8',
             'more_itertools',
             'seaborn',
             'deepdiff',
@@ -43,22 +43,23 @@ dependencies = [
 
 [project.optional-dependencies]
 pre-commit = [
-    'mypy==0.930',
+    'mypy==0.940',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.11.1',
     'pytest~=6.0',
-    'lxml-stubs',
+    'lxml-stubs~=0.4.0',
     'types-pytz',
-    'types-tabulate'
+    'types-tabulate',
+    'types-click'
     ]
 docs = [
-    'Sphinx',
-    'docutils',
+    'sphinx~=4.1',
     'sphinx_rtd_theme',
     'sphinx-click',
     'sphinx-toolbox<=2.15.2',
-    'sphinx-autodoc-typehints'
+    'sphinx-autodoc-typehints',
+    "myst-parser~=0.15.2",
     ]
 testing = [
     'pytest~=6.0',
@@ -67,7 +68,7 @@ testing = [
     'pytest-regressions>=1.0'
     ]
 bokeh-plots = [
-    'bokeh<=1.4.0'  # versions beyond 1.4.0 require a tornardo version not compatible with aiida-core /circus
+    'bokeh'
     ]
 cmdline-extras = [
     'python-gitlab'
@@ -198,7 +199,7 @@ split_arguments_when_comma_terminated = true
 indent_dictionary_value = false
 
 [bumpver]
-current_version = "0.8.0"
+current_version = "0.9.0"
 version_pattern = "MAJOR.MINOR.PATCH[TAGNUM]"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

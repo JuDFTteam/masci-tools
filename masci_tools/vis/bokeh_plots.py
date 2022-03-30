@@ -344,7 +344,7 @@ def bokeh_dos(energy_grid,
               dos_data=None,
               *,
               data=None,
-              energy_label=r'E-E_F [eV]',
+              energy_label='$$E-E_F [eV]$$',
               dos_label=r'DOS [1/eV]',
               title=r'Density of states',
               xyswitch=False,
@@ -444,7 +444,7 @@ def bokeh_spinpol_dos(energy_grid,
                       *,
                       data=None,
                       spin_dn_negative=True,
-                      energy_label=r'E-E_F [eV]',
+                      energy_label='$$E-E_F [eV]$$',
                       dos_label=r'DOS [1/eV]',
                       title=r'Density of states',
                       xyswitch=False,
@@ -551,7 +551,7 @@ def bokeh_spinpol_dos(energy_grid,
     plot_params.set_color_palette_by_num_plots()
 
     #Double the colors for spin up and down
-    kwargs['color'] = list(plot_params['color'].copy())
+    kwargs['color'] = list(plot_params['color']).copy()
     kwargs['color'].extend(kwargs['color'])
 
     if 'legend_label' not in kwargs:
@@ -622,7 +622,7 @@ def bokeh_bands(kpath,
                 size_data=None,
                 color_data=None,
                 xlabel='',
-                ylabel=r'E-E_F [eV]',
+                ylabel='$$E-E_F [eV]$$',
                 title='',
                 special_kpoints=None,
                 markersize_min=3.0,
@@ -743,8 +743,8 @@ def bokeh_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -771,7 +771,7 @@ def bokeh_bands(kpath,
         return bokeh_line(plot_data.get_keys('kpath'),
                           plot_data.get_keys('bands'),
                           data=plot_data.data,
-                          xlabel='',
+                          xlabel=xlabel,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
@@ -780,7 +780,7 @@ def bokeh_bands(kpath,
     return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
-                               xlabel='',
+                               xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
                                set_default_legend=False,
@@ -797,7 +797,7 @@ def bokeh_spinpol_bands(kpath,
                         color_data=None,
                         data=None,
                         xlabel='',
-                        ylabel=r'E-E_F [eV]',
+                        ylabel='$$E-E_F [eV]$$',
                         title='',
                         special_kpoints=None,
                         markersize_min=3.0,
@@ -929,8 +929,8 @@ def bokeh_spinpol_bands(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
@@ -962,7 +962,7 @@ def bokeh_spinpol_bands(kpath,
         return bokeh_line(plot_data.get_keys('kpath'),
                           plot_data.get_keys('bands'),
                           data=plot_data.data,
-                          xlabel='',
+                          xlabel=xlabel,
                           ylabel=ylabel,
                           title=title,
                           set_default_legend=False,
@@ -971,7 +971,7 @@ def bokeh_spinpol_bands(kpath,
     return bokeh_multi_scatter(plot_data.get_keys('kpath'),
                                plot_data.get_keys('bands'),
                                data=plot_data.data,
-                               xlabel='',
+                               xlabel=xlabel,
                                ylabel=ylabel,
                                title=title,
                                set_default_legend=False,
@@ -988,7 +988,7 @@ def bokeh_spectral_function(kpath,
                             special_kpoints=None,
                             e_fermi=0,
                             xlabel='',
-                            ylabel=r'$E-E_F$ [eV]',
+                            ylabel='$$E-E_F [eV]$$',
                             title='',
                             saveas='spectral_function',
                             copy_data=False,
@@ -1029,14 +1029,14 @@ def bokeh_spectral_function(kpath,
     xticks = []
     xticklabels = {}
     for label, pos in special_kpoints:
-        #if label in ('Gamma', 'g'): Latex label missing for bokeh
-        #    label = r'$\Gamma$'
+        if label in ('Gamma', 'g'):
+            label = r'$$\Gamma$$'
         if pos.is_integer():
             xticklabels[int(pos)] = label
         xticklabels[pos] = label
         xticks.append(pos)
 
-    lines = {'horizontal': 0}
+    lines = {'horizontal': e_fermi}
     lines['vertical'] = xticks
 
     limits = {'y': (plot_data.min('energy'), plot_data.max('energy'))}
@@ -1198,7 +1198,11 @@ def periodic_table_plot(
     if isinstance(color_data, list):
         raise ValueError('Only one color data entry allowed')
 
-    plot_data = process_data_arguments(data=data, copy_data=copy_data, color=color_data, values=values)
+    plot_data = process_data_arguments(data=data,
+                                       copy_data=copy_data,
+                                       color=color_data,
+                                       values=values,
+                                       forbid_split_up={'color'})
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
@@ -1723,3 +1727,252 @@ def plot_convergence_results_m(iterations,
     plot_params.save_plot(grid, saveas)
 
     return grid
+
+
+@ensure_plotter_consistency(plot_params)
+def matrix_plot(
+        text_values,
+        x_axis_data,
+        y_axis_data,
+        positions=None,
+        *,
+        color_data=None,
+        secondary_color_data=None,
+        x_offset=-0.47,
+        log_scale=False,
+        color_map=None,
+        data=None,
+        copy_data=False,
+        title='',
+        xlabel='x',
+        ylabel='y',
+        saveas='matrix_plot.html',
+        blank_outsiders='both',  #min, max or both, None
+        blank_color='#c4c4c4',
+        figure=None,
+        categorical_axis=False,
+        categorical_sort_key=None,
+        block_size=0.95,
+        block_size_pixel=100,
+        **kwargs):
+    """
+    Plot function for an interactive periodic table plot. Heat map and hover tool.
+    source must be a pandas dataframe containing, atom period and group, atomic number and symbol
+
+    :param values: data for the text inside each elements box
+    :param positions: y positions relative to the middle of the box for each value
+    :param color_data: data to display as a heatmap
+    :param color_map: color palette to use for the heatmap (default matplotlib plasma)
+    :param log_scale: bool, if True the heatmap is done logarithmically
+    :param data: source for the data of the plot (optional) (pandas Dataframe for example)
+    :param title: str, Title of the plot
+    :param saveas: str, filename for the saved plot
+    :param blank_outsiders: either 'both', 'min', 'max' or None, determines, which points outside the color
+                            range to color with a default blank color
+    :param blank_color: color to replace values outside the color range by
+    :param include_legend: if True an additional entry with labels explaing each value entry is added
+    :param figure: bokeh figure (optional), if provided the plot will be added to this figure
+
+    Additional kwargs are passed on to the label creation for the element box
+    The kwargs `legend_options` and `colorbar_options` can be used to overwrite default
+    values for these regions of the plot
+    """
+    from matplotlib.cm import plasma  #pylint: disable=no-name-in-module
+
+    from bokeh.transform import dodge, linear_cmap, log_cmap
+    from bokeh.models import FactorRange, ColorBar, BasicTicker
+
+    if color_map is None:
+        color_map = plasma
+
+    if positions is None:
+        raise NotImplementedError('Not providing positions is not yet implemented')
+
+    plot_data = process_data_arguments(data=data,
+                                       copy_data=copy_data,
+                                       color=color_data,
+                                       secondary_color=secondary_color_data,
+                                       text=text_values,
+                                       x_axis=x_axis_data,
+                                       y_axis=y_axis_data,
+                                       forbid_split_up={'color', 'secondary_color', 'x_axis', 'y_axis'})
+
+    plot_params.single_plot = False
+    plot_params.num_plots = len(plot_data)
+
+    plot_params.add_parameter('colorbar_options',
+                              default_val={
+                                  'fontsize': 12,
+                                  'label_standoff': 8,
+                                  'title': plot_data.keys(first=True).color,
+                                  'scale_alpha': 1.0
+                              })
+
+    plot_params.set_defaults(default_type='function',
+                             figure_kwargs={
+                                 'x_axis_type': 'auto',
+                                 'y_axis_type': 'auto',
+                             },
+                             color_palette='Plasma256',
+                             format_tooltips=False,
+                             tooltips=[])
+
+    if categorical_axis:
+        x_values = sorted(set(plot_data.values(first=True).x_axis), key=categorical_sort_key)
+        y_values = sorted(set(plot_data.values(first=True).y_axis), key=categorical_sort_key)
+        plot_params.set_defaults(default_type='function',
+                                 figure_kwargs={
+                                     'height': block_size_pixel * len(y_values),
+                                     'width': block_size_pixel * len(x_values),
+                                     'x_range': FactorRange(factors=x_values),
+                                     'y_range': FactorRange(factors=y_values),
+                                 })
+
+    kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
+    p = plot_params.prepare_figure(title, xlabel, ylabel, figure=figure)
+
+    if any(entry.color is not None for entry in plot_data.keys()):
+        if plot_params['limits'] is not None and plot_params['limits'].get('color') is not None:
+            min_color, max_color = plot_params['limits']['color']
+        else:
+            min_color, max_color = plot_data.min('color'), plot_data.max('color')
+            if any(entry.secondary_color is not None for entry in plot_data.keys()):
+                min_color = min(min_color, plot_data.min('secondary_color'))
+                max_color = max(max_color, plot_data.max('secondary_color'))
+
+        color_values = [plot_data.values(first=True).color]
+        color_name = [plot_data.keys(first=True).color]
+        if any(entry.secondary_color is not None for entry in plot_data.keys()):
+            color_values += [plot_data.values(first=True).secondary_color]
+            color_name += [plot_data.keys(first=True).secondary_color]
+
+        color_mappers = []
+        for name, value in zip(color_name, color_values):
+            if not log_scale:
+                color_mappers.append(
+                    linear_cmap(name, palette=plot_params['color_palette'], low=min_color, high=max_color))
+            else:
+                if min_color < 0:
+                    raise ValueError(f"Entry for 'color' element '{color_data}' is negative but log-scale is selected")
+                color_mappers.append(log_cmap(name, palette=plot_params['color_palette'], low=min_color,
+                                              high=max_color))
+
+            if blank_outsiders is not None:
+                if blank_outsiders == 'both':
+                    outsiders = np.logical_or(value < min_color, value > max_color)
+                elif blank_outsiders == 'min':
+                    outsiders = value < min_color
+                elif blank_outsiders == 'max':
+                    outsiders = value > max_color
+                plot_data.mask_data(outsiders, data_key='color', replace_value=blank_color)
+        plot_params.set_defaults(default_type='function', color=color_mappers)
+
+    entry, source = plot_data.items(first=True)
+    if any(entry.secondary_color is not None for entry in plot_data.keys()):
+        #Explanation of what is happening here:
+        #For plotting two colors the plan is to split up the rectangle at the
+        #upwards diagonal and coloring each side with one color
+        #Unfortunately there is no direct glyph to do this so we need to use the
+        #generic patches method that needs vertices for polygons to draw
+        #Here we define a custom Transform that takes the center point of the rectangle
+        #and it's size and spits out a list of lists with the coordinates either x or y
+        #and for either the upper/lower triangle
+        #the strings in the function are the bodies of javascript functions that are inserted into the
+        #bokeh framework via CustomJSTransform model
+        #x/xs refers to the actual data passed in (defined by bokeh)
+        #and all other arguments are defined in arg_dict
+
+        from bokeh.models import CustomJSTransform, Dodge
+        from bokeh.transform import transform
+
+        def TriangleTransform(size, data_range, xdata=True, upper=False):
+            """Performs a tranformation from center points and a block size to triangle coordinates
+            to divide a rectangle around this point along the upwards diagonal."""
+            #single value transformation
+            transform_func = """
+                var x_neg = dodge_neg.compute(x)
+                var x_pos = dodge_pos.compute(x)
+                if (xdata && upper || !xdata && !upper) {
+                    res = [x_neg, x_pos, x_neg];
+                } else {
+                    res = [x_neg, x_pos, x_pos];
+                }
+
+                return res
+            """
+            #vectorized transformation (for array data)
+            transform_v_func = """
+                const zip= rows=>Array.from(rows[0]).map((_,c)=> rows.map(row=>row[c]));
+                var res;
+                var x_neg = dodge_neg.v_compute(xs);
+                var x_pos = dodge_pos.v_compute(xs);
+                if (xdata && upper || !xdata && !upper) {
+                    res = zip([x_neg, x_pos, x_neg]);
+                } else {
+                    res = zip([x_neg, x_pos, x_pos]);
+                }
+                console.log(res);
+                return res;
+            """
+            arg_dict = {
+                'dodge_neg': Dodge(value=-size / 2, range=data_range),
+                'dodge_pos': Dodge(value=size / 2, range=data_range),
+                'xdata': xdata,
+                'upper': upper,
+            }
+
+            return CustomJSTransform(func=transform_func, v_func=transform_v_func, args=arg_dict)
+
+        upper = p.patches(transform(entry.x_axis, TriangleTransform(block_size, p.x_range, xdata=True, upper=True)),
+                          transform(entry.y_axis, TriangleTransform(block_size, p.y_range, xdata=False, upper=True)),
+                          source=source,
+                          fill_alpha=0.6,
+                          color=plot_params[('color', 0)])
+        lower = p.patches(transform(entry.x_axis, TriangleTransform(block_size, p.x_range, xdata=True, upper=False)),
+                          transform(entry.y_axis, TriangleTransform(block_size, p.y_range, xdata=False, upper=False)),
+                          source=source,
+                          fill_alpha=0.6,
+                          color=plot_params[('color', 1)])
+        r = [upper, lower]
+    else:
+        r = p.rect(entry.x_axis,
+                   entry.y_axis,
+                   block_size,
+                   block_size,
+                   source=source,
+                   fill_alpha=0.6,
+                   color=plot_params[('color', 0)])
+    plot_params.add_tooltips(p, r)
+
+    plot_kw = plot_params.plot_kwargs(plot_type='text', ignore='color')
+    # The values displayed on the element boxes
+    for (entry, source), kw, position in zip(plot_data.items(), plot_kw, positions):
+
+        p.text(x=dodge(entry.x_axis, x_offset, range=p.x_range),
+               y=dodge(entry.y_axis, position, range=p.y_range),
+               text=entry.text,
+               source=source,
+               **kw)
+
+    # add color bar
+    if any(entry.color is not None for entry in plot_data.keys()):
+        colorbar_options = plot_params['colorbar_options'].copy()
+        cbar_fontsize = f"{colorbar_options.pop('fontsize')}pt"
+
+        color_bar = ColorBar(color_mapper=color_mappers[0]['transform'],
+                             title_text_font_size='12pt',
+                             ticker=BasicTicker(desired_num_ticks=10),
+                             border_line_color=None,
+                             background_fill_color=None,
+                             orientation='vertical',
+                             major_label_text_font_size=cbar_fontsize,
+                             **colorbar_options)
+
+        p.add_layout(color_bar, 'right')
+
+    # deactivate grid
+    p.grid.grid_line_color = None
+    plot_params.set_limits(p)
+    plot_params.save_plot(p, saveas)
+
+    return p

@@ -61,5 +61,13 @@ output_dict:
     date: 2020/12/10
     time: '16:51:33'
   title: Si bulk
+  ts_energy:
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  ts_energy_units: eV
   walltime: 2
   walltime_units: seconds

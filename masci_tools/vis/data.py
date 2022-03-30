@@ -794,7 +794,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
 
     :returns: list of dicts or dict containing the nomralized data
     """
-    LIST_TYPES = (list, np.ndarray, pd.Series)
+    LIST_TYPES = (tuple, list, np.ndarray, pd.Series)
 
     if isinstance(data, np.ndarray) and flatten_np:
         data = data.flatten()
@@ -802,7 +802,7 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
     if isinstance(data, LIST_TYPES):
         if isinstance(data[0], LIST_TYPES) and not forbid_split_up:
             #Split up
-            if isinstance(out_data, list):
+            if isinstance(out_data, (list, tuple)):
                 if len(out_data) != len(data):
                     raise ValueError(
                         f"Mismatch of dimensions: Got two different dimensions 'key' {len(data)} 'previous' {len(out_data)}"
@@ -820,13 +820,13 @@ def normalize_list_or_array(data, key, out_data, flatten_np=False, forbid_split_
                 out_data = new_list
 
             return out_data
-        if isinstance(out_data, list):
+        if isinstance(out_data, (list, tuple)):
             if len(out_data) == len(data):
                 for indx, (entry, new_data) in enumerate(zip(out_data, data)):
                     entry[f'{key}_{indx}'] = new_data
                 return out_data
 
-    if isinstance(out_data, list):
+    if isinstance(out_data, (list, tuple)):
         for indx, entry in enumerate(out_data):
             entry[f'{key}_{indx}'] = data
     else:

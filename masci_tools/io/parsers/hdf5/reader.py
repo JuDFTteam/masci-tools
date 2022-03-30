@@ -103,13 +103,15 @@ class HDF5Reader:
         self.file: h5py.File = None
 
         if isinstance(self._original_file, (io.IOBase, Path)):
-            self.filename = self._original_file.name  # type: ignore
+            self.filename = self._original_file.name
         elif isinstance(self._original_file, bytes):
             self.filename = os.fsdecode(self._original_file)
         else:
             self.filename = cast(str, self._original_file)
 
-        if not self.filename.endswith('.hdf'):
+        extension = Path(self.filename).suffix
+
+        if extension and extension != '.hdf':
             logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self.filename)
             raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self.filename}')
 

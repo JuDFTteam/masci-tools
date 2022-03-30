@@ -294,6 +294,7 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 def plot_fleur_dos(dosdata,
                    attributes,
                    spinpol=True,
+                   only_spin=None,
                    multiply_by_equiv_atoms=True,
                    plot_keys=None,
                    show_total=True,
@@ -318,6 +319,7 @@ def plot_fleur_dos(dosdata,
     :param dosdata: dataset dict produced by the `FleurDOS` recipe
     :param attributes: attributes dict produced by the `FleurDOS` recipe
     :param spinpol: bool, if True (default) use the plot for spin-polarized dos if the data is spin-polarized
+    :param only_spin: optional str, if given only the specified spin components are plotted
     :param backend: specify which plotting library to use ('matplotlib' or 'bokeh')
 
     Arguments for selecting the DOS components to plot:
@@ -354,8 +356,41 @@ def plot_fleur_dos(dosdata,
                     if after == '' or not after[0].isdecimal():
                         dosdata[key] *= n_equiv[natom]
 
-    spinpol = attributes['spins'] == 2 and spinpol and any('_down' in key for key in dosdata.keys())
-    legend_labels, keys = _generate_dos_labels(dosdata, attributes, spinpol)
+    if only_spin is not None:
+        if only_spin not in ('up', 'down'):
+            raise ValueError(f'Invalid value for only spin {only_spin} (Valid are up or down)')
+
+        if not any(f'_{only_spin}' in key for key in dosdata.keys()):
+            raise ValueError(f'No data for spin {only_spin} available')
+
+        dosdata = dosdata[[key for key in dosdata.keys() if f'_{only_spin}' in key or key in ('energy_grid')]]
+
+        if only_spin == 'down':
+            dosdata = dosdata.rename(columns={key: key.replace('_down', '_up') for key in dosdata.columns})
+
+    spinpol_data = attributes['spins'] == 2 and any('_down' in key for key in dosdata.keys())
+
+    if spinpol_data and not spinpol:
+        #Add the the _up and _down columns into the _up columns
+        spin_up = dosdata[[label for label in dosdata.columns if label.endswith('_up')]]
+        spin_dn = dosdata[[label for label in dosdata.columns if label.endswith('_down')]]
+        energy_grid = dosdata['energy_grid']
+
+        spin_dn = spin_dn.rename(columns={key: key.replace('_down', '_up') for key in spin_dn.columns})
+        complete_spin = pd.concat([energy_grid, spin_up, spin_dn], axis=1)
+
+        #Sum up the columns with the same name (since we renamed _down to _up this adds both spins)
+        new_dosdata = complete_spin.groupby(complete_spin.columns, axis=1).sum()
+        dosdata = new_dosdata
+
+    spinpol = spinpol_data and spinpol
+
+    backend = PlotBackend.from_str(backend)
+    legend_labels, keys = _generate_dos_labels(dosdata,
+                                               attributes,
+                                               spinpol,
+                                               latex=backend != PlotBackend.bokeh,
+                                               only_spin=only_spin)
 
     if key_mask is None:
         key_mask = _select_entries(keys,
@@ -376,8 +411,6 @@ def plot_fleur_dos(dosdata,
     if spinpol:
         dosdata_up = [key for key in keys if '_up' in key]
         dosdata_dn = [key for key in keys if '_down' in key]
-
-    backend = PlotBackend.from_str(backend)
 
     if backend == PlotBackend.bokeh:
         if 'legend_label' not in kwargs:
@@ -406,6 +439,11 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
     from .common import get_plotter
 
     params = get_plotter(backend)
+    #TODO: This should be replaced with key.removesuffix() on python 3.9+
+    ordered_keys_without_spin = [key[:len('_up') + 1] if key.endswith('_up') else key for key in ordered_keys]
+    ordered_keys_without_spin = [
+        key[:len('_down') + 1] if key.endswith('_down') else key for key in ordered_keys_without_spin
+    ]
 
     for key, value in kwargs.items():
         if params.is_general(key):
@@ -416,6 +454,11 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
                 if not isinstance(plot_label, int):
                     if plot_label in ordered_keys:
                         new_dict[ordered_keys.index(plot_label)] = new_dict.pop(plot_label)
+                    elif plot_label in ordered_keys_without_spin:
+                        all_occurrences = [i for i, name in enumerate(ordered_keys_without_spin) if plot_label == name]
+                        param = new_dict.pop(plot_label)
+                        for index in all_occurrences:
+                            new_dict[index] = param
                     else:
                         raise ValueError(f'The label {plot_label} is not a valid label for the current plot')
             kwargs[key] = new_dict
@@ -462,7 +505,7 @@ def _dos_order(key):
     return None
 
 
-def _generate_dos_labels(dosdata, attributes, spinpol):
+def _generate_dos_labels(dosdata, attributes, spinpol, latex=True, only_spin=None):
     """
     Generate nice labels for the weights in the dictionary. Only
     processes standard names
@@ -476,7 +519,21 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
     """
     labels = []
     plot_order = []
-    only_spin_up = not spinpol and any('_down' in key for key in dosdata.keys())
+
+    spin_arrow = ''
+    if only_spin is not None:
+        if latex:
+            spin_arrow = r'$\uparrow$' if only_spin == 'up' else r'$\downarrow$'
+        else:
+            spin_arrow = only_spin
+    elif spinpol:
+        if latex:
+            spin_arrow = r'$\uparrow/\downarrow$'
+        else:
+            spin_arrow = 'up/down'
+
+    if spin_arrow:
+        spin_arrow = f' {spin_arrow}'
 
     types_elements = []
     for itype in range(1, attributes['n_types'] + 1):
@@ -487,15 +544,9 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
         if key == 'energy_grid':
             continue
 
-        if only_spin_up and '_down' in key:
-            continue
-
         plot_order.append(key)
         if 'INT' in key:
-            key = 'Interstitial'
-            if spinpol:
-                key = 'Interstitial up/down'
-            labels.append(key)
+            labels.append(f'Interstitial{spin_arrow}')
         elif ':' in key:  #Atom specific DOS
 
             before, after = key.split(':', maxsplit=1)
@@ -516,26 +567,18 @@ def _generate_dos_labels(dosdata, attributes, spinpol):
 
             tail = tail.lstrip(',')
             if '_up' in tail:
-                tail = tail.split('_up')[0]
-                if spinpol:
-                    tail = f'{tail} up/down'
+                tail = f"{tail.split('_up')[0]}{spin_arrow}"
             else:
-                tail = tail.split('_down')[0]
-                if spinpol:
-                    tail = f'{tail} up/down'
+                tail = f"{tail.split('_down')[0]}{spin_arrow}"
             label += ' ' + tail
 
             labels.append(label)
 
         else:
             if '_up' in key:
-                key = key.split('_up')[0]
-                if spinpol:
-                    key = f'{key} up/down'
+                key = f"{key.split('_up')[0]}{spin_arrow}"
             elif '_down' in key:
-                key = key.split('_down')[0]
-                if spinpol:
-                    key = f'{key} up/down'
+                key = f"{key.split('_down')[0]}{spin_arrow}"
             labels.append(key)
 
     return labels, plot_order

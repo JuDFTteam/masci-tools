@@ -18,7 +18,14 @@ from __future__ import annotations
 from collections import UserDict, UserList
 from contextlib import contextmanager
 
-from typing import Any, Iterator, Iterable, cast, TypeVar, Generic
+from typing import Any, Callable, Iterator, Iterable, cast, TypeVar, Generic
+from typing import TYPE_CHECKING
+try:
+    from typing import SupportsIndex
+except ImportError:
+    from typing_extensions import SupportsIndex
+if TYPE_CHECKING:
+    from _typeshed import SupportsRichComparison
 
 S = TypeVar('S')
 """ Type variable for the key type of the dictionary """
@@ -173,18 +180,18 @@ class LockableList(UserList, Generic[T]):
         """
         return self._locked
 
-    def __delitem__(self, i: int | slice) -> None:
+    def __delitem__(self, i: SupportsIndex | slice) -> None:
         self.__check_lock()
         super().__delitem__(i)
 
-    def __setitem__(self, i: int | slice, item: T) -> None:  #type:ignore
+    def __setitem__(self, i: SupportsIndex | slice, item: T) -> None:  #type:ignore[override]
         self.__check_lock()
         if isinstance(item, list):
             super().__setitem__(i, LockableList(item, recursive=self._recursive))
         elif isinstance(item, dict):
             super().__setitem__(i, LockableDict(item, recursive=self._recursive))
         else:
-            super().__setitem__(i, item)  # type: ignore
+            super().__setitem__(i, item)  # type: ignore[index]
 
     def __iadd__(self, other: Iterable[T]) -> LockableList[T]:
         self.__check_lock()
@@ -228,9 +235,9 @@ class LockableList(UserList, Generic[T]):
         self.__check_lock()
         super().reverse()
 
-    def sort(self, *args: object, **kwargs: object) -> None:
+    def sort(self, *, key: Callable[[Any], SupportsRichComparison] | None = None, reverse: bool = False) -> None:  #pylint: disable=arguments-differ
         self.__check_lock()
-        super().sort(*args, **kwargs)
+        super().sort(key=key, reverse=reverse)
 
     def extend(self, other: Iterable[T]) -> None:
         self.__check_lock()

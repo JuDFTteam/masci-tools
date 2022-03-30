@@ -27,7 +27,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-docs-${{ hashFiles('**/setup.json') }}
+        key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           pip-docs-
 
@@ -71,7 +71,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-pre-commit-${{ hashFiles('**/setup.json') }}
+        key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           pip-pre-commit-
 
@@ -97,6 +97,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.10','3.9', '3.8', '3.7']
+      fail-fast: false
 
     steps:
     - uses: actions/checkout@v2
@@ -106,7 +107,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cache/pip
-        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/setup.json') }}
+        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
           pip-${{ matrix.python-version }}-tests
 
@@ -129,10 +130,10 @@ jobs:
         codecov
 
     - uses: actions/upload-artifact@v2
+      if: failure()
       with:
-        name: Matplotlib comparison
-        path: mpl-results/fig_comparison.html
-        if-no-files-found: ignore
+        name: matplotlib-comparison-${{ matrix.python-version }}
+        path: mpl-results
 
   publish:
     name: Publish to PyPi

@@ -144,7 +144,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
                    orbital: int,
                    phi: float,
                    theta: float,
-                   filters: FilterType = None) -> list[str]:
+                   filters: FilterType | None = None) -> list[str]:
     """
     Rotate the density matrix with the given angles phi and theta
 
@@ -246,6 +246,7 @@ def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict:
     """
     from masci_tools.util.xml.common_functions import get_xml_attribute
     from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath, attrib_exists
+    from masci_tools.io.io_nmmpmat import read_nmmpmat_block
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:
@@ -257,10 +258,7 @@ def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict:
     numRows = nspins * 14 * len(all_ldau)
 
     tol = 0.01
-    if nspins > 1:
-        maxOcc = 1.0
-    else:
-        maxOcc = 2.0
+    maximum_occupation = 1.0 if nspins > 1 else 2.0
 
     #Check that numRows matches the number of lines in nmmp_lines
     if nmmplines is not None:
@@ -284,45 +282,26 @@ def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict:
         species_name = get_xml_attribute(parent, 'name')
 
         for spin in range(nspins):
-            startRow = (spin * len(all_ldau) + ldau_index) * 14
+            nmmpmat = read_nmmpmat_block(nmmplines, spin * len(all_ldau) + ldau_index)
 
-            for index in range(startRow, startRow + 14):
-                currentLine = index - startRow
-                currentRow = currentLine // 2
-
-                line = nmmplines[index].split('    ')
-                while '' in line:
-                    line.remove('')
-                nmmp = np.array([float(x) for x in line])
-
-                outside_val = False
-                if abs(currentRow - 3) > orbital:
-                    if any(np.abs(nmmp) > 1e-12):
-                        outside_val = True
-
-                if currentLine % 2 == 0:
-                    #m=-3 to m=0 real part
-                    if any(np.abs(nmmp[:(3 - orbital) * 2]) > 1e-12):
-                        outside_val = True
-
+            #Check for values outside the range -l to l
+            outside_val = False
+            for index, row in enumerate(nmmpmat):
+                if abs(index - 3) > orbital:
+                    outside_val = outside_val or any(np.abs(row) > 1e-12)
                 else:
-                    #m=0 imag part to m=3
-                    if any(np.abs(nmmp[orbital * 2 + 1:]) > 1e-12):
-                        outside_val = True
+                    inside_mask = np.abs(np.array(range(-3, 4))) <= orbital
+                    outside_val = outside_val or any(np.abs(row[~inside_mask]) > 1e-12)
 
-                if outside_val:
-                    raise ValueError(f'Found value outside of valid range in for species {species_name}, spin {spin+1}'
-                                     f' and l={orbital}')
+            if outside_val:
+                raise ValueError(f'Found value outside of valid range in for species {species_name}, spin {spin+1}'
+                                 f' and l={orbital}')
 
-                invalid_diag = False
-                if spin < 2:
-                    if currentRow - 3 <= 0 and currentLine % 2 == 0:
-                        if nmmp[currentRow * 2] < -tol or nmmp[currentRow * 2] > maxOcc + tol:
-                            invalid_diag = True
-                    else:
-                        if nmmp[(currentRow - 3) * 2 - 1] < -tol or nmmp[(currentRow - 3) * 2 - 1] > maxOcc + tol:
-                            invalid_diag = True
+            #check the diagonal for spin-diagonal blocks
+            if spin < 2:
+                diagonal = nmmpmat.diagonal().real
+                invalid_diag = np.logical_or(diagonal < -tol, diagonal > maximum_occupation + tol)
 
-                if invalid_diag:
+                if invalid_diag.any():
                     raise ValueError(f'Found invalid diagonal element for species {species_name}, spin {spin+1}'
                                      f' and l={orbital}')
