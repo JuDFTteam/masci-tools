@@ -1,7 +1,7 @@
 # Changelog
 
-## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...develop)
+## v.0.9.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...v0.9.0)
 
 ### Added
 - New `bokeh` plot routine for matrix plot of rectangle patches with added texts [[#124]](https://github.com/JuDFTteam/masci-tools/pull/124)
