@@ -5,6 +5,7 @@
 
 ### Bugfixes
 - Fixed bug in bokeh testing fixtures using the wrong folder for fallback versions
+- Fixed bug not correctly converting complex numbers from the Fleur xml files if they have whitespace at beginning/end
 
 ## v.0.9.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.8.0...v0.9.0)
