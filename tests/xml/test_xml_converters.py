@@ -55,7 +55,8 @@ def test_convert_to_fortran_bool():
 
 @pytest.mark.parametrize('text,expected,error',
                          (('(1.52,3.14)', 1.52 + 3.14j, False), ('(-1.52,+3.14)', -1.52 + 3.14j, False),
-                          ('(1.52.12,-3.14)', None, True), ('(1.43,not-anumber)', None, True)))
+                          ('  (1.52,3.14)  ', 1.52 + 3.14j, False), ('(1.52.12,-3.14)', None, True),
+                          ('(1.43,not-anumber)', None, True)))
 def test_convert_from_fortran_complex(text, expected, error):
     """
     Test of the convert_from_fortran_complex function

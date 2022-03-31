@@ -505,6 +505,8 @@ def convert_from_fortran_complex(number_str: str) -> complex:
 
     :returns: complex number
     """
+    number_str = number_str.strip()
+
     RE_COMPLEX_NUMBER = r'\([-+]?(?:\d*\.\d+|\d+)\,[-+]?(?:\d*\.\d+|\d+)\)'
     RE_SINGLE_FLOAT = r'[-+]?(?:\d*\.\d+|\d+)'
 
