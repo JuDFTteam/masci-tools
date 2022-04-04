@@ -26,7 +26,7 @@ TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
 Type for xpath expressions
 """
 
-FileLike: TypeAlias = Union[str, bytes, Path, os.PathLike[Any], IO[Any]]
+FileLike: TypeAlias = Union[str, bytes, Path, os.PathLike, IO[Any]]
 """
 Type used for functions accepting file-like objects, i.e. handles or file paths
 """
