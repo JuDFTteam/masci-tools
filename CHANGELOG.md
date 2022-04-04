@@ -3,6 +3,9 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...develop)
 
+### Added
+- Standalone function `masci_tools.tools.fleur_inpxml_converter.convert_inpxml` to allow conversions of `inp.xml` files within a python runtime without needing to go via the commandline
+
 ### Bugfixes
 - Fixed bug in bokeh testing fixtures using the wrong folder for fallback versions
 - Fixed bug not correctly converting complex numbers from the Fleur xml files if they have whitespace at beginning/end

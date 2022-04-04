@@ -31,12 +31,12 @@ def test_convert_inpxml(tmp_path, test_file, file_regression):
     """
     Test of the generate-conversion command
     """
-    from masci_tools.tools.fleur_inpxml_converter import convert_inpxml
+    from masci_tools.tools.fleur_inpxml_converter import cmd_convert_inpxml
     from click.testing import CliRunner
 
     runner = CliRunner()
     result = runner.invoke(
-        convert_inpxml,
+        cmd_convert_inpxml,
         [test_file('fleur/aiida_fleur/inpxml/FePt/inp.xml'), '0.34', '--output-file',
          os.fspath(tmp_path / 'inp.xml')])
     print(result.output)
@@ -46,3 +46,19 @@ def test_convert_inpxml(tmp_path, test_file, file_regression):
         content = f.read()
 
     file_regression.check(content, extension='.xml')
+
+
+def test_convert_inpxml_function(file_regression, load_inpxml):
+    """
+    Test of the generate-conversion command
+    """
+    from masci_tools.tools.fleur_inpxml_converter import convert_inpxml
+    from lxml import etree
+
+    xmltree, schema_dict = load_inpxml('fleur/aiida_fleur/inpxml/FePt/inp.xml', absolute=False)
+    xmltree = convert_inpxml(xmltree, schema_dict, '0.34')
+
+    content = etree.tostring(xmltree, encoding='unicode', pretty_print=True)
+
+    #This function should produce the same output as the full click command
+    file_regression.check(content, extension='.xml', basename='test_convert_inpxml')

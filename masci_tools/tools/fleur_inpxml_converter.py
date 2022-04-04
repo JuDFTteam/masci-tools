@@ -807,52 +807,24 @@ def _reorder_tree(parent: etree._Element, schema_dict: InputSchemaDict, base_xpa
         parent = _reorder_tags(parent, order)
 
 
-@click.group('inpxml')
-def inpxml():
+def convert_inpxml(xmltree: etree._ElementTree, schema_dict: InputSchemaDict, to_version: str) -> etree._ElementTree:
     """
-    Tool for converting inp.xml files to different versions
+    Convert the given xmltree to the given file version
+
+    :param xmltree: XML tree to convert
+    :param schema_dict: SchemaDict corresponding to the original file version
+    :param to_version: file version to which to convert
+
+    :returns: the XML tree converted to the given file version
     """
-
-
-@inpxml.command('convert')
-@click.argument('xml-file', type=click.Path(exists=True))
-@click.argument('to_version', type=str)
-@click.option('--output-file', '-o', type=str, default='inp.xml', help='Name of the output file')
-@click.option('--overwrite', is_flag=True, help='If the flag is given and the file already exists it is overwritten')
-@click.pass_context
-def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, output_file: str, overwrite: bool) -> None:
-    """
-    Convert the given XML_FILE file to version TO_VERSION
-
-    XML_FILE is the file to convert
-    TO_VERSION is the file version of the finale input file
-    """
-    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
-    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
-    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
-
-    xmltree, schema_dict = load_inpxml(xml_file)
     schema_dict_target = InputSchemaDict.fromVersion(to_version)
 
     #We want to leave comments in so we cannot use clear_xml for the xinclude feature
     #Here we just include and write out the complete xml file
     xmltree.xinclude()
-
     from_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion')
 
-    try:
-        conversion = load_conversion(from_version, to_version)
-    except FileNotFoundError:
-        echo.echo_warning(f'No conversion available between versions {from_version} to {to_version}')
-        if click.confirm('Do you want to generate this conversion now'):
-            conversion = ctx.invoke(generate_inp_conversion, from_version=from_version, to_version=to_version)
-        else:
-            echo.echo_critical('Cannot convert')
-
-    if Path(output_file).is_file():
-        if not overwrite:
-            echo.echo_critical(f'The output file {output_file} already exists. Use the overwrite flag to ignore')
-        echo.echo_warning(f'The output file {output_file} already exists. Will be overwritten')
+    conversion = load_conversion(from_version, to_version)
 
     set_attrib_value(xmltree, schema_dict_target, 'fleurInputVersion', to_version)
 
@@ -915,10 +887,61 @@ def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, outp
 
     _reorder_tree(xmltree.getroot(), schema_dict_target)
 
+    validate_xml(xmltree, schema_dict_target.xmlschema, error_header='Input file does not validate against the schema')
+
+    #If there was no relax.xml included we need to rewrite the xinclude tag for it
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
+    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
+    if not tag_exists(xmltree, schema_dict_target, 'relaxation'):
+        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
+        xinclude_elem.append(etree.Element(FALLBACK_TAG))
+        xmltree.getroot().append(xinclude_elem)
+
+    etree.indent(xmltree)
+    return xmltree
+
+
+@click.group('inpxml')
+def inpxml():
+    """
+    Tool for converting inp.xml files to different versions
+    """
+
+
+@inpxml.command('convert')
+@click.argument('xml-file', type=click.Path(exists=True))
+@click.argument('to_version', type=str)
+@click.option('--output-file', '-o', type=str, default='inp.xml', help='Name of the output file')
+@click.option('--overwrite', is_flag=True, help='If the flag is given and the file already exists it is overwritten')
+@click.pass_context
+def cmd_convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, output_file: str,
+                       overwrite: bool) -> None:
+    """
+    Convert the given XML_FILE file to version TO_VERSION
+
+    XML_FILE is the file to convert
+    TO_VERSION is the file version of the finale input file
+    """
+    xmltree, schema_dict = load_inpxml(xml_file)
+    from_version = evaluate_attribute(xmltree, schema_dict, 'fleurInputVersion')
+
     try:
-        validate_xml(xmltree,
-                     schema_dict_target.xmlschema,
-                     error_header='Input file does not validate against the schema')
+        load_conversion(from_version, to_version)
+    except FileNotFoundError:
+        echo.echo_warning(f'No conversion available between versions {from_version} to {to_version}')
+        if click.confirm('Do you want to generate this conversion now'):
+            ctx.invoke(generate_inp_conversion, from_version=from_version, to_version=to_version)
+        else:
+            echo.echo_critical('Cannot convert')
+
+    if Path(output_file).is_file():
+        if not overwrite:
+            echo.echo_critical(f'The output file {output_file} already exists. Use the overwrite flag to ignore')
+        echo.echo_warning(f'The output file {output_file} already exists. Will be overwritten')
+
+    try:
+        convert_inpxml(xmltree, schema_dict, to_version)
         echo.echo_success('The conversion was successful')
         echo.echo_info(
             'It is not guaranteed that a FLEUR calculation will behave in the exact same way as the old input file\n'
@@ -927,13 +950,6 @@ def convert_inpxml(ctx: click.Context, xml_file: FileLike, to_version: str, outp
         echo.echo_critical(
             f'inp.xml conversion did not finish successfully. The resulting file violates the XML schema with:\n {err}')
 
-    #If there was no relax.xml included we need to rewrite the xinclude tag for it
-    if not tag_exists(xmltree, schema_dict_target, 'relaxation'):
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))
-        xmltree.getroot().append(xinclude_elem)
-
-    etree.indent(xmltree)
     xmltree.write(output_file, encoding='utf-8', pretty_print=True)
     echo.echo_success(f'Converted file written to {output_file}')
 

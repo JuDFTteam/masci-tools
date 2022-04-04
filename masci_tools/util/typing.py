@@ -26,18 +26,18 @@ TXPathLike = TypeVar('TXPathLike', bound=XPathLike)
 Type for xpath expressions
 """
 
-FileLike: TypeAlias = 'str | bytes | Path | os.PathLike[Any] | IO[Any]'
+FileLike: TypeAlias = Union[str, bytes, Path, os.PathLike[Any], IO[Any]]
 """
 Type used for functions accepting file-like objects, i.e. handles or file paths
 """
 
-XMLFileLike: TypeAlias = 'etree._ElementTree | etree._Element | FileLike'
+XMLFileLike: TypeAlias = Union[etree._ElementTree, etree._Element, FileLike]
 """
 Type used for functions accepting xml-file-like objects, i.e. handles or file paths
 or already parsed xml objects
 """
 
-XMLLike: TypeAlias = 'etree._Element | etree._ElementTree'
+XMLLike: TypeAlias = Union[etree._Element, etree._ElementTree]
 """
 Type used for functions accepting xml objects from lxml
 """
