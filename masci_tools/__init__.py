@@ -21,7 +21,7 @@ import logging
 __copyright__ = ('Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany. '
                  'All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file.'
-__version__ = '0.9.0'
+__version__ = '0.9.1'
 __authors__ = 'The JuDFT team. Also see AUTHORS.txt file.'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
