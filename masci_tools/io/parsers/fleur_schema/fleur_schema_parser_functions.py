@@ -14,14 +14,19 @@ functions to extract information about the fleur schema input or output
 """
 from __future__ import annotations
 
+import sys
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInsensitiveFrozenSet
 from functools import wraps
-from typing import Callable, NamedTuple, Any
+from typing import Callable, NamedTuple, Any, overload
 from lxml import etree
 try:
     from typing import Literal, TypedDict
 except ImportError:
     from typing_extensions import Literal, TypedDict  #type: ignore[misc]
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 import warnings
 import math
 
@@ -35,7 +40,9 @@ _INPUT_TYPE = 'FleurInputType'
 # The types defined here should not be reduced further and are associated with one clear base type
 # AngularMomentumNumberType and MainQuantumNumberType are here because they are integers
 # but are implemented as xsd:string with a regex
-BASE_TYPES = {
+BaseType: TypeAlias = Literal['int', 'switch', 'string', 'float', 'float_expression', 'complex']
+
+BASE_TYPES: dict[BaseType, set[str]] = {
     'switch': {'FleurBool'},
     'int': {
         'xsd:nonNegativeInteger', 'xsd:positiveInteger', 'xsd:integer', 'AngularMomentumNumberType',
@@ -46,6 +53,7 @@ BASE_TYPES = {
     'string': {'xsd:string'},
     'complex': {'FortranComplex'}
 }
+
 NAMESPACES = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
 
@@ -66,10 +74,15 @@ def convert_str_version_number(version_str: str) -> tuple[int, int]:
     return tuple(int(part) for part in version_numbers)  #type: ignore[return-value]
 
 
-class AttributeType(NamedTuple):
-    """Type for describing the types of attributes/text"""
+class _XSDAttributeType(NamedTuple):
+    """Type for describing the types of attributes/text. Can contain unfinished conversions"""
     base_type: str
     length: int | Literal['unbounded'] | None
+
+
+class AttributeType(_XSDAttributeType):
+    """Type for describing the types of attributes/text"""
+    base_type: Literal['int', 'switch', 'string', 'float', 'float_expression', 'complex']
 
 
 class TagInfo(TypedDict):
@@ -247,10 +260,32 @@ def _get_parent_fleur_type(elem: etree._Element,
     return parent, parent_type
 
 
-def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
-                    type_elem: etree._Element,
-                    convert_to_base: bool = True,
-                    basic_types_mapping: dict[str, list[AttributeType]] | None = None) -> list[AttributeType]:
+@overload
+def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, type_elem: etree._Element,
+                    basic_types_mapping: dict[str, list[AttributeType]] | None,
+                    convert_to_base: Literal[True]) -> list[AttributeType]:
+    ...
+
+
+@overload
+def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, type_elem: etree._Element,
+                    basic_types_mapping: dict[str, list[AttributeType]] | None,
+                    convert_to_base: Literal[False]) -> list[_XSDAttributeType]:
+    ...
+
+
+@overload
+def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, type_elem: etree._Element,
+                    basic_types_mapping: dict[str, list[AttributeType]] | None) -> list[AttributeType]:
+    ...
+
+
+def _get_base_types(
+    xmlschema_evaluator: etree.XPathDocumentEvaluator,
+    type_elem: etree._Element,
+    basic_types_mapping: dict[str, list[AttributeType]] | None = None,
+    convert_to_base: bool = True,
+) -> list[AttributeType] | list[_XSDAttributeType]:
     """
     Analyses the given type element to deduce its base_types and length restrictions
 
@@ -269,7 +304,7 @@ def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
 
     length = _get_length(xmlschema_evaluator, type_elem)
 
-    possible_types = set()
+    possible_types: set[_XSDAttributeType | AttributeType] = set()
     for child in type_elem:
         child_type = _normalized_name(child.tag)
 
@@ -293,9 +328,9 @@ def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
             for found_type in types:
 
                 if _is_base_type(found_type):
-                    possible_types.add(AttributeType(base_type=found_type, length=length))
+                    possible_types.add(_XSDAttributeType(base_type=found_type, length=length))
                 elif found_type in basic_types_mapping:
-                    possible_types.add(AttributeType(base_type=found_type, length=length))
+                    possible_types.add(_XSDAttributeType(base_type=found_type, length=length))
                 else:
                     sub_types = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name=$name]', name=found_type)
                     if len(sub_types) == 0:
@@ -316,7 +351,7 @@ def _get_base_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
 
                     if length != 1:
                         possible_types.update(
-                            AttributeType(base_type=base_type, length=length) for base_type, _ in new_types)
+                            _XSDAttributeType(base_type=base_type, length=length) for base_type, _ in new_types)
                     else:
                         possible_types.update(new_types)
 
@@ -1202,7 +1237,9 @@ def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: A
     return text_tags
 
 
-def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: Any) -> dict[str, list[AttributeType]]:
+def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator,
+                    input_basic_types: dict[str, list[AttributeType]] | None = None,
+                    **kwargs: Any) -> dict[str, list[AttributeType]]:
     """
     find all types, which can be traced back directly to a base_type
 
@@ -1211,20 +1248,23 @@ def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs:
     :return: dictionary with type names and their corresponding type_definition
              meaning a dictionary with possible base types and evtl. length restriction
     """
-    basic_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name]')
-    complex_type_elems = _xpath_eval(xmlschema_evaluator, '//xsd:complexType/xsd:simpleContent')
+    basic_type_elems: list[etree._Element] = _xpath_eval(xmlschema_evaluator, '//xsd:simpleType[@name]')
+    complex_type_elems: list[etree._Element] = _xpath_eval(xmlschema_evaluator, '//xsd:complexType/xsd:simpleContent')
 
     basic_types = {}
     for type_elem in basic_type_elems + complex_type_elems:
         if 'name' in type_elem.attrib:
-            type_name = type_elem.attrib['name']
+            type_name = str(type_elem.attrib['name'])
         else:
-            type_name = type_elem.getparent().attrib['name']
+            parent = type_elem.getparent()
+            if parent is None:
+                raise ValueError('Could not find parent')
+            type_name = str(parent.attrib['name'])
 
         if _is_base_type(type_name):
             continue  #Already a base type
 
-        types = _get_base_types(xmlschema_evaluator, type_elem, basic_types_mapping=kwargs.get('input_basic_types'))
+        types = _get_base_types(xmlschema_evaluator, type_elem, basic_types_mapping=input_basic_types)
 
         if type_name not in basic_types:
             basic_types[type_name] = types
@@ -1232,10 +1272,10 @@ def get_basic_types(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs:
             raise ValueError(f'Already defined type {type_name}')
 
     #Append the definitions form the inputschema since including it directly is very messy
-    if 'input_basic_types' in kwargs:
-        if any(key in basic_types for key in kwargs['input_basic_types']):
+    if input_basic_types is not None:
+        if any(key in basic_types for key in input_basic_types):
             raise ValueError('Doubled type definitions from Inputschema')
-        basic_types.update(kwargs['input_basic_types'])
+        basic_types.update(input_basic_types)
 
     return basic_types
 
