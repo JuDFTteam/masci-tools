@@ -177,8 +177,7 @@ def convert_from_xml_explicit(
             all_success = False
             continue
 
-        types: tuple[BaseType,
-                     ...] = tuple(definition.base_type for definition in text_definitions)  #type: ignore[misc]
+        types = tuple(definition.base_type for definition in text_definitions)
         lengths = {definition.length for definition in text_definitions}
 
         if len(text_definitions) == 1:
@@ -260,7 +259,7 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
             all_success = False
             continue
 
-        types: tuple[BaseType, ...] = tuple(definition.base_type for definition in text_definitions)  #type:ignore[misc]
+        types = tuple(definition.base_type for definition in text_definitions)
 
         converted_text, suc = convert_to_xml_single_values(val, types, logger=logger, float_format=float_format)
         all_success = all_success and suc
@@ -505,6 +504,8 @@ def convert_from_fortran_complex(number_str: str) -> complex:
 
     :returns: complex number
     """
+    number_str = number_str.strip()
+
     RE_COMPLEX_NUMBER = r'\([-+]?(?:\d*\.\d+|\d+)\,[-+]?(?:\d*\.\d+|\d+)\)'
     RE_SINGLE_FLOAT = r'[-+]?(?:\d*\.\d+|\d+)'
 

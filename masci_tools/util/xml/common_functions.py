@@ -380,8 +380,7 @@ def check_complex_xpath(node: XMLLike | etree.XPathElementEvaluator, base_xpath:
     results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
 
     if not results_base.issuperset(results_complex):
-        raise ValueError(
-            f"Complex xpath '{str(complex_xpath)}' is not compatible with the base_xpath '{str(base_xpath)}'")
+        raise ValueError(f"Complex xpath '{complex_xpath!r}' is not compatible with the base_xpath '{base_xpath!r}'")
 
 
 def abs_to_rel_xpath(xpath: str, new_root: str) -> str:

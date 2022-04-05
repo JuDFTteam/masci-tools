@@ -138,7 +138,10 @@ class CFCalculation:
 
     @property
     def denNorm(self):
-        """DEPRECATED: Use density_normalization instead"""
+        """Returns the density normalization
+
+        DEPRECATED: Use density_normalization instead
+        """
         return self.density_normalization
 
     def stevens_prefactor(self, l: int, m: int) -> float:
