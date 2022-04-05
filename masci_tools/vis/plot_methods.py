@@ -2576,7 +2576,7 @@ def plot_corelevel_spectra(coreleveldict,
 
     Args:
         coreleveldict: dict of corelevels with a list of corelevel energy of atomstypes
-                       The given corelevel accounts for a weight number of electrons for full occupied corelevel in the plot.
+        # (The given corelevel accounts for a weight (number of electrons for full occupied corelevel) in the plot.)
         natom_typesdict: dict with number of atom types for each entry
     Kwargs:
         exp_references: dict with experimental references, will be ploted as vertical lines
