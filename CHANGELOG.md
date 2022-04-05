@@ -1,7 +1,7 @@
 # Changelog
 
-## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...develop)
+## v.0.9.1
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)
 
 ### Added
 - Standalone function `masci_tools.tools.fleur_inpxml_converter.convert_inpxml` to allow conversions of `inp.xml` files within a python runtime without needing to go via the commandline
