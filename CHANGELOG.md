@@ -1,5 +1,10 @@
 # Changelog
 
+## latest
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.1...develop)
+
+Nothing here yet
+
 ## v.0.9.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)
 
