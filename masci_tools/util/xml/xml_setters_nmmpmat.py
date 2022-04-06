@@ -18,7 +18,7 @@ from collections import defaultdict
 from typing import NamedTuple
 
 import numpy as np
-from lxml import etree
+
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.xml.common_functions import get_xml_attribute
@@ -27,6 +27,9 @@ from masci_tools.util.typing import XMLLike
 
 from masci_tools.util.schema_dict_util import eval_simple_xpath, evaluate_attribute
 from masci_tools.util.schema_dict_util import attrib_exists
+
+from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
+from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
 LINES_PER_BLOCK = 14
 
@@ -43,6 +46,7 @@ def set_nmmpmat(xmltree: XMLLike,
                 phi: float | None = None,
                 theta: float | None = None,
                 inverse: bool = False,
+                align_to_sqa: bool = False,
                 filters: FilterType | None = None) -> list[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
@@ -66,7 +70,6 @@ def set_nmmpmat(xmltree: XMLLike,
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.io.io_nmmpmat import write_nmmpmat, write_nmmpmat_from_states, write_nmmpmat_from_orbitals
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_name_base_path = schema_dict.attrib_xpath('name', tag_name='species')
@@ -87,6 +90,10 @@ def set_nmmpmat(xmltree: XMLLike,
 
     if spin > nspins:
         raise ValueError(f'Invalid input: spin {spin} requested, but input has only {nspins} spins')
+
+    if align_to_sqa and (theta is not None or phi is not None):
+        raise ValueError(
+            'Invalid input: Provide either rotation angles theta or phi or the align_to_sqa switch. Not both')
 
     ldau_order = _get_ldau_order(xmltree, schema_dict)
     numRows = nspins * LINES_PER_BLOCK * len(ldau_order)
@@ -133,6 +140,124 @@ def set_nmmpmat(xmltree: XMLLike,
 
         nmmplines[startRow:startRow + LINES_PER_BLOCK] = new_nmmpmat_entry
 
+    if align_to_sqa:
+        nmmplines = align_nmmpmat_to_sqa(xmltree, nmmplines, schema_dict, species_name, orbital)
+
+    return nmmplines
+
+
+def align_nmmpmat_to_sqa(xmltree: XMLLike,
+                         nmmplines: list[str],
+                         schema_dict: fleur_schema.SchemaDict,
+                         species_name: str = 'all',
+                         orbital: int | str = 'all',
+                         phi_before: float | list[float] = 0.0,
+                         theta_before: float | list[float] = 0.0,
+                         filters: FilterType | None = None) -> list[str]:
+    """
+    Align the density matrix with the given SQA of the associated species
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param nmmplines: list of lines in the n_mmp_mat file
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param species_name: string, name of the species you want to change
+    :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
+    :param phi_before: float or list of floats, angle (radian),
+                       values for phi for the previous alignment of the density matrix
+    :param theta_before: float or list of floats, angle (radian),
+                         values for theta for the previous alignment of the density matrix
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+    :raises ValueError: If something in the input is wrong
+    :raises KeyError: If no LDA+U procedure is found on a species
+
+    :returns: list with modified nmmplines
+    """
+
+    #All lda+U procedures have to be considered since we need to keep the order
+    species_name_base_path = schema_dict.attrib_xpath('name', tag_name='species')
+    species_name_xpath = XPathBuilder(species_name_base_path, filters=filters, strict=True)
+
+    if species_name[:4] == 'all-':  #format all-<string>
+        species_name_xpath.add_filter('species', {'name': {'contains': species_name[4:]}})
+    elif species_name != 'all':
+        species_name_xpath.add_filter('species', {'name': species_name})
+
+    possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
+
+    #Extract the SQA for all atom groups
+    # (if we have scond variationn SOC it will just set to the same value)
+    all_groups = eval_simple_xpath(xmltree, schema_dict, 'atomgroup', list_return=True)
+    sqa_per_group: list[tuple[float, float]] = []
+    noco = evaluate_attribute(xmltree, schema_dict, 'l_noco')
+    if noco is None:
+        noco = False
+    soc = evaluate_attribute(xmltree, schema_dict, 'l_soc')
+    if soc is None:
+        soc = False
+
+    if not isinstance(theta_before, list):
+        theta_before = [theta_before] * len(all_groups)
+    if not isinstance(phi_before, list):
+        phi_before = [phi_before] * len(all_groups)
+
+    if len(theta_before) != len(all_groups) or len(phi_before) != len(all_groups):
+        raise ValueError('Not the right number of previous SQA given')
+    sqa_before = list(zip(theta_before, phi_before))
+
+    if not noco and not soc:
+        raise ValueError('No Spin Quantization axis to align to')
+
+    if not noco and soc:
+        theta = evaluate_attribute(xmltree, schema_dict, 'theta', contains='soc')
+        phi = evaluate_attribute(xmltree, schema_dict, 'phi', contains='soc')
+        sqa_per_group = [(theta, phi)] * len(all_groups)
+    else:
+        for group in all_groups:
+            beta = evaluate_attribute(group, schema_dict, 'beta')
+            alpha = evaluate_attribute(group, schema_dict, 'alpha')
+            sqa_per_group.append((beta, alpha))
+
+    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
+    if 'l_mtnocoPot' in schema_dict['attrib_types']:
+        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+                nspins = 3
+    ldau_order = _get_ldau_order(xmltree, schema_dict)
+    numRows = nspins * LINES_PER_BLOCK * len(ldau_order)
+
+    #Check that numRows matches the number of lines in nmmp_lines_copy
+    #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
+    #was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
+    #or removed. In both cases the resolution of this modification is very involved so we throw an error
+    if nmmplines is not None:
+        #Remove blank lines
+        while '' in nmmplines:
+            nmmplines.remove('')
+        if numRows != len(nmmplines):
+            raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
+                             'the inp.xml file. Either remove the existing file before making modifications '+\
+                             'and only use set_nmmpmat after all modifications to the inp.xml')
+
+    for ldau_index, entry in enumerate(ldau_order):
+        if entry.species not in possible_species or orbital not in (entry.orbital, 'all'):
+            continue
+
+        theta, phi = sqa_per_group[entry.group_index]
+        theta_before, phi_before = sqa_before[entry.group_index]
+
+        theta -= theta_before
+        phi -= phi_before
+
+        for spin in range(nspins):
+
+            startRow = (spin * len(ldau_order) + ldau_index) * LINES_PER_BLOCK
+            denmat = read_nmmpmat_block(nmmplines, spin * len(ldau_order) + ldau_index)
+            denmat = rotate_nmmpmat_block(denmat, entry.orbital, phi=phi, theta=theta, inverse=True)
+
+            nmmplines[startRow:startRow + LINES_PER_BLOCK] = format_nmmpmat(denmat)
+
     return nmmplines
 
 
@@ -163,7 +288,6 @@ def rotate_nmmpmat(xmltree: XMLLike,
 
     :returns: list with modified nmmplines
     """
-    from masci_tools.io.io_nmmpmat import read_nmmpmat_block, rotate_nmmpmat_block, format_nmmpmat
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_name_base_path = schema_dict.attrib_xpath('name', tag_name='species')
@@ -230,7 +354,6 @@ def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict:
 
     :raises ValueError: if any of the above checks are violated.
     """
-    from masci_tools.io.io_nmmpmat import read_nmmpmat_block
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
     if 'l_mtnocoPot' in schema_dict['attrib_types']:

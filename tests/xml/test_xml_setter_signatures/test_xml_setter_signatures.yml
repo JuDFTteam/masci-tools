@@ -1,4 +1,21 @@
 nmmpmat:
+  align_nmmpmat_to_sqa:
+  - - xmltree
+    - null
+  - - nmmplines
+    - null
+  - - schema_dict
+    - null
+  - - species_name
+    - null
+  - - orbital
+    - null
+  - - phi_before
+    - 0.0
+  - - theta_before
+    - 0.0
+  - - filters
+    - null
   rotate_nmmpmat:
   - - xmltree
     - null
@@ -42,6 +59,8 @@ nmmpmat:
   - - theta
     - null
   - - inverse
+    - false
+  - - align_to_sqa
     - false
   - - filters
     - null
