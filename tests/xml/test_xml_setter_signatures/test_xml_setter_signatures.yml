@@ -7,9 +7,9 @@ nmmpmat:
   - - schema_dict
     - null
   - - species_name
-    - null
+    - all
   - - orbital
-    - null
+    - all
   - - phi_before
     - 0.0
   - - theta_before
