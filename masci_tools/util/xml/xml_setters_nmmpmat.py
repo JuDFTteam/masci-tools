@@ -33,6 +33,7 @@ def set_nmmpmat(xmltree: XMLLike,
                 denmat: np.ndarray | None = None,
                 phi: float | None = None,
                 theta: float | None = None,
+                inverse: bool = False,
                 filters: FilterType | None = None) -> list[str]:
     """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
     to the desired density matrix
@@ -84,11 +85,15 @@ def set_nmmpmat(xmltree: XMLLike,
     numRows = nspins * 14 * len(all_ldau)
 
     if state_occupations is not None:
-        new_nmmpmat_entry = write_nmmpmat_from_states(orbital, state_occupations, phi=phi, theta=theta)
+        new_nmmpmat_entry = write_nmmpmat_from_states(orbital, state_occupations, phi=phi, theta=theta, inverse=inverse)
     elif orbital_occupations is not None:
-        new_nmmpmat_entry = write_nmmpmat_from_orbitals(orbital, orbital_occupations, phi=phi, theta=theta)
+        new_nmmpmat_entry = write_nmmpmat_from_orbitals(orbital,
+                                                        orbital_occupations,
+                                                        phi=phi,
+                                                        theta=theta,
+                                                        inverse=inverse)
     elif denmat is not None:
-        new_nmmpmat_entry = write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
+        new_nmmpmat_entry = write_nmmpmat(orbital, denmat, phi=phi, theta=theta, inverse=inverse)
     else:
         raise ValueError('Invalid definition of density matrix. Provide either state_occupations, '
                          'orbital_occupations or denmat')
@@ -144,6 +149,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
                    orbital: int,
                    phi: float,
                    theta: float,
+                   inverse: bool = False,
                    filters: FilterType | None = None) -> list[str]:
     """
     Rotate the density matrix with the given angles phi and theta
@@ -222,7 +228,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
 
             startRow = (spin * len(all_ldau) + ldau_index) * 14
             denmat = read_nmmpmat_block(nmmplines, spin * len(all_ldau) + ldau_index)
-            denmat = rotate_nmmpmat_block(denmat, orbital, phi=phi, theta=theta)
+            denmat = rotate_nmmpmat_block(denmat, orbital, phi=phi, theta=theta, inverse=inverse)
 
             nmmplines[startRow:startRow + 14] = format_nmmpmat(denmat)
 
