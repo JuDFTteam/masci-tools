@@ -266,6 +266,7 @@ class FleurXMLModifier:
             'xml_set_text_no_create': self.xml_set_text_no_create,
             'set_nmmpmat': self.set_nmmpmat,
             'rotate_nmmpmat': self.rotate_nmmpmat,
+            'align_nmmpmat_to_sqa': self.align_nmmpmat_to_sqa,
             'set_nkpts': self.set_nkpts,
             'set_kpath': self.set_kpath,
             'set_kpointlist': self.set_kpointlist,
@@ -965,7 +966,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param species_name: string, name of the species you want to change
-        :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+        :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
         :param filters: Dict specifying constraints to apply on the xpath.
@@ -973,6 +974,23 @@ class FleurXMLModifier:
         """
         self._validate_arguments('rotate_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
+
+    def align_nmmpmat_to_sqa(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.align_nmmpmat_to_sqa()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the species you want to change
+        :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
+        :param phi_before: float or list of floats, angle (radian),
+                           values for phi for the previous alignment of the density matrix
+        :param theta_before: float or list of floats, angle (radian),
+                             values for theta for the previous alignment of the density matrix
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+        """
+        self._validate_arguments('align_nmmpmat_to_sqa', args, kwargs)
+        self._tasks.append(ModifierTask('align_nmmpmat_to_sqa', args, kwargs))
 
     def set_kpointlist(self, *args: Any, **kwargs: Any) -> None:
         """

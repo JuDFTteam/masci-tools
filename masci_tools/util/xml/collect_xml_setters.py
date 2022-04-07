@@ -21,7 +21,7 @@ from .xml_setters_names import set_inpchanges, shift_value, set_species, set_spe
 from .xml_setters_basic import xml_create_tag, xml_set_attrib_value_no_create, xml_set_text_no_create, \
                                xml_replace_tag, xml_delete_tag, xml_delete_att
 
-from .xml_setters_nmmpmat import set_nmmpmat, rotate_nmmpmat
+from .xml_setters_nmmpmat import set_nmmpmat, rotate_nmmpmat, align_nmmpmat_to_sqa
 
 __XPATH_SET: Set[Callable] = {
     xml_create_tag, xml_set_text_no_create, xml_set_attrib_value_no_create, xml_replace_tag, xml_delete_att,
@@ -35,7 +35,7 @@ __SCHEMA_DICT_SET: Set[Callable] = {
     set_kpointlist, delete_att, delete_tag, replace_tag, switch_species, switch_species_label, clone_species
 }
 
-__NMMPMAT_SET: Set[Callable] = {set_nmmpmat, rotate_nmmpmat}
+__NMMPMAT_SET: Set[Callable] = {set_nmmpmat, rotate_nmmpmat, align_nmmpmat_to_sqa}
 
 XPATH_SETTERS = {func.__name__: func for func in __XPATH_SET}
 SCHEMA_DICT_SETTERS = {func.__name__: func for func in __SCHEMA_DICT_SET}

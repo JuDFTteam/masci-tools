@@ -97,7 +97,9 @@ On the other hand, there are shortcut methods that already know some paths:
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()`: Specific 
       method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()`: Specific 
-      method for rotating a block of the density matrix file for a LDA+U calculation (details see below) in real space
+      method for rotating a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.align_nmmpmat_to_sqa()`: Specific 
+      method for aligning a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space with the SQA already specified in the `inp.xml`
 
 .. The figure below shows a comparison between the use of XML and shortcut methods.
 
@@ -108,7 +110,9 @@ On the other hand, there are shortcut methods that already know some paths:
 Modifying the density matrix for LDA+U calculations
 ---------------------------------------------------
 
-The above mentioned :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()` and :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()` take a special
+The above mentioned :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()`, 
+:py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()` and 
+:py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.align_nmmpmat_to_sqa()` take a special
 role in the modification registration methods, as the modifications are not done on the ``inp.xml`` file but the
 density matrix file ``n_mmp_mat`` used by Fleur for LDA+U calculations. The resulting new `n_mmp_mat` file is returned next to the new `inp.xml` by
 the :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.modify_xmlfile()`.
@@ -123,7 +127,7 @@ an initial guess for the density matrix.
   fm = FleurXMLModifier()                                              # Initialise FleurXMLModifier class
   fm.set_species('Nd-1', {'ldaU':                                      # Add LDA+U procedure
                          {'l': 3, 'U': 6.76, 'J': 0.76, 'l_amf': 'F'}}) 
-  fm.set_nmmpmat('Nd-1', orbital=3, spin=1, occStates=[1,1,1,1,0,0,0]) # Initialize n_mmp_mat file with the states
+  fm.set_nmmpmat('Nd-1', orbital=3, spin=1, state_occupations=[1,1,1,1,0,0,0]) # Initialize n_mmp_mat file with the states
                                                                        # m = -3 to m = 0 occupied for spin up
                                                                        # spin down is initialized with 0 by default
   new_xmltree, nmmp_content = fm.modify_xmlfile('/path/to/original/inp.xml')         # Apply

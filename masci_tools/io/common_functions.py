@@ -637,24 +637,28 @@ class AtomSiteProperties(NamedTuple):
     kind: str
 
 
-def get_wigner_matrix(l: int, phi: float, theta: float) -> np.ndarray:
+def get_wigner_matrix(l: int, alpha: float, beta: float, gamma: float = 0.0, inverse: bool = False) -> np.ndarray:
     """Produces the wigner rotation matrix for the density matrix
 
     :param l: int, orbital quantum number
-    :param phi: float, angle (radian) corresponds to euler angle alpha
-    :param theta: float, angle (radian) corresponds to euler angle beta
+    :param alpha: float, angle (radian) corresponds to euler angle alpha
+    :param beta: float, angle (radian) corresponds to euler angle beta
+    :param gamma: float, angle (radian) corresponds to euler angle gamma
     """
+    if inverse:
+        alpha, beta, gamma = -gamma, -beta, -alpha
+
     d_wigner = np.zeros((7, 7), dtype=complex)
     for m in range(-l, l + 1):
         for mp in range(-l, l + 1):
             base = np.sqrt(fac(l + m) * fac(l - m) * fac(l + mp) * fac(l - mp))
-            base *= np.exp(-1j * phi * mp)
+            base *= np.exp(-1j * alpha * mp) * np.exp(-1j * gamma * m)
 
             for x in range(max(0, m - mp), min(l - mp, l + m) + 1):
                 denom = fac(l - mp - x) * fac(l + m - x) * fac(x) * fac(x + mp - m)
 
-                d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(theta/2.0)**(2*l+m-mp-2*x) \
-                                          * np.sin(theta/2.0)**(2*x+mp-m)
+                d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(beta/2.0)**(2*l+m-mp-2*x) \
+                                          * np.sin(beta/2.0)**(2*x+mp-m)
 
     return d_wigner
 
