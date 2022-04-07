@@ -127,7 +127,7 @@ an initial guess for the density matrix.
   fm = FleurXMLModifier()                                              # Initialise FleurXMLModifier class
   fm.set_species('Nd-1', {'ldaU':                                      # Add LDA+U procedure
                          {'l': 3, 'U': 6.76, 'J': 0.76, 'l_amf': 'F'}}) 
-  fm.set_nmmpmat('Nd-1', orbital=3, spin=1, occStates=[1,1,1,1,0,0,0]) # Initialize n_mmp_mat file with the states
+  fm.set_nmmpmat('Nd-1', orbital=3, spin=1, state_occupations=[1,1,1,1,0,0,0]) # Initialize n_mmp_mat file with the states
                                                                        # m = -3 to m = 0 occupied for spin up
                                                                        # spin down is initialized with 0 by default
   new_xmltree, nmmp_content = fm.modify_xmlfile('/path/to/original/inp.xml')         # Apply
