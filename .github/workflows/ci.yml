@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
@@ -58,7 +58,7 @@ jobs:
     continue-on-error: ${{ matrix.strict }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Cache python dependencies
       id: cache-pip
@@ -99,7 +99,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Cache python dependencies
       id: cache-pip
