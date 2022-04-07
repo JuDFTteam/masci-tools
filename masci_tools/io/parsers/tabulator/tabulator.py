@@ -190,12 +190,18 @@ class Tabulator(abc.ABC):
             if len(paths) == 1:
                 continue
 
-            if abs(index) > len(paths[0]):
+            if abs(index) > max(len(path) for path in paths):
                 raise ValueError(f'Cannot disambiguate paths {paths}')
 
+            disambiguated_keypaths = []
+            for path in paths:
+                if abs(index) > len(path):
+                    disambiguated_keypaths.append((path, name))
+                else:
+                    disambiguated_keypaths.append((path[:index], f'{path[index]}{self.separator}{name}'))
+
             #Go up levels until they can be distinguished
-            unique_paths = self._remove_collisions(
-                [(path[:index], f'{path[index]}{self.separator}{name}') for path in paths], index=index - 1)
+            unique_paths = self._remove_collisions(disambiguated_keypaths, index=index - 1)
 
             for path, unique_path in zip(paths, unique_paths):
                 keypaths[keypaths.index((path, name))] = path, unique_path[1]
