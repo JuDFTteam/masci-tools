@@ -265,7 +265,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
                    nmmplines: list[str],
                    schema_dict: fleur_schema.SchemaDict,
                    species_name: str,
-                   orbital: int,
+                   orbital: int | str,
                    phi: float,
                    theta: float,
                    inverse: bool = False,
@@ -277,7 +277,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
     :param nmmplines: list of lines in the n_mmp_mat file
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param species_name: string, name of the species you want to change
-    :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+    :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
     :param phi: float, angle (radian), by which to rotate the density matrix
     :param theta: float, angle (radian), by which to rotate the density matrix
     :param filters: Dict specifying constraints to apply on the xpath.
@@ -325,14 +325,14 @@ def rotate_nmmpmat(xmltree: XMLLike,
         raise ValueError('rotate_nmmpmat has to be called with a initialized density matrix')
 
     for ldau_index, entry in enumerate(ldau_order):
-        if entry.species not in possible_species or entry.orbital != orbital:
+        if entry.species not in possible_species or orbital not in (entry.orbital, 'all'):
             continue
 
         for spin in range(nspins):
 
             startRow = (spin * len(ldau_order) + ldau_index) * LINES_PER_BLOCK
             denmat = read_nmmpmat_block(nmmplines, spin * len(ldau_order) + ldau_index)
-            denmat = rotate_nmmpmat_block(denmat, orbital, phi=phi, theta=theta, inverse=inverse)
+            denmat = rotate_nmmpmat_block(denmat, entry.orbital, phi=phi, theta=theta, inverse=inverse)
 
             nmmplines[startRow:startRow + LINES_PER_BLOCK] = format_nmmpmat(denmat)
 

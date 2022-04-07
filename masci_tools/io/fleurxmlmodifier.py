@@ -966,7 +966,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param species_name: string, name of the species you want to change
-        :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+        :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
         :param filters: Dict specifying constraints to apply on the xpath.
