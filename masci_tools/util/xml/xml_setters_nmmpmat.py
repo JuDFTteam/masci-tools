@@ -215,8 +215,8 @@ def align_nmmpmat_to_sqa(xmltree: XMLLike,
         sqa_per_group = [(theta, phi)] * len(all_groups)
     else:
         for group in all_groups:
-            beta = evaluate_attribute(group, schema_dict, 'beta')
-            alpha = evaluate_attribute(group, schema_dict, 'alpha')
+            beta = evaluate_attribute(group, schema_dict, 'beta', contains='noco')
+            alpha = evaluate_attribute(group, schema_dict, 'alpha', contains='noco')
             sqa_per_group.append((beta, alpha))
 
     nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
