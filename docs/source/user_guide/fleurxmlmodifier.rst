@@ -98,7 +98,7 @@ On the other hand, there are shortcut methods that already know some paths:
       method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
     * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()`: Specific 
       method for rotating a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space
-    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.algin_nmmpmat_to_sqa()`: Specific 
+    * :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.align_nmmpmat_to_sqa()`: Specific 
       method for aligning a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space with the SQA already specified in the `inp.xml`
 
 .. The figure below shows a comparison between the use of XML and shortcut methods.
@@ -112,7 +112,7 @@ Modifying the density matrix for LDA+U calculations
 
 The above mentioned :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.set_nmmpmat()`, 
 :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.rotate_nmmpmat()` and 
-:py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.algin_nmmpmat_to_sqa()` take a special
+:py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.align_nmmpmat_to_sqa()` take a special
 role in the modification registration methods, as the modifications are not done on the ``inp.xml`` file but the
 density matrix file ``n_mmp_mat`` used by Fleur for LDA+U calculations. The resulting new `n_mmp_mat` file is returned next to the new `inp.xml` by
 the :py:func:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier.modify_xmlfile()`.
