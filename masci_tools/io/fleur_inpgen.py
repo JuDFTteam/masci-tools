@@ -201,7 +201,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
 
     if 'title' in list(input_params.keys()):
         _inp_title = input_params.pop('title')
-    input_params = cast(dict[str, dict[str, Any]], input_params)
+    input_params = cast('dict[str, dict[str, Any]]', input_params)
 
     input_params = copy.deepcopy(input_params)
     # TODO validate type of values of the input parameter keys ?
