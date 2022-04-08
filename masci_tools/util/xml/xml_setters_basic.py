@@ -27,7 +27,7 @@ from masci_tools.util.xml.common_functions import eval_xpath, is_valid_tag
 
 def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
-                    element: etree._Element,
+                    element: str | etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     replaces xml tags by another tag on an xmletree in place
