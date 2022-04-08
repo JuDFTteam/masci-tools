@@ -123,7 +123,10 @@ class ParseTasks:
     _conversion_functions: dict[str, Callable] = {}
     _parse_functions: dict[str, Callable] = {}
 
-    def __init__(self, version: str, task_file: os.PathLike | None = None, validate_defaults: bool = False) -> None:
+    def __init__(self,
+                 version: str,
+                 task_file: os.PathLike[Any] | None = None,
+                 validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks
@@ -401,11 +404,11 @@ class ParseTasks:
     def perform_task(self,
                      task_name: str,
                      node: XMLLike,
-                     out_dict: dict,
+                     out_dict: dict[str, Any],
                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                      constants: dict[str, float],
                      logger: Logger | LoggerAdapter | None = None,
-                     use_lists: bool = True) -> dict:
+                     use_lists: bool = True) -> dict[str, Any]:
         """
         Evaluates the task given in the tasks_definition dict
 

@@ -82,7 +82,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
                       return_contents: bool = False,
                       file: FileLike = 'inpgen.in',
                       pbc: tuple[bool, bool, bool] = (True, True, True),
-                      input_params: dict | None = None,
+                      input_params: dict[str, Any] | None = None,
                       significant_figures_cell: int = 9,
                       significant_figures_positions: int = 10,
                       convert_from_angstroem: bool = True) -> str | None:
@@ -201,37 +201,38 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
 
     if 'title' in list(input_params.keys()):
         _inp_title = input_params.pop('title')
+    input_params = cast(dict[str, dict[str, Any]], input_params)
 
     input_params = copy.deepcopy(input_params)
     # TODO validate type of values of the input parameter keys ?
     # check input_parameters
-    for namelist, paramdic in input_params.items():
-        if 'atom' in namelist:  # this namelist can be specified more often
+    for name, parameters in input_params.items():
+        if 'atom' in name:  # this namelist can be specified more often
             # special atom namelist needs to be set for writing,
             #  but insert it in the right spot!
             index = namelists_toprint.index('atom') + 1
-            namelists_toprint.insert(index, namelist)
-            namelist = 'atom'
-        if namelist not in POSSIBLE_NAMELISTS:
-            raise ValueError(f"The namelist '{namelist}' is not supported by the fleur"
-                             f" inputgenerator. Check on the fleur website or add '{namelist}'"
+            namelists_toprint.insert(index, name)
+            name = 'atom'
+        if name not in POSSIBLE_NAMELISTS:
+            raise ValueError(f"The namelist '{name}' is not supported by the fleur"
+                             f" inputgenerator. Check on the fleur website or add '{name}'"
                              'to _possible_namelists.')
-        for para in paramdic:
-            if para not in POSSIBLE_PARAMS[namelist]:
+        for para in parameters:
+            if para not in POSSIBLE_PARAMS[name]:
                 raise ValueError(f"The property '{para}' is not supported by the "
-                                 f"namelist '{namelist}'. "
+                                 f"namelist '{name}'. "
                                  'Check the fleur website, or if it really is,'
                                  ' update _possible_params. ')
             if para in string_replace:
                 # TODO check if its in the parameter dict
-                paramdic[para] = convert_to_fortran_string(paramdic[para])
+                parameters[para] = convert_to_fortran_string(parameters[para])
             # things that are in string replace can never be a bool
             # Otherwise input where someone given the title 'F' would fail...
-            elif paramdic[para] in REPLACER_VALUES_BOOL:
+            elif parameters[para] in REPLACER_VALUES_BOOL:
                 # because 1/1.0 == True, and 0/0.0 == False
                 # maybe change in convert_to_fortran that no error occurs
-                if isinstance(paramdic[para], (bool, str)):
-                    paramdic[para] = convert_to_fortran_bool(paramdic[para])
+                if isinstance(parameters[para], (bool, str)):
+                    parameters[para] = convert_to_fortran_bool(parameters[para])
     # in fleur it is possible to give a lattice namelist
     if 'lattice' in input_params:
         own_lattice = True

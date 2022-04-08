@@ -19,6 +19,7 @@ from lxml import etree
 import warnings
 import copy
 import logging
+from typing import cast
 
 from .xpathbuilder import XPathBuilder
 
@@ -155,10 +156,10 @@ def validate_xml(xmltree: etree._ElementTree,
         cleared_tree, _ = clear_xml(xmltree)
         schema.assertValid(cleared_tree)
     except etree.DocumentInvalid as exc:
-        error_log = sorted(schema.error_log, key=lambda x: x.message)  #type:ignore
+        error_log = sorted(schema.error_log, key=lambda x: x.message)  #type: ignore[call-overload]
         error_output = []
         first_occurence = []
-        for message, group in groupby(error_log, key=lambda x: x.message):
+        for message, group in groupby(error_log, key=lambda x: cast(object, x.message)):
             err_occurences = list(group)
             error_message = f'Line {err_occurences[0].line}: {message}'
             error_lines = ''

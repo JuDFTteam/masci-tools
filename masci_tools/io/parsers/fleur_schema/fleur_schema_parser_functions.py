@@ -147,9 +147,10 @@ def _cache_xpath_eval(func: Callable) -> Callable:
     """
     results: dict[str, dict[int, etree._XPathObject]] = {}
 
+    #in the lxml-stubs xpath evaluation returns etree._XPathObject but as a return type it is next to useless
+    #so we explicitly return Any
     @wraps(func)
-    def wrapper(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str,
-                **variables: etree._XPathObject) -> etree._XPathObject:
+    def wrapper(xmlschema_evaluator: etree.XPathDocumentEvaluator, xpath: str, **variables: etree._XPathObject) -> Any:
         """
         This function produces a hash from all the arguments modifying the behaviour of the wrapped function
         and looks up results in dict based on this hash. If the version of the schema

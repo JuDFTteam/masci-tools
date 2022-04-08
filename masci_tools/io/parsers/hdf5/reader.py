@@ -94,7 +94,7 @@ class HDF5Reader:
 
     """
 
-    _transforms: dict[str, Callable] = {}
+    _transforms: dict[str, Callable[[Any], Any]] = {}
     _attribute_transforms: set[str] = set()
 
     def __init__(self, file: FileLike, move_to_memory: bool = True) -> None:

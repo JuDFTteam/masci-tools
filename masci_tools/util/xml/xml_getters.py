@@ -213,6 +213,9 @@ def get_nkpts(xmltree: XMLLike,
 
     nkpts = evaluate_attribute(kpoint_set, schema_dict, 'count', logger=logger)
 
+    if not isinstance(nkpts, int):
+        raise ValueError('Failed to evaluate nkpts')
+
     return nkpts
 
 
@@ -285,6 +288,9 @@ def get_nkpts_max4(xmltree: XMLLike,
                                     logger=logger)
 
     nkpts = evaluate_attribute(kpt_tag[0], schema_dict, 'count', logger=logger)
+
+    if not isinstance(nkpts, int):
+        raise ValueError('Failed to evaluate nkpts')
 
     return nkpts
 

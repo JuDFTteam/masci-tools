@@ -73,5 +73,5 @@ class OutParserLogAdapter(LoggerAdapter):
     'iteration' key, whose value is prepended as [Iteration i] to the message
     """
 
-    def process(self, msg: str, kwargs: Any) -> tuple[str, dict]:
+    def process(self, msg: str, kwargs: Any) -> tuple[str, dict[str, Any]]:
         return f"[Iteration {self.extra['iteration']}] {msg}", kwargs
