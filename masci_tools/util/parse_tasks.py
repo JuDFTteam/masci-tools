@@ -123,10 +123,7 @@ class ParseTasks:
     _conversion_functions: dict[str, Callable] = {}
     _parse_functions: dict[str, Callable] = {}
 
-    def __init__(self,
-                 version: str,
-                 task_file: os.PathLike | None = None,
-                 validate_defaults: bool = False) -> None:
+    def __init__(self, version: str, task_file: os.PathLike | None = None, validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
         Terminates if the version is not marked as working with the default tasks

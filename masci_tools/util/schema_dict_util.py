@@ -954,9 +954,8 @@ def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
     return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
 
 
-def reverse_xinclude(
-        xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
-        **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
+def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
+                     **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.
     The original xmltree will be returned with the corresponding xinclude tags
