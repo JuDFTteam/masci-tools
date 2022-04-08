@@ -23,7 +23,7 @@ for the following 3 cases:
 """
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, TypeVar, Any, cast
 import h5py
 import numpy as np
 from functools import wraps
@@ -34,8 +34,10 @@ from .reader import HDF5Reader
 class HDF5TransformationError(Exception):
     pass
 
+F = TypeVar('F', bound=Callable[..., Any])
+"""Generic Callable type"""
 
-def hdf5_transformation(*, attribute_needed: bool) -> Callable:
+def hdf5_transformation(*, attribute_needed: bool) -> Callable[[F], F]:
     """
     Decorator for registering a function as a transformation functions
     on the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader` class
@@ -44,7 +46,7 @@ def hdf5_transformation(*, attribute_needed: bool) -> Callable:
                              attribute value and is therefore only available for the entries in datasets
     """
 
-    def hdf5_transformation_decorator(func: Callable) -> Callable:
+    def hdf5_transformation_decorator(func: F) -> F:
         """
         Return decorated HDF5Reader object with _transforms dict and
         _attribute_transforms set attribute
@@ -65,7 +67,7 @@ def hdf5_transformation(*, attribute_needed: bool) -> Callable:
         if attribute_needed:
             HDF5Reader._attribute_transforms.add(func.__name__)
 
-        return transform_func
+        return cast(F, transform_func)
 
     return hdf5_transformation_decorator
 

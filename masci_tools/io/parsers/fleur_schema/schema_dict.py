@@ -76,7 +76,7 @@ class SchemaDictDispatch(Protocol[F]):
     __call__: F
 
 
-def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], SchemaDictDispatch]:
+def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], SchemaDictDispatch[F]]:
     """
     Decorator for creating variations of functions based on the inp/out
     version of the schema_dict. All functions here need to have the signature::
@@ -89,7 +89,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
     Inspired by singledispatch in the functools module
     """
 
-    def schema_dict_version_dispatch_dec(func: F) -> SchemaDictDispatch:
+    def schema_dict_version_dispatch_dec(func: F) -> SchemaDictDispatch[F]:
 
         registry: dict[Callable[[tuple[int, int]], bool] | Literal['default'], F] = {}
 
@@ -161,7 +161,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
         wrapper.registry = registry  #type:ignore
         update_wrapper(wrapper, func)
 
-        return cast(SchemaDictDispatch, wrapper)
+        return cast(SchemaDictDispatch[F], wrapper)
 
     return schema_dict_version_dispatch_dec
 
