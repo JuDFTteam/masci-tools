@@ -35,7 +35,7 @@ LINES_PER_BLOCK = 14
 
 
 def set_nmmpmat(xmltree: XMLLike,
-                nmmplines: list[str],
+                nmmplines: list[str] | None,
                 schema_dict: fleur_schema.SchemaDict,
                 species_name: str,
                 orbital: int,
@@ -139,6 +139,9 @@ def set_nmmpmat(xmltree: XMLLike,
         startRow = ((spin - 1) * len(ldau_order) + ldau_index) * LINES_PER_BLOCK
 
         nmmplines[startRow:startRow + LINES_PER_BLOCK] = new_nmmpmat_entry
+
+    if nmmplines is None:
+        raise ValueError('No denmat blocks set. Probably the species and orbital combination does not exist')
 
     if align_to_sqa:
         nmmplines = align_nmmpmat_to_sqa(xmltree, nmmplines, schema_dict, species_name, orbital)

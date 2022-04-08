@@ -108,7 +108,8 @@ def search_string(searchkey: str, txt: Iterable[str]) -> int:
     return -1
 
 
-def angles_to_vec(magnitude: list | np.ndarray, theta: list | np.ndarray, phi: list | np.ndarray) -> np.ndarray:
+def angles_to_vec(magnitude: list | np.ndarray | float, theta: list | np.ndarray | float,
+                  phi: list | np.ndarray | float) -> np.ndarray:
     """
     convert (magnitude, theta, phi) to (x,y,z)
 

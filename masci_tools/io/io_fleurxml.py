@@ -28,7 +28,7 @@ from masci_tools.util.typing import XMLFileLike
 
 def load_inpxml(inpxmlfile: XMLFileLike,
                 logger: Logger | None = None,
-                base_url: str | None = None,
+                base_url: str | Path | None = None,
                 **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.InputSchemaDict]:
     """
     Loads a inp.xml file for fleur together with its corresponding schema dictionary
@@ -91,7 +91,7 @@ def load_inpxml(inpxmlfile: XMLFileLike,
 
 def load_outxml(outxmlfile: XMLFileLike,
                 logger: Logger | None = None,
-                base_url: str | None = None,
+                base_url: str | Path | None = None,
                 **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.OutputSchemaDict]:
     """
     Loads a out.xml file for fleur together with its corresponding schema dictionary

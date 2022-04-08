@@ -182,7 +182,7 @@ class XPathBuilder:
                       tag: str,
                       condition: Any,
                       compound: bool = False,
-                      path: str = '.',
+                      path: str | tuple[str, ...] = '.',
                       process_path: bool = False) -> str:
         """
         Construct the predicate for the given tag and condition
@@ -207,7 +207,12 @@ class XPathBuilder:
 
         return self.process_condition(tag, operator, content, path, process_path=process_path)
 
-    def process_condition(self, tag: str, operator: str, content: Any, path: str, process_path: bool = False) -> str:
+    def process_condition(self,
+                          tag: str,
+                          operator: str,
+                          content: Any,
+                          path: str | tuple[str, ...],
+                          process_path: bool = False) -> str:
         """
         Process the condition for the given tag and condition
 
