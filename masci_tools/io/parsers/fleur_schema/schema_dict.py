@@ -673,7 +673,7 @@ class InputSchemaDict(SchemaDict):
         return cls._schema_dict_cache[version]
 
     @classmethod
-    def fromPath(cls, path: os.PathLike[Any]) -> InputSchemaDict:
+    def fromPath(cls, path: os.PathLike) -> InputSchemaDict:
         """
         load the FleurInputSchema dict for the specified FleurInputSchema file
 
@@ -827,8 +827,8 @@ class OutputSchemaDict(SchemaDict):
 
     @classmethod
     def fromPath(cls,
-                 path: os.PathLike[Any],
-                 inp_path: os.PathLike[Any] | None = None,
+                 path: os.PathLike,
+                 inp_path: os.PathLike | None = None,
                  inpschema_dict: InputSchemaDict | None = None) -> OutputSchemaDict:
         """
         load the FleurOutputSchema dict for the specified paths

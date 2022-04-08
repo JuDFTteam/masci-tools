@@ -404,11 +404,11 @@ class ParseTasks:
     def perform_task(self,
                      task_name: str,
                      node: XMLLike,
-                     out_dict: dict[str, Any],
+                     out_dict: dict,
                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                      constants: dict[str, float],
                      logger: Logger | LoggerAdapter | None = None,
-                     use_lists: bool = True) -> dict[str, Any]:
+                     use_lists: bool = True) -> dict:
         """
         Evaluates the task given in the tasks_definition dict
 

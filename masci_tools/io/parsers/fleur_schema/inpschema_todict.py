@@ -50,7 +50,7 @@ KEYS = Literal['root_tag', 'tag_paths', '_basic_types', 'attrib_types', 'text_ty
                'unique_path_attribs', 'other_attribs', 'omitt_contained_tags', 'tag_info']
 
 
-def create_inpschema_dict(path: os.PathLike[Any], apply_patches: bool = True) -> InputSchemaData:
+def create_inpschema_dict(path: os.PathLike, apply_patches: bool = True) -> InputSchemaData:
     """
     Creates dictionary with information about the FleurInputSchema.xsd.
     The functions, whose results are added to the schema_dict and the corresponding keys

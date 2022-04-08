@@ -64,7 +64,7 @@ KEYS = Literal['root_tag', 'input_tag', 'iteration_tags', 'tag_paths', 'iteratio
                'omitt_contained_tags', 'tag_info', 'iteration_tag_info']
 
 
-def create_outschema_dict(path: os.PathLike[Any],
+def create_outschema_dict(path: os.PathLike,
                           inpschema_dict: inpschema_todict.InputSchemaData,
                           apply_patches: bool = True) -> OutputSchemaData:
     """
