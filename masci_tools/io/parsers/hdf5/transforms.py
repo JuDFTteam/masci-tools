@@ -34,8 +34,10 @@ from .reader import HDF5Reader
 class HDF5TransformationError(Exception):
     pass
 
+
 F = TypeVar('F', bound=Callable[..., Any])
 """Generic Callable type"""
+
 
 def hdf5_transformation(*, attribute_needed: bool) -> Callable[[F], F]:
     """

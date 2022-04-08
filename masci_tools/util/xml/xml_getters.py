@@ -838,7 +838,8 @@ def get_kpoints_data(
     Get the kpoint sets defined in the given fleur xml file.
 
     .. warning::
-        For file versions before Max5 the name argument is not valid
+        For file versions before Max5 arguments `name`, `index` and `only_used`
+        have no effect
 
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
@@ -941,9 +942,12 @@ def get_kpoints_data(
 def get_kpoints_data_max4(
         xmltree: XMLLike,
         schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+        name: str | None = None,
+        index: int | None = None,
+        only_used: bool = False,
         logger: Logger | None = None,
-        convert_to_angstroem: bool = True,
-        only_used: bool = False) -> tuple[list[list[float]], list[float], np.ndarray, tuple[bool, bool, bool]]:
+        convert_to_angstroem: bool = True
+) -> tuple[list[list[float]], list[float], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the kpoint sets defined in the given fleur xml file.
 
@@ -957,6 +961,8 @@ def get_kpoints_data_max4(
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
     :param only_used: (Has no effect for Max4) bool if True only the kpoint list used in the calculation is returned
+    :param name: (Has no effect for Max4)
+    :param index: (Has no effect for Max4)
 
     :returns: tuple containing the kpoint information
 
@@ -1108,9 +1114,14 @@ def get_special_kpoints(
 
 
 @get_special_kpoints.register(max_version='0.31')
-def get_special_kpoints_max4(xmltree: XMLLike,
-                             schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                             logger: Logger | None = None) -> XMLLike:
+def get_special_kpoints_max4(
+    xmltree: XMLLike,
+    schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+    name: str | None = None,
+    index: int | None = None,
+    only_used: bool = False,
+    logger: Logger | None = None,
+) -> list[tuple[int, str]] | dict[str, list[tuple[int, str]]]:
     """
     Extract the labeled special kpoints from the given kpointlist
 
@@ -1189,8 +1200,8 @@ def get_relaxation_information(xmltree: XMLLike,
 
 @get_relaxation_information.register(max_version='0.28')
 def get_relaxation_information_pre029(xmltree: XMLLike,
-                                      schema_dict: (fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict),
-                                      logger: Logger | None = None) -> None:
+                                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                                      logger: Logger | None = None) -> dict[str, Any]:
     """
     Get the relaxation information from the given fleur XML file. This includes the current
     displacements, energy and posforce evolution

@@ -1241,8 +1241,15 @@ def set_kpointlist(xmltree: XMLLike,
 
 
 @set_kpointlist.register(max_version='0.31')
-def set_kpointlist_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, kpoints: Iterable[Iterable[float]],
-                        weights: Iterable[float]) -> XMLLike:
+def set_kpointlist_max4(xmltree: XMLLike,
+                        schema_dict: fleur_schema.SchemaDict,
+                        kpoints: Iterable[Iterable[float]],
+                        weights: Iterable[float],
+                        name: str | None = None,
+                        kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
+                        special_labels: dict[int, str] | None = None,
+                        switch: bool = False,
+                        overwrite: bool = False) -> XMLLike:
     """
     Explicitly create a kPointList from the given kpoints and weights. This
     routine is specific to input versions Max4 and before and will replace any
