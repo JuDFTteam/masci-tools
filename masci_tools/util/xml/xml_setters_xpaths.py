@@ -23,7 +23,7 @@ except ImportError:
 
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
 from masci_tools.util.typing import XPathLike, XMLLike
-from masci_tools.util.xml.common_functions import eval_xpath, add_tag
+from masci_tools.util.xml.common_functions import eval_xpath, add_tag, is_valid_tag
 from masci_tools.io.parsers import fleur_schema
 
 from lxml import etree
@@ -33,7 +33,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
                                schema_dict: fleur_schema.SchemaDict,
                                xpath: XPathLike,
                                base_xpath: str,
-                               element: str | etree._Element,
+                               element: etree.QName | str | etree._Element,
                                create_parents: bool = False,
                                number_nodes: int = 1,
                                occurrences: int | Iterable[int] | None = None) -> XMLLike:
@@ -48,7 +48,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xpath: a path where to place a new tag
     :param base_xpath: path where to place a new tag without complex syntax ([] conditions and so on)
-    :param element: a tag name or etree Element to be created
+    :param element: a tag name or etree Element or string representing the XML element to be created
     :param create_parents: bool optional (default False), if True and the given xpath has no results the
                            the parent tags are created recursively
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
@@ -66,13 +66,18 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
 
     tag_info = schema_dict['tag_info'][base_xpath]
 
-    if not etree.iselement(element):
-        #Get original case of the tag
-        element_name = (tag_info['simple'] | tag_info['complex']).original_case[element]
-        try:
-            element = etree.Element(element_name)
-        except ValueError as exc:
-            raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
+    if not etree.iselement(element) and not isinstance(element, etree.QName):
+        if is_valid_tag(element):  #type:ignore[arg-type]
+            #Get original case of the tag
+            element_name = (tag_info['simple'] | tag_info['complex']).original_case[element]
+        else:
+            try:
+                element = etree.fromstring(element)  #type:ignore[arg-type]
+            except ValueError as exc:
+                raise ValueError(f"Failed to construct etree Element from '{element}'") from exc
+            element_name = element.tag
+    elif isinstance(element, etree.QName):
+        element_name = element.text
     else:
         element_name = element.tag
 

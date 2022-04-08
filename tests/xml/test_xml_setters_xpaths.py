@@ -84,6 +84,47 @@ def test_xml_create_tag_schema_dict_element(load_inpxml):
     assert [node.attrib.items() for node in nodes] == [[('test_attrib', 'test')], [('test_attrib', 'test')]]
 
 
+def test_xml_create_tag_schema_dict_xmlstring(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    new_element = '<ldaU test_attrib="test"/>'
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU', list_return=True)) == 0
+
+    xml_create_tag_schema_dict(xmltree, schema_dict, '/fleurInput/atomSpecies/species',
+                               '/fleurInput/atomSpecies/species', new_element)
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU', list_return=True)
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Pt-1']
+    assert [node.attrib.items() for node in nodes] == [[('test_attrib', 'test')], [('test_attrib', 'test')]]
+
+
+def test_xml_create_tag_schema_dict_qname(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    new_element = etree.QName('ldaU')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU', list_return=True)) == 0
+
+    xml_create_tag_schema_dict(xmltree, schema_dict, '/fleurInput/atomSpecies/species',
+                               '/fleurInput/atomSpecies/species', new_element)
+
+    nodes = eval_xpath(root, '/fleurInput/atomSpecies/species/ldaU', list_return=True)
+
+    assert [node.getparent().attrib['name'] for node in nodes] == ['Fe-1', 'Pt-1']
+
+
 def test_xml_create_tag_schema_dict_create_parents(load_inpxml):
 
     from masci_tools.util.xml.common_functions import eval_xpath

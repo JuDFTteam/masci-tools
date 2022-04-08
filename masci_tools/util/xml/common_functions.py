@@ -441,3 +441,16 @@ def contains_tag(xpath: XPathLike, tag: str) -> bool:
     #Strip out predicates
     xpath_str = re.sub(r'[\[].*?[\]]', '', xpath_str)
     return tag in xpath_str.split('/')
+
+
+def is_valid_tag(tag: str) -> bool:
+    """
+    Return whether the given string is a valid XML tag name
+
+    :param tag: tag to check
+    """
+    try:
+        etree.QName(tag)
+        return True
+    except ValueError:
+        return False

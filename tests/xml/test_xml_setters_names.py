@@ -53,6 +53,46 @@ def test_create_tag_element(load_inpxml):
     assert [child.tag for child in node.iterchildren()] == tags
 
 
+def test_create_tag_qname(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags = [child.tag for child in node.iterchildren()]
+    tags.append('greensFunction')
+
+    create_tag(xmltree, schema_dict, etree.QName('greensFunction'))
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+
+def test_create_tag_xmlstring(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags = [child.tag for child in node.iterchildren()]
+    tags.append('greensFunction')
+
+    create_tag(xmltree, schema_dict, '<greensFunction/>')
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+
 def test_create_tag_specification(load_inpxml):
 
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -457,6 +497,24 @@ def test_replace_tag(load_inpxml):
     root = xmltree.getroot()
 
     new_elem = etree.Element('test_tag')
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
+
+    replace_tag(xmltree, schema_dict, 'species', new_elem)
+
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 0
+    assert len(eval_xpath(root, '/fleurInput/atomSpecies/test_tag', list_return=True)) == 2
+
+
+def test_replace_tag_xmlstring(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import replace_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    new_elem = '<test_tag/>'
 
     assert len(eval_xpath(root, '/fleurInput/atomSpecies/species', list_return=True)) == 2
 
