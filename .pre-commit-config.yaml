@@ -104,4 +104,5 @@ repos:
             masci_tools/tools/fleur_inpxml_converter.py|
             masci_tools/tools/greensfunction.py|
             masci_tools/cmdline/parameters/slice.py|
+            masci_tools/vis/parameters.py|
         )$

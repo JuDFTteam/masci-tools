@@ -22,11 +22,13 @@ from collections import ChainMap
 import warnings
 import json
 
-from typing import Any
+from typing import Any, Callable, Generator, TypeVar, cast, MutableMapping
+
+from masci_tools.util.typing import FileLike
 
 
 @contextmanager
-def NestedPlotParameters(plotter_object):
+def NestedPlotParameters(plotter_object: Plotter) -> Generator[None, None, None]:
     """
     Contextmanager for nested plot function calls
     Will reset function defaults and parameters to previous
@@ -52,7 +54,11 @@ def NestedPlotParameters(plotter_object):
         plotter_object.num_plots = num_plots_before
 
 
-def ensure_plotter_consistency(plotter_object):
+F = TypeVar('F', bound=Callable[..., Any])
+"""Generic Callable type"""
+
+
+def ensure_plotter_consistency(plotter_object: Plotter) -> Callable[[F], F]:
     """
     Decorator for plot functions to ensure that the
     Parameters are reset even if an error occurs in the function
@@ -65,7 +71,7 @@ def ensure_plotter_consistency(plotter_object):
     assert isinstance(plotter_object, Plotter), \
            'The ensure_plotter_consistency decorator should only be used for Plotter objects'
 
-    def ensure_plotter_consistency_decorator(func):
+    def ensure_plotter_consistency_decorator(func: F) -> F:
         """
         Decorator that adds checks on the Plotter object
         """
@@ -105,12 +111,12 @@ def ensure_plotter_consistency(plotter_object):
 
             return res
 
-        return ensure_consistency
+        return cast(F, ensure_consistency)
 
     return ensure_plotter_consistency_decorator
 
 
-def _generate_plot_parameters_table(defaults, descriptions):
+def _generate_plot_parameters_table(defaults: dict[str, Any], descriptions: dict[str, str]) -> str:
     """
     Generate a table for the plotting parameters for the docstrings
 
@@ -229,12 +235,12 @@ class Plotter:
     """
 
     def __init__(self,
-                 default_parameters,
-                 general_keys=None,
-                 key_descriptions=None,
-                 type_kwargs_mapping=None,
-                 kwargs_postprocess_rename=None,
-                 **kwargs):
+                 default_parameters: dict[str, Any],
+                 general_keys: set[str] | None = None,
+                 key_descriptions: dict[str, str] | None = None,
+                 type_kwargs_mapping: dict[str, set[str]] | None = None,
+                 kwargs_postprocess_rename: dict[str, str] | None = None,
+                 **kwargs: Any) -> None:
 
         self._PLOT_DEFAULTS = copy.deepcopy(default_parameters)
 
@@ -243,7 +249,7 @@ class Plotter:
             self._type_kwargs_mapping = type_kwargs_mapping
 
         self._kwargs_postprocess_rename = {}
-        if type_kwargs_mapping is not None:
+        if kwargs_postprocess_rename is not None:
             self._kwargs_postprocess_rename = kwargs_postprocess_rename
 
         #ChainMap with three dictionaries on top
@@ -251,11 +257,11 @@ class Plotter:
         # 2. global defaults
         # 3. function defaults
         # 4. Hardcoded defaults
-        self._params = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
+        self._params: ChainMap[str, Any] = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
 
         self._single_plot = True
         self._num_plots = 1
-        self._added_parameters = set()
+        self._added_parameters: set[str] = set()
 
         self._GENERAL_KEYS = set()
         if general_keys is not None:
@@ -268,7 +274,7 @@ class Plotter:
         if kwargs:
             self.set_defaults(continue_on_error=True, **kwargs)
 
-    def __getitem__(self, indices):
+    def __getitem__(self, indices: str | tuple[str, int]) -> Any:
         """
         Get the current value for the key
 
@@ -301,7 +307,7 @@ class Plotter:
         except KeyError:
             return None
 
-    def get_multiple_kwargs(self, keys, ignore=None):
+    def get_multiple_kwargs(self, keys: set[str], ignore: str | list[str] | None = None) -> dict[str, Any]:
         """
         Get multiple parameters and return them in a dictionary
 
@@ -382,12 +388,17 @@ class Plotter:
                 plot_kwargs[new] = plot_kwargs.pop(old)
 
         if list_of_dicts:
-            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot, self.num_plots)
+            plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs, self.single_plot,
+                                                              self.num_plots)  #type:ignore[assignment]
 
         return plot_kwargs
 
     @staticmethod
-    def dict_of_lists_to_list_of_dicts(dict_of_lists, single_plot, num_plots, repeat_after=None, ignore_repeat=None):
+    def dict_of_lists_to_list_of_dicts(dict_of_lists: dict[str, list[Any]],
+                                       single_plot: bool,
+                                       num_plots: int,
+                                       repeat_after: int | None = None,
+                                       ignore_repeat: set[str] | None = None) -> list[dict[str, Any]]:
         """
         Converts dict of lists and single values to list of length num_plots
         or single dict for single_plot=True
@@ -412,7 +423,8 @@ class Plotter:
         elif not single_plot:
             dict_of_lists = {key: [value] for key, value in dict_of_lists.items()}
 
-        list_of_dicts = dict_of_lists  # For single plot these are equivalent
+        list_of_dicts: list[dict[str,
+                                 Any]] = dict_of_lists  #type:ignore[assignment] # For single plot these are equivalent
         if not single_plot:
             list_of_dicts = []
             # enforce that all lists of the same lengths
@@ -443,7 +455,11 @@ class Plotter:
         return list_of_dicts
 
     @staticmethod
-    def convert_to_complete_list(given_value, single_plot, num_plots, default=None, key=''):
+    def convert_to_complete_list(given_value: Any,
+                                 single_plot: bool,
+                                 num_plots: int,
+                                 default: Any = None,
+                                 key: str = '') -> Any:
         """
         Converts given value to list with length num_plots with None for the non-specified values
 
@@ -478,7 +494,7 @@ class Plotter:
 
         return ret_value
 
-    def expand_parameters(self, original_length, **kwargs):
+    def expand_parameters(self, original_length: int, **kwargs: Any) -> dict[str, Any]:
         """
         Expand parameters to a bigger number of plots.
         New length has to be a multiple of original length.
@@ -521,7 +537,7 @@ class Plotter:
 
         return kwargs
 
-    def set_single_default(self, key, value, default_type='global'):
+    def set_single_default(self, key: str, value: Any, default_type: str = 'global') -> None:
         """
         Set default value for a single key/value pair
 
@@ -550,7 +566,7 @@ class Plotter:
                                                       key=key)
             self.__update_map(self._params.parents.parents, key, value)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> None:
         """
         Set the given key value pair on the `Plotter._params` ChainMap
         (Always to the top layer).
@@ -576,7 +592,7 @@ class Plotter:
         self.__update_map(self._params, key, value)
 
     @staticmethod
-    def __update_map(map_to_change, key, value):
+    def __update_map(map_to_change: MutableMapping[str, Any], key: str, value: Any) -> None:
         """
         Updates the given map with the given key value pair
         If the value is a dict it will be merged
@@ -599,7 +615,10 @@ class Plotter:
         else:
             map_to_change[key] = value
 
-    def set_defaults(self, continue_on_error=False, default_type='global', **kwargs):
+    def set_defaults(self,
+                     continue_on_error: bool = False,
+                     default_type: str = 'global',
+                     **kwargs: Any) -> dict[str, Any]:
         """
         Set the current defaults. This method will only work if the parameters
         are not changed from the defaults. Otherwise a error is raised. This is because
@@ -639,7 +658,7 @@ class Plotter:
 
         return kwargs_unprocessed
 
-    def set_parameters(self, continue_on_error=False, **kwargs):
+    def set_parameters(self, continue_on_error: bool = False, **kwargs: Any) -> dict[str, Any]:
         """
         Set the current parameters.
 
@@ -665,7 +684,7 @@ class Plotter:
 
         return kwargs_unprocessed
 
-    def add_parameter(self, name, default_from=None, default_val=None):
+    def add_parameter(self, name: str, default_from: str | None = None, default_val: Any = None) -> None:
         """
         Add a new parameter to the parameters dictionary.
 
@@ -686,7 +705,7 @@ class Plotter:
         self._added_parameters.add(name)
         self._function_defaults[name] = default_val
 
-    def save_defaults(self, filename='plot_defaults.json', save_complete=False):
+    def save_defaults(self, filename: FileLike = 'plot_defaults.json', save_complete: bool = False) -> None:
         """
         Save the current defaults to a json file.
 
@@ -699,23 +718,23 @@ class Plotter:
                 raise ValueError('Function defaults need to be empty before saving defaults')
             dict_to_save = dict(self._params.parents)
         else:
-            dict_to_save = self._user_defaults
+            dict_to_save = dict(self._user_defaults)
 
-        with open(filename, 'w', encoding='utf-8') as file:
+        with open(filename, 'w', encoding='utf-8') as file:  #type:ignore[arg-type]
             json.dump(dict_to_save, file, indent=4, sort_keys=True)
 
-    def load_defaults(self, filename='plot_defaults.json'):
+    def load_defaults(self, filename: FileLike = 'plot_defaults.json') -> None:
         """
         Load defaults from a json file.
 
         :param filename: filename,from  where the defaults should be taken
         """
-        with open(filename, encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:  #type:ignore[arg-type]
             param_dict = json.load(file)
 
         self.set_defaults(**param_dict)
 
-    def remove_added_parameters(self):
+    def remove_added_parameters(self) -> None:
         """
         Remove the parameters added via :py:func:`Plotter.add_parameter()`
         """
@@ -724,13 +743,13 @@ class Plotter:
             self._function_defaults.pop(key, None)
             self._given_parameters.pop(key, None)
 
-    def reset_defaults(self):
+    def reset_defaults(self) -> None:
         """
         Resets the defaults to the hardcoded defaults in _PLOT_DEFAULTS.
         """
         self._params = ChainMap({}, {}, {}, self._PLOT_DEFAULTS)
 
-    def reset_parameters(self):
+    def reset_parameters(self) -> None:
         """
         Reset the parameters to the current defaults. The properties single_plot and num_plots
         are also set to default values
@@ -741,13 +760,13 @@ class Plotter:
         self.single_plot = True
         self.num_plots = 1
 
-    def get_dict(self):
+    def get_dict(self) -> dict[str, Any]:
         """
         Return the dictionary of the current defaults. For use of printing
         """
         return dict(self._params)
 
-    def get_description(self, key):
+    def get_description(self, key: str) -> None:
         """
         Get the description of the given key
 
@@ -761,7 +780,7 @@ class Plotter:
         else:
             warnings.warn(f'{key} is not a known parameter')
 
-    def is_general(self, key):
+    def is_general(self, key: str) -> bool:
         """
         Return, whether the key is general
         (meaning only related to the whole plots)
@@ -773,84 +792,84 @@ class Plotter:
         return key in self._GENERAL_KEYS
 
     @property
-    def _hardcoded_defaults(self):
+    def _hardcoded_defaults(self) -> MutableMapping[str, Any]:
         """
         Alias for the lowest map in the _params ChainMap
         """
         return self._params.maps[3]
 
     @_hardcoded_defaults.setter
-    def _hardcoded_defaults(self, dict_value):
+    def _hardcoded_defaults(self, dict_value: dict[str, Any]) -> None:
         """
         Setter for the _hardcoded_defaults property
         """
         self._params.maps[2] = dict_value
 
     @property
-    def _function_defaults(self):
+    def _function_defaults(self) -> MutableMapping[str, Any]:
         """
         Alias for the second lowest map in the _params ChainMap
         """
         return self._params.maps[2]
 
     @_function_defaults.setter
-    def _function_defaults(self, dict_value):
+    def _function_defaults(self, dict_value: dict[str, Any]) -> None:
         """
         Setter for the _function_defaults property
         """
         self._params.maps[2] = dict_value
 
     @property
-    def _user_defaults(self):
+    def _user_defaults(self) -> MutableMapping[str, Any]:
         """
         Alias for the third lowest map in the _params ChainMap
         """
         return self._params.maps[1]
 
     @_user_defaults.setter
-    def _user_defaults(self, dict_value):
+    def _user_defaults(self, dict_value: dict[str, Any]) -> None:
         """
         Setter for the _user_defaults property
         """
         self._params.maps[1] = dict_value
 
     @property
-    def _given_parameters(self):
+    def _given_parameters(self) -> MutableMapping[str, Any]:
         """
         Alias for the highest map in the _params ChainMap
         """
         return self._params.maps[0]
 
     @_given_parameters.setter
-    def _given_parameters(self, dict_value):
+    def _given_parameters(self, dict_value: dict[str, Any]) -> None:
         """
         Setter for the _given_parameters property
         """
         self._params.maps[0] = dict_value
 
     @property
-    def single_plot(self):
+    def single_plot(self) -> bool:
         """
         Boolean property if True only a single Plot parameter set is allowed
         """
         return self._single_plot
 
     @single_plot.setter
-    def single_plot(self, boolean_value):
+    def single_plot(self, boolean_value: bool) -> None:
         """
         Setter for single_plot property
         """
         self._single_plot = boolean_value
 
     @property
-    def num_plots(self):
+    def num_plots(self) -> int:
         """
         Integer property for number of plots produced
         """
         return self._num_plots
 
     @num_plots.setter
-    def num_plots(self, int_value):
+    def num_plots(self, int_value: int) -> None:
         """
         Setter for num_plots property
         """
