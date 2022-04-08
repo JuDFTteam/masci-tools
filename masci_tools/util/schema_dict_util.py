@@ -956,7 +956,7 @@ def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
 
 def reverse_xinclude(
         xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
-        **kwargs: os.PathLike[Any]) -> tuple[etree._ElementTree, dict[os.PathLike[Any] | str, etree._ElementTree]]:
+        **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.
     The original xmltree will be returned with the corresponding xinclude tags
@@ -991,7 +991,7 @@ def reverse_xinclude(
 
     excluded_tree = copy.deepcopy(xmltree)
 
-    include_file_names: dict[str, os.PathLike[Any] | str] = {
+    include_file_names: dict[str, os.PathLike | str] = {
         'relaxation': 'relax.xml',
         'kPointLists': 'kpts.xml',
         'symmetryOperations': 'sym.xml',

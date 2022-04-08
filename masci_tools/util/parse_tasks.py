@@ -125,7 +125,7 @@ class ParseTasks:
 
     def __init__(self,
                  version: str,
-                 task_file: os.PathLike[Any] | None = None,
+                 task_file: os.PathLike | None = None,
                  validate_defaults: bool = False) -> None:
         """
         Initialize the default parse tasks
