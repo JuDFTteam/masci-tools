@@ -88,8 +88,8 @@ def get_fleur_modes(xmltree: XMLLike,
         fleur_modes['plot'] = False
         if root.tag_exists('plotting'):
             plot = root.attribute('iplot', default=False)
-            if isinstance(plot, int):
-                plot = plot != 0
+            if schema_dict.inp_version >= (0, 29):
+                plot = isinstance(plot, int) and plot != 0
             fleur_modes['plot'] = plot
 
         fleur_modes['film'] = root.tag_exists('filmPos')
@@ -97,11 +97,6 @@ def get_fleur_modes(xmltree: XMLLike,
         fleur_modes['dos'] = root.attribute('dos')
         fleur_modes['band'] = root.attribute('band')
         fleur_modes['bz_integration'] = root.attribute('mode', tag_name='bzIntegration')
-
-        ldahia = False
-        if schema_dict.inp_version >= (0, 32):
-            ldahia = root.tag_exists('ldaHIA', contains='species')
-        fleur_modes['ldahia'] = ldahia
 
         greensf = False
         if schema_dict.inp_version >= (0, 32):
@@ -113,6 +108,11 @@ def get_fleur_modes(xmltree: XMLLike,
             else:
                 greensf = greensf or root.tag_exists('torgueCalculation', contains='species')
         fleur_modes['greensf'] = greensf
+
+        ldahia = False
+        if schema_dict.inp_version >= (0, 32):
+            ldahia = root.tag_exists('ldaHIA', contains='species')
+        fleur_modes['ldahia'] = ldahia
 
     return fleur_modes
 

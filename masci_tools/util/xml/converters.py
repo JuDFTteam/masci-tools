@@ -151,6 +151,9 @@ def convert_from_xml_explicit(
     if not isinstance(xmlstring, list):
         xmlstring = [xmlstring]
 
+    if logger is not None:
+        logger.debug('Value to convert from XML: %s', xmlstring)
+
     converted_list: list[ConvertedType | list[ConvertedType]] = []
     all_success = True
     for text in xmlstring:
@@ -184,6 +187,9 @@ def convert_from_xml_explicit(
             if text_definitions[0].length == 1:
                 split_text = [text]
 
+        if logger is not None:
+            logger.debug('Convert from XML: %s using definitions %s', split_text, types)
+
         converted_text, suc = convert_from_xml_single_values(split_text, types, constants=constants, logger=logger)
 
         all_success = all_success and suc
@@ -198,6 +204,9 @@ def convert_from_xml_explicit(
     ret_value = converted_list
     if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]  #type:ignore[assignment]
+
+    if logger is not None:
+        logger.debug('Converted Value from XML: %s', ret_value)
 
     return ret_value, all_success
 
@@ -228,6 +237,9 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
         value = [value]
     elif not isinstance(value[0], (list, np.ndarray)) and lengths != {1}:
         value = [value]
+
+    if logger is not None:
+        logger.debug('Value to convert to XML: %s', value)
 
     converted_list = []
     all_success = True
@@ -261,6 +273,9 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
 
         types = tuple(definition.base_type for definition in text_definitions)
 
+        if logger is not None:
+            logger.debug('Convert to XML: %s with definitions %s', val, types)
+
         converted_text, suc = convert_to_xml_single_values(val, types, logger=logger, float_format=float_format)
         all_success = all_success and suc
 
@@ -269,6 +284,9 @@ def convert_to_xml_explicit(value: Any | Iterable[Any],
     ret_value = converted_list
     if len(converted_list) == 1 and not list_return:
         ret_value = converted_list[0]  #type:ignore
+
+    if logger is not None:
+        logger.debug('Converted Value to XML: %s', ret_value)
 
     return ret_value, all_success
 

@@ -198,6 +198,10 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
         variables = {**variables, **xpath.path_variables}
         xpath = xpath_str
 
+    if logger is not None:
+        logger.debug('XPath: %s', xpath)
+        logger.debug('XPath Variables: %s', variables)
+
     if not isinstance(node, (etree._Element, etree._ElementTree, etree.XPathElementEvaluator)):
         if logger is not None:
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
@@ -232,6 +236,10 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
         raise ValueError(f'There was a XpathEvalError on the xpath: {str(xpath)} \n'
                          f'The following variables were passed: {variables} \n'
                          'Either it does not exist, or something is wrong with the expression.') from err
+
+    if logger is not None:
+        logger.debug('XPath Result: %s', return_value)
+
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:
             return return_value[0]  #type:ignore
@@ -375,7 +383,6 @@ def check_complex_xpath(node: XMLLike | etree.XPathElementEvaluator, base_xpath:
     :raises ValueError: If the complex_xpath does not produce a subset of the results
                         of the base_xpath
     """
-
     results_base = set(eval_xpath(node, base_xpath, list_return=True))  #type:ignore
     results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
 
