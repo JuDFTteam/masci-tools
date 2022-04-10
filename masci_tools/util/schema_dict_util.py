@@ -18,7 +18,6 @@ attribute from the right place in the given etree
 """
 from __future__ import annotations
 
-from masci_tools.io.parsers.fleur_schema import NoPathFound
 from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
@@ -50,33 +49,8 @@ def read_constants(root: XMLLike | etree.XPathElementEvaluator,
 
     :return: a python dictionary with all defined constants
     """
-    from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-
-    defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
-
-    try:
-        tag_exists(root, schema_dict, 'constant')
-    except NoPathFound:
-        warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
-        return defined_constants
-
-    if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
-        return defined_constants
-
-    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, logger=logger)
-
-    if constants['name'] is not None:
-        if not isinstance(constants['name'], list):
-            constants = {key: [val] for key, val in constants.items()}
-        for name, value in zip(constants['name'], constants['value']):
-            if name not in defined_constants:
-                defined_constants[name] = value
-            else:
-                if logger is not None:
-                    logger.error('Ambiguous definition of constant %s', name)
-                raise KeyError(f'Ambiguous definition of constant {name}')
-
-    return defined_constants
+    from masci_tools.io.fleur_xml import get_constants
+    return get_constants(root, schema_dict, logger=logger)
 
 
 @register_parsing_function('attrib')

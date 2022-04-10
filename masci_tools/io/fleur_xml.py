@@ -26,7 +26,7 @@ from typing import Callable, Any, Generator
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
 
-__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext')
+__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants')
 
 
 def load_inpxml(inpxmlfile: XMLFileLike,
@@ -222,7 +222,6 @@ def load_outxml(outxmlfile: XMLFileLike,
 
 from contextlib import contextmanager
 from masci_tools.util.xml.common_functions import normalize_xmllike
-from masci_tools.util.schema_dict_util import read_constants
 
 
 class _EvalContext:
@@ -235,7 +234,7 @@ class _EvalContext:
         self.node = normalize_xmllike(etree_or_element)
         self.schema_dict = schema_dict
         self.logger = logger
-        self.constants = constants or read_constants(self.node, self.schema_dict, self.logger)
+        self.constants = constants or get_constants(self.node, self.schema_dict, self.logger)
 
     def attribute(self, name, default=None, **kwargs):
         from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -333,3 +332,47 @@ def FleurXMLContext(etree_or_element: XMLLike,
                     logger: logging.Logger | None = None) -> Generator[_EvalContext, None, None]:
 
     yield _EvalContext(etree_or_element, schema_dict, constants=constants, logger=logger)
+
+def get_constants(xmltree: XMLLike | etree.XPathElementEvaluator,
+                  schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                  logger: Logger | None = None) -> dict[str, float]:
+    """
+    Reads in the constants defined in the inp.xml
+    and returns them combined with the predefined constants from
+    fleur as a dictionary
+
+    :param root: root of the etree of the inp.xml file
+    :param schema_dict: schema_dictionary of the version of the file to read (inp.xml or out.xml)
+    :param logger: logger object for logging warnings, errors
+
+    :return: a python dictionary with all defined constants
+    """
+    from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
+    from masci_tools.io.parsers.fleur_schema import NoPathFound
+    import copy
+
+    defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
+    with FleurXMLContext(xmltree, schema_dict, logger=logger, constants=defined_constants) as root:
+
+        try:
+            root.tag_exists('constant')
+        except NoPathFound:
+            warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
+            return defined_constants
+
+        if not root.tag_exists('constant'):  #Avoid warnings for empty constants
+            return defined_constants
+
+        constants = root.all_attributes('constant')
+        if constants['name'] is not None:
+            if not isinstance(constants['name'], list):
+                constants = {key: [val] for key, val in constants.items()}
+            for name, value in zip(constants['name'], constants['value']):
+                if name not in defined_constants:
+                    defined_constants[name] = value
+                else:
+                    if logger is not None:
+                        logger.error('Ambiguous definition of constant %s', name)
+                    raise KeyError(f'Ambiguous definition of constant {name}')
+
+    return defined_constants
