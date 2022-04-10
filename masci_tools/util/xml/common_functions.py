@@ -88,7 +88,7 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
             for elem in parent.iterchildren(tag=tag_name):
                 for attribute in elem.attrib.keys():
                     if 'base' in attribute:
-                        elem.attrib.pop(attribute, None)  #type:ignore
+                        elem.attrib.pop(attribute, '')
 
     # remove comments from inp.xml
     comments: list[etree._Element] = cleared_tree.xpath('//comment()')  #type:ignore
@@ -203,11 +203,6 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
 
-    if isinstance(xpath, etree.XPath) and isinstance(node, etree.XPathElementEvaluator):
-        if logger is not None:
-            logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
-        raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
-
     if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree.XPathElementEvaluator)):
         if logger is not None:
             logger.exception(
@@ -219,7 +214,11 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
 
     try:
         if isinstance(node, etree.XPathElementEvaluator):
-            return_value = node(xpath, **variables)  #type:ignore[arg-type]
+            if isinstance(xpath, etree.XPath):
+                if logger is not None:
+                    logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
+                raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
+            return_value = node(xpath, **variables)  #[arg-type]
         elif isinstance(xpath, etree.XPath):
             return_value = xpath(node, **variables)
         else:
