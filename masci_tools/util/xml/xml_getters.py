@@ -19,6 +19,7 @@ from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.common_functions import AtomSiteProperties
 from masci_tools.util.typing import XMLLike
 from masci_tools.io.parsers import fleur_schema
+from masci_tools.io.fleur_xml import FleurXMLContext
 
 from .common_functions import normalize_xmllike
 
@@ -58,108 +59,60 @@ def get_fleur_modes(xmltree: XMLLike,
         - `bz_integration`: How is the integration over the Brillouin-Zone performed?
 
     """
-    from masci_tools.util.schema_dict_util import read_constants
-    from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
-
-    root = normalize_xmllike(xmltree)
-    constants = read_constants(root, schema_dict)
 
     fleur_modes = {}
-    fleur_modes['jspin'] = evaluate_attribute(root, schema_dict, 'jspins', logger=logger, constants=constants)
+    with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
+        fleur_modes['jspin'] = root.attribute('jspins')
+        fleur_modes['noco'] = root.attribute('l_noco', default=False)
+        fleur_modes['soc'] = root.attribute('l_soc', default=False)
+        fleur_modes['relax'] = root.attribute('l_f', default=False)
+        fleur_modes['gw'] = False
+        if root.tag_exists('expertModes'):
+            gw = root.attribute('gw', optional=True)
+            if gw is None and schema_dict.inp_version >= (0, 34):
+                gw = root.attribute('spex', default=0)
+            fleur_modes['gw'] = gw != 0
 
-    noco = evaluate_attribute(root, schema_dict, 'l_noco', constants=constants, logger=logger, optional=True)
-    if noco is None:
-        noco = False
-    fleur_modes['noco'] = noco
-
-    soc = evaluate_attribute(root, schema_dict, 'l_soc', constants=constants, logger=logger, optional=True)
-    if soc is None:
-        soc = False
-    fleur_modes['soc'] = soc
-
-    relax = evaluate_attribute(root, schema_dict, 'l_f', constants=constants, logger=logger, optional=True)
-    if relax is None:
-        relax = False
-    fleur_modes['relax'] = relax
-
-    gw = None
-    if tag_exists(root, schema_dict, 'expertModes', logger=logger):
-        gw = evaluate_attribute(root, schema_dict, 'gw', constants=constants, logger=logger, optional=True)
-        if gw is None and schema_dict.inp_version >= (0, 34):
-            gw = evaluate_attribute(root, schema_dict, 'spex', constants=constants, logger=logger, optional=True)
-
-    if gw is None:
-        gw = False
-    else:
-        gw = gw != 0
-    fleur_modes['gw'] = gw
-
-    if schema_dict.inp_version > (0, 27):
-        fleur_modes['force_theorem'] = tag_exists(root, schema_dict, 'forceTheorem', logger=logger)
-    else:
-        fleur_modes['force_theorem'] = False
-
-    if schema_dict.inp_version >= (0, 33):
-        if tag_exists(root, schema_dict, 'cFCoeffs', logger=logger):
-            cf_coeff = any(
-                evaluate_attribute(root,
-                                   schema_dict,
-                                   'potential',
-                                   contains='cFCoeffs',
-                                   logger=logger,
-                                   list_return=True,
-                                   optional=True))
-            cf_coeff = cf_coeff or any(
-                evaluate_attribute(root,
-                                   schema_dict,
-                                   'chargeDensity',
-                                   contains='cFCoeffs',
-                                   logger=logger,
-                                   list_return=True,
-                                   optional=True))
+        if schema_dict.inp_version > (0, 27):
+            fleur_modes['force_theorem'] = root.tag_exists('forceTheorem')
         else:
-            cf_coeff = False
-        fleur_modes['cf_coeff'] = cf_coeff
-    else:
+            fleur_modes['force_theorem'] = False
+
         fleur_modes['cf_coeff'] = False
+        if schema_dict.inp_version >= (0, 33) and root.tag_exists('cFCoeffs'):
+            cf_coeff = any(root.attribute('potential', tag_name='cFCoeffs', list_return=True, optional=True))
+            cf_coeff = cf_coeff or any(
+                root.attribute('chargeDensity', tag_name='cFCoeffs', list_return=True, optional=True))
+            fleur_modes['cf_coeff'] = cf_coeff
 
-    plot = None
-    if tag_exists(root, schema_dict, 'plotting', logger=logger):
-        plot = evaluate_attribute(root, schema_dict, 'iplot', logger=logger, optional=True)
+        fleur_modes['plot'] = False
+        if root.tag_exists('plotting'):
+            plot = root.attribute('iplot', default=False)
+            if isinstance(plot, int):
+                plot = plot != 0
+            fleur_modes['plot'] = plot
 
-    if schema_dict.inp_version >= (0, 29) and plot is not None:
-        plot = isinstance(plot, int) and plot != 0
+        fleur_modes['film'] = root.tag_exists('filmPos')
+        fleur_modes['ldau'] = root.tag_exists('ldaU', contains='species')
+        fleur_modes['dos'] = root.attribute('dos')
+        fleur_modes['band'] = root.attribute('band')
+        fleur_modes['bz_integration'] = root.attribute('mode', tag_name='bzIntegration')
 
-    if plot is None:
-        plot = False
-    fleur_modes['plot'] = plot
+        ldahia = False
+        if schema_dict.inp_version >= (0, 32):
+            ldahia = root.tag_exists('ldaHIA', contains='species')
+        fleur_modes['ldahia'] = ldahia
 
-    fleur_modes['film'] = tag_exists(root, schema_dict, 'filmPos', logger=logger)
-    fleur_modes['ldau'] = tag_exists(root, schema_dict, 'ldaU', contains='species', logger=logger)
-    fleur_modes['dos'] = evaluate_attribute(root, schema_dict, 'dos', constants=constants, logger=logger)
-    fleur_modes['band'] = evaluate_attribute(root, schema_dict, 'band', constants=constants, logger=logger)
-    fleur_modes['bz_integration'] = evaluate_attribute(root,
-                                                       schema_dict,
-                                                       'mode',
-                                                       constants=constants,
-                                                       tag_name='bzIntegration',
-                                                       logger=logger)
-
-    greensf = False
-    if schema_dict.inp_version >= (0, 32):
-        #We make the assumption that the existence of a greensfCalculation
-        #tag implies the existence of a greens function calculation
-        greensf = tag_exists(root, schema_dict, 'greensfCalculation', contains='species', logger=logger)
-        if schema_dict.inp_version >= (0, 35):
-            greensf = greensf or tag_exists(root, schema_dict, 'torqueCalculation', contains='species', logger=logger)
-        else:
-            greensf = greensf or tag_exists(root, schema_dict, 'torgueCalculation', contains='species', logger=logger)
-    fleur_modes['greensf'] = greensf
-
-    ldahia = False
-    if schema_dict.inp_version >= (0, 32):
-        ldahia = tag_exists(root, schema_dict, 'ldaHIA', contains='species', logger=logger)
-    fleur_modes['ldahia'] = ldahia
+        greensf = False
+        if schema_dict.inp_version >= (0, 32):
+            #We make the assumption that the existence of a greensfCalculation
+            #tag implies the existence of a greens function calculation
+            greensf = root.tag_exists('greensfCalculation', contains='species')
+            if schema_dict.inp_version >= (0, 35):
+                greensf = greensf or root.tag_exists('torqueCalculation', contains='species')
+            else:
+                greensf = greensf or root.tag_exists('torgueCalculation', contains='species')
+        fleur_modes['greensf'] = greensf
 
     return fleur_modes
 
@@ -184,34 +137,17 @@ def get_nkpts(xmltree: XMLLike,
 
     :returns: int with the number of kpoints
     """
-    from masci_tools.util.schema_dict_util import eval_simple_xpath
-    from masci_tools.util.schema_dict_util import evaluate_attribute
+    with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
+        #Get the name of the current selected kPointSet
+        list_name = root.attribute('listName')
+        all_names = set(
+            root.attribute('name', tag_name='kPointList', contains='kPointLists', list_return=True, optional=True))
+        if list_name not in all_names:
+            raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist\n'
+                             f'Available list names: {all_names}')
 
-    root = normalize_xmllike(xmltree)
-
-    #Get the name of the current selected kPointSet
-    list_name = evaluate_attribute(root, schema_dict, 'listName', logger=logger)
-
-    kpointlists = eval_simple_xpath(root,
-                                    schema_dict,
-                                    'kPointList',
-                                    contains='kPointLists',
-                                    list_return=True,
-                                    logger=logger)
-
-    if len(kpointlists) == 0:
-        raise ValueError('No Kpoint lists found in the given inp.xml')
-
-    labels = [kpoint_set.attrib.get('name') for kpoint_set in kpointlists]
-    if list_name not in labels:
-        raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist'
-                         f'Available list names: {labels}')
-
-    kpoint_index = labels.index(list_name)
-
-    kpoint_set = kpointlists[kpoint_index]
-
-    nkpts = evaluate_attribute(kpoint_set, schema_dict, 'count', logger=logger)
+        with root.child('kPointList', contains='kPointLists', filters={'kPointList': {'name': list_name}}) as kpoints:
+            nkpts = kpoints.attribute('count')
 
     if not isinstance(nkpts, int):
         raise ValueError('Failed to evaluate nkpts')
@@ -239,55 +175,36 @@ def get_nkpts_max4(xmltree: XMLLike,
 
     :returns: int with the number of kpoints
     """
-    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
+    modes = get_fleur_modes(xmltree, schema_dict, logger=logger)
+    with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
-    root = normalize_xmllike(xmltree)
+        nkpts = None
+        if modes['band'] or modes['gw']:
+            expected_mode = 'bands' if modes['band'] else 'gw'
+            if kpoints := root.optional_child('altKPointSet', filters={'altKPointSet': {'purpose': expected_mode}}):
+                with root.child('altKPointSet', filters={'altKPointSet': {'purpose': expected_mode}}) as kpoints:
+                    nkpts = kpoints.attribute('count', tag_name='kPointList', optional=True)
+                    if nkpts is None:
+                        nkpts = kpoints.attribute('count', tag_name='kPointCount', optional=True)
+                        if nkpts is not None:
+                            warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+                    if nkpts is None:
+                        raise ValueError('No kPointList or kPointCount found')
 
-    modes = get_fleur_modes(root, schema_dict, logger=logger)
-
-    alt_kpt_set = None
-    if modes['band'] or modes['gw']:
-        expected_mode = 'bands' if modes['band'] else 'gw'
-        alt_kpts = eval_simple_xpath(root, schema_dict, 'altKPointSet', list_return=True, logger=logger)
-        for kpt_set in alt_kpts:
-            if evaluate_attribute(kpt_set, schema_dict, 'purpose', logger=logger) == expected_mode:
-                alt_kpt_set = kpt_set
-                break
-
-    kpt_tag: list[etree._Element] = []
-    if alt_kpt_set is not None:
-        kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointList', list_return=True, logger=logger)
-        if len(kpt_tag) == 0:
-            kpt_tag = eval_simple_xpath(alt_kpt_set, schema_dict, 'kPointCount', list_return=True, logger=logger)
-            if len(kpt_tag) != 0:
-                warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
-
-    if not kpt_tag and getattr(schema_dict, 'out_version', None) is None:
-        kpt_tag = eval_simple_xpath(root,
-                                    schema_dict,
-                                    'kPointList',
-                                    not_contains=['altKPointSet', 'numericalParameters'],
-                                    list_return=True,
-                                    logger=logger)
-        if len(kpt_tag) == 0:
-            kpt_tag = eval_simple_xpath(root,
-                                        schema_dict,
-                                        'kPointCount',
-                                        not_contains='altKPointSet',
-                                        list_return=True,
-                                        logger=logger)
-            if len(kpt_tag) == 0:
+        output_schema = getattr(schema_dict, 'out_version', None) is not None
+        if nkpts is None and output_schema:
+            nkpts = root.attribute('count', tag_name='kPointList', contains='numericalParameters')
+        elif nkpts is None and not output_schema:
+            nkpts = root.attribute('count',
+                                   tag_name='kPointList',
+                                   not_contains=['altKPointSet', 'numericalParameters'],
+                                   optional=True)
+            if nkpts is None:
+                nkpts = root.attribute('count', tag_name='kPointCount', not_contains='altKPointSet', optional=True)
+                if nkpts is not None:
+                    warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
+            if nkpts is None:
                 raise ValueError('No kPointList or kPointCount found')
-            warnings.warn('kPointCount is not guaranteed to result in the given number of kpoints')
-    elif not kpt_tag and getattr(schema_dict, 'out_version', None) is not None:
-        kpt_tag = eval_simple_xpath(root,
-                                    schema_dict,
-                                    'kPointList',
-                                    contains='numericalParameters',
-                                    list_return=True,
-                                    logger=logger)
-
-    nkpts = evaluate_attribute(kpt_tag[0], schema_dict, 'count', logger=logger)
 
     if not isinstance(nkpts, int):
         raise ValueError('Failed to evaluate nkpts')
@@ -317,61 +234,57 @@ def get_cell(xmltree: XMLLike,
     :returns: numpy array of the bravais matrix and list of boolean values for
               periodic boundary conditions
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath
-    from masci_tools.util.schema_dict_util import evaluate_text, tag_exists, evaluate_attribute
     from masci_tools.util.constants import BOHR_A
 
-    root = normalize_xmllike(xmltree)
-    constants = read_constants(root, schema_dict, logger=logger)
+    NO_CELL_ERROR = 'Could not extract Bravais matrix out of inp.xml. Is the ' \
+                    'Bravais matrix explicitly given? i.e Latnam definition ' \
+                    'not supported.'
 
     cell: np.ndarray | None = None
-    lattice_tag: etree._Element | None = None
-    if tag_exists(root, schema_dict, 'bulkLattice', logger=logger):
-        lattice_tag = eval_simple_xpath(root, schema_dict, 'bulkLattice', logger=logger)  #type: ignore
-        pbc = (True, True, True)
-    elif tag_exists(root, schema_dict, 'filmLattice', logger=logger):
-        lattice_tag = eval_simple_xpath(root, schema_dict, 'filmLattice', logger=logger)  #type: ignore
-        pbc = (True, True, False)
+    with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
-    if lattice_tag is not None:
-        lattice_scale = evaluate_attribute(lattice_tag,
-                                           schema_dict,
-                                           'scale',
-                                           constants=constants,
-                                           logger=logger,
-                                           not_contains={'/a', 'c/'})
+        lattice_tag: etree._Element | None = None
+        if root.tag_exists('bulkLattice'):
+            lattice_tag = root.simple_xpath('bulkLattice')
+            pbc = (True, True, True)
+        elif root.tag_exists('filmLattice'):
+            lattice_tag = root.simple_xpath('filmLattice')
+            pbc = (True, True, False)
 
-        if tag_exists(lattice_tag, schema_dict, 'bravaisMatrix', logger=logger):
-            braivais_mat: etree._Element = eval_simple_xpath(lattice_tag, schema_dict, 'bravaisMatrix',
-                                                             logger=logger)  #type:ignore
-        elif not all(pbc) and schema_dict.inp_version >= (0, 35):
-            #For 0.35 there can be no latnam definition (no longer allowed by the schema) so we know the film tag exists
-            braivais_mat = eval_simple_xpath(lattice_tag, schema_dict, 'bravaisMatrixFilm', logger=logger)  #type:ignore
-        else:
-            raise ValueError('Could not extract Bravais matrix out of inp.xml. Is the '
-                             'Bravais matrix explicitly given? i.e Latnam definition '
-                             'not supported.')
+        if lattice_tag is None:
+            raise ValueError(NO_CELL_ERROR)
 
-        row1 = evaluate_text(braivais_mat, schema_dict, 'row-1', constants=constants, logger=logger, optional=True)
-        row2 = evaluate_text(braivais_mat, schema_dict, 'row-2', constants=constants, logger=logger, optional=True)
+        with root.nested(lattice_tag) as lattice:
+            scale = lattice.attribute('scale', not_contains={'/a', 'c/'})
 
-        if braivais_mat.tag == 'bravaisMatrixFilm':
-            dtilda = evaluate_attribute(lattice_tag, schema_dict, 'dtilda', constants=constants, logger=logger)
-            row1 += [0.0]
-            row2 += [0.0]
-            row3 = [0.0, 0.0, dtilda]
-        else:
-            row3 = evaluate_text(braivais_mat, schema_dict, 'row-3', constants=constants, logger=logger, optional=True)
+            bravais_tag: etree._Element
+            if lattice.tag_exists('bravaisMatrix'):
+                bravais_tag = lattice.simple_xpath('bravaisMatrix')
+            elif not all(pbc) and schema_dict.inp_version >= (0, 35):
+                bravais_tag = lattice.simple_xpath('bravaisMatrixFilm')
+            else:
+                raise ValueError(NO_CELL_ERROR)
 
-        if all(x is not None and x != [] for x in [row1, row2, row3]):
-            cell = np.array([row1, row2, row3]) * lattice_scale
-            if convert_to_angstroem and cell is not None:
-                cell *= BOHR_A
+            film_matrix = bravais_tag.tag == 'bravaisMatrixFilm'
+            with lattice.nested(bravais_tag) as bravais:
+
+                row1 = bravais.text('row-1', optional=True)
+                row2 = bravais.text('row-2', optional=True)
+                if film_matrix:
+                    dtilda = lattice.attribute('dtilda')
+                    row1 += [0.0]
+                    row2 += [0.0]
+                    row3 = [0.0, 0.0, dtilda]
+                else:
+                    row3 = bravais.text('row-3', optional=True)
+
+            if all(x is not None and x != [] for x in [row1, row2, row3]):
+                cell = np.array([row1, row2, row3]) * scale
+                if convert_to_angstroem and cell is not None:
+                    cell *= BOHR_A
 
     if cell is None:
-        raise ValueError('Could not extract Bravais matrix out of inp.xml. Is the '
-                         'Bravais matrix explicitly given? i.e Latnam definition '
-                         'not supported.')
+        raise ValueError(NO_CELL_ERROR)
 
     return cell, pbc
 
