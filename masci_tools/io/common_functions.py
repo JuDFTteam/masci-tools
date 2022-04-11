@@ -660,7 +660,7 @@ def get_wigner_matrix(l: int, alpha: float, beta: float, gamma: float = 0.0, inv
 
                 d_wigner[m + 3, mp + 3] += base/denom * (-1)**x * np.cos(beta/2.0)**(2*l+m-mp-2*x) \
                                           * np.sin(beta/2.0)**(2*x+mp-m)
-            d_wigner[m + 3, mp + 3] *= (-1)**(m-mp)
+            d_wigner[m + 3, mp + 3] *= (-1)**(m - mp)
 
     return d_wigner
 
