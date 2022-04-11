@@ -288,19 +288,6 @@ def test_get_structure_film(load_inpxml, data_regression):
     })
 
 
-def test_get_structure_film_old_sites(load_inpxml, data_regression):
-
-    from masci_tools.util.xml.xml_getters import get_structure_data
-    from masci_tools.io.common_functions import convert_to_pystd
-
-    xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
-
-    with pytest.deprecated_call():
-        atoms, cell, pbc = get_structure_data(xmltree, schema_dict, site_namedtuple=False)
-
-    data_regression.check({'atoms': convert_to_pystd(atoms), 'cell': convert_to_pystd(cell), 'pbc': pbc})
-
-
 def test_get_structure_bulk(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_structure_data
