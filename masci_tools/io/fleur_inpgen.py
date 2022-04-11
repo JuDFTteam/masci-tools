@@ -30,6 +30,7 @@ from masci_tools.util.typing import FileLike
 from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_from_fortran_bool
 from masci_tools.io.common_functions import abs_to_rel_f, abs_to_rel, convert_to_fortran_string
 from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, AtomSiteProperties
+from masci_tools.io.common_functions import convert_to_fortran
 
 __all__ = ('write_inpgen_file', 'read_inpgen_file', 'AtomDictProperties', 'Kinds')
 
@@ -389,7 +390,7 @@ def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str,
     :param key: the flag name
     :param val: the flag value. If it is an array, a line for each element
                 is produced, with variable indexing starting from 1.
-                Each value is formatted using the conv_to_fortran function.
+                Each value is formatted using the convert_to_fortran function.
     :param mapping: Optional parameter, must be provided if val is a dictionary.
                     It maps each key of the 'val' dictionary to the corresponding
                     list index. For instance, if ``key='magn'``,
@@ -419,7 +420,7 @@ def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str,
             except KeyError as exc:
                 raise ValueError(f"Unable to find the key '{elemk}' in the mapping dictionary") from exc
 
-            list_of_strings.append(f'  {key}({idx})={conv_to_fortran(itemval)} ')
+            list_of_strings.append(f'  {key}({idx})={convert_to_fortran(itemval)} ')
             #changed {0}({2}) = {1}\n".format
 
         #Sort according to the mapping then rejoin the string
@@ -427,50 +428,17 @@ def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str,
         return ''.join(list_of_strings)
     if not isinstance(val, str) and hasattr(val, '__iter__'):
         if value_only:
-            list_of_strings = [f'  ({idx + 1}){conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
+            list_of_strings = [f'  ({idx + 1}){convert_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         else:
             # a list/array/tuple of values
-            list_of_strings = [f'  {key}({idx + 1})={conv_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
+            list_of_strings = [f'  {key}({idx + 1})={convert_to_fortran(itemval)} ' for idx, itemval in enumerate(val)]
         return ''.join(list_of_strings)
 
     # single value
-    #return "  {0}={1} ".format(key, conv_to_fortran(val))
+    #return "  {0}={1} ".format(key, convert_to_fortran(val))
     if value_only:
         return f' {val} '
     return f'  {key}={val} '
-
-
-def conv_to_fortran(val: Any, quote_strings: bool = True) -> str:
-    """
-    Convert values to fortran friendly strings
-
-    :param val: the value to be read and converted to a Fortran-friendly string.
-    :param quote_strings: bool, if True single quotes will be added to a string
-    """
-    # Note that bool should come before integer, because a boolean matches also
-    # isinstance(...,int)
-    import numbers
-
-    if isinstance(val, (bool, np.bool_)):
-        if val:
-            val_str = '.true.'
-        else:
-            val_str = '.false.'
-    elif isinstance(val, numbers.Integral):
-        val_str = f'{val:d}'
-    elif isinstance(val, numbers.Real):
-        val_str = f'{val:18.10e}'.replace('e', 'd')
-    elif isinstance(val, str):
-        if quote_strings:
-            val_str = f"'{val!s}'"
-        else:
-            val_str = f'{val!s}'
-    else:
-        raise ValueError(f"Invalid value '{val}' of type '{type(val)}' passed, accepts only booleans, ints, "
-                         'floats and strings')
-
-    return val_str
-
 
 def read_inpgen_file(
     file: FileLike,
