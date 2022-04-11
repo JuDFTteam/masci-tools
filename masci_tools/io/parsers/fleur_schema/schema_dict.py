@@ -508,8 +508,7 @@ class SchemaDict(LockableDict):
                  name: str,
                  contains: str | Iterable[str] | None = None,
                  not_contains: str | Iterable[str] | None = None,
-                 parent: bool = False,
-                 **kwargs: Any) -> TagInfo:
+                 parent: bool = False) -> TagInfo:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
@@ -523,30 +522,11 @@ class SchemaDict(LockableDict):
         :returns: dict, tag_info for the found xpath
         """
 
-        multiple_paths = True
-        if 'multiple_paths' in kwargs:
-            warnings.warn('multiple_paths argument is deprecated. It is used by default', DeprecationWarning)
-            multiple_paths = kwargs['multiple_paths']
-
-        path_return = False
-        if 'path_return' in kwargs:
-            warnings.warn('path_return argument is deprecated. It is not used by default', DeprecationWarning)
-            path_return = kwargs['path_return']
-
-        convert_to_builtin = False
-        if 'convert_to_builtin' in kwargs:
-            warnings.warn('convert_to_builtin argument is deprecated. It is not used by default', DeprecationWarning)
-            convert_to_builtin = kwargs['convert_to_builtin']
-
         if not self._tag_entries or not self._info_entries:
             raise NotImplementedError(f"The method 'tag_info' cannot be executed for {self.__class__.__name__}"
                                       ' since no tag or info entries are defined')
 
-        if multiple_paths:
-            paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
-        else:
-            paths = [self.tag_xpath(name, contains=contains, not_contains=not_contains)]
-
+        paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
         if len(paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}')
@@ -586,17 +566,7 @@ class SchemaDict(LockableDict):
         if tag_info is None:
             raise ValueError(f'No tag info found for paths: {paths}')
 
-        if convert_to_builtin:
-            tag_info = {
-                key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
-                for key, val in tag_info.items()
-            }
-
-        if path_return:
-            if not multiple_paths:
-                return tag_info, paths[0]  #type:ignore
-            return tag_info, paths  #type:ignore
-        return tag_info  #type:ignore
+        return tag_info
 
 
 class InputSchemaDict(SchemaDict):

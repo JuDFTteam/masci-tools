@@ -633,14 +633,13 @@ def get_parameter_data(xmltree: XMLLike,
     return parameters
 
 
-def get_structure_data(
-        xmltree: XMLLike,
-        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-        include_relaxations: bool = True,
-        site_namedtuple: bool = True,
-        convert_to_angstroem: bool = True,
-        normalize_kind_name: bool = True,
-        logger: Logger | None = None) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
+def get_structure_data(xmltree: XMLLike,
+                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                       include_relaxations: bool = True,
+                       convert_to_angstroem: bool = True,
+                       normalize_kind_name: bool = True,
+                       logger: Logger | None = None,
+                       **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
@@ -679,6 +678,13 @@ def get_structure_data(
         2. :cell: numpy array, bravais matrix of the given system
         3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
 
+    .. versionchanged:: 0.7.0
+        The default for `site_namedtuple` is set to `True`
+
+    .. versionchanged:: 0.10.0
+        The argument `site_namedtuple` was deprecated. The old output is no longer supported. If the
+        argument `site_namedtuple` is passed a deprecation warning is shown
+
     """
     from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, tag_exists
     from masci_tools.util.schema_dict_util import evaluate_text, evaluate_attribute
@@ -686,11 +692,10 @@ def get_structure_data(
     from masci_tools.io.common_functions import find_symmetry_relation
     from masci_tools.util.constants import BOHR_A
 
-    if not site_namedtuple:
+    if 'site_namedtuple' in kwargs:
         warnings.warn(
-            'Output of atom positions in pure tuples of the form (position, symbol) is deprecated.'
-            'Please adjust your code to use the namedtuple AtomSiteProperties (see masci_tools.io.common_functions)'
-            ' with the fields (position, symbol, kind)', DeprecationWarning)
+            'The argument site_namedtuple is deprecated and has no effect.'
+            'The output is always given in AtomSiteProperties', DeprecationWarning)
 
     root = normalize_xmllike(xmltree)
     constants = read_constants(root, schema_dict, logger=logger)
@@ -802,7 +807,7 @@ def get_structure_data(
 
         group_species = evaluate_attribute(group, schema_dict, 'species', constants=constants, logger=logger)
         element = species_info[group_species]['element']
-        if normalize_kind_name and site_namedtuple:
+        if normalize_kind_name:
             normed_name = species_info[group_species]['normed_name']
             if normed_name != group_species:
                 if logger is None:
@@ -814,11 +819,7 @@ def get_structure_data(
                                    "Use the option 'normed_kind_name=False' to preserve the original species name")
                 group_species = normed_name
 
-        if site_namedtuple:
-            atom_data.extend(
-                AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
-        else:
-            atom_data.extend((pos, element) for pos in atom_positions)  #type:ignore
+        atom_data.extend(AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
 
     return atom_data, cell, pbc
 
