@@ -440,6 +440,7 @@ def get_input_data_text(key: str, val: Any, value_only: bool, mapping: dict[str,
         return f' {val} '
     return f'  {key}={val} '
 
+
 def read_inpgen_file(
     file: FileLike,
     convert_to_angstroem: bool = True
