@@ -11,6 +11,7 @@
 - The XML setters `create_tag`, `replace_tag` and their low-level equivalents now also accept XML strings, i.e. `<example attribute="1"/>`, as arguments for the elements to create/replace [[#145]](https://github.com/JuDFTteam/masci-tools/pull/145)
 ### Bugfixes
 - Fix for XML setters operating on the DFT+U density matrix file. Previously these functions would not map the density matrix blocks correctly if multiple atomgroups shared the same species containing `ldaU` tags [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
+- Added missing prefactor `(-1)^(m-mp)` to `get_wigner_matrix()`
 
 ## v.0.9.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)
