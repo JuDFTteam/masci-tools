@@ -82,6 +82,7 @@ repos:
             masci_tools/io/parsers/fleur/.*py|
             masci_tools/io/parsers/fleur_schema/.*py|
             masci_tools/io/parsers/hdf5/.*py|
+            masci_tools/io/parsers/tabulator/.*py|
             masci_tools/io/io_nmmpmat.py|
             masci_tools/io/io_fleurxml.py|
             masci_tools/io/fleur_inpgen.py|

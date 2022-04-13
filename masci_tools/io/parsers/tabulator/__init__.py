@@ -10,22 +10,12 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
+#pylint: disable=undefined-variable
 """This subpackage contains a tabulator. Its purpose is to let you create a table of properties,
 say, a pandas DataFrame, from any collections of similar objects, and reused frequently used recipes.
 """
-# import submodules
-from . import transformers
-from . import recipes
-from . import tabulator
+from .tabulator import *
+from .recipes import *
+from .transformers import *
 
-# import most important user classes to this level
-from .transformers import \
-    Transformer, \
-    TransformedValue, \
-    DefaultTransformer
-
-from .recipes import \
-    Recipe
-
-from .tabulator import \
-    Tabulator
+__all__ = (tabulator.__all__ + recipes.__all__ + transformers.__all__)  #type: ignore

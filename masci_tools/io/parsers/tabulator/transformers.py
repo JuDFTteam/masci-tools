@@ -15,22 +15,25 @@ properties of a collections of objects into a table.
 
 Transformers let you transform properties while they get tabulated.
 """
+from __future__ import annotations
 
-import abc as _abc
+import abc
 import typing as _typing
-import dataclasses as _dc
+import dataclasses as dc
+
+__all__ = ('Transformer', 'TransformedValue', 'DefaultTransformer')
 
 
-@_dc.dataclass(init=True, repr=True, eq=True, order=False, frozen=False)
+@dc.dataclass(init=True, repr=True, eq=True, order=False, frozen=False)
 class TransformedValue:
     """Return type of the :py:class:`~.Transformer`."""
     is_transformed: bool = False
-    value: _typing.Union[object, dict] = None
-    dtypes: _typing.Union[object, dict] = None
-    error: _typing.Optional[Exception] = None
+    value: object | dict | None = None
+    dtypes: object | dict | None = None
+    error: Exception | None = None
 
 
-class Transformer(_abc.ABC):
+class Transformer(abc.ABC):
     """Specify how to transformer an object's properties for use in :py:class:`Tabulator`.
 
     To subclass, you have to implement the :py:meth:`~transformer` method.
@@ -45,12 +48,12 @@ class Transformer(_abc.ABC):
       is optional, otherwise Tabulator will use standard dtypes or try to guess best dtypes for data on its own.
     """
 
-    @_abc.abstractmethod
+    @abc.abstractmethod
     def transform(self,
-                  keypath: _typing.Union[str, _typing.List[str]],
+                  keypath: str | _typing.Iterable[str],
                   value: _typing.Any,
                   obj: _typing.Any = None,
-                  **kwargs) -> TransformedValue:
+                  **kwargs: _typing.Any) -> TransformedValue:
         """Specify how to transform properties, based on their keypath and type.
 
         Extends :py:meth:`~.Transformer.transform`. See also its docstring.
@@ -110,8 +113,8 @@ class DefaultTransformer(Transformer):
     """
 
     def transform(self,
-                  keypath: _typing.Union[str, _typing.List[str]],
+                  keypath: str | _typing.Iterable[str],
                   value: _typing.Any,
                   obj: _typing.Any = None,
-                  **kwargs) -> _typing.Tuple[_typing.Union[None, _typing.Any, dict], bool]:
+                  **kwargs: _typing.Any) -> TransformedValue:
         return TransformedValue(is_transformed=False, value=value, error=None)
