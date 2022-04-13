@@ -403,6 +403,7 @@ def test_fleurxml_modifier_deprecated_arguments(name, kwargs, expected_task):
     with pytest.deprecated_call():
         action(**kwargs)
     assert fm.changes() == [expected_task]
+    assert fm.task_list == [(name, expected_task.kwargs)]
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
