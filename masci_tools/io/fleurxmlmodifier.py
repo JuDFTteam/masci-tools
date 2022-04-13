@@ -164,7 +164,7 @@ class FleurXMLModifier:
 
         return func, prefix
 
-    def _get_setter_func_kwargs(self, name, args, kwargs):
+    def _get_setter_func_kwargs(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> dict[str, Any]:
         """
         Map the given args and kwargs to just kwargs for the
         setter function with the given name
