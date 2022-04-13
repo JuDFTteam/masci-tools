@@ -138,6 +138,49 @@ class FleurXMLModifier:
             'Please use _validate_arguments without unpacking args/kwargs instead', DeprecationWarning)
         self._validate_arguments(name, args, kwargs)
 
+    def _get_setter_function_and_prefix(self, name: str) -> tuple[Callable[[Any], Any], tuple[str, ...]]:
+        """
+        Get the setter function and a prefix standing in for the arguments that
+        are substituted when performing the modification
+        """
+        if name in self.xpath_functions:
+            func = self.xpath_functions[name]
+            prefix: tuple[str, ...] = ('xmltree',)
+        elif name in self.schema_dict_functions:
+            func = self.schema_dict_functions[name]
+            prefix = ('xmltree', 'schema_dict')
+        elif name in self.nmmpmat_functions:
+            func = self.nmmpmat_functions[name]
+            prefix = ('xmltree', 'nmmplines', 'schema_dict')
+
+        if func is None:
+            raise ValueError(f'Failed to validate setter {name}. Maybe the function was'
+                             'not registered in masci_tools.util.xml.collect_xml_setters')
+
+        #For functions decorated with the schema_dict_version_dispatch
+        #We check only the default (This function should have a compatible signature for all registered functions)
+        if getattr(func, 'registry', None) is not None:
+            func = func.registry['default']
+
+        return func, prefix
+
+    def _get_setter_func_kwargs(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> dict[str, Any]:
+        """
+        Map the given args and kwargs to just kwargs for the
+        setter function with the given name
+
+        :param name: name of the setter function
+        :param args: positional arguments to the setter function
+        :param kwargs: keyword arguments to the setter function
+        """
+        from inspect import signature
+        func, prefix = self._get_setter_function_and_prefix(name)
+
+        sig = signature(func)
+        bound = sig.bind(*prefix, *args, **kwargs)
+
+        return {k: v for k, v in bound.arguments.items() if k not in ('xmltree', 'nmmplines', 'schema_dict')}
+
     def _validate_arguments(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
         """
         Validate that the given arguments to the registration
@@ -146,26 +189,7 @@ class FleurXMLModifier:
         from inspect import signature
 
         if self.validate_signatures:
-
-            if name in self.xpath_functions:
-                func = self.xpath_functions[name]
-                prefix: tuple[str, ...] = ('xmltree',)
-            elif name in self.schema_dict_functions:
-                func = self.schema_dict_functions[name]
-                prefix = ('xmltree', 'schema_dict')
-            elif name in self.nmmpmat_functions:
-                func = self.nmmpmat_functions[name]
-                prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
-
-            if func is None:
-                raise ValueError(f'Failed to validate setter {name}. Maybe the function was'
-                                 'not registered in masci_tools.util.xml.collect_xml_setters')
-
-            #For functions decorated with the schema_dict_version_dispatch
-            #We check only the default (This function should have a compatible signature for all registered functions)
-            if getattr(func, 'registry', None) is not None:
-                func = func.registry['default']
-
+            func, prefix = self._get_setter_function_and_prefix(name)
             try:
                 sig = signature(func)
                 sig.bind(*prefix, *args, **kwargs)
@@ -230,6 +254,21 @@ class FleurXMLModifier:
                 raise ValueError(msg) from exc
 
         return xmltree, nmmp_lines
+
+    @property
+    def task_list(self) -> list[tuple[str, dict[str, Any]]]:
+        """
+        Return the current changes in a format accepted by :py:meth:`add_task_list()`
+        and :py:meth:`fromList()`
+        """
+
+        tasks = []
+        for change in self._tasks:
+            #Here we already validated the arguments so we know we can just get the kwargs
+            kwargs = self._get_setter_func_kwargs(change.name, change.args, change.kwargs)
+            tasks.append((change.name, kwargs))
+
+        return tasks
 
     def get_avail_actions(self) -> dict[str, Callable]:
         """

@@ -5,6 +5,7 @@
 
 ### Added
 - New XML setter `align_nmmpmat_to_sqa` to rotate the density matrix file according to SQAs specified either for noco or second variation SOC [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
+- Added `task_list` property to `FleurXMLModifier` to construct a list which can be used to replicate the same `FleurXMLModifier` with the `fromList()` classmethod [[#149]](https://github.com/JuDFTteam/masci-tools/pull/#149)
 
 ### Improvements
 - Added `inverse` argument to nmmpmat XML setters. These will correctly produce the inverse rotation operation for the given angles. Also allow setting `orbital='all'` in `rotate_nmmpmat` to rotate all blocks by the given angles [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
