@@ -213,6 +213,42 @@ def test_fleurxml_modifier_from_list(test_file):
     assert xmltree is not None
 
 
+def test_fleurxml_modifier_task_list_construction(test_file):
+    """Tests if fleurxmlmodifier can produce the task list"""
+    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+    fm = FleurXMLModifier()
+    fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
+    fm.shift_value({'Kmax': 0.1}, 'rel')
+    fm.shift_value_species_label('                 222', 'radius', 3, mode='abs')
+    fm.set_species('all', {'mtSphere': {'radius': 3.333}})
+
+    assert fm.task_list == [('set_inpchanges', {
+        'changes': {
+            'dos': True,
+            'Kmax': 3.9
+        }
+    }), ('shift_value', {
+        'changes': {
+            'Kmax': 0.1
+        },
+        'mode': 'rel'
+    }),
+                            ('shift_value_species_label', {
+                                'atom_label': '                 222',
+                                'attribute_name': 'radius',
+                                'number_to_add': 3,
+                                'mode': 'abs'
+                            }), ('set_species', {
+                                'species_name': 'all',
+                                'changes': {
+                                    'mtSphere': {
+                                        'radius': 3.333
+                                    }
+                                }
+                            })]
+
+
 @pytest.mark.parametrize('name, kwargs, expected_task', [
     ('set_inpchanges', {
         'change_dict': {
