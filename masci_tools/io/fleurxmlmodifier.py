@@ -259,7 +259,7 @@ class FleurXMLModifier:
     def task_list(self) -> list[tuple[str, dict[str, Any]]]:
         """
         Return the current changes in a format accepted by :py:meth:`add_task_list()`
-        and :py:meth:`fromList()` 
+        and :py:meth:`fromList()`
         """
 
         tasks = []
