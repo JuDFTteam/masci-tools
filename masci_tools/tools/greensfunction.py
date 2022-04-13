@@ -406,9 +406,7 @@ def _get_version(hdffile: h5py.File) -> int | None:
     meta = hdffile.get('/meta')
     version = None
     if meta is not None:
-        if not isinstance(meta.attrs['version'][0], int):
-            raise ValueError(f'Got unexpected value for version: {version}')
-        version = meta.attrs['version'][0]
+        version = int(meta.attrs['version'][0])
 
     if version is None:
         raise ValueError('Failed to extract file version of greensf.hdf file')
