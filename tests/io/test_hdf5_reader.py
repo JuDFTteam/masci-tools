@@ -72,3 +72,16 @@ def test_hdf5_reader_jdos(data_regression, test_file):
         data, attrs = reader.read(recipe=FleurJDOS)
 
     data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
+
+
+def test_hdf5_reader_bands_specific_weight(data_regression, test_file):
+    """
+    Tests of the bands recipe
+    """
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import get_fleur_bands_specific_weights
+
+    with HDF5Reader(test_file('hdf5_reader/banddos_bands.hdf')) as reader:
+        data, attrs = reader.read(recipe=get_fleur_bands_specific_weights('MT:1d'))
+
+    data_regression.check({'datasets': convert_to_pystd(data), 'attributes': convert_to_pystd(attrs)})
