@@ -86,7 +86,7 @@ def test_hdf5_reader_no_recipe(hdf_file, data_regression):
     from masci_tools.io.parsers.hdf5 import HDF5Reader
 
     with HDF5Reader(hdf_file) as h5reader:
-        with pytest.warns():
+        with pytest.warns(UserWarning):
             data, attributes = h5reader.read()
 
     data_regression.check({
