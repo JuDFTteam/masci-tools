@@ -77,3 +77,20 @@ def test_read_hdf_simple(hdf_file, data_regression):
     data, attributes = read_hdf_simple(hdf_file)
 
     data_regression.check({'data': convert_to_pystd(data), 'attributes': convert_to_pystd(attributes)})
+
+
+def test_hdf5_reader_no_recipe(hdf_file, data_regression):
+    """
+    Test that the HDF5reader without recipe produces the same utput as read_hdf_simple
+    """
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+
+    with HDF5Reader(hdf_file) as h5reader:
+        with pytest.warns():
+            data, attributes = h5reader.read()
+
+    data_regression.check({
+        'data': convert_to_pystd(data),
+        'attributes': convert_to_pystd(attributes)
+    },
+                          basename='test_read_hdf_simple')
