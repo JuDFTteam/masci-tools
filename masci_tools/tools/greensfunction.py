@@ -480,14 +480,17 @@ class GreensFunction:
                 all_local_orbitals = self.radial_functions['llo']
 
                 #Important: Indices hav e to be shifted to start with 0
-                lo_list_atomtype = [indx-1 for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l]
+                lo_list_atomtype = [
+                    indx - 1 for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l
+                ]
                 lo_list_atomtypep = [
-                    indx-1 for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
+                    indx - 1 for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
                 ]
 
                 for key, val in self.scalar_products.items():
                     if key == 'uloulo':
-                        self.scalar_products[key] = np.array([val.T[indx, lo_list_atomtypep, ...] for indx in lo_list_atomtype])
+                        self.scalar_products[key] = np.array(
+                            [val.T[indx, lo_list_atomtypep, ...] for indx in lo_list_atomtype])
                     elif key.startswith('ulo'):
                         self.scalar_products[key] = val.T[lo_list_atomtype, ...]
                     elif key.endswith('ulo'):
