@@ -563,7 +563,7 @@ class GreensFunction:
         if radial and self.sphavg:
             raise ValueError("No radial dependence possible. Green's function is spherically averaged")
 
-        coeff = 1
+        coeff: Any = 1 if spin is not None else np.ones((2, 2))
         if name != 'sphavg':
             if radial:
                 raise NotImplementedError()

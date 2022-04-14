@@ -44,7 +44,7 @@ def test_greensfunction_sphavg(test_file):
 
 def test_greensfunction_radial(test_file):
     """
-    Basic test of greensfunction
+    Basic test of greensfunction for radial dependence
     """
 
     gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_radial.hdf'), l=2)
@@ -114,7 +114,7 @@ def test_list_elements(test_file):
 
 def test_print_elements(test_file, capsys):
     """
-    Test of the listElements function
+    Test of the printElements function
     """
     from masci_tools.tools.greensfunction import printElements, listElements
 
@@ -125,3 +125,39 @@ def test_print_elements(test_file, capsys):
     assert out != ''
     assert '1      |      1|      1|      1|      1|   False|    True|         1|[ 0.00, 0.00, 0.00]|' in out
     assert '2      |      2|      2|      1|      1|   False|    True|         1|[ 0.00, 0.00, 0.00]|' in out
+
+
+def test_greensfunction_sphavg_complete_spin(test_file):
+    """
+    Basic test of greensfunction (sphavg) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'), index=1)
+
+    assert isinstance(gf.energy_dependence(), np.ndarray)
+    assert gf.energy_dependence().shape == (128, 5, 5, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2)
+    assert gf.energy_dependence().dtype == float
+
+    assert gf.energy_dependence(m=0, mp=0).shape == (128, 2, 2)  #(nz, spin1, spin2)
+    assert gf.energy_dependence(m=0, mp=0).dtype == float
+
+    assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
+    assert gf.energy_dependence(both_contours=True).dtype == complex
+
+
+def test_greensfunction_radial_complete_spin(test_file):
+    """
+    Basic test of greensfunction (radial) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_radial.hdf'), l=2)
+
+    assert isinstance(gf.energy_dependence(), np.ndarray)
+    assert gf.energy_dependence().shape == (128, 5, 5, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2)
+    assert gf.energy_dependence().dtype == float
+
+    assert gf.energy_dependence(m=0, mp=0).shape == (128, 2, 2)  #(nz, spin1, spin2)
+    assert gf.energy_dependence(m=0, mp=0).dtype == float
+
+    assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
+    assert gf.energy_dependence(both_contours=True).dtype == complex
