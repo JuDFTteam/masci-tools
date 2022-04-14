@@ -406,9 +406,7 @@ def _get_version(hdffile: h5py.File) -> int | None:
     meta = hdffile.get('/meta')
     version = None
     if meta is not None:
-        if not isinstance(meta.attrs['version'][0], int):
-            raise ValueError(f'Got unexpected value for version: {version}')
-        version = meta.attrs['version'][0]
+        version = int(meta.attrs['version'][0])
 
     if version is None:
         raise ValueError('Failed to extract file version of greensf.hdf file')
@@ -481,19 +479,22 @@ class GreensFunction:
             if self.nLO > 0:
                 all_local_orbitals = self.radial_functions['llo']
 
-                lo_list_atomtype = [indx for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l]
+                #Important: Indices hav e to be shifted to start with 0
+                lo_list_atomtype = [
+                    indx - 1 for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l
+                ]
                 lo_list_atomtypep = [
-                    indx for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
+                    indx - 1 for indx, l in enumerate(all_local_orbitals[self.atomTypep - 1]) if l == self.lp
                 ]
 
                 for key, val in self.scalar_products.items():
                     if key == 'uloulo':
-                        self.scalar_products[key] = val[lo_list_atomtype, lo_list_atomtypep, ...]
+                        self.scalar_products[key] = np.array(
+                            [val.T[indx, lo_list_atomtypep, ...] for indx in lo_list_atomtype])
                     elif key.startswith('ulo'):
-                        self.scalar_products[key] = val[lo_list_atomtype, ...]
+                        self.scalar_products[key] = val.T[lo_list_atomtype, ...]
                     elif key.endswith('ulo'):
-                        self.scalar_products[key] = val[lo_list_atomtypep, ...]
-
+                        self.scalar_products[key] = val.T[lo_list_atomtypep, ...]
                 #TODO: Same selections for radial_functions
 
         self.spins: int = attributes['spins']
@@ -562,7 +563,7 @@ class GreensFunction:
         if radial and self.sphavg:
             raise ValueError("No radial dependence possible. Green's function is spherically averaged")
 
-        coeff = 1
+        coeff: Any = 1 if spin is not None else np.ones((2, 2))
         if name != 'sphavg':
             if radial:
                 raise NotImplementedError()
@@ -708,7 +709,7 @@ class GreensFunction:
                 + self.get_coefficient('dd', spin=spin)[:,m_index,mp_index,...] \
                 + np.sum(self.get_coefficient('uulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
                 + np.sum(self.get_coefficient('ulou', spin=spin)[:,m_index,mp_index,...], axis=-1) \
-                + np.sum(self.get_coefficient('dulo', spin=spin)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
                 + np.sum(self.get_coefficient('uloulo', spin=spin)[:,m_index,mp_index,...], axis=(-1,-2))
 
         if both_contours:
