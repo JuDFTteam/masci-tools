@@ -308,7 +308,8 @@ class _EvalContext:
     def iter(self, name, **kwargs):
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
         for node in nodes:
-            yield self.nested(node)
+            with self.nested(node) as ctx:
+                yield ctx
 
 
 @contextmanager

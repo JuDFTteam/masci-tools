@@ -635,7 +635,7 @@ def get_structure_data(xmltree: XMLLike,
 
             group_species = group.attribute('species')
             element = species_info[group_species]['element']
-            if normalize_kind_name and site_namedtuple:
+            if normalize_kind_name:
                 normed_name = species_info[group_species]['normed_name']
                 if normed_name != group_species:
                     if logger is None:
@@ -943,7 +943,7 @@ def get_relaxation_information(xmltree: XMLLike,
             raise ValueError('No relaxation information included in the given XML file')
 
         out_dict = {}
-        with root.child('relaxation') as relax_tag:
+        with root.find('relaxation') as relax_tag:
 
             out_dict['displacements'] = relax_tag.text('displace', list_return=True)
             out_dict['energies'] = relax_tag.attribute('energy', list_return=True)
