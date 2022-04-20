@@ -82,12 +82,7 @@ def set_nmmpmat(xmltree: XMLLike,
 
     possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
 
-    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
-    if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-                nspins = 3
-
+    nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     if spin > nspins:
         raise ValueError(f'Invalid input: spin {spin} requested, but input has only {nspins} spins')
 
@@ -96,7 +91,7 @@ def set_nmmpmat(xmltree: XMLLike,
             'Invalid input: Provide either rotation angles theta or phi or the align_to_sqa switch. Not both')
 
     ldau_order = _get_ldau_order(xmltree, schema_dict)
-    numRows = nspins * LINES_PER_BLOCK * len(ldau_order)
+    _check_nmmpmat_num_rows(nmmplines, len(ldau_order), nspins, 'set_nmmpmat')
 
     if state_occupations is not None:
         new_nmmpmat_entry = write_nmmpmat_from_states(orbital, state_occupations, phi=phi, theta=theta, inverse=inverse)
@@ -112,19 +107,6 @@ def set_nmmpmat(xmltree: XMLLike,
         raise ValueError('Invalid definition of density matrix. Provide either state_occupations, '
                          'orbital_occupations or denmat')
 
-    #Check that numRows matches the number of lines in nmmp_lines_copy
-    #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
-    #was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
-    #or removed. In both cases the resolution of this modification is very involved so we throw an error
-    if nmmplines is not None:
-        #Remove blank lines
-        while '' in nmmplines:
-            nmmplines.remove('')
-        if numRows != len(nmmplines):
-            raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
-                             'the inp.xml file. Either remove the existing file before making modifications '+\
-                             'and only use set_nmmpmat after all modifications to the inp.xml')
-
     for ldau_index, entry in enumerate(ldau_order):
         if entry.species not in possible_species or entry.orbital != orbital:
             continue
@@ -132,7 +114,7 @@ def set_nmmpmat(xmltree: XMLLike,
         #check if fleurinp has a specified n_mmp_mat file if not initialize it with 0
         if nmmplines is None:
             nmmplines = []
-            for _ in range(numRows):
+            for _ in range(nspins * LINES_PER_BLOCK * len(ldau_order)):
                 nmmplines.append(''.join(map(str, [f'{0.0:20.13f}' for _ in range(7)])))
 
         #Select the right block from n_mmp_mat and overwrite it with denmatpad
@@ -177,6 +159,8 @@ def align_nmmpmat_to_sqa(xmltree: XMLLike,
 
     :returns: list with modified nmmplines
     """
+    if nmmplines is None:
+        raise ValueError('align_nmmpmat_to_sqa has to be called with a initialized density matrix')
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_name_base_path = schema_dict.attrib_xpath('name', tag_name='species')
@@ -222,26 +206,9 @@ def align_nmmpmat_to_sqa(xmltree: XMLLike,
             alpha = evaluate_attribute(group, schema_dict, 'alpha', contains='noco')
             sqa_per_group.append((beta, alpha))
 
-    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
-    if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-                nspins = 3
+    nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     ldau_order = _get_ldau_order(xmltree, schema_dict)
-    numRows = nspins * LINES_PER_BLOCK * len(ldau_order)
-
-    #Check that numRows matches the number of lines in nmmp_lines_copy
-    #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
-    #was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
-    #or removed. In both cases the resolution of this modification is very involved so we throw an error
-    if nmmplines is not None:
-        #Remove blank lines
-        while '' in nmmplines:
-            nmmplines.remove('')
-        if numRows != len(nmmplines):
-            raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
-                             'the inp.xml file. Either remove the existing file before making modifications '+\
-                             'and only use set_nmmpmat after all modifications to the inp.xml')
+    _check_nmmpmat_num_rows(nmmplines, len(ldau_order), nspins, 'align_nmmpmat_to_sqa')
 
     for ldau_index, entry in enumerate(ldau_order):
         if entry.species not in possible_species or orbital not in (entry.orbital, 'all'):
@@ -291,6 +258,8 @@ def rotate_nmmpmat(xmltree: XMLLike,
 
     :returns: list with modified nmmplines
     """
+    if nmmplines is None:
+        raise ValueError('rotate_nmmpmat has to be called with a initialized density matrix')
 
     #All lda+U procedures have to be considered since we need to keep the order
     species_name_base_path = schema_dict.attrib_xpath('name', tag_name='species')
@@ -303,29 +272,9 @@ def rotate_nmmpmat(xmltree: XMLLike,
 
     possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
 
-    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
-    if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-                nspins = 3
-
+    nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     ldau_order = _get_ldau_order(xmltree, schema_dict)
-    numRows = nspins * 14 * len(ldau_order)
-
-    #Check that numRows matches the number of lines in nmmp_lines_copy
-    #If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
-    #was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
-    #or removed. In both cases the resolution of this modification is very involved so we throw an error
-    if nmmplines is not None:
-        #Remove blank lines
-        while '' in nmmplines:
-            nmmplines.remove('')
-        if numRows != len(nmmplines):
-            raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
-                             'the inp.xml file. Either remove the existing file before making modifications '+\
-                             'and only use set_nmmpmat after all modifications to the inp.xml')
-    else:
-        raise ValueError('rotate_nmmpmat has to be called with a initialized density matrix')
+    _check_nmmpmat_num_rows(nmmplines, len(ldau_order), nspins, 'rotate_nmmpmat')
 
     for ldau_index, entry in enumerate(ldau_order):
         if entry.species not in possible_species or orbital not in (entry.orbital, 'all'):
@@ -357,29 +306,15 @@ def validate_nmmpmat(xmltree: XMLLike, nmmplines: list[str] | None, schema_dict:
 
     :raises ValueError: if any of the above checks are violated.
     """
+    if nmmplines is None:
+        return  #Nothing to validate
 
-    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
-    if 'l_mtnocoPot' in schema_dict['attrib_types']:
-        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
-                nspins = 3
-
+    nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     ldau_order = _get_ldau_order(xmltree, schema_dict)
-    numRows = nspins * LINES_PER_BLOCK * len(ldau_order)
+    _check_nmmpmat_num_rows(nmmplines, len(ldau_order), nspins)
 
     tol = 0.01
     maximum_occupation = 1.0 if nspins > 1 else 2.0
-
-    #Check that numRows matches the number of lines in nmmp_lines
-    if nmmplines is not None:
-        #Remove blank lines
-        while '' in nmmplines:
-            nmmplines.remove('')
-        if numRows != len(nmmplines):
-            raise ValueError('The number of lines in n_mmp_mat does not match the number expected from '+\
-                             'the inp.xml file.')
-    else:
-        return
 
     #Now check for each block if the numbers make sense
     #(no numbers outside the valid area and no nonsensical occupations)
@@ -448,3 +383,51 @@ def _get_ldau_order(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict) -> l
                 for orbital in species_to_ldauorbital[species])
 
     return ldau_order
+
+
+def _get_number_of_spin_blocks(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict) -> int:
+    """
+    Return how many spin blocks should be in the DFT+U density matrix file
+
+    :param xmltree: an xmltree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    """
+
+    nspins = evaluate_attribute(xmltree, schema_dict, 'jspins')
+    if 'l_mtnocoPot' in schema_dict['attrib_types']:
+        if attrib_exists(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+            if evaluate_attribute(xmltree, schema_dict, 'l_mtnocoPot', contains='Setup'):
+                nspins = 3
+    #yapf: disable
+    if schema_dict.inp_version > (0, 32) and attrib_exists(xmltree, schema_dict, 'l_mperp', contains='magnetism'): #type: ignore[attr-defined]
+        if evaluate_attribute(xmltree, schema_dict, 'l_mperp', contains='magnetism'):
+            nspins = 3
+    #yapf: enable
+
+    return nspins
+
+
+def _check_nmmpmat_num_rows(nmmplines: list[str] | None,
+                            num_ldau: int,
+                            num_spins: int,
+                            name: str | None = None) -> None:
+    """Check that number of rows matches the number of lines in nmmp_lines_copy
+    If not either there was an n_mmp_mat file present in Fleurinp before and a lda+u calculation
+    was added or removed or the n_mmp_mat file was initialized and after the fact lda+u procedures were added
+    or removed. In both cases the resolution of this modification is very involved so we throw an error
+    """
+    if nmmplines is None:
+        return
+
+    expected_rows = num_ldau * num_spins * LINES_PER_BLOCK
+
+    #Remove blank lines
+    while '' in nmmplines:
+        nmmplines.remove('')
+    if expected_rows != len(nmmplines):
+        hint = ''
+        if name is not None:
+            hint =  'Either remove the existing file before making modifications ' \
+                    f'and only use {name} after all other relevant modifications to the inp.xml'
+        raise ValueError(f'The number of lines in n_mmp_mat ({len(nmmplines)}) does not match the number expected from '+\
+                         f'the inp.xml file ({expected_rows}). '+hint)

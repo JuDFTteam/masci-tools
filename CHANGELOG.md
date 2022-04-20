@@ -14,6 +14,7 @@
 - Fix for XML setters operating on the DFT+U density matrix file. Previously these functions would not map the density matrix blocks correctly if multiple atomgroups shared the same species containing `ldaU` tags [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
 - Added missing prefactor `(-1)^(m-mp)` to `get_wigner_matrix()`
 - Added basic tests of `masci_tools.tools.greensfunction` module and fixed several bugs found due to this [[#150]](https://github.com/JuDFTteam/masci-tools/pull/150)
+- Fixed bug in XML setters operating on the DFT+U density matrix file not correctly extracting the number of spin blocks when only setting `l_mperp`
 
 ## v.0.9.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)
