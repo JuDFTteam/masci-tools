@@ -220,7 +220,7 @@ def load_outxml(outxmlfile: XMLFileLike,
     return xmltree, schema_dict
 
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from masci_tools.util.xml.common_functions import normalize_xmllike
 
 
@@ -292,37 +292,23 @@ class _EvalContext:
         from masci_tools.util.schema_dict_util import eval_simple_xpath
         return eval_simple_xpath(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def child(self, name, **kwargs):
-
+    def find(self, name, **kwargs):
         if 'list_return' in kwargs:
-            raise ValueError('The argument list_return is not allowed in child()')
+            raise ValueError('The argument list_return is not allowed in find()')
 
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
-        if len(nodes) != 1:
-            raise ValueError(f'Expected one node for {name}. Got {len(nodes)}')
-        return self.nested(nodes[0])
+        if nodes:
+            return self.nested(nodes[0])
+        return nullcontext()
 
     @contextmanager
     def nested(self, etree_or_element):
         yield _EvalContext(etree_or_element, self.schema_dict, self.constants, logger=self.logger)
 
-    def optional_child(self, name, **kwargs):
-
-        if 'list_return' in kwargs:
-            raise ValueError('The argument list_return is not allowed in child()')
-
-        nodes = self.simple_xpath(name, **kwargs, list_return=True)
-        if len(nodes) == 0:
-            return False
-
-        if len(nodes) != 1:
-            raise ValueError(f'Expected one node for {name}. Got {len(nodes)}')
-        return _EvalContext(nodes[0], self.schema_dict, self.constants)
-
-    def children(self, name, **kwargs):
+    def iter(self, name, **kwargs):
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
         for node in nodes:
-            yield _EvalContext(node, self.schema_dict, self.constants)
+            yield self.nested(node)
 
 
 @contextmanager

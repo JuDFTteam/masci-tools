@@ -146,7 +146,7 @@ def get_nkpts(xmltree: XMLLike,
             raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist\n'
                              f'Available list names: {all_names}')
 
-        with root.child('kPointList', contains='kPointLists', filters={'kPointList': {'name': list_name}}) as kpoints:
+        with root.find('kPointList', contains='kPointLists', filters={'kPointList': {'name': list_name}}) as kpoints:
             nkpts = kpoints.attribute('count')
 
     if not isinstance(nkpts, int):
@@ -180,9 +180,9 @@ def get_nkpts_max4(xmltree: XMLLike,
 
         nkpts = None
         if modes['band'] or modes['gw']:
-            expected_mode = 'bands' if modes['band'] else 'gw'
-            if kpoints := root.optional_child('altKPointSet', filters={'altKPointSet': {'purpose': expected_mode}}):
-                with root.child('altKPointSet', filters={'altKPointSet': {'purpose': expected_mode}}) as kpoints:
+            filters={'altKPointSet': {'purpose': 'bands' if modes['band'] else 'gw'}}
+            if root.tag_exists('altKPointSet', filters=filters):
+                with root.find('altKPointSet', filters=filters) as kpoints:
                     nkpts = kpoints.attribute('count', tag_name='kPointList', optional=True)
                     if nkpts is None:
                         nkpts = kpoints.attribute('count', tag_name='kPointCount', optional=True)
@@ -396,7 +396,7 @@ def get_parameter_data(xmltree: XMLLike,
         parameters['comp'] = filter_out_empty_dict_entries(comp_dict)
 
         species_info = _get_species_info(xmltree, schema_dict, logger=logger)
-        for index, species in enumerate(root.children('species')):
+        for index, species in enumerate(root.iter('species')):
 
             atom_dict = {}
             atomlist_name = f'atom{index}'
@@ -450,7 +450,7 @@ def get_parameter_data(xmltree: XMLLike,
                 raise ValueError(f'Selected Kpoint list with the name: {list_name} does not exist\n'
                                  f'Available list names: {all_names}')
 
-            with root.child('kPointList', contains='kPointLists', filters={'kPointList': {
+            with root.find('kPointList', contains='kPointLists', filters={'kPointList': {
                     'name': list_name
             }}) as kpoints:
 
@@ -571,7 +571,7 @@ def get_structure_data(xmltree: XMLLike,
                         f"Did not get the right number of relaxed positions. Expected {root.number_nodes('atomGroup')} got {len(displacements)}"
                     )
 
-        for index, group in enumerate(root.children('atomGroup')):
+        for index, group in enumerate(root.iter('atomGroup')):
 
             atom_positions: list[list[float]] = []
 
@@ -728,7 +728,7 @@ def get_kpoints_data(
 
         kpoints_data = {}
         weights_data = {}
-        for kpointlist in root.children('kPointList', contains='kPointLists', filters=filters):
+        for kpointlist in root.iter('kPointList', contains='kPointLists', filters=filters):
 
             label = kpointlist.attribute('name')
             kpoints = kpointlist.text('kPoint', list_return=True)
@@ -864,7 +864,7 @@ def get_special_kpoints(
                              f'Available list names: {labels}')
 
         special_kpoints = {}
-        for kpointlist in root.children('kPointList', contains='kPointLists', filters=filters):
+        for kpointlist in root.iter('kPointList', contains='kPointLists', filters=filters):
 
             label = kpointlist.attribute('name')
 
@@ -947,7 +947,7 @@ def get_relaxation_information(xmltree: XMLLike,
 
             out_dict['displacements'] = relax_tag.text('displace', list_return=True)
             out_dict['energies'] = relax_tag.attribute('energy', list_return=True)
-            out_dict['posforces'] = [step.text('posforce', list_return=True) for step in relax_tag.children('step')]
+            out_dict['posforces'] = [step.text('posforce', list_return=True) for step in relax_tag.iter('step')]
 
     return out_dict
 
@@ -1001,7 +1001,7 @@ def get_symmetry_information(xmltree: XMLLike,
 
         rotations = []
         shifts = []
-        for symop in root.children('symOp'):
+        for symop in root.iter('symOp'):
             row1 = symop.text('row-1')
             row2 = symop.text('row-2')
             row3 = symop.text('row-3')
