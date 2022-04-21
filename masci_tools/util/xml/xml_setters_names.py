@@ -32,7 +32,7 @@ from lxml import etree
 
 def create_tag(xmltree: XMLLike,
                schema_dict: fleur_schema.SchemaDict,
-               tag: str | etree._Element,
+               tag: etree.QName | str | etree._Element,
                complex_xpath: XPathLike | None = None,
                filters: FilterType | None = None,
                create_parents: bool = False,
@@ -46,7 +46,7 @@ def create_tag(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param tag: str of the tag to create or etree Element with the same name to insert
+    :param tag: str of the tag to create or etree Element or string representing the XML element with the same name to insert
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -62,12 +62,19 @@ def create_tag(xmltree: XMLLike,
     :returns: xmltree with created tags
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_create_tag_schema_dict
-    from masci_tools.util.xml.common_functions import split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag, is_valid_tag
 
     if etree.iselement(tag):
         tag_name: str = tag.tag
+    elif isinstance(tag, etree.QName):
+        tag_name = tag.text
+    elif is_valid_tag(tag):  #type:ignore[arg-type]
+        tag_name = tag  #type:ignore[assignment]
     else:
-        tag_name = tag  #type:ignore
+        try:
+            tag_name = etree.fromstring(tag).tag  #type:ignore[arg-type]
+        except etree.XMLSyntaxError as exc:
+            raise ValueError(f"Failed to construct etree Element from '{tag}'") from exc
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
     parent_xpath, tag_name = split_off_tag(base_xpath)
@@ -185,7 +192,7 @@ def delete_att(xmltree: XMLLike,
 def replace_tag(xmltree: XMLLike,
                 schema_dict: fleur_schema.SchemaDict,
                 tag_name: str,
-                element: etree._Element,
+                element: str | etree._Element,
                 complex_xpath: XPathLike | None = None,
                 filters: FilterType | None = None,
                 occurrences: int | Iterable[int] | None = None,
@@ -196,7 +203,7 @@ def replace_tag(xmltree: XMLLike,
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to replace
-    :param element: etree Element to replace the tag
+    :param element: etree Element or string representing the XML element to replace the tag
     :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
     :param filters: Dict specifying constraints to apply on the xpath.
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
@@ -1234,8 +1241,15 @@ def set_kpointlist(xmltree: XMLLike,
 
 
 @set_kpointlist.register(max_version='0.31')
-def set_kpointlist_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, kpoints: Iterable[Iterable[float]],
-                        weights: Iterable[float]) -> XMLLike:
+def set_kpointlist_max4(xmltree: XMLLike,
+                        schema_dict: fleur_schema.SchemaDict,
+                        kpoints: Iterable[Iterable[float]],
+                        weights: Iterable[float],
+                        name: str | None = None,
+                        kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
+                        special_labels: dict[int, str] | None = None,
+                        switch: bool = False,
+                        overwrite: bool = False) -> XMLLike:
     """
     Explicitly create a kPointList from the given kpoints and weights. This
     routine is specific to input versions Max4 and before and will replace any

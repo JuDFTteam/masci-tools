@@ -108,6 +108,22 @@ def test_outxml_broken(data_regression, clean_parser_log, test_file):
     })
 
 
+def test_outxml_broken_alliter(data_regression, clean_parser_log, test_file):
+    """
+    Test the output parser against a file which terminates after some iterations
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/broken_out_xml/terminated.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
 def test_outxml_broken_firstiter(data_regression, clean_parser_log, test_file):
     """
     Test the output parser against a file which terminates in the first iteration

@@ -24,7 +24,8 @@ except ImportError:
     from typing_extensions import Literal  #type: ignore
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.util.xml.common_functions import clear_xml
+from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
 from lxml import etree
@@ -138,6 +139,49 @@ class FleurXMLModifier:
             'Please use _validate_arguments without unpacking args/kwargs instead', DeprecationWarning)
         self._validate_arguments(name, args, kwargs)
 
+    def _get_setter_function_and_prefix(self, name: str) -> tuple[Callable[[Any], Any], tuple[str, ...]]:
+        """
+        Get the setter function and a prefix standing in for the arguments that
+        are substituted when performing the modification
+        """
+        if name in self.xpath_functions:
+            func = self.xpath_functions[name]
+            prefix: tuple[str, ...] = ('xmltree',)
+        elif name in self.schema_dict_functions:
+            func = self.schema_dict_functions[name]
+            prefix = ('xmltree', 'schema_dict')
+        elif name in self.nmmpmat_functions:
+            func = self.nmmpmat_functions[name]
+            prefix = ('xmltree', 'nmmplines', 'schema_dict')
+
+        if func is None:
+            raise ValueError(f'Failed to validate setter {name}. Maybe the function was'
+                             'not registered in masci_tools.util.xml.collect_xml_setters')
+
+        #For functions decorated with the schema_dict_version_dispatch
+        #We check only the default (This function should have a compatible signature for all registered functions)
+        if getattr(func, 'registry', None) is not None:
+            func = func.registry['default']
+
+        return func, prefix
+
+    def _get_setter_func_kwargs(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> dict[str, Any]:
+        """
+        Map the given args and kwargs to just kwargs for the
+        setter function with the given name
+
+        :param name: name of the setter function
+        :param args: positional arguments to the setter function
+        :param kwargs: keyword arguments to the setter function
+        """
+        from inspect import signature
+        func, prefix = self._get_setter_function_and_prefix(name)
+
+        sig = signature(func)
+        bound = sig.bind(*prefix, *args, **kwargs)
+
+        return {k: v for k, v in bound.arguments.items() if k not in ('xmltree', 'nmmplines', 'schema_dict')}
+
     def _validate_arguments(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
         """
         Validate that the given arguments to the registration
@@ -146,26 +190,7 @@ class FleurXMLModifier:
         from inspect import signature
 
         if self.validate_signatures:
-
-            if name in self.xpath_functions:
-                func = self.xpath_functions[name]
-                prefix: tuple[str, ...] = ('xmltree',)
-            elif name in self.schema_dict_functions:
-                func = self.schema_dict_functions[name]
-                prefix = ('xmltree', 'schema_dict')
-            elif name in self.nmmpmat_functions:
-                func = self.nmmpmat_functions[name]
-                prefix = ('xmltree', 'schema_dict', 'n_mmp_mat')
-
-            if func is None:
-                raise ValueError(f'Failed to validate setter {name}. Maybe the function was'
-                                 'not registered in masci_tools.util.xml.collect_xml_setters')
-
-            #For functions decorated with the schema_dict_version_dispatch
-            #We check only the default (This function should have a compatible signature for all registered functions)
-            if getattr(func, 'registry', None) is not None:
-                func = func.registry['default']
-
+            func, prefix = self._get_setter_function_and_prefix(name)
             try:
                 sig = signature(func)
                 sig.bind(*prefix, *args, **kwargs)
@@ -193,16 +218,10 @@ class FleurXMLModifier:
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
-        from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
-        from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
-        version = eval_xpath(xmltree, '//@fleurInputVersion')
-        version = str(version)
-        if version is None:
-            raise ValueError('Failed to extract inputVersion')
-
-        schema_dict = InputSchemaDict.fromVersion(version)
+        xmltree, schema_dict = load_inpxml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
 
         for task in modification_tasks:
             if task.name in cls.xpath_functions:
@@ -221,8 +240,7 @@ class FleurXMLModifier:
                 raise ValueError(f'Unknown task {task.name}')
 
         if validate_changes:
-            validate_xml(xmltree, schema_dict.xmlschema, error_header='Changes were not valid')
-
+            schema_dict.validate(xmltree, header='Changes were not valid')
             try:
                 validate_nmmpmat(xmltree, nmmp_lines, schema_dict)
             except ValueError as exc:
@@ -230,6 +248,21 @@ class FleurXMLModifier:
                 raise ValueError(msg) from exc
 
         return xmltree, nmmp_lines
+
+    @property
+    def task_list(self) -> list[tuple[str, dict[str, Any]]]:
+        """
+        Return the current changes in a format accepted by :py:meth:`add_task_list()`
+        and :py:meth:`fromList()`
+        """
+
+        tasks = []
+        for change in self._tasks:
+            #Here we already validated the arguments so we know we can just get the kwargs
+            kwargs = self._get_setter_func_kwargs(change.name, change.args, change.kwargs)
+            tasks.append((change.name, kwargs))
+
+        return tasks
 
     def get_avail_actions(self) -> dict[str, Callable]:
         """
@@ -266,6 +299,7 @@ class FleurXMLModifier:
             'xml_set_text_no_create': self.xml_set_text_no_create,
             'set_nmmpmat': self.set_nmmpmat,
             'rotate_nmmpmat': self.rotate_nmmpmat,
+            'align_nmmpmat_to_sqa': self.align_nmmpmat_to_sqa,
             'set_nkpts': self.set_nkpts,
             'set_kpath': self.set_kpath,
             'set_kpointlist': self.set_kpointlist,
@@ -965,7 +999,7 @@ class FleurXMLModifier:
         the list of tasks that will be done on the xmltree.
 
         :param species_name: string, name of the species you want to change
-        :param orbital: integer, orbital quantum number of the LDA+U procedure to be modified
+        :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
         :param phi: float, angle (radian), by which to rotate the density matrix
         :param theta: float, angle (radian), by which to rotate the density matrix
         :param filters: Dict specifying constraints to apply on the xpath.
@@ -973,6 +1007,23 @@ class FleurXMLModifier:
         """
         self._validate_arguments('rotate_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
+
+    def align_nmmpmat_to_sqa(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.align_nmmpmat_to_sqa()` to
+        the list of tasks that will be done on the xmltree.
+
+        :param species_name: string, name of the species you want to change
+        :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
+        :param phi_before: float or list of floats, angle (radian),
+                           values for phi for the previous alignment of the density matrix
+        :param theta_before: float or list of floats, angle (radian),
+                             values for theta for the previous alignment of the density matrix
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+        """
+        self._validate_arguments('align_nmmpmat_to_sqa', args, kwargs)
+        self._tasks.append(ModifierTask('align_nmmpmat_to_sqa', args, kwargs))
 
     def set_kpointlist(self, *args: Any, **kwargs: Any) -> None:
         """

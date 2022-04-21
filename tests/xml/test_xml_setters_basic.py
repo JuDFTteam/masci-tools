@@ -382,6 +382,28 @@ def test_xml_replace_tag_occurrences_multiple(load_inpxml):
     assert nodes.attrib.items() == [('test_attrib', 'test')]
 
 
+def test_xml_replace_tag_single_xmlstring(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
+
+    replace_element = '<test_tag test_attrib="test"/>'
+
+    xmltree, _ = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    assert len(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs', list_return=True)) == 1
+
+    xmltree = xml_replace_tag(xmltree, '/fleurInput/calculationSetup/cutoffs', replace_element)
+
+    assert len(eval_xpath(root, '/fleurInput/calculationSetup/cutoffs', list_return=True)) == 0
+
+    nodes = eval_xpath(root, '/fleurInput/calculationSetup/test_tag', list_return=True)
+
+    assert len(nodes) == 1
+    assert nodes[0].attrib.items() == [('test_attrib', 'test')]
+
+
 def test_xml_create_tag_string_append(load_inpxml):
 
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -415,6 +437,62 @@ def test_xml_create_tag_element_append(load_inpxml):
 
     new_element = etree.Element('test_tag')
     new_element.attrib['test_attrib'] = 'test'
+
+    xmltree, _ = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+    xmltree = xml_create_tag(xmltree, '/fleurInput/calculationSetup', new_element)
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags.append('test_tag')
+    assert [child.tag for child in node.iterchildren()] == tags
+    assert [child.attrib.items() for child in node.iterchildren()][-1] == [('test_attrib', 'test')]
+
+
+def test_xml_create_tag_qname_append(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_basic import xml_create_tag
+    from lxml import etree
+
+    new_element = etree.QName('test_tag')
+
+    xmltree, _ = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    tags = [
+        'cutoffs', 'scfLoop', 'coreElectrons', 'xcFunctional', 'magnetism', 'soc', 'prodBasis', 'expertModes',
+        'geometryOptimization', 'ldaU'
+    ]
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+    xmltree = xml_create_tag(xmltree, '/fleurInput/calculationSetup', new_element)
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags.append('test_tag')
+    assert [child.tag for child in node.iterchildren()] == tags
+
+
+def test_xml_create_tag_xmlstring_append(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_basic import xml_create_tag
+
+    new_element = '<test_tag test_attrib="test"/>'
 
     xmltree, _ = load_inpxml(TEST_INPXML_PATH, absolute=False)
     root = xmltree.getroot()

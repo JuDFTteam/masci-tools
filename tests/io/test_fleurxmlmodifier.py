@@ -2,7 +2,8 @@
 Test for the FleurXMLModifier class
 """
 import pytest
-from masci_tools.io.fleurxmlmodifier import ModifierTask
+from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
+from lxml import etree
 
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
@@ -13,7 +14,6 @@ def test_fleurxmlmodifier_facade_methods():
     """
     Make sure that adding all facade methods results in the right task list
     """
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
     from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 
     fm = FleurXMLModifier(validate_signatures=False)
@@ -39,7 +39,6 @@ def test_fleurxmlmodifier_facade_methods_validation():
     """
     Make sure that adding all facade methods results in the right task list
     """
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
 
@@ -56,7 +55,6 @@ def test_fleurxmlmodifier_facade_methods_validation():
 
 def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
@@ -103,7 +101,6 @@ def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
 
 def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
@@ -139,7 +136,6 @@ def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
 
 def test_fleurxml_modifier_from_list(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     task_list = [('set_inpchanges', {
         'changes': {
@@ -211,6 +207,41 @@ def test_fleurxml_modifier_from_list(test_file):
     xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+
+
+def test_fleurxml_modifier_task_list_construction():
+    """Tests if fleurxmlmodifier can produce the task list"""
+
+    fm = FleurXMLModifier()
+    fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
+    fm.shift_value({'Kmax': 0.1}, 'rel')
+    fm.shift_value_species_label('                 222', 'radius', 3, mode='abs')
+    fm.set_species('all', {'mtSphere': {'radius': 3.333}})
+
+    assert fm.task_list == [('set_inpchanges', {
+        'changes': {
+            'dos': True,
+            'Kmax': 3.9
+        }
+    }), ('shift_value', {
+        'changes': {
+            'Kmax': 0.1
+        },
+        'mode': 'rel'
+    }),
+                            ('shift_value_species_label', {
+                                'atom_label': '                 222',
+                                'attribute_name': 'radius',
+                                'number_to_add': 3,
+                                'mode': 'abs'
+                            }), ('set_species', {
+                                'species_name': 'all',
+                                'changes': {
+                                    'mtSphere': {
+                                        'radius': 3.333
+                                    }
+                                }
+                            })]
 
 
 @pytest.mark.parametrize('name, kwargs, expected_task', [
@@ -359,7 +390,6 @@ def test_fleurxml_modifier_from_list(test_file):
 ])
 def test_fleurxml_modifier_deprecated_arguments(name, kwargs, expected_task):
     """Test the various deprecations in the fleurxmlmodifier"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
 
@@ -367,11 +397,11 @@ def test_fleurxml_modifier_deprecated_arguments(name, kwargs, expected_task):
     with pytest.deprecated_call():
         action(**kwargs)
     assert fm.changes() == [expected_task]
+    assert fm.task_list == [(name, expected_task.kwargs)]
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
     """Tests if fleurinp_modifier with various modifications on species"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
@@ -392,7 +422,6 @@ def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
 
 def test_fleurxmlmodifier_nmmpmat(test_file):
     """Tests if set_nmmpmat works on fleurinp modifier works, with right interface"""
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     fm.set_nmmpmat('Ga-1', orbital=2, spin=1, state_occupations=[1, 2, 3, 4, 5])
@@ -418,7 +447,6 @@ def test_fleurxmlmodifier_nmmpmat(test_file):
 def test_fleurxmlmodifier_deprecated_validate():
     """Check that the deprecated _validate_signature is working correctly"""
     #pylint: disable=protected-access
-    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
     fm = FleurXMLModifier()
     with pytest.deprecated_call():
@@ -427,3 +455,26 @@ def test_fleurxmlmodifier_deprecated_validate():
     with pytest.deprecated_call():
         with pytest.raises(TypeError):
             fm._validate_signature('delete_att', non_existent_arg='test')
+
+
+def test_fleurxmlmodifier_included_files(file_regression, test_file):
+    """Tests if fleurinp_modifier with various other modifications methods,
+    the detailed tests for method functionality is tested elsewhere."""
+
+    fm = FleurXMLModifier()
+    #Modify main inp.xml file
+    fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
+    fm.shift_value({'Kmax': 0.1}, 'rel')
+
+    #Modify included xml files
+    fm.delete_tag('symmetryOperations')
+    fm.create_tag('symmetryOperations')
+    fm.create_tag('kPointList')
+    fm.create_tag('kPoint', occurrences=0)
+    fm.set_attrib_value('name', 'TEST', contains='kPointList', occurrences=0)
+    fm.set_text('kPoint', [0.0, 0.0, 0.0],
+                complex_xpath="/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='TEST']/kPoint")
+
+    xmltree = fm.modify_xmlfile(test_file('fleur/test_clear.xml'), validate_changes=False)
+
+    file_regression.check(etree.tostring(xmltree, encoding='unicode', pretty_print=True), extension='.xml')

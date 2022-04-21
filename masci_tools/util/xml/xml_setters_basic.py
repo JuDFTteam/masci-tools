@@ -22,19 +22,19 @@ from lxml import etree
 import warnings
 
 from masci_tools.util.typing import XPathLike, XMLLike
-from masci_tools.util.xml.common_functions import eval_xpath
+from masci_tools.util.xml.common_functions import eval_xpath, is_valid_tag
 
 
 def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
-                    element: etree._Element,
+                    element: str | etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
     replaces xml tags by another tag on an xmletree in place
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
-    :param element: an Element to replace the found tags with
+    :param element: an Element or string representing the Element to replace the found tags with
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                         By default all nodes are used.
 
@@ -46,6 +46,9 @@ def xml_replace_tag(xmltree: XMLLike,
         root = xmltree.getroot()  #type:ignore[union-attr]
     else:
         root = xmltree
+
+    if not etree.iselement(element):
+        element = etree.fromstring(element)  #type:ignore[arg-type]
 
     nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
 
@@ -189,7 +192,7 @@ def _reorder_tags(node: etree._Element, tag_order: list[str]) -> etree._Element:
 
 def xml_create_tag(xmltree: XMLLike,
                    xpath: XPathLike,
-                   element: str | etree._Element,
+                   element: etree.QName | str | etree._Element,
                    place_index: int | None = None,
                    tag_order: list[str] | None = None,
                    occurrences: int | Iterable[int] | None = None,
@@ -205,7 +208,7 @@ def xml_create_tag(xmltree: XMLLike,
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path where to place a new tag
-    :param element: a tag name or etree Element to be created
+    :param element: a tag name, etree Element or string representing the XML element to be created
     :param place_index: defines the place where to put a created tag
     :param tag_order: defines a tag order
     :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
@@ -223,11 +226,14 @@ def xml_create_tag(xmltree: XMLLike,
     from more_itertools import unique_justseen
 
     if not etree.iselement(element):
-        element_name: str = element  #type:ignore
-        try:
-            element = etree.Element(element_name)
-        except ValueError as exc:
-            raise ValueError(f"Failed to construct etree Element from '{element_name}'") from exc
+        if isinstance(element, etree.QName) or is_valid_tag(element):  #type:ignore[arg-type]
+            element = etree.Element(element)  #type:ignore[arg-type]
+        else:
+            try:
+                element = etree.fromstring(element)  #type:ignore[arg-type]
+            except etree.XMLSyntaxError as exc:
+                raise ValueError(f"Failed to construct etree Element from '{element}'") from exc
+        element_name = element.tag
     else:
         element_name = element.tag
 

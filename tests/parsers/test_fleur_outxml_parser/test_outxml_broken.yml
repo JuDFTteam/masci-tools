@@ -1,23 +1,23 @@
 output_dict:
-  bandgap: 0.0323610284
+  bandgap: 0.021741434
   bandgap_units: eV
-  charge_den_xc_den_integral: -111.9182938603
+  charge_den_xc_den_integral: -111.8007620588
   creator_name: fleur 32
   creator_target_architecture: GEN
   density_convergence:
-  - 9.2786635283
-  - 5.4278279348
+  - 2.682660905
+  - 4.3593512086
   density_convergence_units: me/bohr^3
   end_date:
     date: null
     time: null
-  energy: -69269.2192526359
-  energy_core_electrons: -1455.4152321083
-  energy_hartree: -2545.5968551712
+  energy: -69269.18014280706
+  energy_core_electrons: -1456.700254102
+  energy_hartree: -2545.5954179115
   energy_hartree_units: Htr
   energy_units: eV
-  energy_valence_electrons: -14.4723754179
-  fermi_energy: 0.3782147185
+  energy_valence_electrons: -15.168729029
+  fermi_energy: 0.3527552733
   fermi_energy_units: Htr
   film: false
   fleur_modes:
@@ -40,48 +40,47 @@ output_dict:
   input_file_version: '0.34'
   kmax: 3.4
   magnetic_moments:
-  - 1.9333985458
-  - 1.9345705319
+  - 1.9618319469
+  - 1.9642032919
   magnetic_moments_spin_down_charge:
-  - 5.5306467297
-  - 5.5301342089
+  - 5.5471397772
+  - 5.5448063511
   magnetic_moments_spin_up_charge:
-  - 7.4640452754
-  - 7.4647047409
+  - 7.5089717241
+  - 7.509009643
   number_of_atom_types: 2
   number_of_atoms: 2
   number_of_iterations: 4
-  number_of_iterations_total: 2
+  number_of_iterations_total: 3
   number_of_kpoints: 3
   number_of_species: 1
   number_of_spin_components: 2
   number_of_symmetries: 16
   output_file_version: '0.34'
-  overall_density_convergence: 10.8914872112
-  spin_density_convergence: 10.6059102509
+  overall_density_convergence: 3.3253791756
+  spin_density_convergence: 6.4298583438
   spin_dependent_charge_interstitial:
-  - 1.00491
-  - 1.0077593
+  - 0.9449583
+  - 0.9472272
   spin_dependent_charge_mt_spheres:
-  - 26.927695
-  - 23.059636
+  - 27.0169661
+  - 23.0908487
   spin_dependent_charge_total:
-  - 27.932605
-  - 24.0673954
+  - 27.9619244
+  - 24.0380759
   start_date:
     date: 2020/12/10
     time: '16:53:07'
-  sum_of_eigenvalues: -1469.8876075262
+  sum_of_eigenvalues: -1471.8689831309
   title: Fe fcc 2
-  total_charge: 52.0000003806
-  total_magnetic_moment_cell: 3.8652096
-  ts_energy: 0.017642924049073132
+  total_charge: 52.0000002753
+  total_magnetic_moment_cell: 3.923848500000002
+  ts_energy: 0.01827638607290936
   ts_energy_units: eV
   walltime: -60787
   walltime_units: seconds
 warnings:
-  parser_errors:
-  - Failed to parse output file with recover=False
+  parser_errors: []
   parser_info:
   - Masci-Tools Fleur out.xml Parser v0.7.0
   - 'Found fleur out file with the versions out: 0.34; inp: 0.34'

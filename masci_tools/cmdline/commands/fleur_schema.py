@@ -6,9 +6,9 @@ import click
 
 import masci_tools
 from masci_tools.cmdline.utils import echo
-from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
-from masci_tools.io.io_fleurxml import load_inpxml, load_outxml
+from masci_tools.io.fleur_xml import load_inpxml, load_outxml
 from masci_tools.io.parsers.fleur import inpxml_parser, outxml_parser
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict, OutputSchemaDict, list_available_versions
 
@@ -158,7 +158,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
             parser_info = {}
             parser_dict = inpxml_parser(test_xml_file, parser_info_out=parser_info)
         else:
-            xmltree, schema_dict = load_outxml(test_xml_file)
+            _, schema_dict = load_outxml(test_xml_file)
 
             if schema_dict['out_version'] != schema_version:
                 echo.echo_error(
@@ -187,10 +187,9 @@ def validate_inpxmlfile(xml_file):
     xml_file = os.path.abspath(xml_file)
 
     xmltree, schema_dict = load_inpxml(xml_file)
-
     try:
-        validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
-    except etree.DocumentInvalid as err:
+        schema_dict.validate(xmltree)
+    except ValueError as err:
         echo.echo_error(str(err))
     else:
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['inp_version']}")
@@ -206,10 +205,9 @@ def validate_outxmlfile(xml_file):
     xml_file = os.path.abspath(xml_file)
 
     xmltree, schema_dict = load_outxml(xml_file)
-
     try:
-        validate_xml(xmltree, schema_dict.xmlschema, error_header='Output file does not validate against the schema')
-    except etree.DocumentInvalid as err:
+        schema_dict.validate(xmltree)
+    except ValueError as err:
         echo.echo_error(str(err))
     else:
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['out_version']}")

@@ -1,0 +1,165 @@
+{
+  "from_version": "0.33",
+  "to_version": "0.35",
+  "tag": {
+    "remove": [
+      [
+        "a1",
+        "/fleurInput/cell/bulkLattice/a1",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "a1",
+        "/fleurInput/cell/filmLattice/a1",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "a2",
+        "/fleurInput/cell/bulkLattice/a2",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "a2",
+        "/fleurInput/cell/filmLattice/a2",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "c",
+        "/fleurInput/cell/bulkLattice/c",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "row-1",
+        "/fleurInput/cell/bulkLattice/row-1",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "row-1",
+        "/fleurInput/cell/filmLattice/row-1",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "row-2",
+        "/fleurInput/cell/bulkLattice/row-2",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ],
+      [
+        "row-2",
+        "/fleurInput/cell/filmLattice/row-2",
+        "Deleted Lattice information. Please check and correct the bravaisMatrix definition",
+        false
+      ]
+    ],
+    "create": [],
+    "move": [
+      [
+        "d",
+        "d",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/d",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/d",
+        false
+      ],
+      [
+        "d",
+        "d",
+        "/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/d",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/d",
+        false
+      ],
+      [
+        "f",
+        "f",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/f",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/f",
+        false
+      ],
+      [
+        "f",
+        "f",
+        "/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/f",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/f",
+        false
+      ],
+      [
+        "greensfElements",
+        "greensfElements",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements",
+        false
+      ],
+      [
+        "greensfElements",
+        "greensfElements",
+        "/fleurInput/atomSpecies/species/torgueCalculation/greensfElements",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements",
+        false
+      ],
+      [
+        "p",
+        "p",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/p",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/p",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/p",
+        false
+      ],
+      [
+        "p",
+        "p",
+        "/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/p",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/p",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/p",
+        false
+      ],
+      [
+        "s",
+        "s",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation/greensfElements/s",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/s",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation/greensfElements/s",
+        false
+      ],
+      [
+        "s",
+        "s",
+        "/fleurInput/atomSpecies/species/torgueCalculation/greensfElements/s",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/s",
+        "/fleurInput/atomSpecies/species/torqueCalculation/greensfElements/s",
+        false
+      ],
+      [
+        "torgueCalculation",
+        "torqueCalculation",
+        "/fleurInput/atomGroups/atomGroup/torgueCalculation",
+        "/fleurInput/atomGroups/atomGroup/torqueCalculation",
+        false
+      ],
+      [
+        "torgueCalculation",
+        "torqueCalculation",
+        "/fleurInput/atomSpecies/species/torgueCalculation",
+        "/fleurInput/atomSpecies/species/torqueCalculation",
+        false
+      ]
+    ]
+  },
+  "attrib": {
+    "remove": [
+      [
+        "l_resolvent",
+        "/fleurInput/calculationSetup/greensFunction",
+        "",
+        true
+      ]
+    ],
+    "create": [],
+    "move": []
+  }
+}

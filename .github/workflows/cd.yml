@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3.1.2
       with:
         python-version: 3.9
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v1
+      uses: actions/cache@v3.0.2
       with:
         path: ~/.cache/pip
         key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
@@ -64,11 +64,11 @@ jobs:
     continue-on-error: ${{ matrix.strict }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v1
+      uses: actions/cache@v3.0.2
       with:
         path: ~/.cache/pip
         key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
@@ -76,7 +76,7 @@ jobs:
           pip-pre-commit-
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3.1.2
       with:
         python-version: 3.8
 
@@ -100,11 +100,11 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v1
+      uses: actions/cache@v3.0.2
       with:
         path: ~/.cache/pip
         key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml') }}
@@ -112,7 +112,7 @@ jobs:
           pip-${{ matrix.python-version }}-tests
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3.1.2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -120,6 +120,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -e .[testing,bokeh-plots]
+        pip install pyhull
 
     - name: Run pytest
       run: pytest
@@ -141,9 +142,9 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.7
       - name: Install flit

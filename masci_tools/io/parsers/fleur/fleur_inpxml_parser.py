@@ -17,10 +17,10 @@ from __future__ import annotations
 
 from lxml import etree
 
-from masci_tools.io.io_fleurxml import load_inpxml
-from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.io.fleur_xml import get_constants, load_inpxml
+from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_from_xml
-from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
+from masci_tools.util.schema_dict_util import evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 from masci_tools.util.typing import XMLFileLike
 import logging
@@ -87,29 +87,17 @@ def inpxml_parser(inpxmlfile: XMLFileLike,
     xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    constants = read_constants(root, schema_dict, logger=logger)
+    constants = get_constants(root, schema_dict, logger=logger)
 
     try:
-        validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
-    except etree.DocumentInvalid as err:
-        errmsg = str(err)
-        if logger is not None:
-            logger.warning(errmsg)
+        schema_dict.validate(xmltree, logger=logger)
+    except ValueError as err:
         if not ignore_validation:
             if logger is not None:
-                logger.exception(errmsg)
-            raise ValueError(errmsg) from err
+                logger.exception(err)
+            raise
 
-    if schema_dict.xmlschema.validate(xmltree) or ignore_validation:
-        inp_dict = inpxml_todict(root, schema_dict, constants, logger=logger)
-    else:
-        msg = 'Input file does not validate against the schema: Reason is unknown'
-        if logger is not None:
-            logger.warning(msg)
-        if not ignore_validation:
-            if logger is not None:
-                logger.exception(msg)
-            raise ValueError(msg)
+    inp_dict = inpxml_todict(root, schema_dict, constants, logger=logger)
 
     if parser_log_handler is not None:
         if logger is not None:

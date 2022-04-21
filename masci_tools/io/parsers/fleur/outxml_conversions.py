@@ -18,10 +18,11 @@ from __future__ import annotations
 from datetime import date
 import numpy as np
 from masci_tools.util.constants import HTR_TO_EV
-from masci_tools.util.parse_tasks_decorators import conversion_function
 from masci_tools.io.common_functions import convert_to_pystd, abs_to_rel, abs_to_rel_f
 from typing import Any
 from logging import Logger
+
+from . import conversion_function
 
 
 @conversion_function

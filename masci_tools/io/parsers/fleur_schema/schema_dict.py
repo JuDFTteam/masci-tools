@@ -35,7 +35,7 @@ from lxml import etree
 
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
-from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag, contains_tag
+from masci_tools.util.xml.common_functions import abs_to_rel_xpath, clear_xml, split_off_tag, contains_tag, validate_xml
 from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
@@ -56,7 +56,7 @@ class NoUniquePathFound(ValueError):
 
 class IncompatibleSchemaVersions(Exception):
     """
-    Exeption raised when it is known that a given output version and input version
+    Exception raised when it is known that a given output version and input version
     cannot be compiled into a complete fleur output xml schema
     """
 
@@ -76,7 +76,7 @@ class SchemaDictDispatch(Protocol[F]):
     __call__: F
 
 
-def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], SchemaDictDispatch]:
+def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], SchemaDictDispatch[F]]:
     """
     Decorator for creating variations of functions based on the inp/out
     version of the schema_dict. All functions here need to have the signature::
@@ -89,7 +89,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
     Inspired by singledispatch in the functools module
     """
 
-    def schema_dict_version_dispatch_dec(func: F) -> SchemaDictDispatch:
+    def schema_dict_version_dispatch_dec(func: F) -> SchemaDictDispatch[F]:
 
         registry: dict[Callable[[tuple[int, int]], bool] | Literal['default'], F] = {}
 
@@ -161,7 +161,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
         wrapper.registry = registry  #type:ignore
         update_wrapper(wrapper, func)
 
-        return cast(SchemaDictDispatch, wrapper)
+        return cast(SchemaDictDispatch[F], wrapper)
 
     return schema_dict_version_dispatch_dec
 
@@ -228,6 +228,8 @@ class SchemaDict(LockableDict):
     _tag_entries: tuple[str, ...] = ()
     _attrib_entries: tuple[str, ...] = ()
     _info_entries: tuple[str, ...] = ()
+
+    _VALIDATION_ERROR_HEADER: str = 'File does not validate'
 
     @classmethod
     def clear_cache(cls) -> None:
@@ -508,8 +510,7 @@ class SchemaDict(LockableDict):
                  name: str,
                  contains: str | Iterable[str] | None = None,
                  not_contains: str | Iterable[str] | None = None,
-                 parent: bool = False,
-                 **kwargs: Any) -> TagInfo:
+                 parent: bool = False) -> TagInfo:
         """
         Tries to find a unique path from the schema_dict based on the given name of the tag
         and additional further specifications and returns the tag_info entry for this tag
@@ -523,30 +524,11 @@ class SchemaDict(LockableDict):
         :returns: dict, tag_info for the found xpath
         """
 
-        multiple_paths = True
-        if 'multiple_paths' in kwargs:
-            warnings.warn('multiple_paths argument is deprecated. It is used by default', DeprecationWarning)
-            multiple_paths = kwargs['multiple_paths']
-
-        path_return = False
-        if 'path_return' in kwargs:
-            warnings.warn('path_return argument is deprecated. It is not used by default', DeprecationWarning)
-            path_return = kwargs['path_return']
-
-        convert_to_builtin = False
-        if 'convert_to_builtin' in kwargs:
-            warnings.warn('convert_to_builtin argument is deprecated. It is not used by default', DeprecationWarning)
-            convert_to_builtin = kwargs['convert_to_builtin']
-
         if not self._tag_entries or not self._info_entries:
             raise NotImplementedError(f"The method 'tag_info' cannot be executed for {self.__class__.__name__}"
                                       ' since no tag or info entries are defined')
 
-        if multiple_paths:
-            paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
-        else:
-            paths = [self.tag_xpath(name, contains=contains, not_contains=not_contains)]
-
+        paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
         if len(paths) == 0:
             raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
                               f'contains: {contains}, not_contains: {not_contains}')
@@ -586,17 +568,32 @@ class SchemaDict(LockableDict):
         if tag_info is None:
             raise ValueError(f'No tag info found for paths: {paths}')
 
-        if convert_to_builtin:
-            tag_info = {
-                key: set(val.original_case.values()) if isinstance(val, CaseInsensitiveFrozenSet) else val
-                for key, val in tag_info.items()
-            }
+        return tag_info
 
-        if path_return:
-            if not multiple_paths:
-                return tag_info, paths[0]  #type:ignore
-            return tag_info, paths  #type:ignore
-        return tag_info  #type:ignore
+    def validate(self, xmltree: etree._ElementTree, logger: Logger | None = None, header: str = '') -> None:
+        """
+        Validate the given XML tree against the schema
+
+        :param xmltree: XML tree to validate
+        :param logger: Logger to relay evlt warnings/errors
+        """
+        header = header or self._VALIDATION_ERROR_HEADER
+        errmsg = ''
+        xmltree, _ = clear_xml(xmltree)
+        try:
+            validate_xml(xmltree, self.xmlschema, error_header=header)
+        except etree.DocumentInvalid as err:
+            errmsg = str(err)
+            if logger is not None:
+                logger.warning(errmsg)
+            raise ValueError(errmsg) from err
+
+        #TODO: Is this an esoteric case that will never happen or is this something we really need?
+        if not self.xmlschema.validate(xmltree) and errmsg == '':
+            errmsg = f'{header}: Reason is unknown'
+            if logger is not None:
+                logger.warning(errmsg)
+            raise ValueError(errmsg)
 
 
 class InputSchemaDict(SchemaDict):
@@ -635,6 +632,8 @@ class InputSchemaDict(SchemaDict):
         'other_attribs',
     )
     _info_entries = ('tag_info',)
+
+    _VALIDATION_ERROR_HEADER: str = 'Input file does not validate against the schema'
 
     @classmethod
     def fromVersion(cls, version: str, logger: Logger | None = None, no_cache: bool = False) -> InputSchemaDict:
@@ -751,6 +750,8 @@ class OutputSchemaDict(SchemaDict):
     _attrib_entries = ('unique_attribs', 'unique_path_attribs', 'other_attribs', 'iteration_unique_attribs',
                        'iteration_unique_path_attribs', 'iteration_other_attribs')
     _info_entries = ('tag_info', 'iteration_tag_info')
+
+    _VALIDATION_ERROR_HEADER: str = 'Output file does not validate against the schema'
 
     @classmethod
     def fromVersion(cls,

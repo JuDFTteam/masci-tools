@@ -19,6 +19,7 @@ from lxml import etree
 import warnings
 import copy
 import logging
+from typing import cast
 
 from .xpathbuilder import XPathBuilder
 
@@ -87,7 +88,7 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
             for elem in parent.iterchildren(tag=tag_name):
                 for attribute in elem.attrib.keys():
                     if 'base' in attribute:
-                        elem.attrib.pop(attribute, None)  #type:ignore
+                        elem.attrib.pop(attribute, '')
 
     # remove comments from inp.xml
     comments: list[etree._Element] = cleared_tree.xpath('//comment()')  #type:ignore
@@ -155,10 +156,10 @@ def validate_xml(xmltree: etree._ElementTree,
         cleared_tree, _ = clear_xml(xmltree)
         schema.assertValid(cleared_tree)
     except etree.DocumentInvalid as exc:
-        error_log = sorted(schema.error_log, key=lambda x: x.message)  #type:ignore
+        error_log = sorted(schema.error_log, key=lambda x: x.message)  #type: ignore[call-overload]
         error_output = []
         first_occurence = []
-        for message, group in groupby(error_log, key=lambda x: x.message):
+        for message, group in groupby(error_log, key=lambda x: cast(object, x.message)):
             err_occurences = list(group)
             error_message = f'Line {err_occurences[0].line}: {message}'
             error_lines = ''
@@ -197,15 +198,14 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
         variables = {**variables, **xpath.path_variables}
         xpath = xpath_str
 
+    if logger is not None:
+        logger.debug('XPath: %s', xpath)
+        logger.debug('XPath Variables: %s', variables)
+
     if not isinstance(node, (etree._Element, etree._ElementTree, etree.XPathElementEvaluator)):
         if logger is not None:
             logger.error('Wrong Type for xpath eval; Got: %s', type(node))
         raise TypeError(f'Wrong Type for xpath eval; Got: {type(node)}')
-
-    if isinstance(xpath, etree.XPath) and isinstance(node, etree.XPathElementEvaluator):
-        if logger is not None:
-            logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
-        raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
 
     if namespaces is not None and (isinstance(xpath, etree.XPath) or isinstance(node, etree.XPathElementEvaluator)):
         if logger is not None:
@@ -218,7 +218,11 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
 
     try:
         if isinstance(node, etree.XPathElementEvaluator):
-            return_value = node(xpath, **variables)  #type:ignore[arg-type]
+            if isinstance(xpath, etree.XPath):
+                if logger is not None:
+                    logger.error('Got an XPath object and an XPathEvaluator in eval_xpath')
+                raise TypeError('Got an XPath object and an XPathEvaluator in eval_xpath')
+            return_value = node(xpath, **variables)  #[arg-type]
         elif isinstance(xpath, etree.XPath):
             return_value = xpath(node, **variables)
         else:
@@ -232,6 +236,10 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
         raise ValueError(f'There was a XpathEvalError on the xpath: {str(xpath)} \n'
                          f'The following variables were passed: {variables} \n'
                          'Either it does not exist, or something is wrong with the expression.') from err
+
+    if logger is not None:
+        logger.debug('XPath Result: %s', return_value)
+
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:
             return return_value[0]  #type:ignore
@@ -375,7 +383,6 @@ def check_complex_xpath(node: XMLLike | etree.XPathElementEvaluator, base_xpath:
     :raises ValueError: If the complex_xpath does not produce a subset of the results
                         of the base_xpath
     """
-
     results_base = set(eval_xpath(node, base_xpath, list_return=True))  #type:ignore
     results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
 
@@ -441,3 +448,16 @@ def contains_tag(xpath: XPathLike, tag: str) -> bool:
     #Strip out predicates
     xpath_str = re.sub(r'[\[].*?[\]]', '', xpath_str)
     return tag in xpath_str.split('/')
+
+
+def is_valid_tag(tag: str) -> bool:
+    """
+    Return whether the given string is a valid XML tag name
+
+    :param tag: tag to check
+    """
+    try:
+        etree.QName(tag)
+        return True
+    except ValueError:
+        return False

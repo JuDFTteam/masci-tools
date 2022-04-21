@@ -18,8 +18,6 @@ attribute from the right place in the given etree
 """
 from __future__ import annotations
 
-from masci_tools.io.parsers.fleur_schema import NoPathFound
-from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
@@ -36,155 +34,6 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 
-def get_tag_xpath(schema_dict, name, contains=None, not_contains=None):
-    """
-    DEPRECATED
-
-    Tries to find a unique path from the schema_dict based on the given name of the tag
-    and additional further specifications
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-
-    :returns: str, xpath for the given tag
-
-    :raises ValueError: If no unique path could be found
-    """
-    warnings.warn('get_tag_xpath is deprecated. Use the tag_xpath method on the schema dictionary instead',
-                  DeprecationWarning)
-    return schema_dict.tag_xpath(name, contains=contains, not_contains=not_contains)
-
-
-def get_relative_tag_xpath(schema_dict, name, root_tag, contains=None, not_contains=None):
-    """
-    DEPRECATED
-
-    Tries to find a unique relative path from the schema_dict based on the given name of the tag
-    name of the root, from which the path should be relative and additional further specifications
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
-    :param root_tag: str, name of the tag from which the path should be relative
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-
-    :returns: str, xpath for the given tag
-
-    :raises ValueError: If no unique path could be found
-    """
-    warnings.warn(
-        'get_relative_tag_xpath is deprecated. Use the relative_tag_xpath method on the schema dictionary instead',
-        DeprecationWarning)
-    return schema_dict.relative_tag_xpath(name, root_tag, contains=contains, not_contains=not_contains)
-
-
-def get_attrib_xpath(schema_dict, name, contains=None, not_contains=None, exclude=None, tag_name=None):
-    """
-    DEPRECATED
-
-    Tries to find a unique path from the schema_dict based on the given name of the attribute
-    and additional further specifications
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the attribute
-    :param root_tag: str, name of the tag from which the path should be relative
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-    :param exclude: list of str, here specific types of attributes can be excluded
-                    valid values are: settable, settable_contains, other
-    :param tag_name: str, if given this name will be used to find a path to a tag with the
-                     same name in :py:func:`get_tag_xpath()`
-
-    :returns: str, xpath to the tag with the given attribute
-
-    :raises ValueError: If no unique path could be found
-    """
-    warnings.warn('get_attrib_xpath is deprecated. Use the attrib_xpath method on the schema dictionary instead',
-                  DeprecationWarning)
-    return schema_dict.attrib_xpath(name,
-                                    contains=contains,
-                                    not_contains=not_contains,
-                                    exclude=exclude,
-                                    tag_name=tag_name)
-
-
-def get_relative_attrib_xpath(schema_dict,
-                              name,
-                              root_tag,
-                              contains=None,
-                              not_contains=None,
-                              exclude=None,
-                              tag_name=None):
-    """
-    DEPRECATED
-
-    Tries to find a unique relative path from the schema_dict based on the given name of the attribute
-    name of the root, from which the path should be relative and additional further specifications
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the attribute
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-    :param exclude: list of str, here specific types of attributes can be excluded
-                    valid values are: settable, settable_contains, other
-    :param tag_name: str, if given this name will be used to find a path to a tag with the
-                     same name in :py:func:`get_relative_tag_xpath()`
-
-    :returns: str, xpath for the given tag
-
-    :raises ValueError: If no unique path could be found
-    """
-    warnings.warn(
-        'get_relative_attrib_xpath is deprecated. Use the relative_attrib_xpath method on the schema dictionary instead',
-        DeprecationWarning)
-    return schema_dict.relative_attrib_xpath(name,
-                                             root_tag,
-                                             contains=contains,
-                                             not_contains=not_contains,
-                                             exclude=exclude,
-                                             tag_name=tag_name)
-
-
-def get_tag_info(schema_dict,
-                 name,
-                 contains=None,
-                 not_contains=None,
-                 path_return=True,
-                 convert_to_builtin=False,
-                 multiple_paths=False,
-                 parent=False):
-    """
-    DEPRECATED
-
-    Tries to find a unique path from the schema_dict based on the given name of the tag
-    and additional further specifications and returns the tag_info entry for this tag
-
-    :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
-    :param contains: str or list of str, this string has to be in the final path
-    :param not_contains: str or list of str, this string has to NOT be in the final path
-    :param path_return: bool, if True the found path will be returned alongside the tag_info
-    :param convert_to_builtin: bool, if True the CaseInsensitiveFrozenSets are converetd to normal sets
-                               with the right case of the attributes
-    :param multiple_paths: bool, if True multiple paths are allowed to match as long as they have the same tag_info
-    :param parent: bool, if True the tag_info for the parent of the tag is returned
-
-    :returns: dict, tag_info for the found xpath
-    :returns: str, xpath to the tag if `path_return=True`
-    """
-    warnings.warn('get_tag_info is deprecated. Use the tag_info method on the schema dictionary instead',
-                  DeprecationWarning)
-    return schema_dict.tag_info(name,
-                                contains=contains,
-                                not_contains=not_contains,
-                                path_return=path_return,
-                                convert_to_builtin=convert_to_builtin,
-                                multiple_paths=multiple_paths,
-                                parent=parent)
-
-
 def read_constants(root: XMLLike | etree.XPathElementEvaluator,
                    schema_dict: fleur_schema.SchemaDict,
                    logger: Logger | None = None) -> dict[str, float]:
@@ -199,36 +48,11 @@ def read_constants(root: XMLLike | etree.XPathElementEvaluator,
 
     :return: a python dictionary with all defined constants
     """
-    from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-
-    defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
-
-    try:
-        tag_exists(root, schema_dict, 'constant')
-    except NoPathFound:
-        warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
-        return defined_constants
-
-    if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
-        return defined_constants
-
-    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, logger=logger)
-
-    if constants['name'] is not None:
-        if not isinstance(constants['name'], list):
-            constants = {key: [val] for key, val in constants.items()}
-        for name, value in zip(constants['name'], constants['value']):
-            if name not in defined_constants:
-                defined_constants[name] = value
-            else:
-                if logger is not None:
-                    logger.error('Ambiguous definition of constant %s', name)
-                raise KeyError(f'Ambiguous definition of constant {name}')
-
-    return defined_constants
+    from masci_tools.io.fleur_xml import get_constants  #pylint: disable=cyclic-import
+    warnings.warn('read_constants is moved to masci_tools.io.fleur_xml', DeprecationWarning)
+    return get_constants(root, schema_dict, logger=logger)  #type: ignore[arg-type]
 
 
-@register_parsing_function('attrib')
 def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
@@ -310,7 +134,6 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('text')
 def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -394,7 +217,6 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('allAttribs', all_attribs_keys=True)
 def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
@@ -597,7 +419,6 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('singleValue', all_attribs_keys=True)
 def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
@@ -656,7 +477,6 @@ def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
     return value_dict
 
 
-@register_parsing_function('parentAttribs', all_attribs_keys=True)
 def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
@@ -795,7 +615,6 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('attrib_exists')
 def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -809,7 +628,7 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
 
     :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
+    :param name: str, name of the attribute
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
@@ -835,7 +654,6 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
     return any(attrib_name in tag.attrib for tag in tags)
 
 
-@register_parsing_function('exists')
 def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
@@ -863,7 +681,6 @@ def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
     return get_number_of_nodes(node, schema_dict, name, logger=logger, **kwargs) != 0
 
 
-@register_parsing_function('numberNodes')
 def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
@@ -886,7 +703,7 @@ def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
-    :returns: bool, True if any nodes with the path exist
+    :returns: number of nodes for the given tag
     """
     result = eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs)
     if not isinstance(result, list):

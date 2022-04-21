@@ -1,5 +1,5 @@
 """
-Tests for the load functions in io_fleurxml
+Tests for the load functions in fleur_xml
 """
 from lxml import etree
 import pytest
@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def test_load_inpxml(test_file):
-    from masci_tools.io.io_fleurxml import load_inpxml
+    from masci_tools.io.fleur_xml import load_inpxml
 
     TEST_INPXML_PATH = test_file('fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 
@@ -58,7 +58,7 @@ def test_load_inpxml(test_file):
 
 
 def test_load_outxml(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/Max-R5/SiLOXML/files/out.xml')
 
@@ -115,7 +115,7 @@ def test_load_outxml(test_file):
 
 
 def test_loadoutxml_mixedversions(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/output_mixed_versions.xml')
 
@@ -127,7 +127,7 @@ def test_loadoutxml_mixedversions(test_file):
 
 
 def test_loadoutxml_max50(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max5_0_test_out.xml')
 
@@ -140,7 +140,7 @@ def test_loadoutxml_max50(test_file):
 
 
 def test_loadoutxml_max40(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max4_test_out.xml')
 
@@ -153,7 +153,7 @@ def test_loadoutxml_max40(test_file):
 
 
 def test_loadoutxml_max31(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max3_1_test_out.xml')
 
@@ -166,7 +166,7 @@ def test_loadoutxml_max31(test_file):
 
 
 def test_loadoutxml_premax31(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max3_0_test_out.xml')
 
@@ -176,3 +176,40 @@ def test_loadoutxml_premax31(test_file):
     assert xmltree is not None
     assert schema_dict['out_version'] == '0.29'
     assert schema_dict['inp_version'] == '0.29'
+
+
+def test_get_constants(load_inpxml, load_outxml):
+    """
+    Test of the get_constants function
+    """
+    from masci_tools.io.fleur_xml import get_constants
+
+    VALID_INP_CONSTANTS_PATH = 'fleur/inp_with_constants.xml'
+    INVALID_INP_CONSTANTS_PATH = 'fleur/inp_invalid_constants.xml'
+    VALID_OUT_CONSTANTS_PATH = 'fleur/out_with_constants.xml'
+
+    xmltree, schema_dict = load_inpxml(VALID_INP_CONSTANTS_PATH, absolute=False)
+    invalidxmltree, _ = load_inpxml(INVALID_INP_CONSTANTS_PATH, absolute=False)
+    outxmltree, outschema_dict = load_outxml(VALID_OUT_CONSTANTS_PATH, absolute=False)
+
+    expected_constants = {
+        'A': -3.14,
+        'Ang': 1.889726124772898,
+        'Bohr': 1.0,
+        'Deg': 0.017453292519943295,
+        'Pi': 3.141592653589793,
+        'nm': 18.89726124772898,
+        'notPi': 3.0,
+        'pm': 0.01889726124772898,
+        'Htr': 1.0,
+        'Ry': 0.5,
+        'eV': 0.03674932217565499
+    }
+    result = get_constants(xmltree, schema_dict)
+    assert result == expected_constants
+
+    result = get_constants(outxmltree, outschema_dict)
+    assert result == expected_constants
+
+    with pytest.raises(KeyError, match='Ambiguous definition of constant Pi'):
+        result = get_constants(invalidxmltree, schema_dict)

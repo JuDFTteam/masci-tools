@@ -94,7 +94,7 @@ class HDF5Reader:
 
     """
 
-    _transforms: dict[str, Callable] = {}
+    _transforms: dict[str, Callable[[Any], Any]] = {}
     _attribute_transforms: set[str] = set()
 
     def __init__(self, file: FileLike, move_to_memory: bool = True) -> None:
@@ -111,7 +111,7 @@ class HDF5Reader:
 
         extension = Path(self.filename).suffix
 
-        if extension and extension != '.hdf':
+        if extension and extension not in ('.hdf', '.hdf5', '.h5'):
             logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self.filename)
             raise ValueError(f'Wrong File Type for {self.__class__.__name__}: Got {self.filename}')
 

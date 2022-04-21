@@ -50,7 +50,8 @@ def format_nmmpmat(denmat: np.ndarray) -> list[str]:
 def rotate_nmmpmat_block(denmat: np.ndarray,
                          orbital: int,
                          phi: float | None = None,
-                         theta: float | None = None) -> np.ndarray:
+                         theta: float | None = None,
+                         inverse: bool = False) -> np.ndarray:
     """
     Rotate the given 7x7 complex numpy array with the d-wigner matrix
     corresponding to the given orbital and angles
@@ -72,14 +73,18 @@ def rotate_nmmpmat_block(denmat: np.ndarray,
     if theta is None:
         theta = 0.0
 
-    d_wigner = get_wigner_matrix(orbital, phi, theta)
+    d_wigner = get_wigner_matrix(orbital, phi, theta, inverse=inverse)
     #Rotate the density matrix
-    denmat = d_wigner.T.conj().dot(denmat.dot(d_wigner))
+    denmat = d_wigner.T.conj() @ denmat @ d_wigner
 
     return denmat
 
 
-def write_nmmpmat(orbital: int, denmat: np.ndarray, phi: float | None = None, theta: float | None = None) -> list[str]:
+def write_nmmpmat(orbital: int,
+                  denmat: np.ndarray,
+                  phi: float | None = None,
+                  theta: float | None = None,
+                  inverse: bool = False) -> list[str]:
     """
     Generate list of str for n_mmp_mat file from given numpy array
 
@@ -95,7 +100,7 @@ def write_nmmpmat(orbital: int, denmat: np.ndarray, phi: float | None = None, th
     denmat_padded[3 - orbital:4 + orbital, 3 - orbital:4 + orbital] = denmat
 
     if theta is not None or phi is not None:
-        denmat_padded = rotate_nmmpmat_block(denmat_padded, orbital, phi=phi, theta=theta)
+        denmat_padded = rotate_nmmpmat_block(denmat_padded, orbital, phi=phi, theta=theta, inverse=inverse)
 
     return format_nmmpmat(denmat_padded)
 
@@ -103,7 +108,8 @@ def write_nmmpmat(orbital: int, denmat: np.ndarray, phi: float | None = None, th
 def write_nmmpmat_from_states(orbital: int,
                               state_occupations: list[float],
                               phi: float | None = None,
-                              theta: float | None = None) -> list[str]:
+                              theta: float | None = None,
+                              inverse: bool = False) -> list[str]:
     """
     Generate list of str for n_mmp_mat file from diagonal occupations
 
@@ -121,13 +127,14 @@ def write_nmmpmat_from_states(orbital: int,
     for i, occ in enumerate(state_occupations):
         denmat[i, i] = occ
 
-    return write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
+    return write_nmmpmat(orbital, denmat, phi=phi, theta=theta, inverse=inverse)
 
 
 def write_nmmpmat_from_orbitals(orbital: int,
                                 orbital_occupations: list[float],
                                 phi: float | None = None,
-                                theta: float | None = None) -> list[str]:
+                                theta: float | None = None,
+                                inverse: bool = False) -> list[str]:
     """
     Generate list of str for n_mmp_mat file from orbital occupations
 
@@ -168,7 +175,7 @@ def write_nmmpmat_from_orbitals(orbital: int,
                 denmat[orbital + m, orbital - m] -= 1 / 2 * occ
                 denmat[orbital - m, orbital + m] -= 1 / 2 * occ
 
-    return write_nmmpmat(orbital, denmat, phi=phi, theta=theta)
+    return write_nmmpmat(orbital, denmat, phi=phi, theta=theta, inverse=inverse)
 
 
 def read_nmmpmat_block(nmmp_lines: list[str], block_index: int) -> np.ndarray:

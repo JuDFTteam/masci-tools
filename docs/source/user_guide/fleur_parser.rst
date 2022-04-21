@@ -106,7 +106,7 @@ There are a number of functions for extracting specific parts of the XML files i
 
 All of these are used in the same way::
 
-   from masci_tools.io.io_fleurxml import load_inpxml
+   from masci_tools.io.fleur_xml import load_inpxml
    from masci_tools.util.xml.xml_getters import get_fleur_modes
 
    xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
@@ -121,7 +121,7 @@ If only a small amount of information is required from the input or output files
 
 .. code-block:: python
 
-   from masci_tools.io.io_fleurxml import load_inpxml
+   from masci_tools.io.fleur_xml import load_inpxml
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
@@ -150,3 +150,27 @@ If only a small amount of information is required from the input or output files
 
    species = eval_simple_xpath(root, schema_dict, 'atomSpecies')
    mt_radii = evaluate_attribute(species, schema_dict, 'radius')
+
+To manage the context of these functions the :py:func:`~masci_tools.io.fleur_xml.FleurXMLContext()`
+is available to write the same code as above more concisely.
+
+.. code-block:: python
+
+   from masci_tools.io.fleur_xml import load_inpxml, FleurXMLContext
+   xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
+
+   with FleurXMLContext(xmltree, schema_dict) as root:
+      spins = root.attribute('jspins')
+      noco = root.attribute('l_noco', default=False)
+
+      #Not nesting the context we need to specify which elements are meant
+      mt_radii = root.attribute('radius', contains='species')
+
+      #Nesting using find (the first element is return)
+      with root.find('atomspecies') as all_species:
+            mt_radii = all_species.attribute('radius')
+
+      #Nesting using iter (each iteration returns a new context for the next element)
+      mt_radii = []
+      for species in root.iter('species'):
+            mt_radii.append(species.attribute('radius'))
