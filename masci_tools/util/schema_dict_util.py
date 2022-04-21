@@ -18,7 +18,6 @@ attribute from the right place in the given etree
 """
 from __future__ import annotations
 
-from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
@@ -53,7 +52,6 @@ def read_constants(root: XMLLike | etree.XPathElementEvaluator,
     return get_constants(root, schema_dict, logger=logger)  #type: ignore[arg-type]
 
 
-@register_parsing_function('attrib')
 def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
@@ -135,7 +133,6 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('text')
 def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -219,7 +216,6 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('allAttribs', all_attribs_keys=True)
 def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
@@ -422,7 +418,6 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('singleValue', all_attribs_keys=True)
 def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
@@ -481,7 +476,6 @@ def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
     return value_dict
 
 
-@register_parsing_function('parentAttribs', all_attribs_keys=True)
 def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
@@ -620,7 +614,6 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('attrib_exists')
 def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -660,7 +653,6 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
     return any(attrib_name in tag.attrib for tag in tags)
 
 
-@register_parsing_function('exists')
 def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
@@ -688,7 +680,6 @@ def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
     return get_number_of_nodes(node, schema_dict, name, logger=logger, **kwargs) != 0
 
 
-@register_parsing_function('numberNodes')
 def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,

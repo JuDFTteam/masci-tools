@@ -18,8 +18,8 @@ def fake_schemas_and_test_files(tmp_path, test_file):
     removes the corresponding folder after the tests
     """
     import masci_tools
-    from masci_tools.util.parse_tasks_decorators import register_migration
-    from masci_tools.util.parse_tasks import ParseTasks
+    from masci_tools.io.parsers.fleur import register_migration
+    from masci_tools.io.parsers.fleur.fleur_outxml_parser import _TaskParser
 
     #Create migration to be able to use the outxml_parser
     @register_migration(base_version='0.34', target_version='0.01')
@@ -74,7 +74,7 @@ def fake_schemas_and_test_files(tmp_path, test_file):
     finally:
         #Cleanup the folder created in the masci-tools repository
         shutil.rmtree(created_schema_folder)
-        ParseTasks._migrations['0.34'].pop('0.01')  #pylint: disable=protected-access
+        _TaskParser._migrations['0.34'].pop('0.01')  #pylint: disable=protected-access
 
 
 @pytest.fixture
