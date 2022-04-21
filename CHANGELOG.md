@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.1
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.0...v0.10.1)
+
+### Bugfixes
+- Remove accidentally left in debug print in `outxml_parser`
+
 ## v.0.10.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.1...v0.10.0)
 
