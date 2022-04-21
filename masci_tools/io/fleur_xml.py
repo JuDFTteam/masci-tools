@@ -516,7 +516,7 @@ class _EvalContext:
     @contextmanager
     def nested(self, etree_or_element: XMLLike) -> Generator[_EvalContext, None, None]:
         """
-        Create a nested Context from teh current one
+        Create a nested context from the current one
         inheriting the schema_dict, constants and logger only replacing the
         XML element
 
@@ -538,7 +538,7 @@ class _EvalContext:
     def iter(self, name: str, **kwargs: Any) -> Generator[_EvalContext, None, None]:
         """
         Finds all elements for the given name and constraints and gives nested
-        contexts for thes elements to be iterated over,
+        contexts for these elements to be iterated over,
         i.e. inheriting the schema_dict, constants and logger
 
         Example::

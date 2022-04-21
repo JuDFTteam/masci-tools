@@ -1886,7 +1886,7 @@ def matrix_plot(
         from bokeh.transform import transform
 
         def TriangleTransform(size, data_range, xdata=True, upper=False):
-            """Performs a tranformation from center points and a block size to triangle coordinates
+            """Performs a transformation from center points and a block size to triangle coordinates
             to divide a rectangle around this point along the upwards diagonal."""
             #single value transformation
             transform_func = """

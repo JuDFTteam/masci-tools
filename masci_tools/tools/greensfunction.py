@@ -479,7 +479,7 @@ class GreensFunction:
             if self.nLO > 0:
                 all_local_orbitals = self.radial_functions['llo']
 
-                #Important: Indices hav e to be shifted to start with 0
+                #Important: Indices have to be shifted to start with 0
                 lo_list_atomtype = [
                     indx - 1 for indx, l in enumerate(all_local_orbitals[self.atomType - 1]) if l == self.l
                 ]

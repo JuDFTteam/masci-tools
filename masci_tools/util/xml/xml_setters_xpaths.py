@@ -606,7 +606,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
 
     :returns: xmltree with changes to the complex tag
     """
-    #TODO: Should changes be alloed to be a list to set multiple tags like in set_simple_tag
+    #TODO: Should changes be allowed to be a list to set multiple tags like in set_simple_tag
     import copy
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
