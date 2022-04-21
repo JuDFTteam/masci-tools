@@ -78,7 +78,7 @@ The following are valid:
            For example ```[('jspins', 2), ('soc', True)]``` will only perform the task for a
            magnetic SOC calculation
   :_conversions: list of str, giving the names of functions to call after this task. Functions
-                 given here have to be decorated with the :py:func:`~masci_tools.util.parse_tasks_decorators.conversion_function()` decorator
+                 given here have to be decorated with the :py:func:`~masci_tools.io.parsers.fleur.conversion_function()` decorator
   :_special: bool, if True (default False) this task is NEVER added automatically and has to be added
              by hand
 
