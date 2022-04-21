@@ -1,5 +1,5 @@
 """
-Collect all functions that should be exposed to the :py:class:`~masci_tools.io.io_fleurxmlmodifier.FleurXMLModifier`
+Collect all functions that should be exposed to the :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`
 and classify them according to their interface. This makes extending functionality for the Modifier relatively easy
 
    1. Implement the method in the correct module for its level of functionality
@@ -7,7 +7,7 @@ and classify them according to their interface. This makes extending functionali
          :xml_setters_xpaths: Xpath(s) and schema dictionary as argument. Can add creation type/checking and so on
          :xml_setters_names: No Xpaths as arguments Only names/identifiers for the schema dict
    2. Import it in this file and put the method in the correct SET at the bottom
-   3. Write facade method to add task for this function in :py:class:`~masci_tools.io.io_fleurxmlmodifier.FleurXMLModifier`
+   3. Write facade method to add task for this function in :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`
       This is not automated to guarantee that we have some nice docstrings for all the modifiying functions at the surface level
 """
 

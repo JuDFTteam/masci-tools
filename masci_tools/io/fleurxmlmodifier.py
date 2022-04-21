@@ -25,7 +25,7 @@ except ImportError:
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.util.xml.common_functions import clear_xml
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
 from lxml import etree

@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from lxml import etree
 
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute

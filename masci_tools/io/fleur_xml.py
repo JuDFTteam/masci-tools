@@ -592,7 +592,7 @@ def FleurXMLContext(etree_or_element: XMLLike | etree.XPathElementEvaluator,
 
     Example Usage::
 
-        from masci_tools.io.io_fleurxml import load_inpxml, FleurXMLContext
+        from masci_tools.io.fleur_xml import load_inpxml, FleurXMLContext
         xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
 
         with FleurXMLContext(xmltree, schema_dict) as root:

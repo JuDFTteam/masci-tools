@@ -1,5 +1,5 @@
 """
-Tests for the load functions in io_fleurxml
+Tests for the load functions in fleur_xml
 """
 from lxml import etree
 import pytest
@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def test_load_inpxml(test_file):
-    from masci_tools.io.io_fleurxml import load_inpxml
+    from masci_tools.io.fleur_xml import load_inpxml
 
     TEST_INPXML_PATH = test_file('fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml')
 
@@ -58,7 +58,7 @@ def test_load_inpxml(test_file):
 
 
 def test_load_outxml(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/Max-R5/SiLOXML/files/out.xml')
 
@@ -115,7 +115,7 @@ def test_load_outxml(test_file):
 
 
 def test_loadoutxml_mixedversions(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/output_mixed_versions.xml')
 
@@ -127,7 +127,7 @@ def test_loadoutxml_mixedversions(test_file):
 
 
 def test_loadoutxml_max50(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max5_0_test_out.xml')
 
@@ -140,7 +140,7 @@ def test_loadoutxml_max50(test_file):
 
 
 def test_loadoutxml_max40(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max4_test_out.xml')
 
@@ -153,7 +153,7 @@ def test_loadoutxml_max40(test_file):
 
 
 def test_loadoutxml_max31(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max3_1_test_out.xml')
 
@@ -166,7 +166,7 @@ def test_loadoutxml_max31(test_file):
 
 
 def test_loadoutxml_premax31(test_file):
-    from masci_tools.io.io_fleurxml import load_outxml
+    from masci_tools.io.fleur_xml import load_outxml
 
     TEST_OUTXML_PATH = test_file('fleur/old_versions/Max3_0_test_out.xml')
 

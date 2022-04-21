@@ -43,7 +43,7 @@ def load_outxml(test_file):
     """Returns the etree and schema_dict generator"""
 
     def _load_outxml(path, absolute=True):
-        import masci_tools.io.io_fleurxml as fleur_io
+        import masci_tools.io.fleur_xml as fleur_io
         if not absolute:
             path = test_file(path)
         with open(path, encoding='utf-8') as outxmlfile:

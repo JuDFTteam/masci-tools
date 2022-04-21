@@ -18,7 +18,7 @@ from __future__ import annotations
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
 from masci_tools.util.xml.common_functions import clear_xml
-from masci_tools.io.io_fleurxml import load_outxml_and_check_for_broken_xml
+from masci_tools.io.fleur_xml import load_outxml_and_check_for_broken_xml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 from masci_tools.util.typing import XMLFileLike
