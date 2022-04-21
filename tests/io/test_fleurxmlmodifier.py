@@ -458,7 +458,7 @@ def test_fleurxmlmodifier_deprecated_validate():
 
 
 def test_fleurxmlmodifier_included_files(file_regression, test_file):
-    """Tests if fleurinp_modifier with various other modifations methods,
+    """Tests if fleurinp_modifier with various other modifications methods,
     the detailed tests for method functionality is tested elsewhere."""
 
     fm = FleurXMLModifier()

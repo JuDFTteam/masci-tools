@@ -81,7 +81,7 @@ def test_read_hdf_simple(hdf_file, data_regression):
 
 def test_hdf5_reader_no_recipe(hdf_file, data_regression):
     """
-    Test that the HDF5reader without recipe produces the same utput as read_hdf_simple
+    Test that the HDF5reader without recipe produces the same output as read_hdf_simple
     """
     from masci_tools.io.parsers.hdf5 import HDF5Reader
 

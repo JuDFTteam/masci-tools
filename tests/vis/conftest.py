@@ -63,7 +63,7 @@ def convergence_plot_data():
 @pytest.fixture
 def lattice_constant_data():
     """
-    FIcture returning smaple data for EOS plots
+    FIcture returning sample data for EOS plots
     """
 
     def _lattice_plot_data(n):

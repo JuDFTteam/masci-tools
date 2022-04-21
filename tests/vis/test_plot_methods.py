@@ -356,7 +356,7 @@ def test_single_scatter_limits_deprecated():
 @pytest.mark.mpl_image_compare(filename='test_single_scatter_scale.png')  #same as the normal scale test
 def test_single_scatter_scale_deprecated():
     """
-    Scatterplot with deprectated option for modifying axis scales
+    Scatterplot with deprecated option for modifying axis scales
     """
     import numpy as np
     from masci_tools.vis.plot_methods import single_scatterplot
@@ -374,7 +374,7 @@ def test_single_scatter_scale_deprecated():
 @pytest.mark.mpl_image_compare(filename='test_single_scatter_defaults.png')
 def test_single_scatter_deprecated_label():
     """
-    Scatterplot with deprectated option for changing plot label
+    Scatterplot with deprecated option for changing plot label
     """
     import numpy as np
     from masci_tools.vis.plot_methods import single_scatterplot
