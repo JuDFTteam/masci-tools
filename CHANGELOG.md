@@ -60,7 +60,7 @@
 - Fix for signatures of `set_text`/`set_first_text`. These contained names of attribute setting functions [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fix for validating arguments in `FleurXMLModifier` not accepting an argument named `name` when passed by keyword. [[#118]](https://github.com/JuDFTteam/masci-tools/pull/118)
 - Fixed problems in `masci_tools.testing.bokeh` when adding files for new bokeh versions [[#122]](https://github.com/JuDFTteam/masci-tools/pull/122)
-- Several fixes for `plot_fleur_dos`. Using the `area_plot` or specifying `color` explicitely could mess up the color order [[#132]](https://github.com/JuDFTteam/masci-tools/pull/132)
+- Several fixes for `plot_fleur_dos`. Using the `area_plot` or specifying `color` explicitly could mess up the color order [[#132]](https://github.com/JuDFTteam/masci-tools/pull/132)
 - Fixed bug in `validate_nmmpmat` and consequently `FleurXMLModifier` not correctly validating denisty matrix files with certain off-diagonal elements being negative [[#135]](https://github.com/JuDFTteam/masci-tools/pull/135)
 - Fix for `HDF5Reader` for compatibility for file handles in `aiida-core` 2.0. The file handles coming from the file repository have no directly attached extension so the check if the file is a hdf file cannot be performed
 
@@ -82,7 +82,7 @@
 - Added `IncompatibleSchemaVersions` error when a combination of output and input version for `OutputSchemaDict` is given, for which it is known that no XML schema can be compiled
 - `xml_getters` functions can now be used in the task definitions of the `outxml_parser` to keep information consistent. This example definition will insert the structure data, i.e. a tuple of atoms, bravais matrix and periodic boundary conditions into the output dictionary. `{'parse_type':'xmlGetter', 'name': 'get_structure_data'}` [[#107]](https://github.com/JuDFTteam/masci-tools/pull/107)
 - The `_conversions` key in the `outxml_parser` now accepts namedtuples `Conversion` to enable passing additional arguments to these functions. [[#109]](https://github.com/JuDFTteam/masci-tools/pull/109)
-- Adjusted `get_cell` to understand the `bravaisMatrixFilm` inut introduced with the MaX6 release of fleur [[#110]](https://github.com/JuDFTteam/masci-tools/pull/110)
+- Adjusted `get_cell` to understand the `bravaisMatrixFilm` input introduced with the MaX6 release of fleur [[#110]](https://github.com/JuDFTteam/masci-tools/pull/110)
 - Improved detection, whether a given xpath contains a tag including stripping predicates. Added function `contains_tag` in `masci_tools.util.xml.common_functions` [[#113]](https://github.com/JuDFTteam/masci-tools/pull/113)
 - Refactored bokeh plot routine `periodic_table_plot` to make use of the plot parameters utilities [[#114]](https://github.com/JuDFTteam/masci-tools/pull/114)
 - `get_parameter_data` now extracts LOs with higher energy derivatives or `HELO` type, as they are supported by the newest versions of the inpgen. The old behaviour of dropping all non `SCLO` and `eDeriv="0"` LOs is available via the option `allow_special_los=False`
@@ -114,7 +114,7 @@
 - Fix for HDF5 transformation ``add_partial_sums`` if not all formatted patterns are present in the dataset, e.g. if a bandstructure/DOS is calculated for only selected atoms
 ### For developers
 - More strict ``mypy`` configuration and moved a lot of the annotations to modern syntax with ``from __future__ import annotations``
-- Added ``pyupgrade`` hook to automatically do some easy refactoring, i.e. removing compatibility workarounds move ot modern syntax. Set to apply changes compatible with ``3.7`` and later
+- Added ``pyupgrade`` hook to automatically do some easy refactoring, i.e. removing compatibility workarounds move to modern syntax. Set to apply changes compatible with ``3.7`` and later
 
 ## v.0.7.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.6.2...v0.7.0)
@@ -153,7 +153,7 @@ Commandline interface, refactoring of SchemaDict/XML functions and major improve
 - Made test suite executable from the root-folder (Some file paths were not transferrable when changing the execution directory)
 - Added ``test_file`` fixture, which constructs the absolute filepath to files in the ``tests/files`` folder to reduce the difficulty of moving test files around and reorganizing the pytest suite
 - Updated pylint (``2.11``), pytest (``6.0``) in ``setup.py``
-- Added ``mypy`` pre-commit hook. Checked files are specified explicitely [[#86]](https://github.com/JuDFTteam/masci-tools/pull/86).
+- Added ``mypy`` pre-commit hook. Checked files are specified explicitly [[#86]](https://github.com/JuDFTteam/masci-tools/pull/86).
 - Added typing to majority of XML functions (with stubs package ``lxml-stubs``) and large parts of the ``io`` and ``util`` subpackages
 - Dropped testing for python ``3.6`` in CI
 
@@ -193,7 +193,7 @@ This release contains major improvements to plotting methods and new tools. Also
 - Refactored attribute/text type definitions in `SchemaDict` objects. Now unified under one structure. Both attributes and texts can now be recognized to contain multiple values [[#64]](https://github.com/JuDFTteam/masci-tools/pull/64)
 - Added `spin_arrows` option to toggle spin arrows in `plot_spinpol_dos` for matplotlib. Previously this was only possible for bokeh
 - Added options to create different types of bar plots to `barchart`: Available are `'stacked'` (default), `'grouped'`, `'independent'` (positions can be defined for each data set)
-- Exceptions occuring in `transforms` for `HDF5Reader` are now bundled into `HDF5TransformationError` to allow easier error handling
+- Exceptions occurring in `transforms` for `HDF5Reader` are now bundled into `HDF5TransformationError` to allow easier error handling
 - Added MT keys to `kkrparams`
 
 ### Bugfixes
@@ -309,7 +309,7 @@ This release contains bugifxes for the visualization routines
 - XML getters now also accept etree.Element
 - Added `etree.indent` calls to keep modified `inp.xml` clean (raises lxml dependency constraint to 4.5)
 - `io_fleurxml` functions now pass keyword arguments to XMLParser
-- Readd `fleur_modes` to output_dict
+- Re-add `fleur_modes` to output_dict
 ### Bugfixes
 - Bugfix for relative xpaths
 
