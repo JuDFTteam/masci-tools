@@ -404,7 +404,8 @@ nitpick_ignore = [
     ('py:class', 'FilterType'),
     ('py:class', 'XMLLike'),
     ('py:class', 'etree.XPathElementEvaluator'),
-    ('py:data', 'F'),
+    ('py:class', 'contextlib._GeneratorContextManager'),
+    ('py:data', 'masci_tools.io.parsers.fleur.fleur_outxml_parser.F')
 ]
 
 

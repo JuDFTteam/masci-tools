@@ -29,7 +29,7 @@ from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
 from masci_tools.util.xml.common_functions import normalize_xmllike
 
-__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants', 'load_outxml_and_check_for_broken_xml')
+__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants', 'load_outxml_and_check_for_broken_xml', '_EvalContext')
 
 
 def load_inpxml(inpxmlfile: XMLFileLike,
@@ -423,7 +423,7 @@ class _EvalContext:
 
     def number_nodes(self, name: str, **kwargs: Any) -> int:
         """
-        :py:func:`~masci_tools.util.schema_dict_util.get_number_of_nodes()
+        Alias of :py:func:`~masci_tools.util.schema_dict_util.get_number_of_nodes()`
 
         :param name: str, name of the tag
 
@@ -431,7 +431,7 @@ class _EvalContext:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
             :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
-                            the iteration element is constructed
+                                   the iteration element is constructed
             :param filters: Dict specifying constraints to apply on the xpath.
                             See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
@@ -488,6 +488,7 @@ class _EvalContext:
         context for this element, i.e. inheriting the schema_dict, constants and logger
 
         Example::
+
             with FleurXMLContext(xmltree, schema_dict) as root:
                 #Operations happen on the root here
                 jspins = root.attribute('jspins')
@@ -542,6 +543,7 @@ class _EvalContext:
         i.e. inheriting the schema_dict, constants and logger
 
         Example::
+
             with FleurXMLContext(xmltree, schema_dict) as root:
                 #Operations happen on the root here
                 jspins = root.attribute('jspins')
@@ -589,10 +591,10 @@ def FleurXMLContext(etree_or_element: XMLLike | etree.XPathElementEvaluator,
         - :py:meth:`_EvalContext.text()`: Evaluate text of tags
         - :py:meth:`_EvalContext.all_attributes()`: Evaluate all attributes of a tag
         - :py:meth:`_EvalContext.parent_attributes()`: Evaluate attribute values of parent of given tag
-        - :py:meth:`_EvalContext.simple_value()`: Evaluate `value` and `unit` attribute of tag
+        - :py:meth:`_EvalContext.single_value()`: Evaluate `value` and `unit` attribute of tag
         - :py:meth:`_EvalContext.tag_exists()`: Evaluate whether a given tag exists
         - :py:meth:`_EvalContext.number_nodes()`: Evaluate how many elements of the tag are present
-        - :py:meth:`_EvalContext.attrib_exists()`: Evaluate whether an attribute exists
+        - :py:meth:`_EvalContext.attribute_exists()`: Evaluate whether an attribute exists
         - :py:meth:`_EvalContext.simple_xpath()`: Evaluate the simple xpath expression for a given tag
         - *Nested Context* :py:meth:`_EvalContext.find()`: Find the first occurrence of the tag and provide a nested
           context to that element
