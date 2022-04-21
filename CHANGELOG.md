@@ -6,6 +6,7 @@
 ### Added
 - New XML setter `align_nmmpmat_to_sqa` to rotate the density matrix file according to SQAs specified either for noco or second variation SOC [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
 - Added `task_list` property to `FleurXMLModifier` to construct a list which can be used to replicate the same `FleurXMLModifier` with the `fromList()` classmethod [[#149]](https://github.com/JuDFTteam/masci-tools/pull/#149)
+- Added `FleurXMLContext`, which acts as a holder of th XML elements,  schema dictionary, constants and logger to reduce the amount of information/clutter in functions evaluating things from the XML file
 
 ### Improvements
 - Added `inverse` argument to nmmpmat XML setters. These will correctly produce the inverse rotation operation for the given angles. Also allow setting `orbital='all'` in `rotate_nmmpmat` to rotate all blocks by the given angles [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
@@ -15,6 +16,9 @@
 - Added missing prefactor `(-1)^(m-mp)` to `get_wigner_matrix()`
 - Added basic tests of `masci_tools.tools.greensfunction` module and fixed several bugs found due to this [[#150]](https://github.com/JuDFTteam/masci-tools/pull/150)
 - Fixed bug in XML setters operating on the DFT+U density matrix file not correctly extracting the number of spin blocks when only setting `l_mperp`
+
+### Deprecated
+- The module `masci_tools.io.io_fleurxml` is renamed to `masci_tools.io.fleur_xml`
 
 ## v.0.9.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)

@@ -106,7 +106,7 @@ There are a number of functions for extracting specific parts of the XML files i
 
 All of these are used in the same way::
 
-   from masci_tools.io.io_fleurxml import load_inpxml
+   from masci_tools.io.fleur_xml import load_inpxml
    from masci_tools.util.xml.xml_getters import get_fleur_modes
 
    xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
@@ -121,7 +121,7 @@ If only a small amount of information is required from the input or output files
 
 .. code-block:: python
 
-   from masci_tools.io.io_fleurxml import load_inpxml
+   from masci_tools.io.fleur_xml import load_inpxml
    from masci_tools.util.schema_dict_util import evaluate_attribute, eval_simple_xpath
 
    #First we create a xml-tree from the input file and load the desired input schema dictionary
@@ -156,7 +156,7 @@ is available to write the same code as above more concisely.
 
 .. code-block:: python
 
-   from masci_tools.io.io_fleurxml import load_inpxml, FleurXMLContext
+   from masci_tools.io.fleur_xml import load_inpxml, FleurXMLContext
    xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
 
    with FleurXMLContext(xmltree, schema_dict) as root:
