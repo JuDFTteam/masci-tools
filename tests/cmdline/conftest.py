@@ -74,7 +74,7 @@ def fake_schemas_and_test_files(tmp_path, test_file):
     finally:
         #Cleanup the folder created in the masci-tools repository
         shutil.rmtree(created_schema_folder)
-        _TaskParser._migrations['0.34'].pop('0.01')  #pylint: disable=protected-access
+        _TaskParser.migrations['0.34'].pop('0.01')  #pylint: disable=protected-access
 
 
 @pytest.fixture

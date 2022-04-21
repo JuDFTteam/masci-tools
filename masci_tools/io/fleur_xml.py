@@ -482,7 +482,7 @@ class _EvalContext:
         from masci_tools.util.schema_dict_util import eval_simple_xpath
         return eval_simple_xpath(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def find(self, name: str, **kwargs: Any) -> _GeneratorContextManager[_EvalContext]:
+    def find(self, name: str, **kwargs: Any) -> _GeneratorContextManager[_EvalContext]: #pylint: disable=unsubscriptable-object
         """
         Finds the first element for the given name and constraints and gives a nested
         context for this element, i.e. inheriting the schema_dict, constants and logger
