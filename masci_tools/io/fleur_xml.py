@@ -23,7 +23,7 @@ from pathlib import Path
 from functools import partial
 from logging import Logger
 from typing import Callable, Any, Generator
-from contextlib import contextmanager
+from contextlib import _GeneratorContextManager, contextmanager
 
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
@@ -471,8 +471,7 @@ class _EvalContext:
         from masci_tools.util.schema_dict_util import eval_simple_xpath
         return eval_simple_xpath(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    @contextmanager
-    def find(self, name: str, **kwargs: Any) -> Generator[_EvalContext, None, None]:
+    def find(self, name: str, **kwargs: Any) -> _GeneratorContextManager[_EvalContext]:
         """
         Finds the first element for the given name and constraints and gives a nested
         context for this element, i.e. inheriting the schema_dict, constants and logger
@@ -500,8 +499,7 @@ class _EvalContext:
 
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
         if nodes:
-            with self.nested(nodes[0]) as ctx:
-                yield ctx
+            return self.nested(nodes[0])
         raise ValueError(f'No nodes found for name {name}')
 
     @contextmanager
