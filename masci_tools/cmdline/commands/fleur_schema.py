@@ -187,10 +187,9 @@ def validate_inpxmlfile(xml_file):
     xml_file = os.path.abspath(xml_file)
 
     xmltree, schema_dict = load_inpxml(xml_file)
-
     try:
-        validate_xml(xmltree, schema_dict.xmlschema, error_header='Input file does not validate against the schema')
-    except etree.DocumentInvalid as err:
+        schema_dict.validate(xmltree)
+    except ValueError as err:
         echo.echo_error(str(err))
     else:
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['inp_version']}")
@@ -206,10 +205,9 @@ def validate_outxmlfile(xml_file):
     xml_file = os.path.abspath(xml_file)
 
     xmltree, schema_dict = load_outxml(xml_file)
-
     try:
-        validate_xml(xmltree, schema_dict.xmlschema, error_header='Output file does not validate against the schema')
-    except etree.DocumentInvalid as err:
+        schema_dict.validate(xmltree)
+    except ValueError as err:
         echo.echo_error(str(err))
     else:
         echo.echo_success(f"{xml_file} validates against the schema for version {schema_dict['out_version']}")

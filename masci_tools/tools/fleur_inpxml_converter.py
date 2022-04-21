@@ -24,7 +24,7 @@ from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
 from masci_tools.util.typing import XMLLike, FileLike
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
-from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath, validate_xml
+from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath
 from masci_tools.cmdline.parameters.slice import ListElement
 from masci_tools.cmdline.utils import echo
 
@@ -886,8 +886,7 @@ def convert_inpxml(xmltree: etree._ElementTree, schema_dict: InputSchemaDict, to
                 xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
 
     _reorder_tree(xmltree.getroot(), schema_dict_target)
-
-    validate_xml(xmltree, schema_dict_target.xmlschema, error_header='Input file does not validate against the schema')
+    schema_dict_target.validate(xmltree)
 
     #If there was no relax.xml included we need to rewrite the xinclude tag for it
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}

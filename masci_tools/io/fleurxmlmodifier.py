@@ -24,6 +24,7 @@ except ImportError:
     from typing_extensions import Literal  #type: ignore
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
+from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.io.io_fleurxml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
@@ -217,16 +218,10 @@ class FleurXMLModifier:
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
-        from masci_tools.util.xml.common_functions import validate_xml, eval_xpath
         from masci_tools.util.xml.xml_setters_nmmpmat import validate_nmmpmat
-        from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
-        version = eval_xpath(xmltree, '//@fleurInputVersion')
-        version = str(version)
-        if version is None:
-            raise ValueError('Failed to extract inputVersion')
-
-        schema_dict = InputSchemaDict.fromVersion(version)
+        xmltree, schema_dict = load_inpxml(xmltree)
+        xmltree, _ = clear_xml(xmltree)
 
         for task in modification_tasks:
             if task.name in cls.xpath_functions:
@@ -245,8 +240,7 @@ class FleurXMLModifier:
                 raise ValueError(f'Unknown task {task.name}')
 
         if validate_changes:
-            validate_xml(xmltree, schema_dict.xmlschema, error_header='Changes were not valid')
-
+            schema_dict.validate(xmltree, header='Changes were not valid')
             try:
                 validate_nmmpmat(xmltree, nmmp_lines, schema_dict)
             except ValueError as exc:

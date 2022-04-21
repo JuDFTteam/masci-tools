@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
-from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.io.io_fleurxml import load_outxml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
@@ -156,26 +156,13 @@ def outxml_parser(outxmlfile: XMLFileLike,
     xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    errmsg = ''
     try:
-        validate_xml(xmltree, outschema_dict.xmlschema, error_header='Output file does not validate against the schema')
-    except etree.DocumentInvalid as err:
-        errmsg = str(err)
-        if logger is not None:
-            logger.warning(errmsg)
+        outschema_dict.validate(xmltree, logger=logger)
+    except ValueError as err:
         if not ignore_validation:
             if logger is not None:
-                logger.exception(errmsg)
-            raise ValueError(errmsg) from err
-
-    if not outschema_dict.xmlschema.validate(xmltree) and errmsg == '':
-        msg = 'Output file does not validate against the schema: Reason is unknown'
-        if logger is not None:
-            logger.warning(msg)
-        if not ignore_validation:
-            if logger is not None:
-                logger.exception(msg)
-            raise ValueError(msg)
+                logger.exception(err)
+            raise
 
     parser = ParseTasks(out_version)
     if additional_tasks is None:

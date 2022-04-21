@@ -35,7 +35,7 @@ from lxml import etree
 
 from masci_tools.util.lockable_containers import LockableDict, LockableList
 from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, CaseInsensitiveDict
-from masci_tools.util.xml.common_functions import abs_to_rel_xpath, split_off_tag, contains_tag
+from masci_tools.util.xml.common_functions import abs_to_rel_xpath, clear_xml, split_off_tag, contains_tag, validate_xml
 from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
@@ -228,6 +228,8 @@ class SchemaDict(LockableDict):
     _tag_entries: tuple[str, ...] = ()
     _attrib_entries: tuple[str, ...] = ()
     _info_entries: tuple[str, ...] = ()
+
+    _VALIDATION_ERROR_HEADER: str = 'File does not validate'
 
     @classmethod
     def clear_cache(cls) -> None:
@@ -568,6 +570,31 @@ class SchemaDict(LockableDict):
 
         return tag_info
 
+    def validate(self, xmltree: etree._ElementTree, logger: Logger | None = None, header: str = '') -> None:
+        """
+        Validate the given XML tree against the schema
+
+        :param xmltree: XML tree to validate
+        :param logger: Logger to relay evlt warnings/errors
+        """
+        header = header or self._VALIDATION_ERROR_HEADER
+        errmsg = ''
+        xmltree, _ = clear_xml(xmltree)
+        try:
+            validate_xml(xmltree, self.xmlschema, error_header=header)
+        except etree.DocumentInvalid as err:
+            errmsg = str(err)
+            if logger is not None:
+                logger.warning(errmsg)
+            raise ValueError(errmsg) from err
+
+        #TODO: Is this an esoteric case that will never happen or is this something we really need?
+        if not self.xmlschema.validate(xmltree) and errmsg == '':
+            errmsg = f'{header}: Reason is unknown'
+            if logger is not None:
+                logger.warning(errmsg)
+            raise ValueError(errmsg)
+
 
 class InputSchemaDict(SchemaDict):
     """
@@ -605,6 +632,8 @@ class InputSchemaDict(SchemaDict):
         'other_attribs',
     )
     _info_entries = ('tag_info',)
+
+    _VALIDATION_ERROR_HEADER: str = 'Input file does not validate against the schema'
 
     @classmethod
     def fromVersion(cls, version: str, logger: Logger | None = None, no_cache: bool = False) -> InputSchemaDict:
@@ -721,6 +750,8 @@ class OutputSchemaDict(SchemaDict):
     _attrib_entries = ('unique_attribs', 'unique_path_attribs', 'other_attribs', 'iteration_unique_attribs',
                        'iteration_unique_path_attribs', 'iteration_other_attribs')
     _info_entries = ('tag_info', 'iteration_tag_info')
+
+    _VALIDATION_ERROR_HEADER: str = 'Output file does not validate against the schema'
 
     @classmethod
     def fromVersion(cls,
