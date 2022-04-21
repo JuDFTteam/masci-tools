@@ -29,7 +29,8 @@ from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
 from masci_tools.util.xml.common_functions import normalize_xmllike
 
-__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants', 'load_outxml_and_check_for_broken_xml', '_EvalContext')
+__all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants', 'load_outxml_and_check_for_broken_xml',
+           '_EvalContext')
 
 
 def load_inpxml(inpxmlfile: XMLFileLike,
