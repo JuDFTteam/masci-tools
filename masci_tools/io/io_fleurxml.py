@@ -94,13 +94,33 @@ def load_outxml(outxmlfile: XMLFileLike,
                 base_url: str | Path | None = None,
                 **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.OutputSchemaDict]:
     """
-    Loads a out.xml file for fleur together with its corresponding schema dictionary
+    Loads a out.xml file for fleur together with its corresponding schema dictionary.
+    Also returns whether the XML file had to be parsed with `recover=True`
 
     :param outxmlfile: either path to the out.xml file, opened file handle (in bytes modes i.e. rb)
                        or a xml etree to be parsed
 
     :returns: parsed xmltree of the outxmlfile and the schema dictionary
               for the corresponding output version
+    """
+    xmltree, schema_dict, _ = load_outxml_and_check_for_broken_xml(outxmlfile, logger, base_url, **kwargs)
+    return xmltree, schema_dict
+
+
+def load_outxml_and_check_for_broken_xml(
+        outxmlfile: XMLFileLike,
+        logger: Logger | None = None,
+        base_url: str | Path | None = None,
+        **kwargs: Any) -> tuple[etree._ElementTree, fleur_schema.OutputSchemaDict, bool]:
+    """
+    Loads a out.xml file for fleur together with its corresponding schema dictionary.
+    Also returns whether the XML file had to be parsed with `recover=True`
+
+    :param outxmlfile: either path to the out.xml file, opened file handle (in bytes modes i.e. rb)
+                       or a xml etree to be parsed
+
+    :returns: parsed xmltree of the outxmlfile and the schema dictionary
+              for the corresponding output version and bool indicating whether the outxml is broken
     """
     from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
@@ -121,15 +141,6 @@ def load_outxml(outxmlfile: XMLFileLike,
 
     if isinstance(outxmlfile, etree._ElementTree):
         xmltree = outxmlfile
-    elif 'recover' in kwargs:
-        parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8', **kwargs)
-
-        try:
-            xmltree = xml_parse_func(outxmlfile, parser)
-        except etree.XMLSyntaxError as msg:
-            if logger is not None:
-                logger.error(f"Failed to parse output file with recover={kwargs['recover']}")
-            raise ValueError(f"Failed to parse output file with recover={kwargs['recover']}: {msg}") from msg
     else:
         parser = etree.XMLParser(attribute_defaults=True, recover=False, encoding='utf-8', **kwargs)
 
@@ -149,7 +160,7 @@ def load_outxml(outxmlfile: XMLFileLike,
             try:
                 xmltree = xml_parse_func(outxmlfile, parser)
             except etree.XMLSyntaxError as err:
-                raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
+                raise ValueError('Skipping the parsing of the XML file. Repairing was not possible.') from err
 
     if etree.iselement(xmltree):
         xmltree = xmltree.getroottree()
@@ -214,4 +225,4 @@ def load_outxml(outxmlfile: XMLFileLike,
 
     schema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
 
-    return xmltree, schema_dict
+    return xmltree, schema_dict, outfile_broken

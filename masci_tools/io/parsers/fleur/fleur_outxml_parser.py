@@ -18,7 +18,7 @@ from __future__ import annotations
 from masci_tools.util.parse_tasks import ParseTasks
 from masci_tools.util.schema_dict_util import tag_exists, read_constants, eval_simple_xpath, evaluate_attribute
 from masci_tools.util.xml.common_functions import clear_xml
-from masci_tools.io.io_fleurxml import load_outxml
+from masci_tools.io.io_fleurxml import load_outxml_and_check_for_broken_xml
 from masci_tools.util.logging_util import DictHandler, OutParserLogAdapter
 from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 from masci_tools.util.typing import XMLFileLike
@@ -108,33 +108,16 @@ def outxml_parser(outxmlfile: XMLFileLike,
     if logger is not None:
         logger.info('Masci-Tools Fleur out.xml Parser v%s', __parser_version__)
 
-    outfile_broken = False
     try:
-        xmltree, outschema_dict = load_outxml(outxmlfile, logger=logger, base_url=base_url, recover=False)
+        xmltree, outschema_dict, outfile_broken = load_outxml_and_check_for_broken_xml(outxmlfile,
+                                                                                       logger=logger,
+                                                                                       base_url=base_url)
     except ValueError as err:
-        if 'Failed to parse output file' in str(err):
-            outfile_broken = True
-            if logger is None:
-                warnings.warn('The out.xml file is broken I try to repair it.')
-            else:
-                logger.warning('The out.xml file is broken I try to repair it.')
-        else:
-            if logger is not None:
-                logger.error(str(err))
-            raise
-
-    if outfile_broken:
-        try:
-            xmltree, outschema_dict = load_outxml(outxmlfile, logger=logger, base_url=base_url, recover=True)
-        except ValueError as err:
-            if 'Failed to parse output file' in str(err):
-                if logger is None:
-                    raise ValueError('Skipping the parsing of the xml file. Repairing was not possible.') from err
-                logger.exception('Skipping the parsing of the xml file. Repairing was not possible.')
-                return {}
-            if logger is not None:
-                logger.error(str(err))
-            raise
+        if logger is not None:
+            logger.error(str(err))
+        if 'Skipping the parsing of the XML file' in str(err):
+            return {}
+        raise
 
     actual_out_version = evaluate_attribute(xmltree, outschema_dict, 'fleurOutputVersion', logger=logger)
     if actual_out_version == '0.27':

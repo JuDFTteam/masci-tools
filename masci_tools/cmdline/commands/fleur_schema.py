@@ -6,7 +6,7 @@ import click
 
 import masci_tools
 from masci_tools.cmdline.utils import echo
-from masci_tools.util.xml.common_functions import clear_xml, validate_xml
+from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_str_version_number
 from masci_tools.io.io_fleurxml import load_inpxml, load_outxml
 from masci_tools.io.parsers.fleur import inpxml_parser, outxml_parser
@@ -158,7 +158,7 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
             parser_info = {}
             parser_dict = inpxml_parser(test_xml_file, parser_info_out=parser_info)
         else:
-            xmltree, schema_dict = load_outxml(test_xml_file)
+            _, schema_dict = load_outxml(test_xml_file)
 
             if schema_dict['out_version'] != schema_version:
                 echo.echo_error(
