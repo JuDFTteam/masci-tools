@@ -9,6 +9,7 @@
 - Added `FleurXMLContext`, which acts as a holder of th XML elements,  schema dictionary, constants and logger to reduce the amount of information/clutter in functions evaluating things from the XML file [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
 
   Note: The class `ParseTasks` used in the `outxml_parser` was simplified and placed into the `outxml_parser` module and the decorator `register_parsing_function` was removed. This was done without deprecation since they were exclusively used in the `outxml_parser` and were the main cause of cyclic import problems previously
+- Added several predefined conversions to/from input version `0.35` to `inpxml_converter` [[#153]](https://github.com/JuDFTteam/masci-tools/pull/#153)
 
 ### Improvements
 - Added `inverse` argument to nmmpmat XML setters. These will correctly produce the inverse rotation operation for the given angles. Also allow setting `orbital='all'` in `rotate_nmmpmat` to rotate all blocks by the given angles [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
