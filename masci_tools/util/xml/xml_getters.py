@@ -180,7 +180,7 @@ def get_nkpts_max4(xmltree: XMLLike,
 
         nkpts = None
         if modes['band'] or modes['gw']:
-            filters={'altKPointSet': {'purpose': 'bands' if modes['band'] else 'gw'}}
+            filters = {'altKPointSet': {'purpose': 'bands' if modes['band'] else 'gw'}}
             if root.tag_exists('altKPointSet', filters=filters):
                 with root.find('altKPointSet', filters=filters) as kpoints:
                     nkpts = kpoints.attribute('count', tag_name='kPointList', optional=True)
@@ -245,10 +245,10 @@ def get_cell(xmltree: XMLLike,
 
         lattice_tag: etree._Element | None = None
         if root.tag_exists('bulkLattice'):
-            lattice_tag = root.simple_xpath('bulkLattice')
+            lattice_tag = root.simple_xpath('bulkLattice')  #type:ignore[assignment]
             pbc = (True, True, True)
         elif root.tag_exists('filmLattice'):
-            lattice_tag = root.simple_xpath('filmLattice')
+            lattice_tag = root.simple_xpath('filmLattice')  #type:ignore[assignment]
             pbc = (True, True, False)
 
         if lattice_tag is None:
@@ -259,9 +259,9 @@ def get_cell(xmltree: XMLLike,
 
             bravais_tag: etree._Element
             if lattice.tag_exists('bravaisMatrix'):
-                bravais_tag = lattice.simple_xpath('bravaisMatrix')
+                bravais_tag = lattice.simple_xpath('bravaisMatrix')  #type:ignore[assignment]
             elif not all(pbc) and schema_dict.inp_version >= (0, 35):
-                bravais_tag = lattice.simple_xpath('bravaisMatrixFilm')
+                bravais_tag = lattice.simple_xpath('bravaisMatrixFilm')  #type:ignore[assignment]
             else:
                 raise ValueError(NO_CELL_ERROR)
 
@@ -365,8 +365,6 @@ def get_parameter_data(xmltree: XMLLike,
               which can not be controlled by input for inpgen, were changed)
 
     """
-    from masci_tools.util.schema_dict_util import read_constants, eval_simple_xpath, attrib_exists
-    from masci_tools.util.schema_dict_util import evaluate_attribute, evaluate_text, evaluate_tag
     from masci_tools.util.xml.converters import convert_fleur_lo, convert_fleur_electronconfig
     from masci_tools.io.common_functions import filter_out_empty_dict_entries
 
@@ -430,7 +428,7 @@ def get_parameter_data(xmltree: XMLLike,
 
             atom_lo = species.simple_xpath('lo', list_return=True)
             if len(atom_lo) != 0:
-                atom_dict['lo'] = convert_fleur_lo(atom_lo, allow_special_los=allow_special_los)
+                atom_dict['lo'] = convert_fleur_lo(atom_lo, allow_special_los=allow_special_los)  #type:ignore[arg-type]
 
             parameters[atomlist_name] = filter_out_empty_dict_entries(atom_dict)
 
@@ -647,8 +645,9 @@ def get_structure_data(xmltree: XMLLike,
                         logger.warning(f'Normalized species name {group_species} to {normed_name}. '
                                        "Use the option 'normed_kind_name=False' to preserve the original species name")
                     group_species = normed_name
-            
-            atom_data.extend(AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
+
+            atom_data.extend(
+                AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
 
     return atom_data, cell, pbc
 
@@ -876,9 +875,11 @@ def get_special_kpoints(
                                                       }},
                                                       list_return=True)
 
+            #yapf: disable
             special_kpoints[label] = [
-                (kpointlist.node.index(kpoint), str(kpoint.attrib['label'])) for kpoint in labelled_points
+                (kpointlist.node.index(kpoint), str(kpoint.attrib['label'])) for kpoint in labelled_points  #type:ignore[union-attr]
             ]
+            #yapf: enable
 
     if len(special_kpoints) == 1:
         _, special_kpoints = special_kpoints.popitem()  #type:ignore[assignment]

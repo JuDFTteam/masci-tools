@@ -49,6 +49,7 @@ def read_constants(root: XMLLike | etree.XPathElementEvaluator,
     :return: a python dictionary with all defined constants
     """
     from masci_tools.io.fleur_xml import get_constants  #pylint: disable=cyclic-import
+    warnings.warn('read_constants is moved to masci_tools.io.fleur_xml', DeprecationWarning)
     return get_constants(root, schema_dict, logger=logger)  #type: ignore[arg-type]
 
 

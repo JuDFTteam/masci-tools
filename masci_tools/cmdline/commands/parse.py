@@ -75,11 +75,11 @@ def parse_constants(xml_file):
     """
     Parse the mathematical constants used in the given xml-file
     """
-    from masci_tools.util.schema_dict_util import read_constants
+    from masci_tools.io.fleur_xml import get_constants
 
     xmltree, schema_dict = _load_xml_file(xml_file)
 
-    constants = read_constants(xmltree, schema_dict)
+    constants = get_constants(xmltree, schema_dict)
     echo.echo_dictionary(constants)
 
 

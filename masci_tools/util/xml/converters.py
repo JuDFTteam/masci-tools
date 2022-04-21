@@ -339,7 +339,7 @@ def convert_from_xml_single_values(xmlstring: str | list[str],
                 except MissingConstant as exc:
                     new_exc = MissingConstant(f'No value available for expression {exc}\n'
                                               'Please provide the value for this constant'
-                                              ' by using the read_constants function for example')
+                                              ' by using the get_constants function for example')
 
                     exceptions.append(new_exc)
                     continue

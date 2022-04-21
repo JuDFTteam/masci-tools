@@ -381,7 +381,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
 
     :returns: xmltree with shifted attribute
     """
-    from masci_tools.util.schema_dict_util import read_constants
+    from masci_tools.io.fleur_xml import get_constants
     from masci_tools.util.xml.converters import convert_from_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_attrib, split_off_tag
 
@@ -391,11 +391,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
         raise ValueError(f"You try to shift the attribute:'{name}' , but the key is unknown to the fleur plug-in")
 
     possible_types = schema_dict['attrib_types'][name]
-
-    if not etree.iselement(xmltree):
-        constants = read_constants(xmltree.getroot(), schema_dict)  #type:ignore[union-attr]
-    else:
-        constants = read_constants(xmltree, schema_dict)
+    constants = get_constants(xmltree, schema_dict)  #type:ignore[arg-type]
 
     types = {definition.base_type for definition in possible_types}
     if 'float' not in types and \
