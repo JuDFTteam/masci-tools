@@ -1,8 +1,10 @@
 # Changelog
 
-## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.1...develop)
+## v.0.10.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.1...v0.10.0)
 
+This release provides several new features in the XML modification/evaluation for Fleur XML files and bugfixes. Multiple problems when
+working with DFT+U density matrix files are also fixed.
 ### Added
 - New XML setter `align_nmmpmat_to_sqa` to rotate the density matrix file according to SQAs specified either for noco or second variation SOC [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
 - Added `task_list` property to `FleurXMLModifier` to construct a list which can be used to replicate the same `FleurXMLModifier` with the `fromList()` classmethod [[#149]](https://github.com/JuDFTteam/masci-tools/pull/#149)
@@ -25,6 +27,9 @@
 ### Deprecated
 - The module `masci_tools.io.io_fleurxml` is renamed to `masci_tools.io.fleur_xml` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
 - The module `masci_tools.util.parse_task_decorator` is removed. All decorators are now availaibe under `masci_tools.io.parsers.fleur` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
+
+### For Developers
+- Added `py.typed` marker to masci-tools, since a large part of the outside facing code (especially the XML APIs are typed). With this marker other packages can use the typehints in this package
 
 ## v.0.9.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.9.0...v0.9.1)
