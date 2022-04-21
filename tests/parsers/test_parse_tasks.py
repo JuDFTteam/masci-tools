@@ -1,5 +1,5 @@
 """
-Tests for the ParseTasks class
+Tests for the _TaskParser class
 """
 
 

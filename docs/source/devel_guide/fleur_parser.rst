@@ -85,11 +85,11 @@ The following are valid:
 Migrating the parsing tasks
 ----------------------------
 
-These task definitions might have to be adapted for new fleur versions. Some changes might be possible to make in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` directly without breaking backwards compatibility. If this is not possible there is a decorator :py:func:`~masci_tools.util.parse_tasks_decorators.register_migration()` to define a function that is recognized by the class :py:class:`~masci_tools.util.parse_tasks.ParseTasks` to convert between versions. A usage example is shown below.
+These task definitions might have to be adapted for new fleur versions. Some changes might be possible to make in :py:mod:`~masci_tools.io.parsers.fleur.default_parse_tasks` directly without breaking backwards compatibility. If this is not possible there is a decorator :py:func:`~masci_tools.util.parse_tasks_decorators.register_migration()` to define a function that is recognized by the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` to convert between versions. A usage example is shown below.
 
 .. code-block:: python
 
-  from masci_tools.util.parse_tasks_decorators import register_migration
+  from masci_tools.io.parsers.fleur import register_migration
   import copy
 
   @register_migration(base_version='0.33', target_version='0.34')

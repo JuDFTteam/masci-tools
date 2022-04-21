@@ -10,7 +10,7 @@
 #                                                                             #
 ###############################################################################
 """
-This module defines decorators for the ParseTasks class to make extending/modifying the parser
+This module defines decorators for the _TaskParser class to make extending/modifying the parser
 more convenient
 
 Up till now 3 decorators are defined:

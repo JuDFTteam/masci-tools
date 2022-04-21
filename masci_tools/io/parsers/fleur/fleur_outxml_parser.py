@@ -353,9 +353,9 @@ class _TaskParser:
 
     .. code-block:: python
 
-        from masci_tools.io.parsers.fleur import ParseTasks
+        from masci_tools.io.parsers.fleur.fleur_outxml_parser import _TaskParser
 
-        p = ParseTasks('0.33')
+        p = _TaskParser('0.33')
         totE_definition = p.tasks['total_energy']
     """
 
@@ -703,7 +703,7 @@ F = TypeVar('F', bound=Callable[..., Any])
 
 def register_migration(base_version: str, target_version: str | list[str]) -> Callable[[F], F]:
     """
-    Decorator to add migration for task definition dictionary to the ParseTasks class
+    Decorator to add migration for task definition dictionary to the _TaskParser class
     The function should only take the dict of task definitions as an argument
 
     :param base_version: str of the version, from which the migration starts
@@ -714,7 +714,7 @@ def register_migration(base_version: str, target_version: str | list[str]) -> Ca
 
     def migration_decorator(func: F) -> F:
         """
-        Return decorated ParseTasks object with _migrations dict attribute
+        Return decorated _TaskParser object with migrations dict attribute
         Here all registered migrations are inserted
         """
 
