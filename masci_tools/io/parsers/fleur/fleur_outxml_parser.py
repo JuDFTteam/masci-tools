@@ -292,7 +292,6 @@ def _determine_iteration_condition(iteration_to_parse: Literal['all', 'first', '
     filters = {}
     if index_condition is not None:
         filters['iteration'] = {'index': index_condition}
-    print(filters)
     return filters
 
 
