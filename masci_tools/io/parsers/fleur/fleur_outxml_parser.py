@@ -27,7 +27,7 @@ from masci_tools.util.typing import XMLFileLike
 import copy
 import warnings
 import logging
-from typing import Any, Callable, Iterable, List, Union, TypeVar
+from typing import Any, Callable, Iterable, TypeVar
 try:
     from typing import Literal
 except ImportError:
@@ -373,10 +373,8 @@ class _TaskParser:
     ALLOWED_KEYS_XML_GETTER = {'parse_type', 'name', 'kwargs', 'result_names'}
 
     _version = '0.4.0'
-    _migrations: MigrationDict = {}
-    _all_attribs_function: set[str] = set()
-    _conversion_functions: dict[str, Callable] = {}
-    _parse_functions: dict[str, Callable] = {}
+    migrations: MigrationDict = {}
+    conversion_functions: dict[str, Callable] = {}
 
     def __init__(self, version: str, validate_defaults: bool = False) -> None:
         """
@@ -391,8 +389,8 @@ class _TaskParser:
         """
         from . import default_parse_tasks as tasks
 
-        self._iteration_tasks: list[str] = []
-        self._general_tasks: list[str] = []
+        self.iteration_tasks: list[str] = []
+        self.general_tasks: list[str] = []
         self.version = convert_str_version_number(version)
 
         tasks_dict: dict[str, dict[str, Any]] = copy.deepcopy(tasks.TASKS_DEFINITION)  #type: ignore[arg-type]
@@ -409,9 +407,7 @@ class _TaskParser:
         if version not in working:
 
             working_version_tuples = {convert_str_version_number(v) for v in working}
-            version_tuple = convert_str_version_number(version)
-
-            if all(working_version < version_tuple for working_version in working_version_tuples):
+            if all(working_version < self.version for working_version in working_version_tuples):
                 warnings.warn(
                     f"Output version '{version}' is not explicitly stated as 'working'\n"
                     'with the current version of the outxml_parser.\n'
@@ -426,49 +422,6 @@ class _TaskParser:
 
                 for migration in migration_list:
                     self.tasks = migration(self.tasks)
-
-    @property
-    def iteration_tasks(self) -> list[str]:
-        """
-        Tasks to perform for each iteration
-        """
-        return self._iteration_tasks
-
-    @iteration_tasks.setter
-    def iteration_tasks(self, val: list[str]) -> None:
-        """
-        Setter for iteration_tasks
-        """
-        self._iteration_tasks = val
-
-    @property
-    def general_tasks(self) -> list[str]:
-        """
-        Tasks to perform for the root node
-        """
-        return self._general_tasks
-
-    @general_tasks.setter
-    def general_tasks(self, val: list[str]) -> None:
-        """
-        Setter for general_tasks
-        """
-        self._general_tasks = val
-
-    @property
-    def migrations(self) -> MigrationDict:
-        """
-        Return the registered migrations
-        """
-
-        return self._migrations
-
-    @property
-    def conversion_functions(self) -> dict[str, Callable]:
-        """
-        Return the registered conversion functions
-        """
-        return self._conversion_functions
 
     @property
     def optional_tasks(self) -> set[str]:
@@ -532,40 +485,35 @@ class _TaskParser:
             if not task_keys and task_key in self.tasks[task_name]:
                 continue
 
-            missing_required = self.REQUIRED_KEYS.difference(task_keys)
+            parse_type = definition['parse_type']
+            if parse_type not in self.PARSE_FUNCTIONS | {'xmlGetter'}:
+                raise ValueError(f'Unknown parse_type: {parse_type}')
+
+            required = self.REQUIRED_KEYS
+            allowed = self.ALLOWED_KEYS
+            if parse_type == 'xmlGetter':
+                required = required | self.REQUIRED_KEYS_XML_GETTER
+                allowed = self.ALLOWED_KEYS_XML_GETTER
+            else:
+                required = required | self.REQUIRED_KEYS_UTIL
+                if parse_type in self.ALL_ATTRIBS_FUNCTIONS:
+                    allowed = self.ALLOWED_KEYS_ALLATTRIBS
+
+            missing_required = required.difference(task_keys)
             if missing_required:
                 raise ValueError(f'Reqired Keys missing: {missing_required}')
 
-            if definition['parse_type'] == 'xmlGetter':
-                missing_required = self.REQUIRED_KEYS_XML_GETTER.difference(task_keys)
-                if missing_required:
-                    raise ValueError(f'Reqired Keys missing: {missing_required}')
-            else:
-                missing_required = self.REQUIRED_KEYS_UTIL.difference(task_keys)
-                if missing_required:
-                    raise ValueError(f'Reqired Keys missing: {missing_required}')
-
-            if not definition['parse_type'] in self.PARSE_FUNCTIONS and definition['parse_type'] != 'xmlGetter':
-                raise ValueError(f"Unknown parse_type: {definition['parse_type']}")
-
-            if definition['parse_type'] in self.ALL_ATTRIBS_FUNCTIONS:
-                extra_keys = task_keys.difference(self.ALLOWED_KEYS_ALLATTRIBS)
-            elif definition['parse_type'] == 'xmlGetter':
-                extra_keys = task_keys.difference(self.ALLOWED_KEYS_XML_GETTER)
-            else:
-                extra_keys = task_keys.difference(self.ALLOWED_KEYS)
-
+            extra_keys = task_keys.difference(allowed)
             if extra_keys:
                 raise ValueError(f'Got extra Keys: {extra_keys}')
 
         if append:
-            if task_name not in self.tasks:
-                self.tasks[task_name] = {}
-            for task_key, definition in task_definition.items():
+            self.tasks.setdefault(task_name, {})
+            for key, definition in task_definition.items():
                 if definition:
-                    self.tasks[task_name][task_key] = definition
-                elif task_key in self.tasks[task_name]:
-                    self.tasks[task_name].pop(task_key)
+                    self.tasks[task_name][key] = definition
+                elif key in self.tasks[task_name]:
+                    self.tasks[task_name].pop(key)
         else:
             self.tasks[task_name] = task_definition
 
@@ -600,29 +548,22 @@ class _TaskParser:
             if optional and task_name not in optional_tasks:
                 continue
 
-            if minimal:
-                task_minimal = definition.get('_minimal', False)
-                if not task_minimal:
-                    continue
-
-            #These tasks are always added manually
-            special = definition.get('_special', False)
-            if special:
+            if minimal and not definition.get('_minimal', False):
                 continue
 
-            mode_req = definition.get('_modes', [])
+            #These tasks are always added manually
+            if definition.get('_special', False):
+                continue
 
-            check = [fleurmodes[mode] == required_value for mode, required_value in mode_req]
-
+            requirements = definition.get('_modes', [])
+            check = [fleurmodes[mode] == required_value for mode, required_value in requirements]
             if not all(check):
                 continue
 
-            general_task = definition.get('_general', False)
-
-            if general_task:
-                self._general_tasks.append(task_name)
+            if definition.get('_general', False):
+                self.general_tasks.append(task_name)
             else:
-                self._iteration_tasks.append(task_name)
+                self.iteration_tasks.append(task_name)
 
         #Manual overrides for certain fleur modes
         if fleurmodes['dos'] or fleurmodes['band'] or fleurmodes['cf_coeff']:
@@ -776,28 +717,21 @@ def register_migration(base_version: str, target_version: str | list[str]) -> Ca
         Return decorated ParseTasks object with _migrations dict attribute
         Here all registered migrations are inserted
         """
-        #pylint: disable=protected-access
-
-        if not base_version in _TaskParser._migrations:
-            _TaskParser._migrations[base_version] = {}
 
         target_version_list = target_version
         if not isinstance(target_version_list, list):
             target_version_list = [target_version_list]
+
         for valid_version in target_version_list:
-            _TaskParser._migrations[base_version][valid_version] = func
+            _TaskParser.migrations.setdefault(base_version, {})[valid_version] = func
 
             for valid_version_2 in target_version_list:
                 if valid_version == valid_version_2:
                     continue
                 if int(valid_version.split('.')[1]) > int(valid_version_2.split('.')[1]):
-                    if valid_version not in _TaskParser._migrations:
-                        _TaskParser._migrations[valid_version] = {}
-                    _TaskParser._migrations[valid_version][valid_version_2] = 'compatible'
+                    _TaskParser.migrations.setdefault(valid_version, {})[valid_version_2] = 'compatible'
                 else:
-                    if valid_version_2 not in _TaskParser._migrations:
-                        _TaskParser._migrations[valid_version_2] = {}
-                    _TaskParser._migrations[valid_version_2][valid_version] = 'compatible'
+                    _TaskParser.migrations.setdefault(valid_version_2, {})[valid_version] = 'compatible'
 
         return func
 
@@ -816,6 +750,6 @@ def conversion_function(func: F) -> F:
 
     and return only the modified output dict
     """
-    _TaskParser._conversion_functions[func.__name__] = func  # pylint: disable=protected-access
+    _TaskParser.conversion_functions[func.__name__] = func
 
     return func
