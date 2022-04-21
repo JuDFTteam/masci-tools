@@ -23,8 +23,11 @@ from pathlib import Path
 from functools import partial
 from logging import Logger
 from typing import Callable, Any, Generator
+from contextlib import contextmanager
+
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
+from masci_tools.util.xml.common_functions import normalize_xmllike
 
 __all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants')
 
@@ -220,23 +223,56 @@ def load_outxml(outxmlfile: XMLFileLike,
     return xmltree, schema_dict
 
 
-from contextlib import contextmanager, nullcontext
-from masci_tools.util.xml.common_functions import normalize_xmllike
-
-
 class _EvalContext:
+    """
+    Contextmanager to hold the relevant datastructures for evaluating values from XML files
+
+    This holds:
+
+        :param etree_or_element: The XML tree of the file
+        :param schema_dict: The corresponding SchemaDict
+        :param constants: The dictionary containing the defined mathematical constants
+        :param logger: The configured logger instance
+    """
 
     def __init__(self,
-                 etree_or_element: XMLLike,
+                 etree_or_element: XMLLike | etree.XPathElementEvaluator,
                  schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                  constants: dict[str, float] | None = None,
                  logger: logging.Logger | None = None) -> None:
-        self.node = normalize_xmllike(etree_or_element)
+
+        self.node: etree._Element | etree.XPathElementEvaluator
+        if not isinstance(etree_or_element, etree.XPathElementEvaluator):
+            self.node = normalize_xmllike(etree_or_element)
+        else:
+            self.node = etree_or_element
         self.schema_dict = schema_dict
         self.logger = logger
         self.constants = constants or get_constants(self.node, self.schema_dict, self.logger)
 
-    def attribute(self, name, default=None, **kwargs):
+    def attribute(self, name: str, default: Any | None = None, **kwargs: Any) -> Any:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.evaluate_attribute()`
+
+        :param name: str, name of the attribute
+        :param default: value to return, if there are no values found
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+            :param list_return: if True, the returned quantity is always a list even if only one element is in it
+            :param optional: bool, if True and no logger given none or an empty list is returned
+
+        :returns: list or single value, converted in convert_xml_attribute
+        """
         from masci_tools.util.schema_dict_util import evaluate_attribute
         if default is not None:
             kwargs['optional'] = True
@@ -250,15 +286,74 @@ class _EvalContext:
             return default
         return res
 
-    def text(self, name, **kwargs):
+    def text(self, name: str, **kwargs: Any) -> Any:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.evaluate_text()`
+
+        :param name: str, name of the tag
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param list_return: if True, the returned quantity is always a list even if only one element is in it
+            :param optional: bool, if True and no logger given none or an empty list is returned
+
+        :returns: list or single value, converted in convert_xml_text
+        """
         from masci_tools.util.schema_dict_util import evaluate_text
         return evaluate_text(self.node, self.schema_dict, name, logger=self.logger, constants=self.constants, **kwargs)
 
-    def all_attributes(self, name, **kwargs):
+    def all_attributes(self, name: str, **kwargs: Any) -> Any:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.evaluate_tag()`
+
+        :param name: str, name of the tag
+        :param subtags: optional bool, if True the subtags of the given tag are evaluated
+        :param text: optional bool, if True the text of the tag is also parsed
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param only_required: bool (optional, default False), if True only required attributes are parsed
+            :param ignore: list of str (optional), attributes not to parse
+            :param list_return: if True, the returned quantity is always a list even if only one element is in it
+            :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
+
+        """
         from masci_tools.util.schema_dict_util import evaluate_tag
         return evaluate_tag(self.node, self.schema_dict, name, logger=self.logger, constants=self.constants, **kwargs)
 
-    def parent_attributes(self, name, **kwargs):
+    def parent_attributes(self, name: str, **kwargs: Any) -> Any:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.evaluate_parent_tag()`
+
+        :param name: str, name of the tag
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param only_required: bool (optional, default False), if True only required attributes are parsed
+            :param ignore: list of str (optional), attributes not to parse
+            :param list_return: if True, the returned quantity is always a list even if only one element is in it
+            :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
+
+        :returns: dict, with attribute values converted via convert_xml_attribute
+        """
         from masci_tools.util.schema_dict_util import evaluate_parent_tag
         return evaluate_parent_tag(self.node,
                                    self.schema_dict,
@@ -267,7 +362,27 @@ class _EvalContext:
                                    constants=self.constants,
                                    **kwargs)
 
-    def single_value(self, name, **kwargs):
+    def single_value(self, name: str, **kwargs: Any) -> Any:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.evaluate_single_value_tag()`
+
+        :param name: str, name of the tag
+        :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param only_required: bool (optional, default False), if True only required attributes are parsed
+            :param ignore: list of str (optional), attributes not to parse
+            :param list_return: if True, the returned quantity is always a list even if only one element is in it
+            :param strict_missing_error: if True, and no logger is given an error is raised if any attribute is not found
+            :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                                the iteration element is constructed
+            :param filters: Dict specifying constraints to apply on the xpath.
+                            See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        :returns: value and unit, both converted in convert_xml_attribute
+        """
         from masci_tools.util.schema_dict_util import evaluate_single_value_tag
         return evaluate_single_value_tag(self.node,
                                          self.schema_dict,
@@ -276,36 +391,168 @@ class _EvalContext:
                                          constants=self.constants,
                                          **kwargs)
 
-    def tag_exists(self, name, **kwargs):
+    def tag_exists(self, name: str, **kwargs: Any) -> bool:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.tag_exists()`
+
+        :param name: str, name of the tag
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        :returns: bool, True if any tag exists
+        """
         from masci_tools.util.schema_dict_util import tag_exists
         return tag_exists(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def number_nodes(self, name, **kwargs):
+    def number_nodes(self, name: str, **kwargs: Any) -> int:
+        """
+        :py:func:`~masci_tools.util.schema_dict_util.get_number_of_nodes()
+
+        :param name: str, name of the tag
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+            :param filters: Dict specifying constraints to apply on the xpath.
+                            See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        :returns: number of nodes of the given tag
+        """
         from masci_tools.util.schema_dict_util import get_number_of_nodes
         return get_number_of_nodes(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def attribute_exists(self, name, **kwargs):
+    def attribute_exists(self, name: str, **kwargs: Any) -> bool:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.attrib_exists()`
+
+        :param name: str, name of the attribute
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param tag_name: str, name of the tag where the attribute should be parsed
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+            :param exclude: list of str, here specific types of attributes can be excluded
+                            valid values are: settable, settable_contains, other
+
+        :returns: bool, True if any tag with the attribute exists
+        """
         from masci_tools.util.schema_dict_util import attrib_exists
         return attrib_exists(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def simple_xpath(self, name, **kwargs):
+    def simple_xpath(self, name: str, **kwargs: Any) -> list[etree._Element] | etree._Element:
+        """
+        Alias for :py:func:`~masci_tools.util.schema_dict_util.eval_simple_xpath()`
+
+        :param name: str, name of the tag
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+        :param list_return: bool, if True a list is always returned
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+
+        :returns: etree Elements obtained via the simple xpath expression
+        """
         from masci_tools.util.schema_dict_util import eval_simple_xpath
         return eval_simple_xpath(self.node, self.schema_dict, name, logger=self.logger, **kwargs)
 
-    def find(self, name, **kwargs):
+    @contextmanager
+    def find(self, name: str, **kwargs: Any) -> Generator[_EvalContext, None, None]:
+        """
+        Finds the first element for the given name and constraints and gives a nested
+        context for this element, i.e. inheriting the schema_dict, constants and logger
+
+        Example::
+            with FleurXMLContext(xmltree, schema_dict) as root:
+                #Operations happen on the root here
+                jspins = root.attribute('jspins')
+                with root.find('species') as species:
+                    #Operations in this block happen on the first species node
+                    radius = species.attribute('radius')
+
+        :param name: str, name of the tag
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
         if 'list_return' in kwargs:
             raise ValueError('The argument list_return is not allowed in find()')
 
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
         if nodes:
-            return self.nested(nodes[0])
-        return nullcontext()
+            with self.nested(nodes[0]) as ctx:
+                yield ctx
+        raise ValueError(f'No nodes found for name {name}')
 
     @contextmanager
-    def nested(self, etree_or_element):
+    def nested(self, etree_or_element: XMLLike) -> Generator[_EvalContext, None, None]:
+        """
+        Create a nested Context from teh current one
+        inheriting the schema_dict, constants and logger only replacing the
+        XML element
+
+        Example of explicit usage::
+
+            with FleurXMLContext(xmltree, schema_dict) as root:
+                #Operations happen on the root here
+                jspins = root.attribute('jspins')
+
+                all_species_tag = root.simple_xpath('atomspecies')
+                with root.nested(all_species_tag) as all_species:
+                    #Operations happen on the 'atomSpecies' tag
+                    mt_radii = all_species.attribute('radius')
+
+        :param etree_or_element: Element to use for evaluation in the nested context
+        """
         yield _EvalContext(etree_or_element, self.schema_dict, self.constants, logger=self.logger)
 
-    def iter(self, name, **kwargs):
+    def iter(self, name: str, **kwargs: Any) -> Generator[_EvalContext, None, None]:
+        """
+        Finds all elements for the given name and constraints and gives nested
+        contexts for thes elements to be iterated over,
+        i.e. inheriting the schema_dict, constants and logger
+
+        Example::
+            with FleurXMLContext(xmltree, schema_dict) as root:
+                #Operations happen on the root here
+                jspins = root.attribute('jspins')
+                for species in root.iter('species'):
+                    #Operations happen on one species node in each iteration of the
+                    #for loop. The order is the same as they appear in the XMl file
+                    radius = species.attribute('radius')
+
+        :param name: str, name of the tag
+        :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
+                            the iteration element is constructed
+        :param filters: Dict specifying constraints to apply on the xpath.
+                        See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        Kwargs:
+            :param contains: str, this string has to be in the final path
+            :param not_contains: str, this string has to NOT be in the final path
+        """
+        if 'list_return' in kwargs:
+            raise ValueError('The argument list_return is not allowed in iter()')
         nodes = self.simple_xpath(name, **kwargs, list_return=True)
         for node in nodes:
             with self.nested(node) as ctx:
@@ -313,12 +560,62 @@ class _EvalContext:
 
 
 @contextmanager
-def FleurXMLContext(etree_or_element: XMLLike,
+def FleurXMLContext(etree_or_element: XMLLike | etree.XPathElementEvaluator,
                     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                     constants: dict[str, float] | None = None,
                     logger: logging.Logger | None = None) -> Generator[_EvalContext, None, None]:
+    """
+    Contextmanager to hold the relevant datastructures for evaluating values from XML files
 
+    This holds:
+
+        :param etree_or_element: The XML tree of the file
+        :param schema_dict: The corresponding SchemaDict
+        :param constants: The dictionary containing the defined mathematical constants
+        :param logger: The configured logger instance
+
+    The following methods are available:
+        - :py:meth:`_EvalContext.attribute()`: Evaluate attribute values
+          (has an additional argument `default` to provide values for missing attributes)
+        - :py:meth:`_EvalContext.text()`: Evaluate text of tags
+        - :py:meth:`_EvalContext.all_attributes()`: Evaluate all attributes of a tag
+        - :py:meth:`_EvalContext.parent_attributes()`: Evaluate attribute values of parent of given tag
+        - :py:meth:`_EvalContext.simple_value()`: Evaluate `value` and `unit` attribute of tag
+        - :py:meth:`_EvalContext.tag_exists()`: Evaluate whether a given tag exists
+        - :py:meth:`_EvalContext.number_nodes()`: Evaluate how many elements of the tag are present
+        - :py:meth:`_EvalContext.attrib_exists()`: Evaluate whether an attribute exists
+        - :py:meth:`_EvalContext.simple_xpath()`: Evaluate the simple xpath expression for a given tag
+        - *Nested Context* :py:meth:`_EvalContext.find()`: Find the first occurrence of the tag and provide a nested
+          context to that element
+        - *Nested Context* :py:meth:`_EvalContext.iter()`: Find all occurrences of the tag and provide a nested
+          context to these elements when iterated over
+        - *Nested Context* :py:meth:`_EvalContext.nested()`: Explicitly inherit all the context except the
+          XML tree to a new context with the XML element replaced by the given argument
+
+    Example Usage::
+
+        from masci_tools.io.io_fleurxml import load_inpxml, FleurXMLContext
+        xmltree, schema_dict = load_inpxml('/path/to/inp.xml')
+
+        with FleurXMLContext(xmltree, schema_dict) as root:
+            spins = root.attribute('jspins')
+            noco = root.attribute('l_noco', default=False)
+
+            #Not nesting the context we need to specify which elements are meant
+            mt_radii = root.attribute('radius', contains='species')
+
+            #Nesting using find
+            with root.find('atomspecies') as all_species:
+                mt_radii = all_species.attribute('radius')
+
+            #Nesting using iter
+            mt_radii = []
+            for species in root.iter('species'):
+                mt_radii.append(species.attribute('radius'))
+
+    """
     yield _EvalContext(etree_or_element, schema_dict, constants=constants, logger=logger)
+
 
 def get_constants(xmltree: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
