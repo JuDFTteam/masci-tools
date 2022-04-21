@@ -99,7 +99,6 @@ def create_outschema_dict(path: os.PathLike,
     }
     schema_patches = [fix_qpoints_typo, patch_text_types]
 
-    #print(f'processing: {path}/FleurOutputSchema.xsd')
     xmlschema = etree.parse(path)
     xmlschema, _ = clear_xml(xmlschema)
 

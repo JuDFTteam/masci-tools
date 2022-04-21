@@ -1281,7 +1281,6 @@ def periodic_table_plot(
         # we copy the Be entry and display it with some text again at another spot
         be = data[3:4].copy()
         be['group'] = '7'
-        # print(be)
         data.loc[-1] = be.values[0]
         data.index = data.index + 1
         data = data.sort_index()

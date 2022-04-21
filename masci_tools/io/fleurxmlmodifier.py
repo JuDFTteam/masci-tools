@@ -641,7 +641,6 @@ class FleurXMLModifier:
         if 'attrib_name' in kwargs:
             warnings.warn('The argument attrib_name is deprecated. Use name instead', DeprecationWarning)
             kwargs['name'] = kwargs.pop('attrib_name')
-        print(args, kwargs)
         self._validate_arguments('delete_att', args, kwargs)
         self._tasks.append(ModifierTask('delete_att', args, kwargs))
 
