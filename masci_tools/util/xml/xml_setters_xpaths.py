@@ -70,6 +70,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
         if is_valid_tag(element):  #type:ignore[arg-type]
             #Get original case of the tag
             element_name = (tag_info['simple'] | tag_info['complex']).original_case[element]
+            element = element_name
         else:
             try:
                 element = etree.fromstring(element)  #type:ignore[arg-type]

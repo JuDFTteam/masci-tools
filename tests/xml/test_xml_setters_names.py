@@ -237,6 +237,26 @@ def test_create_tag_occurrences(load_inpxml):
                                                            [('type', 'SCLO'), ('l', '1'), ('n', '5'), ('eDeriv', '0')]]
 
 
+def test_create_tag_case_insensitivity(load_inpxml):
+
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import create_tag
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    tags = [child.tag for child in node.iterchildren()]
+    tags.append('greensFunction')
+
+    create_tag(xmltree, schema_dict, 'GREENSFUNCTION')
+
+    node = eval_xpath(root, '/fleurInput/calculationSetup')
+
+    assert [child.tag for child in node.iterchildren()] == tags
+
+
 def test_delete_tag(load_inpxml):
 
     from masci_tools.util.xml.common_functions import eval_xpath
