@@ -112,8 +112,9 @@ Functions/Classes for loading/validating fleur XML files
 .. automodule:: masci_tools.io.parsers.fleur_schema.schema_dict
    :members:
 
-.. automodule:: masci_tools.io.io_fleurxml
+.. automodule:: masci_tools.io.fleur_xml
    :members:
+   :private-members: _EvalContext
 
 Helper functions for the ``n_mmp_mat`` file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -81,7 +81,7 @@ class CFCalculation:
     :param reference_radius: stror float; Either 'pot' or 'cdn' or explicit number. Defines which muffin-tin radius
                                 is used for the equidistant mesh.
                                 IMPORTANT! If txt files are used the muffin-tin radius has to be provided explicitly
-    :param coefficient_cutoff: float Defines minimum value that cf coeffiecients have ot have to be considered non-zero
+    :param coefficient_cutoff: float Defines minimum value that cf coefficients have to have to be considered non-zero
 
     """
 

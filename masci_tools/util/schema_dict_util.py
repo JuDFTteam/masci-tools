@@ -18,8 +18,6 @@ attribute from the right place in the given etree
 """
 from __future__ import annotations
 
-from masci_tools.io.parsers.fleur_schema import NoPathFound
-from masci_tools.util.parse_tasks_decorators import register_parsing_function
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
@@ -50,36 +48,11 @@ def read_constants(root: XMLLike | etree.XPathElementEvaluator,
 
     :return: a python dictionary with all defined constants
     """
-    from masci_tools.util.constants import FLEUR_DEFINED_CONSTANTS
-
-    defined_constants = copy.deepcopy(FLEUR_DEFINED_CONSTANTS)
-
-    try:
-        tag_exists(root, schema_dict, 'constant')
-    except NoPathFound:
-        warnings.warn('Cannot extract custom constants for the given root. Assuming defaults')
-        return defined_constants
-
-    if not tag_exists(root, schema_dict, 'constant', logger=logger):  #Avoid warnings for empty constants
-        return defined_constants
-
-    constants = evaluate_tag(root, schema_dict, 'constant', defined_constants, logger=logger)
-
-    if constants['name'] is not None:
-        if not isinstance(constants['name'], list):
-            constants = {key: [val] for key, val in constants.items()}
-        for name, value in zip(constants['name'], constants['value']):
-            if name not in defined_constants:
-                defined_constants[name] = value
-            else:
-                if logger is not None:
-                    logger.error('Ambiguous definition of constant %s', name)
-                raise KeyError(f'Ambiguous definition of constant {name}')
-
-    return defined_constants
+    from masci_tools.io.fleur_xml import get_constants  #pylint: disable=cyclic-import
+    warnings.warn('read_constants is moved to masci_tools.io.fleur_xml', DeprecationWarning)
+    return get_constants(root, schema_dict, logger=logger)  #type: ignore[arg-type]
 
 
-@register_parsing_function('attrib')
 def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
@@ -161,7 +134,6 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('text')
 def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -245,7 +217,6 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
     return converted_value
 
 
-@register_parsing_function('allAttribs', all_attribs_keys=True)
 def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
                  schema_dict: fleur_schema.SchemaDict,
                  name: str,
@@ -448,7 +419,6 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('singleValue', all_attribs_keys=True)
 def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
                               schema_dict: fleur_schema.SchemaDict,
                               name: str,
@@ -507,7 +477,6 @@ def evaluate_single_value_tag(node: XMLLike | etree.XPathElementEvaluator,
     return value_dict
 
 
-@register_parsing_function('parentAttribs', all_attribs_keys=True)
 def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
@@ -646,7 +615,6 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
     return out_dict
 
 
-@register_parsing_function('attrib_exists')
 def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
                   schema_dict: fleur_schema.SchemaDict,
                   name: str,
@@ -660,7 +628,7 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
 
     :param node: etree Element, on which to execute the xpath evaluations
     :param schema_dict: dict, containing all the path information and more
-    :param name: str, name of the tag
+    :param name: str, name of the attribute
     :param logger: logger object for logging warnings, errors, if not provided all errors will be raised
     :param iteration_path: bool if True and the SchemaDict is of an output schema an absolute path into
                            the iteration element is constructed
@@ -686,7 +654,6 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
     return any(attrib_name in tag.attrib for tag in tags)
 
 
-@register_parsing_function('exists')
 def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
                schema_dict: fleur_schema.SchemaDict,
                name: str,
@@ -714,7 +681,6 @@ def tag_exists(node: XMLLike | etree.XPathElementEvaluator,
     return get_number_of_nodes(node, schema_dict, name, logger=logger, **kwargs) != 0
 
 
-@register_parsing_function('numberNodes')
 def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
                         schema_dict: fleur_schema.SchemaDict,
                         name: str,
@@ -737,7 +703,7 @@ def get_number_of_nodes(node: XMLLike | etree.XPathElementEvaluator,
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
-    :returns: bool, True if any nodes with the path exist
+    :returns: number of nodes for the given tag
     """
     result = eval_simple_xpath(node, schema_dict, name, logger=logger, list_return=True, **kwargs)
     if not isinstance(result, list):

@@ -56,7 +56,7 @@ class NoUniquePathFound(ValueError):
 
 class IncompatibleSchemaVersions(Exception):
     """
-    Exeption raised when it is known that a given output version and input version
+    Exception raised when it is known that a given output version and input version
     cannot be compiled into a complete fleur output xml schema
     """
 

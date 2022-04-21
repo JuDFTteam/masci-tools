@@ -291,13 +291,13 @@ warnings:
   - 'Could not convert ''1e5''. The following errors occurred:'
   - '   No value available for expression e
 
-    Please provide the value for this constant by using the read_constants function
+    Please provide the value for this constant by using the get_constants function
     for example'
   - 'Failed to convert attribute ''minDistance'' Got: ''1e5'''
   - 'Could not convert ''pi*2.0''. The following errors occurred:'
   - '   No value available for expression pi
 
-    Please provide the value for this constant by using the read_constants function
+    Please provide the value for this constant by using the get_constants function
     for example'
   - 'Could not convert ''cos1.0)''. The following errors occurred:'
   - '   Invalid expression: Expected Bracket after function name'

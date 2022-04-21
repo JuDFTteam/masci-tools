@@ -16,47 +16,6 @@ TEST_OUTXML_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/out.xml'
 TEST_OUTXML_PATH2 = 'fleur/Max-R5/FePt_film_SSFT_LO/files/out.xml'
 
 
-def test_read_constants(load_inpxml, load_outxml):
-    """
-    Test of the read_constants function
-    """
-    from masci_tools.util.schema_dict_util import read_constants
-
-    VALID_INP_CONSTANTS_PATH = 'fleur/inp_with_constants.xml'
-    INVALID_INP_CONSTANTS_PATH = 'fleur/inp_invalid_constants.xml'
-    VALID_OUT_CONSTANTS_PATH = 'fleur/out_with_constants.xml'
-
-    xmltree, schema_dict = load_inpxml(VALID_INP_CONSTANTS_PATH, absolute=False)
-    invalidxmltree, _ = load_inpxml(INVALID_INP_CONSTANTS_PATH, absolute=False)
-    outxmltree, outschema_dict = load_outxml(VALID_OUT_CONSTANTS_PATH, absolute=False)
-
-    root1 = xmltree.getroot()
-    root2 = outxmltree.getroot()
-    root3 = invalidxmltree.getroot()
-
-    expected_constants = {
-        'A': -3.14,
-        'Ang': 1.889726124772898,
-        'Bohr': 1.0,
-        'Deg': 0.017453292519943295,
-        'Pi': 3.141592653589793,
-        'nm': 18.89726124772898,
-        'notPi': 3.0,
-        'pm': 0.01889726124772898,
-        'Htr': 1.0,
-        'Ry': 0.5,
-        'eV': 0.03674932217565499
-    }
-    result = read_constants(root1, schema_dict)
-    assert result == expected_constants
-
-    result = read_constants(root2, outschema_dict)
-    assert result == expected_constants
-
-    with pytest.raises(KeyError, match='Ambiguous definition of constant Pi'):
-        result = read_constants(root3, schema_dict)
-
-
 def test_evaluate_attribute(caplog, load_inpxml, load_outxml):
     """
     Test of the evaluate_attribute function

@@ -19,7 +19,7 @@ import click
 import tabulate
 
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
 from masci_tools.util.typing import XMLLike, FileLike
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create

@@ -17,10 +17,10 @@ from __future__ import annotations
 
 from lxml import etree
 
-from masci_tools.io.io_fleurxml import load_inpxml
+from masci_tools.io.fleur_xml import get_constants, load_inpxml
 from masci_tools.util.xml.common_functions import clear_xml
 from masci_tools.util.xml.converters import convert_from_xml
-from masci_tools.util.schema_dict_util import read_constants, evaluate_attribute
+from masci_tools.util.schema_dict_util import evaluate_attribute
 from masci_tools.util.logging_util import DictHandler
 from masci_tools.util.typing import XMLFileLike
 import logging
@@ -87,7 +87,7 @@ def inpxml_parser(inpxmlfile: XMLFileLike,
     xmltree, _ = clear_xml(xmltree)
     root = xmltree.getroot()
 
-    constants = read_constants(root, schema_dict, logger=logger)
+    constants = get_constants(root, schema_dict, logger=logger)
 
     try:
         schema_dict.validate(xmltree, logger=logger)

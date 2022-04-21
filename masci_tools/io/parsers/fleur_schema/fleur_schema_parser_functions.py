@@ -145,7 +145,7 @@ def _cache_xpath_eval(func: Callable) -> Callable:
     Decorator for the `_xpath_eval` function to speed up concrete xpath calls on the schema
     by caching the results
     """
-    results: dict[str, dict[int, etree._XPathObject]] = {}
+    results: dict[str, dict[int, Any]] = {}
 
     #in the lxml-stubs xpath evaluation returns etree._XPathObject but as a return type it is next to useless
     #so we explicitly return Any
