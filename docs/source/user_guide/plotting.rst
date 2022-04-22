@@ -27,7 +27,6 @@ case of matplotlib or the ``figure`` produced by bokeh for custom modifications.
 .. currentmodule:: masci_tools.vis.common
 
 ``common`` (Can be used for both backends):
-
 - :py:func:`scatter()`: Make a scatterplot with varying size and color of the points for multiple sets of data
 - :py:func:`line()`: Make a lineplot with multiple sets of data
 - :py:func:`dos()`: Plot a general density of states (non-spinpolarized)
@@ -38,7 +37,6 @@ case of matplotlib or the ``figure`` produced by bokeh for custom modifications.
 .. currentmodule:: masci_tools.vis.plot_methods
 
 ``matplotlib``:
-
 - :py:func:`single_scatterplot()`: Make a scatterplot with lines for a single set of data
 - :py:func:`multiple_scatterplots()`: Make a scatterplot with lines for multiple sets of data
 - :py:func:`multi_scatter_plot()`: Make a scatterplot with varying size and color of the points for multiple sets of data
@@ -61,8 +59,7 @@ case of matplotlib or the ``figure`` produced by bokeh for custom modifications.
 
 .. currentmodule:: masci_tools.vis.bokeh_plots
 
-`bokeh`:
-
+``bokeh``:
 - :py:func:`bokeh_scatter()`: Make a scatterplot for a single set of data
 - :py:func:`bokeh_multi_scatter()`: Make a scatterplot for a multiple sets of data
 - :py:func:`bokeh_line()`: Make a line plot for multiple sets of data

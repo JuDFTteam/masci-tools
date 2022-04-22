@@ -38,7 +38,7 @@ Compatible Recipes for the :py:class:`reader.HDF5Reader`:
 * ``FleurSimpleBands``: Reads in only the kpoints and eigenvalues and now weights
 * ``FleurOrbcompBands``: In addition to the eigenvalues the weights from an orbital decomposition calculation are read in
 * ``FleurjDOSBands``: In addition to the eigenvalues the weights from a jDOS calculation are read in
-* ``FleurMCDBands`: In addition to the eigenvalues the weights from a MCD calculation are read in
+* ``FleurMCDBands``: In addition to the eigenvalues the weights from a MCD calculation are read in
 * :py:func:`recipes.get_fleur_bands_specific_weights()`: Function to generate a recipe for reading in the eigenvalues+a provided list of weights
 
 .. currentmodule:: masci_tools.vis.fleur
