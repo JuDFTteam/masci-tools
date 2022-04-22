@@ -6,12 +6,17 @@ Using the Fleur input/output parsers
 
 .. contents::
 
+.. currentmodule:: masci_tools.io.parsers.fleur
+
 Parser for the Fleur inp.xml file
 ----------------------------------
 
-The fleur ```inp.xml``` contains all the information about the setup of a fleur calculation. To use this information in external scripts or aiida-fleur, the information needs to be parsed from the ```.xml``` format somehow.
+The fleur `inp.xml` contains all the information about the setup of a fleur calculation.
+To use this information in external scripts or aiida-fleur, the information needs to be
+parsed from the `.xml` format somehow.
 
-For this purpose the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` is implemented. The usage is shown below. The input file is parsed recursively and all information is put into the dictionary.
+For this purpose the :py:func:`inpxml_parser()` is implemented. The usage is shown below.
+The input file is parsed recursively and all information is put into the dictionary.
 
 .. code-block:: python
 
@@ -23,7 +28,9 @@ For this purpose the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` is
    warnings = {'parser_warnings': []}
    input_dict = inpxml_parser('/path/to/random/inp.xml', parser_info_out=warnings)
 
-The conversion of each attribute or text is done according to the FleurInputSchema for the same version, which is stored in this repository for versions from ```0.27``` to ```0.34```. The following table shows the version compatibility of the input parser.
+The conversion of each attribute or text is done according to the FleurInputSchema for the
+same version, which is stored in this repository for versions from `0.27` to `0.35`. 
+The following table shows the version compatibility of the input parser.
 
 +------------------+------------------------------------------------------------------------------+
 | File version     | Compatible?                                                                  |
@@ -37,7 +44,9 @@ The conversion of each attribute or text is done according to the FleurInputSche
 Parser for the Fleur out.xml file
 ----------------------------------
 
-For the ```out.xml``` file a similar parser is implemented. However, since the output file contains a lot more information, which is not always useful the :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()` is defined a lot more selectively. But the usage is almost completely identical to the input file.
+For the `out.xml` file a similar parser is implemented. However, since the output file
+contains a lot more information, which is not always useful the :py:func:`outxml_parser()`
+is defined a lot more selectively. But the usage is almost completely identical to the input file.
 
 .. code-block:: python
 
@@ -56,9 +65,13 @@ For the ```out.xml``` file a similar parser is implemented. However, since the o
    warnings = {'parser_warnings': []}
    output_dict = outxml_parser('/path/to/random/out.xml', parser_info_out=warnings)
 
-For each iteration the parser decides based on the type of fleur calculation, what things should be parsed. For a more detailed explanation refer to the :doc:`../../devel_guide/index`.
+For each iteration the parser decides based on the type of fleur calculation,
+what things should be parsed. For a more detailed explanation refer to the 
+:doc:`../../devel_guide/index`.
 
-The following table shows the version compatibility of the output parser. For versions before `0.34` the file version corresponds to the input version, since the output version is `0.27` for all versions before this point.
+The following table shows the version compatibility of the output parser.
+For versions before `0.34` the file version corresponds to the input version,
+since the output version is `0.27` for all versions before this point.
 
 +------------------+-----------------------------------------------------------------------------------------------------+
 | File version     | Compatible?                                                                                         |
@@ -78,7 +91,7 @@ The following table shows the version compatibility of the output parser. For ve
 
 .. note:: Using File handles
 
-   Both the :py:func:`~masci_tools.io.parsers.fleur.inpxml_parser()` and :py:func:`~masci_tools.io.parsers.fleur.outxml_parser()`
+   Both the :py:func:`inpxml_parser()` and :py:func:`outxml_parser()`
    can also be used with file handles like shown below.
 
    .. code-block::python
@@ -93,18 +106,27 @@ The following table shows the version compatibility of the output parser. For ve
 XML getter functions
 ---------------------
 
-There are a number of functions for extracting specific parts of the XML files in the :py:mod:`~masci_tools.util.xml.xml_getters` module. The following are available:
+There are a number of functions for extracting specific parts of the XML files
+in the :py:mod:`~masci_tools.util.xml.xml_getters` module. The following are available:
 
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_fleur_modes()`: Get information about the mode of the fleur calculation
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_nkpts()`: Get the (for older versions approximate if not `kPointList` is used) number of kpoints to be used in the calculation
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_cell()`: Get the Bravais matrix of the system
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_parameter_data()`: Get the information about the calculation parameters needed to reproduce a calculation starting from the inpgen
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_structure_data()`: Get the structure from the xml file (atom positions + unit cell)
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_kpoints_data()`: Get the defined kpoint sets (single/multiple) from the xml file (kpoints + weights + unit cell)
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_relaxation_information()`: Get the relaxation history and current displacements
-   * :py:func:`~masci_tools.util.xml.xml_getters.get_symmetry_information()`: Get the symmetry operations used in the calculation
+.. currentmodule:: masci_tools.util.xml.xml_getters
 
-All of these are used in the same way::
+* :py:func:`get_fleur_modes()`: Get information about the mode of the fleur calculation
+* :py:func:`get_nkpts()`: Get the (for older versions approximate if not `kPointList` is
+  used) number of kpoints to be used in the calculation
+* :py:func:`get_cell()`: Get the Bravais matrix of the system
+* :py:func:`get_parameter_data()`: Get the information about the calculation parameters
+  needed to reproduce a calculation starting from the inpgen
+* :py:func:`get_structure_data()`: Get the structure from the xml file 
+  (atom positions + unit cell)
+* :py:func:`get_kpoints_data()`: Get the defined kpoint sets (single/multiple) 
+  from the xml file (kpoints + weights + unit cell)
+* :py:func:`get_relaxation_information()`: Get the relaxation history and current displacements
+* :py:func:`get_symmetry_information()`: Get the symmetry operations used in the calculation
+
+All of these are used in the same way
+
+.. code-block:: python
 
    from masci_tools.io.fleur_xml import load_inpxml
    from masci_tools.util.xml.xml_getters import get_fleur_modes
@@ -117,7 +139,11 @@ All of these are used in the same way::
 Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
 -----------------------------------------------------------------
 
-If only a small amount of information is required from the input or output files of fleur the full parsers might be overkill. But there are a number of utility functions allowing easy access to information from the ```.xml``` files without knowing the exact xpath expressions for each version of the input/output. A code example extracting information from a input file is given below.
+If only a small amount of information is required from the input or output files
+of fleur the full parsers might be overkill. But there are a number of utility
+functions allowing easy access to information from the `.xml` files without knowing
+the exact XPath expressions for each version of the input/output. A code example extracting
+information from a input file is given below.
 
 .. code-block:: python
 
