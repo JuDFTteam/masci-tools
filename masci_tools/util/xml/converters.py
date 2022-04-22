@@ -30,7 +30,7 @@ from masci_tools.io.parsers import fleur_schema
 import re
 
 BaseType: TypeAlias = Literal['int', 'switch', 'string', 'float', 'float_expression', 'complex']
-ConvertedType: TypeAlias = Union[int,float,bool,str,complex]
+ConvertedType: TypeAlias = Union[int, float, bool, str, complex]
 
 
 def convert_to_xml(value: Any | list[Any],
