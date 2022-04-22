@@ -54,10 +54,9 @@ pre-commit = [
     'types-click'
     ]
 docs = [
-    'sphinx~=4.1',
+    'sphinx~=4.5',
     'sphinx_rtd_theme',
     'sphinx-click',
-    'sphinx-toolbox<=2.15.2',
     'sphinx-autodoc-typehints',
     "myst-parser~=0.15.2",
     ]

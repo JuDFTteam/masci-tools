@@ -36,8 +36,6 @@ extensions = ['myst_parser',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
-              'sphinx_toolbox.more_autodoc.typehints',
-              'sphinx_toolbox.more_autodoc.overloads',
               'sphinx_autodoc_typehints',
               'sphinx_click']
 
@@ -255,7 +253,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
         # No sphinx_rtd_theme installed
         pass
 
-autodoc_mock_imports = ['bokeh']
+autodoc_mock_imports = ['bokeh', '_typeshed']
 
 
 # -- Options for manual page output ---------------------------------------
@@ -397,15 +395,10 @@ nitpick_ignore = [
     ('py:obj', 'plum'),
     ('py:class', 'etree._XPathObject'),
     ('py:class', 'h5py._hl.group.Group'),
-    ('py:class', 'etree._Element'),
-    ('py:class', 'etree.XPath'),
     ('py:class', 'TypeAlias'),
-    ('py:class', 'Logger'),
-    ('py:class', 'FilterType'),
-    ('py:class', 'XMLLike'),
-    ('py:class', 'etree.XPathElementEvaluator'),
     ('py:class', 'contextlib._GeneratorContextManager'),
-    ('py:data', 'masci_tools.io.parsers.fleur.fleur_outxml_parser.F')
+    ('py:data', 'masci_tools.io.parsers.fleur.fleur_outxml_parser.F'),
+    ('py:class', 'np.ndarray')
 ]
 
 
