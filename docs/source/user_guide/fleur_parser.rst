@@ -67,7 +67,7 @@ is defined a lot more selectively. But the usage is almost completely identical 
 
 For each iteration the parser decides based on the type of fleur calculation,
 what things should be parsed. For a more detailed explanation refer to the 
-:doc:`../../devel_guide/index`.
+:ref:`devguidefleurxml`.
 
 The following table shows the version compatibility of the output parser.
 For versions before ``0.34`` the file version corresponds to the input version,

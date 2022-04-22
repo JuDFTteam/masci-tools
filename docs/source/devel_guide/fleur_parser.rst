@@ -1,3 +1,5 @@
+.. _devguidefleurxml:
+
 Updating or adapting the Fleur Parsers
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
