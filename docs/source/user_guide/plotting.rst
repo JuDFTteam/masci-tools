@@ -10,7 +10,7 @@ The plotting of data is always a common task that needs to be performed.
 However, there is a lot of variation in how someone might want plots to look or be arranged.
 Some plots might also need to be interactive to be of a real use.
 
-For these reasons the `masci_tools` library provides utility for general plotting and
+For these reasons the ``masci_tools`` library provides utility for general plotting and
 template functions for common plots made when working with DFT methods.
 There are two plotting backends available:
 
@@ -21,57 +21,60 @@ Available Routines
 -------------------
 
 For both of these there are a lot of plotting routines available (both general or specific
-to a problem). All of these routines will return the used `Axes` object in the
-case of matplotlib or the `figure` produced by bokeh for custom modifications.
+to a problem). All of these routines will return the used ``Axes`` object in the
+case of matplotlib or the ``figure`` produced by bokeh for custom modifications.
 
 .. currentmodule:: masci_tools.vis.common
 
-- `common` (Can be used for both backends):
-  - :py:func:`scatter()`: Make a scatterplot with varying size and color of the points for multiple sets of data
-  - :py:func:`line()`: Make a lineplot with multiple sets of data
-  - :py:func:`dos()`: Plot a general density of states (non-spinpolarized)
-  - :py:func:`spinpol_dos()`: Plot a general density of states (spinpolarized)
-  - :py:func:`bands()`: Plot a general bandstructure (non-spinpolarized)
-  - :py:func:`spinpol_bands()`: Plot a general bandstructure (spinpolarized)
+``common`` (Can be used for both backends):
+
+- :py:func:`scatter()`: Make a scatterplot with varying size and color of the points for multiple sets of data
+- :py:func:`line()`: Make a lineplot with multiple sets of data
+- :py:func:`dos()`: Plot a general density of states (non-spinpolarized)
+- :py:func:`spinpol_dos()`: Plot a general density of states (spinpolarized)
+- :py:func:`bands()`: Plot a general bandstructure (non-spinpolarized)
+- :py:func:`spinpol_bands()`: Plot a general bandstructure (spinpolarized)
 
 .. currentmodule:: masci_tools.vis.plot_methods
 
-- `matplotlib`:
-  - :py:func:`single_scatterplot()`: Make a scatterplot with lines for a single set of data
-  - :py:func:`multiple_scatterplots()`: Make a scatterplot with lines for multiple sets of data
-  - :py:func:`multi_scatter_plot()`: Make a scatterplot with varying size and color of the points for multiple sets of data
-  - :py:func:`colormesh_plot()`: Make 2D plot with the data represented as color
-  - :py:func:`waterfall_plot()`: Make 3D plot with the `scatter3D` function of matplotlib
-  - :py:func:`surface_plot()`: Make 3D plot with the `plot_surface` function of matplotlib
-  - :py:func:`multiplot_moved()`: Plot multiple sets of data above each other with a configurable shift
-  - :py:func:`histogram()`: Make a histogram plot
-  - :py:func:`barchart()`: Make a barchart plot
-  - :py:func:`multiaxis_scatterplot()`: Make a plot containing multiple sets of data distributed over multiple subplots in a grid
-  - :py:func:`plot_convex_hull2d()`: Make a 2D plot of a convex hull
-  - :py:func:`plot_residuen()`: Make a residual plot for given real and fit data. Can also produce a histogram of the deviations
-  - :py:func:`plot_convergence()`: Plot the convergence behaviour of charge density distances and energies
-  - :py:func:`plot_lattice_constant()`: Plot the energy curve with changing unit cell volume
-  - :py:func:`plot_dos()`: Plot a general density of states (non-spinpolarized)
-  - :py:func:`plot_spinpol_dos()`: Plot a general density of states (spinpolarized)
-  - :py:func:`plot_bands()`: Plot a general bandstructure (non-spinpolarized)
-  - :py:func:`plot_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
-  - :py:func:`plot_spectral_function`: Plot a spectral function (colormesh along kpath)
+``matplotlib``:
+
+- :py:func:`single_scatterplot()`: Make a scatterplot with lines for a single set of data
+- :py:func:`multiple_scatterplots()`: Make a scatterplot with lines for multiple sets of data
+- :py:func:`multi_scatter_plot()`: Make a scatterplot with varying size and color of the points for multiple sets of data
+- :py:func:`colormesh_plot()`: Make 2D plot with the data represented as color
+- :py:func:`waterfall_plot()`: Make 3D plot with the ``scatter3D`` function of matplotlib
+- :py:func:`surface_plot()`: Make 3D plot with the ``plot_surface`` function of matplotlib
+- :py:func:`multiplot_moved()`: Plot multiple sets of data above each other with a configurable shift
+- :py:func:`histogram()`: Make a histogram plot
+- :py:func:`barchart()`: Make a barchart plot
+- :py:func:`multiaxis_scatterplot()`: Make a plot containing multiple sets of data distributed over multiple subplots in a grid
+- :py:func:`plot_convex_hull2d()`: Make a 2D plot of a convex hull
+- :py:func:`plot_residuen()`: Make a residual plot for given real and fit data. Can also produce a histogram of the deviations
+- :py:func:`plot_convergence()`: Plot the convergence behaviour of charge density distances and energies
+- :py:func:`plot_lattice_constant()`: Plot the energy curve with changing unit cell volume
+- :py:func:`plot_dos()`: Plot a general density of states (non-spinpolarized)
+- :py:func:`plot_spinpol_dos()`: Plot a general density of states (spinpolarized)
+- :py:func:`plot_bands()`: Plot a general bandstructure (non-spinpolarized)
+- :py:func:`plot_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
+- :py:func:`plot_spectral_function`: Plot a spectral function (colormesh along kpath)
 
 .. currentmodule:: masci_tools.vis.bokeh_plots
 
-- `bokeh`:
-  - :py:func:`bokeh_scatter()`: Make a scatterplot for a single set of data
-  - :py:func:`bokeh_multi_scatter()`: Make a scatterplot for a multiple sets of data
-  - :py:func:`bokeh_line()`: Make a line plot for multiple sets of data
-  - :py:func:`bokeh_dos()`: Plot a general density of states (non-spinpolarized)
-  - :py:func:`bokeh_spinpol_dos()`: Plot a general density of states (spinpolarized)
-  - :py:func:`bokeh_bands()`: Plot a general bandstructure (non-spinpolarized)
-  - :py:func:`bokeh_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
-  - :py:func:`bokeh_spectral_function()`: Plot a spectral function (colormesh along kpath)
-  - :py:func:`periodic_table_plot()`: Make a interactive plot of data for the periodic table
-  - :py:func:`plot_lattice_constant()`: Plot the energy curve with changing unit cell volume
-  - :py:func:`plot_convergence()`: Plot the convergence behaviour of charge density distances and energies
-  - :py:func:`matrix_plot()`: Plot a grid of rectangles with color scaling and added text
+`bokeh`:
+
+- :py:func:`bokeh_scatter()`: Make a scatterplot for a single set of data
+- :py:func:`bokeh_multi_scatter()`: Make a scatterplot for a multiple sets of data
+- :py:func:`bokeh_line()`: Make a line plot for multiple sets of data
+- :py:func:`bokeh_dos()`: Plot a general density of states (non-spinpolarized)
+- :py:func:`bokeh_spinpol_dos()`: Plot a general density of states (spinpolarized)
+- :py:func:`bokeh_bands()`: Plot a general bandstructure (non-spinpolarized)
+- :py:func:`bokeh_spinpol_bands()`: Plot a general bandstructure (spinpolarized)
+- :py:func:`bokeh_spectral_function()`: Plot a spectral function (colormesh along kpath)
+- :py:func:`periodic_table_plot()`: Make a interactive plot of data for the periodic table
+- :py:func:`plot_lattice_constant()`: Plot the energy curve with changing unit cell volume
+- :py:func:`plot_convergence()`: Plot the convergence behaviour of charge density distances and energies
+- :py:func:`matrix_plot()`: Plot a grid of rectangles with color scaling and added text
 
 If you have ideas for new useful and beautiful plotting routines you are welcome to
 contribute. Refer to the sections :ref:`devguideplotting` and :ref:`devguideplotdata` for
@@ -83,7 +86,7 @@ Providing Data
 Data can be provided to plotting functions in two main ways:
 
 1. The first arguments and data arguments are given the keys in a mapping,
-   which should be used. The corresponding mapping is provided via the `data` keyword argument
+   which should be used. The corresponding mapping is provided via the ``data`` keyword argument
 2. The first arguments and data arguments are given the data that should be plotted against each other.
 
 The following two code blocks are equivalent in terms of the provided data.
@@ -125,30 +128,30 @@ to the plotting function. The names of these parameters mostly correspond to the
 same names as in the plotting library that is used in the plotting function.
 However, there are some deviations and also some special keywords that you can use.
 We will go over the most important ones in this section accompanied with concrete code
-examples. For a reference of the defaults defined in the `masci_tools` library you can
+examples. For a reference of the defaults defined in the ``masci_tools`` library you can
 refer to :py:class:`matplotlib_plotter.MatplotlibPlotter` and
 :py:class:`bokeh_plotter.BokehPlotter` for a complete reference.
 
 The most important special keywords are listed below. If there are deviating names for
-these in `matplotlib` and `bokeh` plotting functions both names are written in the
-order `matplotlib or bokeh`:
+these in ``matplotlib`` and ``bokeh`` plotting functions both names are written in the
+order ``matplotlib`` or ``bokeh``:
 
-- `limits`: This is used to set the bounds of the axis specifically. Provided in form
-  of a dictionary. For example passing `limits={'x': (-5,5)}` will set the x-axis limits
-  between `-5` and `5` and `limits={'x': (-5,5), 'y':(0,10)}` will set the y-axis limits 
+- ``limits``: This is used to set the bounds of the axis specifically. Provided in form
+  of a dictionary. For example passing ``limits={'x': (-5,5)}`` will set the x-axis limits
+  between ``-5`` and ``5`` and ``limits={'x': (-5,5), 'y':(0,10)}`` will set the y-axis limits 
   in addition
-- `scale`: Used to set the scaling of the axis in the plots. Also provided in form
-  of a dictionary. For example passing `scale={'x': 'log', 'y': 'log'}` will set both
-  axis to logarithmic scaling `scale={'y': 'log'}` will only to it for the y-axis
-- `lines` or `straight_lines`: Easy way to draw help lines into the plot. Provided in form
-  of a dictionary. For example passing `lines={'vertical': 0}` will draw a vertical line
-  at `x=0` `lines={'horizontal': [1,5,10]}` will draw three horizontal lines
-  at `y=1, 5 or 10` respectively
-- `plot_labels`` or `legend_labels``: Defines labels for the legend of a plot
-- `labels for axis`: Normally called `xlabel` or `ylabel`, but specialized plot routines might have different names
-- `title`: Title for the produced plot
-- `saving options`: `show=True` call the plotting library specific show routines (default).
-  For matplotlib you can also specify `saveas='filename'` and `save_plots=True` to save the plot to file
+- ``scale``: Used to set the scaling of the axis in the plots. Also provided in form
+  of a dictionary. For example passing ``scale={'x': 'log', 'y': 'log'}`` will set both
+  axis to logarithmic scaling ``scale={'y': 'log'}`` will only to it for the y-axis
+- ``lines`` or ``straight_lines``: Easy way to draw help lines into the plot. Provided in form
+  of a dictionary. For example passing ``lines={'vertical': 0}`` will draw a vertical line
+  at ``x=0`` ``lines={'horizontal': [1,5,10]}`` will draw three horizontal lines
+  at ``y=1, 5 or 10`` respectively
+- ``plot_labels``` or ``legend_labels```: Defines labels for the legend of a plot
+- ``labels for axis``: Normally called ``xlabel`` or ``ylabel``, but specialized plot routines might have different names
+- ``title``: Title for the produced plot
+- ``saving options``: ``show=True`` call the plotting library specific show routines (default).
+  For matplotlib you can also specify ``saveas='filename'`` and ``save_plots=True`` to save the plot to file
 
 In the following we will look at examples using the matplotlib plotting functions in
 :py:mod:`~masci_tools.vis.plot_methods`. The options are the same for the bokeh
@@ -283,14 +286,14 @@ Multiple plots
 Many plotting routines accept multiple sets of data to plot. An example of this is the
 :py:func:`plot_methods.multiple_scatterplots()` function. The usage of these is essentially
 the same. However, some parameters can be changed for each data set to plot. These
-include but are not limited to `linestyle`, `linewidth`, `marker`, `markersize` and `color`.
+include but are not limited to ``linestyle``, ``linewidth``, ``marker``, ``markersize`` and ``color``.
 These parameters can either be set to a single value applying it to all data sets, or can
 be specified for some/all data sets with unspecified values being replaced with the current
 defaults. This second way can be done in two ways (Both of the below examples have the same
 effect):
 
-1. List of values (`None` for unspecified values) Example: `linestyle=['-', None, '--']`
-2. Dictionary with integer indices Example: `linestyle={0:'-', 2:'--'}`
+1. List of values (``None`` for unspecified values) Example: ``linestyle=['-', None, '--']``
+2. Dictionary with integer indices Example: ``linestyle={0:'-', 2:'--'}``
 
 .. warning::
    Specifying parameters for multiple data sets is only valid for the parameters passed

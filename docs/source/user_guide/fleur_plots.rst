@@ -3,7 +3,7 @@ Plotting Fleur DOS/bandstructures
 
 .. currentmodule:: masci_tools.io.parsers.hdf5
 
-This section discusses how to obtain plots of data in the `banddos.hdf` for
+This section discusses how to obtain plots of data in the ``banddos.hdf`` for
 density of states and bandstructure calculations.
 
 The process here is divided in two parts. First we extract and transform the data in a
@@ -34,11 +34,11 @@ Bandstructures
 
 Compatible Recipes for the :py:class:`reader.HDF5Reader`:
 
-* `FleurBands`: Default recipe reading in the kpoints, eignevalues and weights for atom and orbital contributions
-* `FleurSimpleBands`: Reads in only the kpoints and eigenvalues and now weights
-* `FleurOrbcompBands`: In addition to the eigenvalues the weights from an orbital decomposition calculation are read in
-* `FleurjDOSBands`: In addition to the eigenvalues the weights from a jDOS calculation are read in
-* `FleurMCDBands`: In addition to the eigenvalues the weights from a MCD calculation are read in
+* ``FleurBands``: Default recipe reading in the kpoints, eignevalues and weights for atom and orbital contributions
+* ``FleurSimpleBands``: Reads in only the kpoints and eigenvalues and now weights
+* ``FleurOrbcompBands``: In addition to the eigenvalues the weights from an orbital decomposition calculation are read in
+* ``FleurjDOSBands``: In addition to the eigenvalues the weights from a jDOS calculation are read in
+* ``FleurMCDBands`: In addition to the eigenvalues the weights from a MCD calculation are read in
 * :py:func:`recipes.get_fleur_bands_specific_weights()`: Function to generate a recipe for reading in the eigenvalues+a provided list of weights
 
 .. currentmodule:: masci_tools.vis.fleur
@@ -95,8 +95,8 @@ Bandstructure with weights
 
 To plot a simple bandstructure with weighting we do the same procedure as above, but we
 pass in the entry we want to use for weights. These correspond to the entries in the
-`banddos.hdf` file (for example the weight for the s-orbital on the first atom type is
-called `MT:1s`). The weights will be used to change the size and color (according to a colormap) to
+``banddos.hdf`` file (for example the weight for the s-orbital on the first atom type is
+called ``MT:1s``). The weights will be used to change the size and color (according to a colormap) to
 indicate regions of high weight.
 
 The two examples below show the resulting plots for a non-psinpolarized system (bulk Si)
@@ -140,10 +140,10 @@ Density of States
 
 Compatible Recipes for the :py:class:`~masci_tools.io.parsers.hdf5.reader.HDF5Reader`:
 
-* `FleurDOS`: Default recipe reading in the total, interstitial, vacuum, atom and l-channle resolved DOS
-* `FleurORBCOMP`: Read in the DOS from an orbital decomposition calculation
-* `FleurJDOS`: Read in the DOS from a jDOS calculation
-* `FleurMCD`: Read in the DOS from a MCD calculation
+* ``FleurDOS``: Default recipe reading in the total, interstitial, vacuum, atom and l-channle resolved DOS
+* ``FleurORBCOMP```: Read in the DOS from an orbital decomposition calculation
+* ``FleurJDOS``: Read in the DOS from a jDOS calculation
+* ``FleurMCD``: Read in the DOS from a MCD calculation
 
 The dos visualization :py:func:`plot_fleur_dos()` can be used to plot
 non spinpolarized and spinpolarized DOS, with selection of which components to plot.
@@ -184,7 +184,7 @@ Plotting options for DOS plots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The :py:func:`plot_fleur_dos()` function has a couple of options to modify, what is being
-displayed from the `banddos.hdf` file. Below we show a few examples of ways to use these
+displayed from the ``banddos.hdf`` file. Below we show a few examples of ways to use these
 options, together with examples of resulting plots.
 
 DOS with atom components scaled with equivalent atoms
@@ -192,11 +192,11 @@ DOS with atom components scaled with equivalent atoms
 
 When you look at the example plot for the non spin-polarized DOS, you might notice that the
 interstitial component and the atom projected components do not add up to the total density
-of states. This system has two symmetry equivalent `Si` atoms. By default the atom projected
+of states. This system has two symmetry equivalent ``Si`` atoms. By default the atom projected
 density of states corresponds to only one of these atoms.
 
 If you wish to show the atom projected components of the DOS scaled with the number of
-symmetry equivalent atoms you can provide the option `multiply_by_equiv_atoms=True` option
+symmetry equivalent atoms you can provide the option ``multiply_by_equiv_atoms=True`` option
 to the plotting function.
 
 .. code-block:: python
@@ -215,16 +215,16 @@ The DOS is made up of a lot of contributions that can be displayed separately.
 Here we list the options that are available and show example plots for only selecting
 the atom projected compinents of the density of states
 
-- `plot_keys`: Can be used to provide a explicit list of keys you want to display (Same format as in the `banddos.hdf`)
-- `show_total`: Control, whether to show the total density of states (default `True`)
-- `show_interstitial`: Control, whether to show the interstitial contribution of the density of states (default `True`)
-- `show_atoms`: Control, which total atom projected DOS to show. Can be either the string
-  `all` (All components are shown), the value `None` (no components are shown) or a list
-  of the integer indices of the atom types that should be displayed (default `all`)
-- `show_lresolved`: Control, on which atoms to show the orbital projected DOS. Can be
-  either the string `all` (All components are shown), the value `None`
+- ``plot_keys``: Can be used to provide a explicit list of keys you want to display (Same format as in the ``banddos.hdf``)
+- ``show_total``: Control, whether to show the total density of states (default ``True``)
+- ``show_interstitial``: Control, whether to show the interstitial contribution of the density of states (default ``True``)
+- ``show_atoms``: Control, which total atom projected DOS to show. Can be either the string
+  ``all`` (All components are shown), the value ``None`` (no components are shown) or a list
+  of the integer indices of the atom types that should be displayed (default ``all``)
+- ``show_lresolved``: Control, on which atoms to show the orbital projected DOS. Can be
+  either the string ``all`` (All components are shown), the value ``None``
   (no components are shown) or a list of the integer indices of the atom types for
-  which to display the orbital components (default `None`)
+  which to display the orbital components (default ``None``)
 
 Below an example of only displaying the atom projected DOS together with their orbital contributions is shown.
 

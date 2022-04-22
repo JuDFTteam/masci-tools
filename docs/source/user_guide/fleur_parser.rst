@@ -11,9 +11,9 @@ Using the Fleur input/output parsers
 Parser for the Fleur inp.xml file
 ----------------------------------
 
-The fleur `inp.xml` contains all the information about the setup of a fleur calculation.
+The fleur ``inp.xml`` contains all the information about the setup of a fleur calculation.
 To use this information in external scripts or aiida-fleur, the information needs to be
-parsed from the `.xml` format somehow.
+parsed from the ``.xml`` format somehow.
 
 For this purpose the :py:func:`inpxml_parser()` is implemented. The usage is shown below.
 The input file is parsed recursively and all information is put into the dictionary.
@@ -29,7 +29,7 @@ The input file is parsed recursively and all information is put into the diction
    input_dict = inpxml_parser('/path/to/random/inp.xml', parser_info_out=warnings)
 
 The conversion of each attribute or text is done according to the FleurInputSchema for the
-same version, which is stored in this repository for versions from `0.27` to `0.35`. 
+same version, which is stored in this repository for versions from ``0.27`` to ``0.35``. 
 The following table shows the version compatibility of the input parser.
 
 +------------------+------------------------------------------------------------------------------+
@@ -44,7 +44,7 @@ The following table shows the version compatibility of the input parser.
 Parser for the Fleur out.xml file
 ----------------------------------
 
-For the `out.xml` file a similar parser is implemented. However, since the output file
+For the ``out.xml`` file a similar parser is implemented. However, since the output file
 contains a lot more information, which is not always useful the :py:func:`outxml_parser()`
 is defined a lot more selectively. But the usage is almost completely identical to the input file.
 
@@ -70,8 +70,8 @@ what things should be parsed. For a more detailed explanation refer to the
 :doc:`../../devel_guide/index`.
 
 The following table shows the version compatibility of the output parser.
-For versions before `0.34` the file version corresponds to the input version,
-since the output version is `0.27` for all versions before this point.
+For versions before ``0.34`` the file version corresponds to the input version,
+since the output version is ``0.27`` for all versions before this point.
 
 +------------------+-----------------------------------------------------------------------------------------------------+
 | File version     | Compatible?                                                                                         |
@@ -141,7 +141,7 @@ Using the :py:mod:`~masci_tools.util.schema_dict_util` functions
 
 If only a small amount of information is required from the input or output files
 of fleur the full parsers might be overkill. But there are a number of utility
-functions allowing easy access to information from the `.xml` files without knowing
+functions allowing easy access to information from the ``.xml`` files without knowing
 the exact XPath expressions for each version of the input/output. A code example extracting
 information from a input file is given below.
 

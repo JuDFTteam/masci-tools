@@ -7,14 +7,14 @@ General `HDF5` file reader
 
 Fleur uses the HDF5 library for output files containing large datasets.
 The masci-tools library provides the :py:class:`reader.HDF5Reader` class to extract and transform
-information from these files. The `h5py` library is used to get information from `.hdf` files.
+information from these files. The ``h5py`` library is used to get information from ``.hdf`` files.
 
 Basic Usage
 ------------
 
 The specifications of what to extract and how to transform the data are given in the form
 of a python dictionary. Let us look at a usage example; extracting data for a bandstructure
-calculation from the `banddos.hdf` file produced by Fleur.
+calculation from the ``banddos.hdf`` file produced by Fleur.
 
 .. code-block:: python
 
@@ -27,18 +27,18 @@ calculation from the `banddos.hdf` file produced by Fleur.
       datasets, attributes = h5reader.read(recipe=FleurBands)
 
 The method :py:meth:`reader.HDF5Reader.read` produces two python dictionaries.
-In the case of the `FleurBands` recipe these contain the following information.
+In the case of the ``FleurBands`` recipe these contain the following information.
 
-- `datasets`
-   - Eigenvalues converted to eV shited to `E_F=0` (if available in the `banddos.hdf`)
+- ``datasets``
+   - Eigenvalues converted to eV shited to ``E_F=0`` (if available in the ``banddos.hdf``)
      and split up into spin-up/down and flattened to one dimension
    - The kpath projected to 1D and reshaped to same length as weights/eigenvalues
    - The weights (flattened) of the interstitial region, each atom, each orbital on
      each atom for all eigenvalues
-- `attributes`
+- ``attributes``
    - The coordinates of the used kpoints
    - Positions, atomic symbols and indices of symmetry equivalent atoms
-   - Dimensions of eigenvalues (`nkpts` and `nbands`)
+   - Dimensions of eigenvalues (``nkpts`` and ``nbands``)
    - Bravais matrix/Reciprocal cell of the system
    - Indices and labels of special k-points
    - Fermi energy
@@ -46,16 +46,16 @@ In the case of the `FleurBands` recipe these contain the following information.
 
 The following pre-defined recipes are stored in :py:mod:`masci_tools.io.parsers.hdf5.recipes`:
 
- - Recipe for `banddos.hdf` for bandstructure calculations
- - Recipe for `banddos.hdf` for standard density of states calculations
- - Different DOS modes are also supported (`jDOS`, `orbcomp`, `mcd`)
+ - Recipe for ``banddos.hdf`` for bandstructure calculations
+ - Recipe for ``banddos.hdf`` for standard density of states calculations
+ - Different DOS modes are also supported (``jDOS``, ``orbcomp``, ``mcd``)
 
-If no recipe is provided to the :py:class:`reader.HDF5Reader`, it will create the `datasets`
-and `attributes` as two nested dictionaries, exactly mirroring the structure of the `.hdf`
+If no recipe is provided to the :py:class:`reader.HDF5Reader`, it will create the ``datasets``
+and ``attributes`` as two nested dictionaries, exactly mirroring the structure of the ``.hdf``
 file and converting datasets into numpy arrays.
 
 For big datasets it might be useful to keep the dataset as a reference to the file and not 
-load the dataset into memory. To achieve this you can pass `move_to_memory=False`, when
+load the dataset into memory. To achieve this you can pass ``move_to_memory=False``, when
 initializing the reader. Notice that most of the transformations will still implicitly
 create numpy arrays and after the hdf file is closed the datasets will no longer be
 available.
@@ -63,14 +63,14 @@ available.
 Structure of recipes for the :py:class:`reader.HDF5Reader`
 -----------------------------------------------------------
 
-The recipe for extracting bandstructure information form the `banddos.hdf` looks like this:
+The recipe for extracting bandstructure information form the ``banddos.hdf`` looks like this:
 
 .. literalinclude:: ../../../masci_tools/io/parsers/hdf5/recipes.py
    :language: python
    :lines: 168-333
    :linenos:
 
-Each recipe can define the `datasets` and `attributes` entry (if one is not defined,
+Each recipe can define the ``datasets`` and ``attributes`` entry (if one is not defined,
 a empty dict is returned in its place). Each entry in these sections has the same structure.
 
 .. code-block:: python
@@ -88,8 +88,8 @@ a empty dict is returned in its place). Each entry in these sections has the sam
             ]
         }
 
-All entries must define the key `h5path`. This gives the initial dataset for this key,
-which will be extracted from the given `.hdf` file. The key of the entry corresponds to
+All entries must define the key ``h5path``. This gives the initial dataset for this key,
+which will be extracted from the given ``.hdf`` file. The key of the entry corresponds to
 the key under which the result will be saved to the output dictionary.
 
 If the dataset should be transformed in some way after reading it, there are a number
@@ -97,12 +97,12 @@ of defined transformations in :py:mod:`masci_tools.io.parsers.hdf5.transforms`.
 These are added to an entry by adding a list of namedtuples
 (:py:class:`reader.Transformation` for general transformations;
 :py:class:`reader.AttribTransformation` for attribute transformations) under the key
-`transforms`. General Transformations can be used in all entries, while transformations
-using an attribute value can only be used in the `datasets` entries. Each namedtuple takes
-the `name` of the transformation function and the positional (`args`),
-and keyword arguments (`kwargs`) for the transformation. Attribute transformations
+``transforms``. General Transformations can be used in all entries, while transformations
+using an attribute value can only be used in the ``datasets`` entries. Each namedtuple takes
+the ``name`` of the transformation function and the positional (``args``),
+and keyword arguments (``kwargs``) for the transformation. Attribute transformations
 also take the name of the attribute, whose value should be passed to the transformation
-in `attrib_name`.
+in ``attrib_name``.
 
 At the moment the following transformation functions are pre-defined:
 
@@ -110,8 +110,8 @@ At the moment the following transformation functions are pre-defined:
 
 General Transformations:
 
-- :py:func:`get_first_element()`: Get the index `0` of the dataset
-- :py:func:`index_dataset()`: Get the index `index` of the dataset
+- :py:func:`get_first_element()`: Get the index ``0`` of the dataset
+- :py:func:`index_dataset()`: Get the index ``index`` of the dataset
 - :py:func:`slice_dataset()`: Slice the given dataset with the given argument
 - :py:func:`get_shape()`: Get the shape of the dataset
 - :py:func:`tile_array()`: Use np.tile to repeat dataset a given amount of times
@@ -146,6 +146,6 @@ Transformations using an attribute:
 
 Custom transformation functions can also be defined using the :py:func:`hdf5_transformation()`
 decorator. For some transformation, e.g. :py:func:`get_all_child_datasets()`, the result
-will be a subdictionary in the `datasets` or `attributes` dictionary. If this is not desired
-the entry can include `'unpack_dict': True`. With this all keys from the resulting dict
+will be a subdictionary in the ``datasets`` or ``attributes`` dictionary. If this is not desired
+the entry can include ``'unpack_dict': True``. With this all keys from the resulting dict
 will be extracted after all transformations and put into the root dictionary.
