@@ -6,7 +6,7 @@ Using the :py:class:`Plotter` class
 
 Description
 ------------
-``
+
 The :py:class:`Plotter` class aims to provide a framework, which can be used to
 handle default values and collect common codeblocks needed for different plotting
 frameworks. The :py:class:`Plotter` class is a base class that should be subclassed
