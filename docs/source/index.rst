@@ -1,8 +1,3 @@
-.. fleur_fleur documentation master file, created by
-   sphinx-quickstart on Wed Aug 10 10:20:55 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to the `Masci-tools`_'s documentation!
 ##############################################
 
@@ -16,7 +11,8 @@ Welcome to the `Masci-tools`_'s documentation!
 .. _juDFT: http://judft.de
 
 This package was developed in the process of developing the `AiiDA-FLEUR`_ and `AiiDA_KKR`_ plugins to `AiiDA`_.
-It contains helper functions that can help with common pre- and postprocessing steps of the `FLEUR`_ and `KKR`_ codes developed at the Forschungszentrum Jülich (see also the `juDFT`_ website for more information).
+It contains helper functions that can help with common pre- and postprocessing steps of the `FLEUR`_ and `KKR`_ codes
+developed at the Forschungszentrum Jülich (see also the `juDFT`_ website for more information).
 
 If you use this package please cite: ...
 
@@ -24,27 +20,39 @@ If you use this package please cite: ...
 Requirements to use this code:
 ------------------------------
 
-* lxml
-* h5py
-* ase
-* pymatgen
-* numpy
-* scipy
-* more_itertools
+* ``lxml``
+* ``h5py``
+* ``numpy``
+* ``matplotlib``
+* ``bokeh`` (optional)
+* ``seaborn``
+* ``ase``
+* ``mendeleev``
+* ``click``
+* ``click-completion``
+* ``PyYAML``
+* ``tabulate``
+* ``deepdiff``
+* ``humanfriendly``
+* ``more_itertools``
 
 Installation Instructions:
 --------------------------
 
-Install from pypi the latest release::
+Install from pypi the latest release
 
-    $ pip install masci-tools
+.. code-block:: bash
+
+   pip install masci-tools
 
 
-or from the masci-tools source folder any branch::
+or from the masci-tools source folder any branch
 
-    $ pip install .
-    # or which is very useful to keep track of the changes (developers)
-    $ pip install -e . 
+.. code-block:: bash
+
+   pip install .
+   # or which is very useful to keep track of the changes (developers)
+   pip install -e . 
 
 Acknowledgments:
 ----------------
