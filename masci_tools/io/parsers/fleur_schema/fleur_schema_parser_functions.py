@@ -1214,7 +1214,7 @@ def get_text_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: A
     """
     find all elements, who can contain text
 
-    :param xmlschema: xmltree representing the schema
+    :param xmlschema_evaluator: xmltree representing the schema
 
     :return: dictionary with tags and their corresponding type_definition
              meaning a dictionary with possible base types and evtl. length restriction

@@ -5,7 +5,6 @@ formats:
   - pdf
 
 python:
-  version: 3.9
   install:
     - method: pip
       path: .
@@ -13,4 +12,6 @@ python:
         - docs
 
 build:
-  image: testing
+  os: ubuntu-20.04
+  tools:
+    python: "3.10"

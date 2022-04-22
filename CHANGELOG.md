@@ -3,7 +3,8 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.0...develop)
 
-Nothing here yet
+### For Developers
+- Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/#156)
 
 ## v0.10.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.0...v0.10.1)

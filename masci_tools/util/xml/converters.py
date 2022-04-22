@@ -14,7 +14,7 @@ Common functions for converting types to and from XML files
 """
 from __future__ import annotations
 
-from typing import Iterable, Any, cast
+from typing import Iterable, Any, cast, Union
 import sys
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -30,7 +30,7 @@ from masci_tools.io.parsers import fleur_schema
 import re
 
 BaseType: TypeAlias = Literal['int', 'switch', 'string', 'float', 'float_expression', 'complex']
-ConvertedType: TypeAlias = 'int | float | bool | str | complex'
+ConvertedType: TypeAlias = Union[int, float, bool, str, complex]
 
 
 def convert_to_xml(value: Any | list[Any],
