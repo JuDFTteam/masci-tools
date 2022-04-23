@@ -59,7 +59,8 @@ docs = [
     'sphinx_rtd_theme',
     'sphinx-click',
     'sphinx-autodoc-typehints',
-    "myst-parser~=0.15",
+    'myst-nb',
+    'sphinx-copybutton'
     ]
 testing = [
     'pytest~=6.0',
