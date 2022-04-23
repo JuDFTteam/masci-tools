@@ -20,18 +20,14 @@ from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
 
-class XML:
-    
-    def __init__(self, data):
-        self.data = etree.tostring(data, encoding='unicode', pretty_print=True)
-        
-    def _repr_html_(self):
-        return highlight(self.data, XmlLexer(), HtmlFormatter(noclasses=True))
+def display_xml(data):
 
+    xmlstring = etree.tostring(data, encoding='unicode', pretty_print=True)
+    return highlight(xmlstring, XmlLexer(), HtmlFormatter(noclasses=True))
 
 html_formatter = get_ipython().display_formatter.formatters['text/html']
-html_formatter.for_type(etree._Element, XML)
-html_formatter.for_type(etree._ElementTree, XML)
+html_formatter.for_type(etree._Element, display_xml)
+html_formatter.for_type(etree._ElementTree, display_xml)
 ```
 
 # Examples
