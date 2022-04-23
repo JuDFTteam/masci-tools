@@ -11,3 +11,4 @@ This is the masci-tools user’s guide.
    hdf5_parser
    fleur_plots
    plotting
+   examples
