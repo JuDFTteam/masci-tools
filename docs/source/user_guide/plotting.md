@@ -262,6 +262,11 @@ set_mpl_plot_defaults(color='darkblue', linestyle='--', marker=None)
 ax = single_scatterplot(x,y, scale={'y': 'log'})
 ```
 
+Resetting defaults:
+```{code-cell} ipython3
+from masci_tools.vis.plot_methods import reset_mpl_plot_defaults
+reset_mpl_plot_defaults()
+```
 ### Multiple plots
 
 Many plotting routines accept multiple sets of data to plot. An example of this is the
