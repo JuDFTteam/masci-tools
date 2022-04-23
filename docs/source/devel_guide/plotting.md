@@ -486,6 +486,9 @@ def nested_plot_function(x, y, **kwargs):
    #Will plot with the above set defaults
    plot_kwargs = plot_params.plot_kwargs()
    ax.plot(x, y+2, **plot_kwargs)
+   plot_params.save_plot('figure')
+   
+   return ax
 
 @ensure_plotter_consistency(plot_params)
 def plot_with_defaults(x,y,**kwargs):
@@ -510,7 +513,6 @@ def plot_with_defaults(x,y,**kwargs):
    #axis if they were given
    plot_params.set_scale(ax)
    plot_params.set_limits(ax)
-   plot_params.save_plot('figure')
 
    return ax
 
