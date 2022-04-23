@@ -81,7 +81,7 @@ class FleurXMLModifier:
     _schema_dict_functions: dict[str, Callable] = SCHEMA_DICT_SETTERS
     _nmmpmat_functions: dict[str, Callable] = NMMPMAT_SETTERS
 
-    _extra_functions: dict[str, dict[Literal['xpath', 'schema_dict', 'nmmpmat'], Callable]] = {}
+    _extra_functions: dict[Literal['xpath', 'schema_dict', 'nmmpmat'], dict[str, Callable]] = {}
 
     def __new__(cls, validate_signatures=True):
 
