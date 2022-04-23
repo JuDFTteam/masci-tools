@@ -118,7 +118,7 @@ Let us take the previous example and convert it to use a global instance
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis.parameters import ensure_plotter_consistency
 
 #First we instantiate the MatplotlibPlotter class
 plot_params = MatplotlibPlotter()
@@ -182,7 +182,7 @@ decorator, when the plotting function terminates successfully or in an error
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis.parameters import ensure_plotter_consistency
 
 #First we instantiate the MatplotlibPlotter class
 plot_params = MatplotlibPlotter()
@@ -251,7 +251,7 @@ arguments of different names collide with arguments provided by the {py:class}`P
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis.parameters import ensure_plotter_consistency
 
 #First we instantiate the MatplotlibPlotter class
 plot_params = MatplotlibPlotter()
@@ -317,7 +317,7 @@ The `num_plots` and `single_plot` properties are also reset by the
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis.parameters import ensure_plotter_consistency
 
 #First we instantiate the MatplotlibPlotter class
 plot_params = MatplotlibPlotter()
@@ -394,7 +394,7 @@ the function finishes
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
+from masci_tools.vis.parameters import ensure_plotter_consistency
 
 #First we instantiate the MatplotlibPlotter class
 plot_params = MatplotlibPlotter()
@@ -465,8 +465,8 @@ Usage is shown here:
 :tags: [hide-output]
 
 from masci_tools.vis.matplotlib_plotter import MatplotlibPlotter
-from masci_tools.vis import ensure_plotter_consistency
-from masci_tools.vis import NestedPlotParameters
+from masci_tools.vis.parameters import ensure_plotter_consistency
+from masci_tools.vis.parameters import NestedPlotParameters
 
 
 #First we instantiate the MatplotlibPlotter class
