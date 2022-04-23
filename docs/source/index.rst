@@ -77,14 +77,6 @@ Developer's Guide
 
    devel_guide/index
 
-Module reference (API)
-######################
-
-.. toctree::
-   :maxdepth: 4
-
-   module_guide/mg_index
-
 Reference
 ##########
 
