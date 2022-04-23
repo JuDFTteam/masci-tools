@@ -34,6 +34,7 @@ html_formatter.for_type(etree._Element, XML)
 html_formatter.for_type(etree._ElementTree, XML)
 ```
 
+# Examples
 ```{code-cell} ipython3
 :tags: [hide-output]
 
