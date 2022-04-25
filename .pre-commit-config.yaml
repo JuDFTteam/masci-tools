@@ -103,4 +103,5 @@ repos:
             masci_tools/tools/greensfunction.py|
             masci_tools/cmdline/parameters/slice.py|
             masci_tools/vis/parameters.py|
+            masci_tools/util/ipython.py|
         )$

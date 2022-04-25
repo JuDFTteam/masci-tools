@@ -9,6 +9,7 @@ from pygments.lexers import XmlLexer  #pylint: disable=no-name-in-module
 from pygments.formatters import HtmlFormatter  #pylint: disable=no-name-in-module
 
 from masci_tools.util.typing import XMLLike
+from typing import Any
 
 
 def display_xml(data: XMLLike) -> str:
@@ -24,7 +25,7 @@ def display_xml(data: XMLLike) -> str:
     return highlight(xmlstring, XmlLexer(), HtmlFormatter(noclasses=True))
 
 
-def register_formatters(ipython):
+def register_formatters(ipython: Any) -> None:
 
     html_formatter = ipython.display_formatter.formatters['text/html']
     html_formatter.for_type(etree._Element, display_xml)
