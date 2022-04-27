@@ -41,6 +41,17 @@ from .outschema_todict import create_outschema_dict, merge_schema_dicts
 
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
 
+EMPTY_TAG_INFO: TagInfo = {
+    'attribs': CaseInsensitiveFrozenSet(),
+    'optional_attribs': CaseInsensitiveDict(),
+    'optional': CaseInsensitiveFrozenSet(),
+    'order': [],
+    'several': CaseInsensitiveFrozenSet(),
+    'simple': CaseInsensitiveFrozenSet(),
+    'complex': CaseInsensitiveFrozenSet(),
+    'text': CaseInsensitiveFrozenSet()
+}
+
 
 class NoPathFound(ValueError):
     """
@@ -529,44 +540,26 @@ class SchemaDict(LockableDict):
                                       ' since no tag or info entries are defined')
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
-        if len(paths) == 0:
-            raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}')
-
-        EMPTY_TAG_INFO: TagInfo = {
-            'attribs': CaseInsensitiveFrozenSet(),
-            'optional_attribs': CaseInsensitiveDict(),
-            'optional': CaseInsensitiveFrozenSet(),
-            'order': [],
-            'several': CaseInsensitiveFrozenSet(),
-            'simple': CaseInsensitiveFrozenSet(),
-            'complex': CaseInsensitiveFrozenSet(),
-            'text': CaseInsensitiveFrozenSet()
-        }
+        if parent:
+            paths = [split_off_tag(path)[0] for path in paths]
 
         tag_info = None
         for path in paths:
 
-            if parent:
-                path, _ = split_off_tag(path)
-
-            entry = None
+            entry = EMPTY_TAG_INFO
             for info_entry in self._info_entries:
                 if path in self[info_entry]:
                     entry = self[info_entry][path]
-            if entry is None:
-                entry = EMPTY_TAG_INFO
 
-            if tag_info is not None:
-                if entry != tag_info:
-                    raise NoUniquePathFound(f'Differing tag_info for the found with the current specification\n'
-                                            f'contains: {contains}, not_contains: {not_contains}\n'
-                                            f'These are possible:  {paths}')
-            else:
-                tag_info = entry
+            if tag_info is not None and entry != tag_info:
+                raise NoUniquePathFound(f'Differing tag_info for the found with the current specification\n'
+                                        f'contains: {contains}, not_contains: {not_contains}\n'
+                                        f'These are possible:  {paths}')
+            tag_info = entry
 
         if tag_info is None:
-            raise ValueError(f'No tag info found for paths: {paths}')
+            raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
+                              f'contains: {contains}, not_contains: {not_contains}, parent: {parent}')
 
         return tag_info
 

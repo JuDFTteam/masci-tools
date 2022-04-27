@@ -593,6 +593,9 @@ def test_tag_info():
 
     assert res == EXPECTED_RESULT
 
+    with pytest.raises(NoPathFound):
+        schema_dict.tag_info('NON_EXISTENT')
+
     EXPECTED_RESULT = {
         'attribs': {
             'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',

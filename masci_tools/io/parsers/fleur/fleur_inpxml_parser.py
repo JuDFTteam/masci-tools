@@ -25,7 +25,7 @@ from masci_tools.util.logging_util import DictHandler
 from masci_tools.util.typing import XMLFileLike
 import logging
 from typing import Any
-from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, EMPTY_TAG_INFO
 
 
 def inpxml_parser(inpxmlfile: XMLFileLike,
@@ -176,11 +176,7 @@ def inpxml_todict(parent: etree._Element,
                     return_dict['text_label'] = return_dict['label']
                     return_dict.pop('label')
 
-    if base_xpath in schema_dict['tag_info']:
-        tag_info = schema_dict['tag_info'][base_xpath]
-    else:
-        tag_info = {'several': []}
-
+    tag_info = schema_dict['tag_info'].get(base_xpath, EMPTY_TAG_INFO)
     for element in parent:
 
         new_base_xpath = f'{base_xpath}/{element.tag}'
