@@ -1192,8 +1192,8 @@ def set_kpointlist(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     import numpy as np
 
@@ -1220,20 +1220,16 @@ def set_kpointlist(xmltree: XMLLike,
 
         xmltree = xml_delete_tag(xmltree, f"{kpointlist_xpath}[@name='{name}']")
 
-    new_kpo = etree.Element('kPointList', name=name, count=f'{nkpts:d}', type=kpoint_type)
-    for indx, (kpoint, weight) in enumerate(zip(kpoints, weights)):
-        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
-        if indx in special_labels:
-            new_k = etree.Element('kPoint', weight=weight, label=special_labels[indx])
-        else:
-            new_k = etree.Element('kPoint', weight=weight)
-        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    xmltree = create_tag(xmltree, schema_dict, new_kpo)
+    new_kpointset = E.kpointlist(*(E.kpoint(kpoint, weight=weight, label=special_labels[indx])
+                                   if indx in special_labels else E.kpoint(kpoint, weight=weight)
+                                   for indx, (kpoint, weight) in enumerate(zip(kpoints, weights))),
+                                 name=name,
+                                 count=nkpts,
+                                 type=kpoint_type)
 
+    xmltree = create_tag(xmltree, schema_dict, new_kpointset)
     if switch:
         xmltree = switch_kpointset(xmltree, schema_dict, name)
 
@@ -1262,8 +1258,8 @@ def set_kpointlist_max4(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import eval_simple_xpath
-    from masci_tools.util.xml.converters import convert_to_xml
     import numpy as np
 
     if not isinstance(kpoints, (list, np.ndarray)) or not isinstance(weights, (list, np.ndarray)):
@@ -1280,16 +1276,14 @@ def set_kpointlist_max4(xmltree: XMLLike,
         if 'kPoint' in child.tag:
             bzintegration_tag.remove(child)
 
-    new_kpo = etree.Element('kPointList', posScale='1.0', weightScale='1.0', count=f'{nkpts:d}')
-    for kpoint, weight in zip(kpoints, weights):
-        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
-        new_k = etree.Element('kPoint', weight=weight)
-        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    xmltree = create_tag(xmltree, schema_dict, new_kpo, not_contains='altKPoint')
+    new_kpointset = E.kpointlist(*(E.kpoint(kpoint, weight=weight) for kpoint, weight in zip(kpoints, weights)),
+                                 posscale=1,
+                                 weightscale=1,
+                                 count=nkpts)
+
+    xmltree = create_tag(xmltree, schema_dict, new_kpointset, not_contains='altKPoint')
 
     return xmltree
 
@@ -1432,26 +1426,27 @@ def set_kpath_max4(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import tag_exists
-    from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_to_xml
-    from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
-
-    alt_kpt_set_xpath = schema_dict.tag_xpath('altKPointSet')
 
     if not tag_exists(xmltree, schema_dict, 'kPointCount', contains='altKPoint'):
         xmltree = create_tag(xmltree, schema_dict, 'kPointCount', contains='altKPoint', create_parents=True)
         xmltree = set_first_attrib_value(xmltree, schema_dict, 'purpose', 'bands')
 
-    new_kpo = etree.Element('kPointCount', count=f'{count}', gamma=f'{convert_to_fortran_bool(gamma)}')
-    for label, coord in kpath.items():
-        new_k = etree.Element('specialPoint', name=f'{label}')
-        res: tuple[str, bool] = convert_to_xml(coord, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    kpath_xpath = f"{alt_kpt_set_xpath}[@purpose='bands']/kPointCount"
-
-    xmltree = xml_replace_tag(xmltree, kpath_xpath, new_kpo)
+    new_kpointpath = E.kpointcount(
+        *(E.specialpoint(kpt, name=name) for name, kpt in kpath.items()),
+        count=count,
+        gamma=gamma,
+    )
+    xmltree = replace_tag(xmltree,
+                          schema_dict,
+                          'kPointCount',
+                          new_kpointpath,
+                          contains='altKPoint',
+                          filters={'altKPointSet': {
+                              'purpose': 'bands'
+                          }})
 
     return xmltree
