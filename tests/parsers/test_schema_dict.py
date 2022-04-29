@@ -543,6 +543,7 @@ def test_tag_info():
     schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     EXPECTED_RESULT = {
+        'name': 'species',
         'attribs': {'name', 'element', 'atomicNumber'},
         'optional': {
             'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
@@ -570,6 +571,7 @@ def test_tag_info():
     assert res == EXPECTED_RESULT
 
     EXPECTED_RESULT = {
+        'name': 'ldaHIA',
         'attribs': {'l', 'U', 'J', 'phi', 'theta', 'l_amf', 'init_occ', 'kkintgrCutoff', 'label'},
         'optional': {'exc', 'cFCoeff', 'addArg'},
         'optional_attribs': {
@@ -597,6 +599,7 @@ def test_tag_info():
         schema_dict.tag_info('NON_EXISTENT')
 
     EXPECTED_RESULT = {
+        'name': 'ldaHIA',
         'attribs': {
             'itmaxHubbard1', 'beta', 'minoccDistance', 'minmatDistance', 'n_occpm', 'dftspinpol', 'fullMatch',
             'l_nonsphDC', 'l_correctEtot', 'l_forceHIAiteration'
@@ -626,6 +629,24 @@ def test_tag_info():
 
     with pytest.raises(NoPathFound):
         schema_dict.tag_info('ldaHIA', not_contains='atom', contains='species')
+
+    EXPECTED_RESULT = {
+        'name': 'row-1',
+        'attribs': {
+        },
+        'optional': set(),
+        'optional_attribs': {
+        },
+        'order': [],
+        'several': set(),
+        'simple': set(),
+        'text': set(),
+        'complex': set()
+    }
+
+    res = schema_dict.tag_info('ROW-1')
+    assert res == EXPECTED_RESULT
+
 
 
 def clean_for_reg_dump(value_to_clean):
