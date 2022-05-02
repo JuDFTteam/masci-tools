@@ -120,7 +120,6 @@ class FleurElementMaker(ElementMaker):  #type: ignore[misc]
             attrib_name = tag_info['attribs'].original_case[key]
             if not isinstance(value, str):
                 value, success = convert_to_xml(value, self.schema_dict, attrib_name)
-                print(value, success)
                 if not success:
                     raise ValueError(
                         f'Failed to convert value `{value}` for attribute {attrib_name}. The types are probably not right'
