@@ -543,7 +543,8 @@ def test_tag_info():
     schema_dict = InputSchemaDict.fromVersion(MAIN_TEST_VERSION)
 
     EXPECTED_RESULT = {
-        'name': 'species',
+        'name':
+        'species',
         'attribs': {'name', 'element', 'atomicNumber'},
         'optional': {
             'energyParameters', 'prodBasis', 'special', 'force', 'nocoParams', 'modInitDen', 'ldaU', 'ldaHIA',
@@ -632,11 +633,9 @@ def test_tag_info():
 
     EXPECTED_RESULT = {
         'name': 'row-1',
-        'attribs': {
-        },
+        'attribs': {},
         'optional': set(),
-        'optional_attribs': {
-        },
+        'optional_attribs': {},
         'order': [],
         'several': set(),
         'simple': set(),
@@ -646,7 +645,6 @@ def test_tag_info():
 
     res = schema_dict.tag_info('ROW-1')
     assert res == EXPECTED_RESULT
-
 
 
 def clean_for_reg_dump(value_to_clean):
