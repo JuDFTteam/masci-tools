@@ -2,7 +2,29 @@
 
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.1...develop)
-###
+
+### Added
+- Added `FleurElementMaker` class. This can be used to create XML elements compatible with a given version from scratch.
+  Has case-insensitivity and converts values to strings for XML [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+  Example
+  ```python
+   from masci_tools.util.xml.builder import FleurElementMaker
+   E = FleurElementMaker.fromVersion('0.35')
+   new_kpointset = E.kpointlist(
+       *(
+           E.kpoint(kpoint, weight=weight, label=special_labels[indx]) if indx in special_labels else
+           E.kpoint(kpoint, weight=weight) for indx, (kpoint, weight) in enumerate(zip(kpoints, weights))
+       ),
+       name=name,
+       count=nkpts,
+       type=kpoint_type)
+  ```
+
+### Improvements
+- Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` fromat specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+
+### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
 
 ### For Developers

@@ -88,6 +88,7 @@ class AttributeType(_XSDAttributeType):
 class TagInfo(TypedDict):
     """Dict representing the entries for the tag information.
     """
+    name: str
     attribs: CaseInsensitiveFrozenSet[str]
     optional_attribs: CaseInsensitiveDict[str, str]
     optional: CaseInsensitiveFrozenSet[str]
@@ -1320,6 +1321,7 @@ def get_tag_info(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: An
         simple_tags = _get_simple_tags(xmlschema_evaluator, type_elem, input_mapping=kwargs.get('_input_basic_types'))
 
         info_dict: TagInfo = {
+            'name': name_tag,
             'attribs': _get_contained_attribs(xmlschema_evaluator, type_elem),
             'optional_attribs': _get_contained_optional_attribs(xmlschema_evaluator, type_elem),
             'optional': _get_optional_tags(xmlschema_evaluator, type_elem),
@@ -1330,7 +1332,7 @@ def get_tag_info(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwargs: An
             'text': _get_contained_text_tags(xmlschema_evaluator, type_elem, kwargs['text_tags'])
         }
 
-        if any(len(elem) != 0 for elem in info_dict.values()):  #type: ignore
+        if any(len(elem) != 0 for key, elem in info_dict.items() if key != 'name'):  #type: ignore
             for path in tag_path:
                 tag_info[path] = info_dict
 

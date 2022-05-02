@@ -19,6 +19,7 @@ import os
 import warnings
 import tempfile
 import shutil
+import copy
 from functools import update_wrapper, wraps
 from pathlib import Path
 from typing import Callable, Iterable, TypeVar, Any, cast
@@ -42,6 +43,7 @@ from .outschema_todict import create_outschema_dict, merge_schema_dicts
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
 
 EMPTY_TAG_INFO: TagInfo = {
+    'name': None,  #type: ignore[typeddict-item]
     'attribs': CaseInsensitiveFrozenSet(),
     'optional_attribs': CaseInsensitiveDict(),
     'optional': CaseInsensitiveFrozenSet(),
@@ -546,7 +548,8 @@ class SchemaDict(LockableDict):
         tag_info = None
         for path in paths:
 
-            entry = EMPTY_TAG_INFO
+            entry = copy.deepcopy(EMPTY_TAG_INFO)
+            entry['name'] = split_off_tag(path)[1]
             for info_entry in self._info_entries:
                 if path in self[info_entry]:
                     entry = self[info_entry][path]
