@@ -88,6 +88,7 @@ class AttributeType(_XSDAttributeType):
 class TagInfo(TypedDict):
     """Dict representing the entries for the tag information.
     """
+    name: str
     attribs: CaseInsensitiveFrozenSet[str]
     optional_attribs: CaseInsensitiveDict[str, str]
     optional: CaseInsensitiveFrozenSet[str]

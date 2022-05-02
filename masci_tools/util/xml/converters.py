@@ -410,9 +410,6 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
     if not isinstance(value, (list, np.ndarray)):
         value = [value]
 
-    if 'string' not in possible_types:
-        possible_types = possible_types + ('string',)  #Always try string
-
     converted_value: str
     converted_list = []
     exceptions: list[Exception] = []
@@ -444,24 +441,34 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
                     exceptions.append(exc)
                     continue
 
-            elif value_type in ('string', 'int'):
+            elif value_type == 'int':
+                try:
+                    converted_value = f'{val:d}'
+                except ValueError as exc:
+                    exceptions.append(exc)
+                    continue
+
+            elif value_type == 'string':
                 converted_value = str(val)
 
             converted_list.append(converted_value)
             break
         else:
-            if logger is None:
-                raise ValueError(f"Could not convert '{val}' to text. Tried: {possible_types}.\n"
-                                 'The following errors occurred:\n   ' +
-                                 '\n   '.join([str(error) for error in exceptions]))
-            logger.warning("Could not convert '%s' to text. The following errors occurred:", val)
+            if isinstance(val, str):
+                converted_list.append(val)
+            else:
+                if logger is None:
+                    raise ValueError(f"Could not convert '{val}' to text. Tried: {possible_types}.\n"
+                                     'The following errors occurred:\n   ' +
+                                     '\n   '.join([str(error) for error in exceptions]))
+                logger.warning("Could not convert '%s' to text. The following errors occurred:", val)
 
-            for error in exceptions:
-                logger.warning('   %s', str(error))
-                logger.debug(error, exc_info=error)
+                for error in exceptions:
+                    logger.warning('   %s', str(error))
+                    logger.debug(error, exc_info=error)
 
-            converted_list.append(val)
-            all_success = False
+                converted_list.append(val)
+                all_success = False
 
     return converted_list, all_success
 
