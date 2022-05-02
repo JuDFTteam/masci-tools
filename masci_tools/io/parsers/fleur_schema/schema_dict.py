@@ -43,7 +43,7 @@ from .outschema_todict import create_outschema_dict, merge_schema_dicts
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
 
 EMPTY_TAG_INFO: TagInfo = {
-    'name': None,
+    'name': None,  #type: ignore[typeddict-item]
     'attribs': CaseInsensitiveFrozenSet(),
     'optional_attribs': CaseInsensitiveDict(),
     'optional': CaseInsensitiveFrozenSet(),

@@ -25,7 +25,7 @@ from lxml.builder import ElementMaker  #pylint: disable=no-name-in-module
 from lxml import etree
 
 from masci_tools.util.xml.converters import convert_to_xml
-from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict, SchemaDict
 
 from typing import Any, Callable, Iterable
 
@@ -71,7 +71,7 @@ class FleurElementMaker(ElementMaker):  #type: ignore[misc]
         return cls(schema_dict, **kwargs)
 
     def __init__(self,
-                 schema_dict: InputSchemaDict,
+                 schema_dict: SchemaDict,
                  typemap: dict | None = None,
                  namespace: str | None = None,
                  nsmap: dict[str, str] | None = None,
