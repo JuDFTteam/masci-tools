@@ -21,7 +21,7 @@
   ```
 
 ### Improvements
-- Added `name` entry to `SchemaDict.tag_info` which cintains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
 - `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` fromat specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
 
 ### Bugfixes
