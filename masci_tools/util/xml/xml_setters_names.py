@@ -670,20 +670,17 @@ def set_species_label(xmltree: XMLLike,
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
 
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', changes, create=create)
-
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     species_to_set = set(
         evaluate_attribute(xmltree,
                            schema_dict,
                            'species',
                            filters={'atomGroup': {
-                               label_path: {
+                               ('/filmPos/@label', '/relPos/@label'): {
                                    '=': f'{atom_label: >20}'
                                }
                            }},
@@ -827,7 +824,7 @@ def shift_value_species_label(xmltree: XMLLike,
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
     from masci_tools.util.xml.common_functions import split_off_attrib
 
@@ -843,11 +840,9 @@ def shift_value_species_label(xmltree: XMLLike,
     attr_base_path = schema_dict.attrib_xpath(attribute_name, **kwargs)
     tag_base_xpath, attribute_name = split_off_attrib(attr_base_path)
 
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
     filters = None
     if atom_label != 'all':
-        filters = {'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}}
+        filters = {'atomGroup': {('/filmPos/@label', '/relPos/@label'): {'=': f'{atom_label: >20}'}}}
 
     species_to_set = set(evaluate_attribute(xmltree, schema_dict, 'species', filters=filters, list_return=True))
 
@@ -885,18 +880,16 @@ def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, 
         'changes': {'nocoParams': {'beta': val}}
 
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
     if atom_label == 'all':
         return set_atomgroup(xmltree, schema_dict, changes, species='all')
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     species_to_set = set(
         evaluate_attribute(xmltree,
                            schema_dict,
                            'species',
                            filters={'atomGroup': {
-                               label_path: {
+                               ('/filmPos/@label', '/relPos/@label'): {
                                    '=': f'{atom_label: >20}'
                                }
                            }},
@@ -979,13 +972,8 @@ def switch_species_label(xmltree: XMLLike,
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists
-
     if atom_label == 'all':
         return switch_species(xmltree, schema_dict, new_species_name, species='all', clone=clone, changes=changes)
-
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     return switch_species(xmltree,
                           schema_dict,
@@ -993,7 +981,7 @@ def switch_species_label(xmltree: XMLLike,
                           clone=clone,
                           changes=changes,
                           filters={'atomGroup': {
-                              label_path: {
+                              ('/filmPos/@label', '/relPos/@label'): {
                                   '=': f'{atom_label: >20}'
                               }
                           }})
