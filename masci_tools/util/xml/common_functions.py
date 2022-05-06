@@ -19,7 +19,7 @@ from lxml import etree
 import warnings
 import copy
 import logging
-from typing import cast
+from typing import cast, Any
 
 from .xpathbuilder import XPathBuilder
 
@@ -461,3 +461,21 @@ def is_valid_tag(tag: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+def serialize_xml_objects(args: tuple[Any, ...], kwargs: dict[str, Any]) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """
+    Convert every XML element/tree in the given args/kwargs to string
+    using :py:func:`lxml.etree.tostring()`
+
+    :param args: positional arguments
+    :param kwargs: keyword arguments
+    """
+
+    def tostring(elem: XMLLike) -> str:
+        return etree.tostring(elem, encoding='unicode', pretty_print=True)
+
+    args = tuple(tostring(x) if isinstance(x, (etree._Element, etree._ElementTree)) else x for x in args)
+    kwargs = {k: tostring(x) if isinstance(x, (etree._Element, etree._ElementTree)) else x for k, x in kwargs.items()}
+
+    return args, kwargs

@@ -248,3 +248,27 @@ def test_contains_tag(xpath, tag, result):
     from masci_tools.util.xml.common_functions import contains_tag
 
     assert contains_tag(xpath, tag) == result
+
+
+def test_serialize_xml_objects():
+    """
+    Test of the serialize_xml_objects function
+    """
+    from masci_tools.util.xml.common_functions import serialize_xml_objects
+
+    elem = etree.Element('test')
+    elem_tree = etree.Element('test2').getroottree()
+
+    res = serialize_xml_objects((elem_tree, 1, 'xer', elem), {
+        'test': elem_tree,
+        'another': 1,
+        'string': 'xer',
+        'here': elem
+    })
+
+    assert res == (('<test2/>\n', 1, 'xer', '<test/>\n'), {
+        'test': '<test2/>\n',
+        'another': 1,
+        'string': 'xer',
+        'here': '<test/>\n'
+    })
