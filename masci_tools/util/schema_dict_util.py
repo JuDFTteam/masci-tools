@@ -19,7 +19,7 @@ attribute from the right place in the given etree
 from __future__ import annotations
 
 from masci_tools.io.parsers import fleur_schema
-from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath
+from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, process_xpath_argument
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.typing import XPathLike, XMLLike
 from lxml import etree
@@ -95,15 +95,7 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
     optional = kwargs.pop('optional', False)
 
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(attrib_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(attrib_xpath, complex_xpath, filters)
     check_complex_xpath(node, attrib_xpath, complex_xpath)
 
     stringattribute: list[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
@@ -173,15 +165,7 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
     optional = kwargs.pop('optional', False)
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
-
+    complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
     stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
@@ -264,15 +248,7 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
     list_return = kwargs.pop('list_return', False)
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
-
+    complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
     try:
@@ -520,15 +496,7 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
     ignore = kwargs.pop('ignore', None)
 
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
-
+    complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
     #Which attributes are expected

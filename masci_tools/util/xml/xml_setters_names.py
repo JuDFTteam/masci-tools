@@ -24,6 +24,7 @@ except ImportError:
 
 from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
+from masci_tools.util.xml.common_functions import process_xpath_argument
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
 
@@ -78,15 +79,7 @@ def create_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
     parent_xpath, tag_name = split_off_tag(base_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(parent_xpath, complex_xpath, filters)
 
     xmltree = xml_create_tag_schema_dict(xmltree,
                                          schema_dict,
@@ -129,14 +122,7 @@ def delete_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
@@ -176,14 +162,7 @@ def delete_att(xmltree: XMLLike,
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     tag_xpath, name = split_off_attrib(base_xpath)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, tag_xpath, complex_xpath)
 
     return xml_delete_att(xmltree, complex_xpath, name, occurrences=occurrences)
@@ -221,14 +200,7 @@ def replace_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_replace_tag(xmltree, complex_xpath, element, occurrences=occurrences)
@@ -274,15 +246,7 @@ def add_number_to_attrib(xmltree: XMLLike,
 
     attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(attrib_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_add_number_to_attrib(xmltree,
                                     schema_dict,
@@ -383,15 +347,7 @@ def set_attrib_value(xmltree: XMLLike,
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(base_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_attrib_value(xmltree,
                                 schema_dict,
@@ -484,15 +440,7 @@ def set_text(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
@@ -580,15 +528,7 @@ def set_simple_tag(xmltree: XMLLike,
     tag_info = schema_dict['tag_info'][base_xpath]
 
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(parent_xpath, complex_xpath, filters)
 
     return xml_set_simple_tag(xmltree,
                               schema_dict,
@@ -640,15 +580,7 @@ def set_complex_tag(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 

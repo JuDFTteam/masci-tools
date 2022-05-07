@@ -21,7 +21,7 @@ import copy
 import logging
 from typing import cast, Any
 
-from .xpathbuilder import XPathBuilder
+from .xpathbuilder import FilterType, XPathBuilder
 
 
 def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
@@ -479,3 +479,28 @@ def serialize_xml_objects(args: tuple[Any, ...], kwargs: dict[str, Any]) -> tupl
     kwargs = {k: tostring(x) if isinstance(x, (etree._Element, etree._ElementTree)) else x for k, x in kwargs.items()}
 
     return args, kwargs
+
+
+def process_xpath_argument(simple_xpath: str | bytes | etree.XPath, complex_xpath: XPathLike | None,
+                           filters: FilterType | None) -> XPathLike:
+    """
+    Process the simple and complex Xpath expressions and given filters
+    Used for unifying the logic for all xml setters/evaluators using these arguments
+
+    :param simple_xpath: THe simple XPath (no predicates) expression to base the paths on
+    :param complex_xpath: Optional XPath given with no restrictions
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+    :returns: Complex XPath expression
+    """
+    if complex_xpath is None:
+        complex_xpath = XPathBuilder(simple_xpath, filters=filters, strict=True)
+    elif filters is not None:
+        if not isinstance(complex_xpath, XPathBuilder):
+            raise ValueError(
+                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
+        for key, val in filters.items():
+            complex_xpath.add_filter(key, val)
+
+    return complex_xpath
