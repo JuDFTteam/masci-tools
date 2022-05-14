@@ -46,15 +46,15 @@ def exclude_points(plot_data: PlotData,
         plot_data.mask_data(mask)
 
 
-def _mpl_single_line_or_area(axis,
-                             entry,
-                             source,
-                             area=False,
-                             area_vertical=False,
-                             area_enclosing_line=True,
-                             advance_color_cycle=False,
-                             area_line_alpha=1.0,
-                             **kwargs):
+def mpl_single_line_or_area(axis,
+                            entry,
+                            source,
+                            area=False,
+                            area_vertical=False,
+                            area_enclosing_line=True,
+                            advance_color_cycle=False,
+                            area_line_alpha=1.0,
+                            **kwargs):
 
     if any(key not in entry._fields for key in ('x', 'y')):
         raise ValueError('Entry has to contain x and y fields')
@@ -91,3 +91,28 @@ def _mpl_single_line_or_area(axis,
         axis.errorbar(entry.x, entry.y, yerr=yerr, xerr=xerr, data=source, **kwargs)
 
     return axis
+
+
+def get_special_kpoint_ticks(kpoints: list[tuple[str, float]], math_mode: str = '$') -> tuple[list[float], list[str]]:
+    r"""
+    Process the high symmetry kpoints and ggf. replace with appropiate latex symbol
+
+    - Gamma/G is replaced with $\Gamma$
+
+    :param kpoints: list of tuples with label and position of the points
+    :param math_mode: Determines the symbol to enter math mode in latex
+
+    :returns: Ticks and their respective labels
+    """
+    if kpoints is None:
+        kpoints = []
+
+    ticks = []
+    ticklabels = []
+    for label, position in kpoints:
+        if label.lower() in ('gamma', 'g'):
+            label = rf'{math_mode}\Gamma{math_mode}'
+        ticklabels.append(label)
+        ticks.append(position)
+
+    return ticks, ticklabels

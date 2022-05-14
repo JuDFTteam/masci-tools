@@ -17,6 +17,8 @@ from .bokeh_plotter import BokehPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
+from .helpers import get_special_kpoint_ticks
+
 import pandas as pd
 import numpy as np
 import warnings
@@ -737,27 +739,21 @@ def bokeh_bands(kpath,
     else:
         plot_params.set_defaults(default_type='function', color='black')
 
-    if special_kpoints is None:
-        special_kpoints = []
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints, math_mode='$$')
 
-    xticks = []
-    xticklabels = {}
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$$\Gamma$$'
+    pos_to_label = {}
+    for pos, label in zip(xticks, xticklabels):
         if pos.is_integer():
-            xticklabels[int(pos)] = label
-        xticklabels[pos] = label
-        xticks.append(pos)
+            pos_to_label[int(pos)] = label
+        pos_to_label[pos] = label
 
-    lines = {'horizontal': 0}
-    lines['vertical'] = xticks
+    lines = {'horizontal': 0, 'vertical': xticks}
 
     limits = {'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              x_ticks=xticks,
-                             x_ticklabels_overwrite=xticklabels,
+                             x_ticklabels_overwrite=pos_to_label,
                              figure_kwargs={
                                  'width': 1280,
                                  'height': 720
@@ -923,27 +919,21 @@ def bokeh_spinpol_bands(kpath,
         color = ['blue', 'red']
         plot_params.set_defaults(default_type='function', color=color)
 
-    if special_kpoints is None:
-        special_kpoints = []
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints, math_mode='$$')
 
-    xticks = []
-    xticklabels = {}
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$$\Gamma$$'
+    pos_to_label = {}
+    for pos, label in zip(xticks, xticklabels):
         if pos.is_integer():
-            xticklabels[int(pos)] = label
-        xticklabels[pos] = label
-        xticks.append(pos)
+            pos_to_label[int(pos)] = label
+        pos_to_label[pos] = label
 
-    lines = {'horizontal': 0}
-    lines['vertical'] = xticks
+    lines = {'horizontal': 0, 'vertical': xticks}
 
     limits = {'y': (-15, 15)}
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              x_ticks=xticks,
-                             x_ticklabels_overwrite=xticklabels,
+                             x_ticklabels_overwrite=pos_to_label,
                              figure_kwargs={
                                  'width': 1280,
                                  'height': 720
@@ -1023,27 +1013,21 @@ def bokeh_spectral_function(kpath,
                                        },
                                        copy_data=copy_data)
 
-    if special_kpoints is None:
-        special_kpoints = []
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints, math_mode='$$')
 
-    xticks = []
-    xticklabels = {}
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$$\Gamma$$'
+    pos_to_label = {}
+    for pos, label in zip(xticks, xticklabels):
         if pos.is_integer():
-            xticklabels[int(pos)] = label
-        xticklabels[pos] = label
-        xticks.append(pos)
+            pos_to_label[int(pos)] = label
+        pos_to_label[pos] = label
 
-    lines = {'horizontal': e_fermi}
-    lines['vertical'] = xticks
+    lines = {'horizontal': e_fermi, 'vertical': xticks}
 
     limits = {'y': (plot_data.min('energy'), plot_data.max('energy'))}
     plot_params.set_defaults(default_type='function',
                              straight_lines=lines,
                              x_ticks=xticks,
-                             x_ticklabels_overwrite=xticklabels,
+                             x_ticklabels_overwrite=pos_to_label,
                              figure_kwargs={
                                  'width': 1280,
                                  'height': 720

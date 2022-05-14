@@ -106,7 +106,7 @@ roots:
       axis_label_text_font_size: 18pt
       axis_line_width: 2
       major_label_overrides:
-        '0': G
+        '0': $$\Gamma$$
         '1.1601250788328799': H
       major_label_text_font_size: 16pt
     type: LinearAxis

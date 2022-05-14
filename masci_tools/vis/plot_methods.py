@@ -33,7 +33,7 @@ from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
-from .helpers import exclude_points, _mpl_single_line_or_area
+from .helpers import exclude_points, mpl_single_line_or_area, get_special_kpoint_ticks
 
 import warnings
 import copy
@@ -192,16 +192,16 @@ def single_scatterplot(xdata,
     plot_kwargs = plot_params.plot_kwargs()
     entry, source = plot_data.items(first=True)
 
-    ax = _mpl_single_line_or_area(ax,
-                                  entry,
-                                  source,
-                                  area=plot_params['area_plot'],
-                                  area_vertical=plot_params['area_vertical'],
-                                  area_enclosing_line=plot_params['area_enclosing_line'],
-                                  area_line_alpha=plot_params['plot_alpha'],
-                                  advance_color_cycle=plot_params['color_cycle_always_advance'],
-                                  **plot_kwargs,
-                                  **kwargs)
+    ax = mpl_single_line_or_area(ax,
+                                 entry,
+                                 source,
+                                 area=plot_params['area_plot'],
+                                 area_vertical=plot_params['area_vertical'],
+                                 area_enclosing_line=plot_params['area_enclosing_line'],
+                                 area_line_alpha=plot_params['plot_alpha'],
+                                 advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                 **plot_kwargs,
+                                 **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -318,16 +318,16 @@ def multiple_scatterplots(xdata,
 
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        ax = _mpl_single_line_or_area(ax,
-                                      entry,
-                                      source,
-                                      area=plot_params[('area_plot', indx)],
-                                      area_vertical=plot_params[('area_vertical', indx)],
-                                      area_enclosing_line=plot_params[('area_enclosing_line', indx)],
-                                      area_line_alpha=plot_params[('plot_alpha', indx)],
-                                      advance_color_cycle=plot_params['color_cycle_always_advance'],
-                                      **params,
-                                      **kwargs)
+        ax = mpl_single_line_or_area(ax,
+                                     entry,
+                                     source,
+                                     area=plot_params[('area_plot', indx)],
+                                     area_vertical=plot_params[('area_vertical', indx)],
+                                     area_enclosing_line=plot_params[('area_enclosing_line', indx)],
+                                     area_line_alpha=plot_params[('plot_alpha', indx)],
+                                     advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                     **params,
+                                     **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -1903,16 +1903,7 @@ def plot_bands(kpath,
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
 
-    if special_kpoints is None:
-        special_kpoints = []
-
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
 
     entries = plot_data.keys(first=True)
     if entries.size is not None:
@@ -2068,9 +2059,6 @@ def plot_spinpol_bands(kpath,
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
 
-    if special_kpoints is None:
-        special_kpoints = {}
-
     weight_max = None
     if any(entry.size is not None for entry in plot_data.keys()):
 
@@ -2084,14 +2072,7 @@ def plot_spinpol_bands(kpath,
         transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
         plot_data.apply('size', transform)
 
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
-
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
     cmaps = None
@@ -2209,17 +2190,7 @@ def plot_spectral_function(kpath,
                                        },
                                        copy_data=copy_data)
 
-    if special_kpoints is None:
-        special_kpoints = []
-
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
-
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
     limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
