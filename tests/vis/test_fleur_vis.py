@@ -716,6 +716,7 @@ def test_plot_spinpol_dos_param_change_by_label_omit_spin():
 
     return gcf()
 
+
 @pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_weighted_log_scale_colorbar.png')
 def test_plot_bands_weighted_log_scale_colorbar_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
@@ -730,6 +731,37 @@ def test_plot_bands_weighted_log_scale_colorbar_mpl():
 
     gcf().clear()
 
-    plot_fleur_bands(data, attributes, show=False, weight='MT:1d', norm=LogNorm(), colorbar=True, limits={'color': (1e-2, 1)})
+    plot_fleur_bands(data,
+                     attributes,
+                     show=False,
+                     weight='MT:1d',
+                     norm=LogNorm(),
+                     colorbar=True,
+                     limits={'color': (1e-2, 1)})
+
+    return gcf()
+
+
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_weighted_log_scale_colorbar_spinpol.png')
+def test_plot_bands_weighted_log_scale_colorbar_spinpol_mpl():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
+    from masci_tools.vis.fleur import plot_fleur_bands
+    from matplotlib.colors import LogNorm
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_bands.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurBands)
+
+    gcf().clear()
+
+    plot_fleur_bands(data,
+                     attributes,
+                     show=False,
+                     weight='MT:1d',
+                     norm=LogNorm(),
+                     colorbar=True,
+                     limits={'color': (1e-3, 1)})
 
     return gcf()

@@ -2023,7 +2023,11 @@ def plot_bands(kpath,
                              line_options={'zorder': -1},
                              plot_label='Eigenvalues',
                              legend_remove_duplicates=True,
-                             colorbar=False)
+                             colorbar=False,
+                             colorbar_options={
+                                 'pad': 0.05,
+                                 'label': 'Weight'
+                             })
 
     if line_plot:
         plot_params.set_defaults(default_type='function', marker=None)
@@ -2195,7 +2199,11 @@ def plot_spinpol_bands(kpath,
                              line_options={'zorder': -1},
                              plot_label=['Spin Up', 'Spin Down'],
                              zorder=[2, 1],
-                             colorbar=False)
+                             colorbar=False,
+                             colorbar_options={
+                                 'pad': 0.05,
+                                 'label': 'Weight'
+                             })
 
     if line_plot:
         plot_params.set_defaults(default_type='function', marker=None)
