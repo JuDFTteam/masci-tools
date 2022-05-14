@@ -41,7 +41,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from pprint import pprint
-import pandas as pd
 
 plot_params = MatplotlibPlotter()
 
@@ -517,7 +516,7 @@ def multi_scatter_plot(xdata,
         if mask is not None:
             plot_data.mask_data(mask)
 
-    plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
+    plot_kwargs = plot_params.plot_kwargs('colormap_scatter', ignore='markersize')
 
     legend_elements = []
     legend_labels = []
@@ -662,16 +661,13 @@ def waterfall_plot(xdata,
                                        copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
-    clim = None
-    if 'limits' in kwargs:
-        clim = kwargs['limits'].get('color', None)
-    else:
-        kwargs['limits'] = {}
-    if clim is None:
-        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
-    kwargs['limits']['color'] = clim
+    clim = plot_data.min('z'), plot_data.max('z')
 
-    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
+    plot_params.set_defaults(default_type='function',
+                             markersize=30,
+                             linewidth=0,
+                             area_plot=False,
+                             limits={'color': clim})
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
@@ -730,20 +726,12 @@ def surface_plot(xdata,
                                        copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
-    clim = None
-    if 'limits' in kwargs:
-        clim = kwargs['limits'].get('color', None)
-    else:
-        kwargs['limits'] = {}
-    if clim is None:
-        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
-    kwargs['limits']['color'] = clim
-
-    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
+    clim = plot_data.min('z'), plot_data.max('z')
+    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False, limits={'color': clim})
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
-    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap', 'norm'})
     data = plot_data.values(first=True)
 
     ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
@@ -2009,16 +1997,13 @@ def plot_bands(kpath,
     if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
-            if 'y' in kwargs['limits']:
-                ylimits = kwargs['limits']['y']
+            ylimits = kwargs['limits'].get('y', (-15, 15))
 
         mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
         weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
-        if 'vmax' not in kwargs:
-            kwargs['vmax'] = weight_max
 
         if scale_color:
-            plot_params.set_defaults(default_type='function', cmap='Blues')
+            plot_params.set_defaults(default_type='function', cmap='Blues', limits={'color': (0, weight_max)})
             if 'cmap' not in kwargs:
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
@@ -2161,18 +2146,15 @@ def plot_spinpol_bands(kpath,
     if special_kpoints is None:
         special_kpoints = {}
 
+    weight_max = None
     if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
-            if 'y' in kwargs['limits']:
-                ylimits = kwargs['limits']['y']
+            ylimits = kwargs['limits'].get('y', (-15, 15))
 
         mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
         weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
-
-        if 'vmax' not in kwargs:
-            kwargs['vmax'] = weight_max
 
         transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
         plot_data.apply('size', transform)
@@ -2198,6 +2180,8 @@ def plot_spinpol_bands(kpath,
             cmaps = 'Blues'
 
     limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
+    if weight_max is not None:
+        limits['color'] = (0, weight_max)
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,

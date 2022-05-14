@@ -307,6 +307,10 @@ class MatplotlibPlotter(Plotter):
 
     _TYPE_TO_KWARGS = {
         'default': {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder'},
+        'colormap_scatter': {
+            'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder', 'cmap',
+            'norm'
+        },
         'area': {'area_linecolor', 'area_alpha', 'zorder'},
         'colormesh': {
             'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
@@ -394,6 +398,10 @@ class MatplotlibPlotter(Plotter):
                     plot_kwargs['cmap'] = plt.get_cmap(plot_kwargs['cmap'])
 
                 plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
+
+        if self['limits'] is not None and 'color' in self['limits'] and 'cmap' in plot_kwargs:
+            if 'norm' not in plot_kwargs:
+                plot_kwargs['vmin'], plot_kwargs['vmax'] = self['limits']['color']
 
         if list_of_dicts:
             plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs,

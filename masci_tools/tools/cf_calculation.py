@@ -897,8 +897,6 @@ def plot_crystal_field_potential(cfcoeffs,
                             show=False,
                             save_plots=False,
                             colorbar=False,
-                            vmin=-maxv,
-                            vmax=maxv,
                             **kwargs)
 
     if np.abs(phi_grid - phi).min() > 1e-5:
@@ -950,8 +948,6 @@ def plot_crystal_field_potential(cfcoeffs,
                             show=False,
                             save_plots=False,
                             colorbar=False,
-                            vmin=-maxv,
-                            vmax=maxv,
                             **kwargs)
 
     mpl_plotter.show_colorbar(ax)
