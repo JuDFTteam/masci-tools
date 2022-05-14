@@ -24,7 +24,7 @@ def exclude_points(plot_data: PlotData,
     if limits is None:
         return
 
-    mask = None
+    combined_mask = None
     for data_key in data_keys:
 
         if data_key in limits:
@@ -35,15 +35,15 @@ def exclude_points(plot_data: PlotData,
                 1 + abs(data_limits[1]))
 
             mask_func = lambda x, data_limits=tuple(data_limits): np.logical_and(x > data_limits[0], x < data_limits[1])
-            data_mask = plot_data.get_mask(mask_func, data_key=data_key)
+            mask = plot_data.get_mask(mask_func, data_key=data_key)
 
-            if mask is None:
-                mask = data_mask
+            if combined_mask is None:
+                combined_mask = mask
             else:
-                mask = [x & y for x, y, in zip(data_mask, mask)]
+                combined_mask = [x & y for x, y in zip(mask, combined_mask)]
 
-    if mask is not None:
-        plot_data.mask_data(mask)
+    if combined_mask is not None:
+        plot_data.mask_data(combined_mask)
 
 
 def mpl_single_line_or_area(axis,
