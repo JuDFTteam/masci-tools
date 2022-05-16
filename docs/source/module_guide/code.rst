@@ -31,6 +31,9 @@ General Plotting
 .. automodule:: masci_tools.vis.data
    :members:
 
+.. automodule:: masci_tools.vis.helpers
+   :members:
+
 .. automodule:: masci_tools.vis.common
    :members:
 
