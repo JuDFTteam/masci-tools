@@ -69,7 +69,7 @@ def mpl_single_line_or_area(axis,
     :param advance_color_cycle: bool, if True the matplotlib color cycle will be advanced
                                 no matter what else is specified
     :param area_line_alpha: if an area plot is done this is the alpha parameter (transparency)
-    
+
     Kwargs are passed to the respective plotting routines
     """
     if any(key not in entry._fields for key in ('x', 'y')):
