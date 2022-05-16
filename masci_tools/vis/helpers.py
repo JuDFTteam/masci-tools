@@ -55,7 +55,23 @@ def mpl_single_line_or_area(axis,
                             advance_color_cycle=False,
                             area_line_alpha=1.0,
                             **kwargs):
+    """
+    Create a scatterplot, lineplot or area plot for the given entry
+    on the matplotlib axis
 
+    :param axis: Axes to plot on
+    :param entry: namedtuple of the entries to plot
+    :param source: mapping containing the data to plot
+    :param area: bool, if True fill_betweenx/y will be used to create an area plot
+    :param area_vertical: bool, if True fill_betweeny will be used
+    :param area_enclosing_line: bool if True the area plot will have another
+                                line plot around the edge
+    :param advance_color_cycle: bool, if True the matplotlib color cycle will be advanced
+                                no matter what else is specified
+    :param area_line_alpha: if an area plot is done this is the alpha parameter (transparency)
+    
+    Kwargs are passed to the respective plotting routines
+    """
     if any(key not in entry._fields for key in ('x', 'y')):
         raise ValueError('Entry has to contain x and y fields')
 
