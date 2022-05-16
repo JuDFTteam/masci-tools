@@ -213,25 +213,13 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
 
     spinpol_data = bandsattributes['spins'] == 2 and any('_down' in key for key in bandsdata.keys())
 
-    if weight is not None:
-        if isinstance(weight, list):
-            if len(weight) != 2:
-                raise ValueError(f'Expected 2 weight names. Got: {len(weight)}')
-            if not all(w in bandsdata for w in weight):
-                raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
-        elif weight in bandsdata:
-            if spinpol_data:
-                raise ValueError('For spin-polarized bandstructure two weights have to be given for spin-up and down')
-        else:
-            if spinpol_data:
-                weight = [f'{weight}_up', f'{weight}_down']
-            else:
-                weight = f'{weight}_up'
-
     if spinpol_data and not spinpol:
         #Concatenate the _up and _down columns
         spin_up = bandsdata[[label for label in bandsdata.columns if label.endswith('_up')]]
         spin_dn = bandsdata[[label for label in bandsdata.columns if label.endswith('_down')]]
+        rest = bandsdata[[label for label in bandsdata.columns if not label.endswith('_down') \
+                                                              and not label.endswith('_up') \
+                                                              and label not in ('kpath', 'band_index',)]]
         kpath = bandsdata['kpath']
         band_index = bandsdata['band_index']
 
@@ -241,13 +229,11 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
         kpath = pd.concat([kpath, kpath], ignore_index=True)
         band_index = pd.concat([band_index, band_index + nbands + 1], ignore_index=True)
         complete_spin = pd.concat([spin_up, spin_dn], ignore_index=True)
+        rest = pd.concat([rest, rest], ignore_index=True)
 
         #And now add the new kpath and overwrite bandsdata
-        new_bandsdata = pd.concat([complete_spin, kpath, band_index], axis=1)
+        new_bandsdata = pd.concat([complete_spin, kpath, band_index, rest], axis=1)
         bandsdata = new_bandsdata
-
-        if isinstance(weight, list):
-            weight = weight[0]
 
         if 'color_data' in kwargs:
             color_data = kwargs.pop('color_data')
@@ -256,6 +242,21 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
             kwargs['color_data'] = color_data
 
     spinpol = spinpol_data and spinpol
+
+    if weight is not None:
+        if isinstance(weight, list):
+            if len(weight) != 2:
+                raise ValueError(f'Expected 2 weight names. Got: {len(weight)}')
+            if not all(w in bandsdata for w in weight):
+                raise ValueError(f'List of weights provided but not all weights are present in bandsdata: {weight}')
+        elif weight in bandsdata:
+            if spinpol:
+                raise ValueError('For spin-polarized bandstructure two weights have to be given for spin-up and down')
+        else:
+            if spinpol:
+                weight = [f'{weight}_up', f'{weight}_down']
+            else:
+                weight = f'{weight}_up'
 
     backend = PlotBackend.from_str(backend)
 
