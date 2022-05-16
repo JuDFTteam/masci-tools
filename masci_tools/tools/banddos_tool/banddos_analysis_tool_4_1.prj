@@ -1,0 +1,85 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1858516668" file="C:\Users\Stefan\Dropbox\Fleur\MoS2_P\banddos_analysis_tool_4_1.prj" location="C:\Users\Stefan\Dropbox\Fleur\MoS2_P" name="banddos_analysis_tool_4_1" target="target.mlapps" target-name="Package App">
+    <param.appname>banddos_analysis_tool_4_1</param.appname>
+    <param.authnamewatermark />
+    <param.email />
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\Stefan\Dropbox\Fleur\MoS2_P</param.output>
+    <param.guid>10733714-760f-4a9e-a06d-dc235eb588d1</param.guid>
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\banddos_analysis_4.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\matlabfrag.m</file>
+      <file>${PROJECT_ROOT}\mlf2pdf.m</file>
+      <file>${PROJECT_ROOT}\molecule3D.m</file>
+      <file>${PROJECT_ROOT}\plotting.m</file>
+      <file>${PROJECT_ROOT}\saving_pdf.m</file>
+      <file>${PROJECT_ROOT}\saving_txt.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\Stefan\Dropbox\Fleur" name="MoS2_P" optional="false">C:\Users\Stefan\Dropbox\Fleur\MoS2_P</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2018b</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
