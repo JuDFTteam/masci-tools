@@ -1451,4 +1451,3 @@ roots:
   - type: ZoomInTool
   - type: ZoomOutTool
 title: Bokeh Application
-version: 2.4.2

@@ -50,7 +50,10 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
 
             curdoc().clear()
             curdoc().add_root(bokeh_fig)
-            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(basename))
+            
+            result = clean_bokeh_json(curdoc().to_json())
+            result.pop('version', None)
+            data_regression.check(result, basename=os.fspath(basename))
 
     return _regression_bokeh_plot
 
