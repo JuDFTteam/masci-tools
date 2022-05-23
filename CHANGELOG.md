@@ -19,16 +19,20 @@
        count=nkpts,
        type=kpoint_type)
   ```
+- Function `serialize_xml_arguments` to `masci_tools.util.xml.common_functions` to remove XML elements/trees from positional/keyword arguments and replace them with string representations of the XML. Can be used in AiiDA-Fleur
 
 ### Improvements
 - Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
-- `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` fromat specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` format specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- Improvements to Colorbar creation in matplotlib plotting methods. Limits are now set consistently with `limits={'color': (low, high)}` in the plot and colorbar. Spinpolarized bandplots now show two colorbars for the two colormaps if requested
 
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
+- Fixes in `plot_fleur_bands`, when providing custom weights without sin suffixes, i.e. `_up`/`_down`
 
 ### For Developers
 - Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)
+- Bokeh regression tests now strip out the bokeh version from the test files
 
 ## v0.10.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.0...v0.10.1)
