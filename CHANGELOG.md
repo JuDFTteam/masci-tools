@@ -25,6 +25,7 @@
 - Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
 - `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` format specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
 - Improvements to Colorbar creation in matplotlib plotting methods. Limits are now set consistently with `limits={'color': (low, high)}` in the plot and colorbar. Spinpolarized bandplots now show two colorbars for the two colormaps if requested
+- `get_parameter_data` now also extracts the `gamma` switch for kpoint generation for more consistent roundtrips. This is only set if the first kpoint in the mesh is the gamma point and there are multiple
 
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
