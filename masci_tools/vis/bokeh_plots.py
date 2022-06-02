@@ -734,8 +734,7 @@ def bokeh_bands(kpath,
             plot_params.set_defaults(default_type='function',
                                      color=linear_cmap(entries.color, 'Blues256', weight_max, -0.05))
 
-        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
-        plot_data.apply('size', transform)
+        plot_data.apply('size', lambda size: markersize_min + markersize_scaling * size / weight_max)
     else:
         plot_params.set_defaults(default_type='function', color='black')
 
@@ -905,8 +904,7 @@ def bokeh_spinpol_bands(kpath,
         mask = [np.logical_and(col.bands > ylimits[0], col.bands < ylimits[1]) for col in data]
         weight_max = plot_data.max('size', mask=mask)
 
-        transform = lambda size: markersize_min + markersize_scaling * size / weight_max
-        plot_data.apply('size', transform)
+        plot_data.apply('size', lambda size: markersize_min + markersize_scaling * size / weight_max)
 
         plot_params.set_defaults(default_type='function', marker_size=plot_data.get_keys('size'))
         if scale_color:

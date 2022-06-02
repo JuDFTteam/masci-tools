@@ -559,16 +559,13 @@ def test_plot_data_apply(inputs, data):
     entries = inputs[0]
 
     p = PlotData(data, **entries, use_column_source=True, copy_data=True)
-
-    TEST_FUNCTION = lambda x: -x
-
     #Get the values before doing anything to make sure that nothing was additionally modified
     values_before = {}
     for key in entries:
         values_before[key] = copy.deepcopy(p.get_values(key))
 
     for key in entries:
-        p.apply(key, TEST_FUNCTION)
+        p.apply(key, lambda x: -x)
         values_after = p.get_values(key)
 
         for val, val_func in zip(values_before[key], values_after):
