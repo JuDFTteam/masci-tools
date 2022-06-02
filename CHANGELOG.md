@@ -28,7 +28,7 @@
 
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
-- Fixes in `plot_fleur_bands`, when providing custom weights without sin suffixes, i.e. `_up`/`_down`
+- Fixes in `plot_fleur_bands`, when providing custom weights without spin suffixes, i.e. `_up`/`_down`
 
 ### For Developers
 - Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)

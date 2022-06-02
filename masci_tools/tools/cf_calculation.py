@@ -247,7 +247,11 @@ class CFCalculation:
             kwargs['atom_type'] = kwargs.pop('atomType')
         self.read_charge_density(*args, **kwargs)
 
-    def read_charge_density(self, file: FileLike | h5py.File, atom_type: int | None = None, header: int = 0) -> None:
+    def read_charge_density(self,
+                            file: FileLike | h5py.File,
+                            atom_type: int | None = None,
+                            header: int = 0,
+                            atomic_cdn: bool = True) -> None:
         """Reads in the normed charge density for the CF coefficient calculation
         If hdf files are given also the muffin tin radius is read in
 
@@ -265,11 +269,13 @@ class CFCalculation:
             _, extension = os.path.splitext(file)
             if extension == '.hdf':
                 with h5py.File(file, 'r') as hdffile:
-                    self.__readcdnHDF(hdffile, atom_type=atom_type)
+                    self.__readcdnHDF(hdffile, atom_type=atom_type, atomic_cdn=atomic_cdn)
             else:
+                if not atomic_cdn:
+                    raise ValueError('The complete spherical charge density is not available for txt files')
                 self.__readcdntxt(file, header=header)
         else:
-            self.__readcdnHDF(file, atom_type)
+            self.__readcdnHDF(file, atom_type=atom_type, atomic_cdn=atomic_cdn)
 
     def __readpotHDF(self, hdffile, atom_type=None):
         """Read in the potential from a HDF file
@@ -359,7 +365,7 @@ class CFCalculation:
             self.vlm['rmesh'] = np.array(self.vlm['rmesh'])
             self.vlm['RMT'] = max(self.vlm['rmesh'])
 
-    def __readcdnHDF(self, hdffile, atom_type=None):
+    def __readcdnHDF(self, hdffile, atom_type=None, atomic_cdn=True):
         """Read in the charge density from a HDF file
 
         """
@@ -396,9 +402,14 @@ class CFCalculation:
             self.cdn['RMT'] = _cdn.attrs['RMT'][0]
             _rmesh = _cdn.get('rmesh')
             self.cdn['rmesh'] = np.array(_rmesh)
-            _data = _cdn.get('cdn')
-            self.cdn['data'] = np.array(_data)
-
+            if atomic_cdn:
+                _data = _cdn.get('cdn')
+                self.cdn['data'] = np.array(_data)
+            else:
+                _data = _cdn.get('cdn_spherical')
+                if _data is None:
+                    raise ValueError(f'Complete spherical charge density is not available in {cdn_group}')
+                self.cdn['data'] = np.array(_data)
         else:
             raise ValueError(f'No charge density for atom_type {atom_type} found in {hdffile}')
 
