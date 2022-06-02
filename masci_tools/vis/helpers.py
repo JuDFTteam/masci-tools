@@ -34,7 +34,9 @@ def exclude_points(plot_data: PlotData,
             data_limits = data_limits[0] - padding * (1 + abs(data_limits[0])), data_limits[1] + padding * (
                 1 + abs(data_limits[1]))
 
-            mask = plot_data.get_mask(lambda x, data_limits=tuple(data_limits): np.logical_and(x > data_limits[0], x < data_limits[1]), data_key=data_key)
+            mask = plot_data.get_mask(
+                lambda x, data_limits=tuple(data_limits): np.logical_and(x > data_limits[0], x < data_limits[1]),
+                data_key=data_key)
 
             if combined_mask is None:
                 combined_mask = mask

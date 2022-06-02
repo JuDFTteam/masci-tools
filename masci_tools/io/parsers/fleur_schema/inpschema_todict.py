@@ -132,8 +132,8 @@ def convert_string_to_float_expr(schema_dict: InputSchemaData, inp_version: tupl
                 'epsforce', 'fermismearingenergy', 'fermismearingtemp', 'U', 'J', 'locx1', 'locx2', 'locy1', 'locy2',
                 'logincrement', 'm', 'magmom', 'maxeigenval', 'mineigenval', 'maxenergy', 'minenergy',
                 'maxtimetostartiter', 'ellow', 'elup', 'minDistance', 'phi', 'theta', 'radius', 'scale', 'sig_b_1',
-                'sig_b_2', 'sigma', 'spindown', 'spinup', 'spinf', 'thetaJ', 'tworkf', 'valenceelectrons',
-                'weight', 'zsigma'
+                'sig_b_2', 'sigma', 'spindown', 'spinup', 'spinf', 'thetaJ', 'tworkf', 'valenceelectrons', 'weight',
+                'zsigma'
             },
             'add': {'value'}
         }
