@@ -137,28 +137,30 @@ def test_hdf5_reader_fileobjects(test_file):
             assert isinstance(reader.file, h5py.File)
             assert reader.filename == 'test.hdf5'
             reader.read(recipe=FleurBands)
+    import sys
+    if sys.version_info >= (3, 8, 0):
 
-    class FileHandleNoBackwardsSeek:
-        """
-        File handle with no support for seek with whence=2
-        """
+        class FileHandleNoBackwardsSeek:
+            """
+            File handle with no support for seek with whence=2
+            """
 
-        def __init__(self, handle) -> None:
-            self._handle = handle
+            def __init__(self, handle) -> None:
+                self._handle = handle
 
-        def seek(self, target, whence=0):
-            if whence == 2:
-                raise NotImplementedError
-            return self._handle(target, whence=whence)
+            def seek(self, target, whence=0):
+                if whence == 2:
+                    raise NotImplementedError('whence=2 not supported')
+                return self._handle(target, whence=whence)
 
-        def __getattr__(self, name):
-            return getattr(self._handle, name)
+            def __getattr__(self, name):
+                return getattr(self._handle, name)
 
-    with pytest.raises(NotImplementedError):
+        with pytest.raises(NotImplementedError):
+            with open(TEST_FILE, 'rb') as file:
+                h5py.File(FileHandleNoBackwardsSeek(file), 'r')
+
         with open(TEST_FILE, 'rb') as file:
-            h5py.File(FileHandleNoBackwardsSeek(file), 'r')
-
-    with open(TEST_FILE, 'rb') as file:
-        with HDF5Reader(FileHandleNoBackwardsSeek(file)) as reader:
-            assert isinstance(reader.file, h5py.File)
-            reader.read(recipe=FleurBands)
+            with HDF5Reader(FileHandleNoBackwardsSeek(file)) as reader:
+                assert isinstance(reader.file, h5py.File)
+                reader.read(recipe=FleurBands)
