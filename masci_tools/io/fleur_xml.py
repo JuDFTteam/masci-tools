@@ -61,6 +61,13 @@ def load_inpxml(inpxmlfile: XMLFileLike,
             base_url = os.fspath(base_url)
         xml_parse_func = partial(xml_parse_func, base_url=base_url)
 
+        #If the XML text is passed in as a string the XML parser
+        #will complain since the XML declaration with encoding
+        #options is contained in the string. We reencode it as utf-8 here
+        #Since we do not expect fragments of a file here we should be fine
+        if isinstance(inpxmlfile, str):
+            inpxmlfile = inpxmlfile.encode('utf-8')
+
     if isinstance(inpxmlfile, etree._ElementTree):
         xmltree = inpxmlfile
     else:
@@ -143,6 +150,13 @@ def load_outxml_and_check_for_broken_xml(
         elif isinstance(base_url, Path):
             base_url = os.fspath(base_url)
         xml_parse_func = partial(xml_parse_func, base_url=base_url)
+
+        #If the XML text is passed in as a string the XML parser
+        #will complain since the XML declaration with encoding
+        #options is contained in the string. We reencode it as utf-8 here
+        #Since we do not expect fragments of a file here we should be fine
+        if isinstance(outxmlfile, str):
+            outxmlfile = outxmlfile.encode('utf-8')
 
     outfile_broken = False
 
