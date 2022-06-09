@@ -30,6 +30,7 @@
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
 - Fixes in `plot_fleur_bands`, when providing custom weights without spin suffixes, i.e. `_up`/`_down`
+- Fix in `HDF5Reader`. IO like objects without an attached filename would lead to an  early error. This is the case for example for some readers in the file repository implementation used in AiiDA v2.0
 
 ### For Developers
 - Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)
