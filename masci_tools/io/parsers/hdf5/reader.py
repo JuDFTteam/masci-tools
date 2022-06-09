@@ -14,7 +14,8 @@ This module contains a generic HDF5 reader
 """
 from __future__ import annotations
 
-import io
+import tempfile
+import shutil
 import os
 from types import TracebackType
 import h5py
@@ -119,7 +120,26 @@ class HDF5Reader:
         self._move_to_memory = move_to_memory
 
     def __enter__(self) -> HDF5Reader:
-        self.file = h5py.File(self._original_file, 'r')
+        try:
+            self.file = h5py.File(self._original_file, 'r')
+        except NotImplementedError:
+            #This except clause catches a special case resulting from
+            #the AiiDA v2 file repository. The h5py.File constructor
+            #wants to determine the end of the file stream and tries
+            #`os.seek` with the argument `whence=2` (i.e. read starting from the end of the stream)
+            #The AiiDA v2 file repository cannot support this case if the
+            #files are compressed/packed (compressed streams want to be read only forwards)
+            #To circumvent this we copy the file into a temporary file and
+            #construct the File this way. Notice that we do not lose performance
+            #if the files are not yet packed, e.g. while workflows are running :)
+            #The solution below is taken out of a mailing list suggestion for this
+            #exact problem
+            with tempfile.TemporaryFile() as target:
+                # Copy the content of source to target in chunks
+                shutil.copyfileobj(self._original_file, target)  #type: ignore[arg-type]
+                target.seek(0)  # Make sure to reset the pointer to the beginning of the stream
+                self.file = h5py.File(target, 'r')
+
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 
