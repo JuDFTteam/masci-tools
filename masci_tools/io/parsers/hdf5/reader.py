@@ -22,7 +22,7 @@ import h5py
 import warnings
 import logging
 from pathlib import Path
-from typing import Callable, NamedTuple, Any, cast
+from typing import IO, Callable, NamedTuple, Any, cast
 from masci_tools.util.typing import FileLike
 try:
     from typing import TypedDict
@@ -104,6 +104,7 @@ class HDF5Reader:
 
         self._original_file = file
         self.file: h5py.File = None
+        self._tempfile: IO[Any] | None = None
 
         self.filename = filename
         if self.filename == 'UNKNOWN':
@@ -134,11 +135,11 @@ class HDF5Reader:
             #if the files are not yet packed, e.g. while workflows are running :)
             #The solution below is taken out of a mailing list suggestion for this
             #exact problem
-            with tempfile.TemporaryFile() as target:
-                # Copy the content of source to target in chunks
-                shutil.copyfileobj(self._original_file, target)  #type: ignore[arg-type]
-                target.seek(0)  # Make sure to reset the pointer to the beginning of the stream
-                self.file = h5py.File(target, 'r')
+            self._tempfile = tempfile.TemporaryFile()
+            # Copy the content of source to target in chunks
+            shutil.copyfileobj(self._original_file, self._tempfile)  #type: ignore[arg-type]
+            self._tempfile.seek(0)  # Make sure to reset the pointer to the beginning of the stream
+            self.file = h5py.File(self._tempfile, 'r')
 
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
@@ -146,6 +147,8 @@ class HDF5Reader:
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None,
                  exc_traceback: TracebackType | None) -> None:
         self.file.close()
+        if self._tempfile is not None:
+            self._tempfile.close()
         logger.debug('Closed h5py.File with id %s', self.file.id)
 
     @staticmethod

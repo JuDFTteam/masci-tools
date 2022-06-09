@@ -92,21 +92,26 @@ def test_hdf5_reader_fileobjects(test_file):
     """
     Test the opening and closing of the HDF5file with
     different inputs
+    We don't test the output but we make sure that the read runs through
     """
     import h5py
     from pathlib import Path
     from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurBands
     TEST_FILE = test_file('hdf5_reader/banddos_bands.hdf')
 
     with HDF5Reader(Path(TEST_FILE)) as reader:
         assert isinstance(reader.file, h5py.File)
+        reader.read(recipe=FleurBands)
 
     with HDF5Reader(os.fsencode(TEST_FILE)) as reader:
         assert isinstance(reader.file, h5py.File)
+        reader.read(recipe=FleurBands)
 
     with open(TEST_FILE, 'rb') as file:
         with HDF5Reader(file) as reader:
             assert isinstance(reader.file, h5py.File)
+            reader.read(recipe=FleurBands)
 
     class FileHandleNoName:
         """
@@ -125,11 +130,13 @@ def test_hdf5_reader_fileobjects(test_file):
         with HDF5Reader(FileHandleNoName(file)) as reader:
             assert isinstance(reader.file, h5py.File)
             assert reader.filename == 'UNKNOWN'
+            reader.read(recipe=FleurBands)
 
     with open(TEST_FILE, 'rb') as file:
         with HDF5Reader(FileHandleNoName(file), filename='test.hdf5') as reader:
             assert isinstance(reader.file, h5py.File)
             assert reader.filename == 'test.hdf5'
+            reader.read(recipe=FleurBands)
 
     class FileHandleNoBackwardsSeek:
         """
@@ -141,7 +148,7 @@ def test_hdf5_reader_fileobjects(test_file):
 
         def seek(self, target, whence=0):
             if whence == 2:
-                raise NotImplementedError('whence=2 not supported')
+                raise NotImplementedError
             return self._handle(target, whence=whence)
 
         def __getattr__(self, name):
@@ -154,3 +161,4 @@ def test_hdf5_reader_fileobjects(test_file):
     with open(TEST_FILE, 'rb') as file:
         with HDF5Reader(FileHandleNoBackwardsSeek(file)) as reader:
             assert isinstance(reader.file, h5py.File)
+            reader.read(recipe=FleurBands)
