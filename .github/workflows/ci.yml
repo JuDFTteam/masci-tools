@@ -129,7 +129,7 @@ jobs:
         pip install codecov
         codecov
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: matplotlib-comparison-${{ matrix.python-version }}
