@@ -42,9 +42,9 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
                         basename = Path(f'bokeh-{prev_version}') / filename
-                        warnings.warn(f'Results for bokeh version {basename.parent} not available.'
-                                      f'Using the last available version {prev_version}'
-                                      'Use the option --add-bokeh-version to add results for this version')
+                        warnings.warn(f'Results for bokeh version {current_version} not available.\n'
+                                      f'Using the last available version {prev_version}\n'
+                                      '    Use the option --add-bokeh-version to add results for this version')
 
             from bokeh.io import curdoc
 
