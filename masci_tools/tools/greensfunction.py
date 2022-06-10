@@ -668,6 +668,28 @@ class GreensFunction:
         """
         return str(self.element)
 
+    def energy_dependence_full_matrix(self, imag: bool = True, both_contours: bool = False) -> np.ndarray:
+        """
+        Get the full matrix nspins*(2*l+1) x nspins*(2*lp+1)
+
+        :param both_contours: bool id True the data is not added for both energy contours
+        :param imag: bool if True and both_contours is False the imaginary part 1/2i(G(z)-G(z^*)) is returned
+                     otherwise the real part 1/2(G(z)+G(z^*))
+
+        :returns: numpy array with the selected data
+        """
+        if self.kresolved:
+            raise NotImplementedError("full_matrix not implemented for kresolved green's function")
+
+        data = self.energy_dependence(imag=imag, both_contours=both_contours)
+        if both_contours:
+            block_plus = np.block([[data[..., 0, 0, 0], data[..., 0, 1, 0]],
+                                   [data[..., 1, 0, 0], data[:, :, :, 1, 1, 0]]])
+            block_minus = np.block([[data[..., 0, 0, 1], data[..., 0, 1, 1]],
+                                    [data[..., 1, 0, 1], data[:, :, :, 1, 1, 1]]])
+            return np.concatenate((block_plus[..., np.newaxis], block_minus[..., np.newaxis]), axis=-1)
+        return np.block([[data[..., 0, 0], data[..., 0, 1]], [data[..., 1, 0], data[..., 1, 1]]])
+
     def energy_dependence(self,
                           *,
                           m: int | None = None,

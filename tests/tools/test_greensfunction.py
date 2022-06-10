@@ -173,6 +173,36 @@ def test_greensfunction_radial_complete_spin(test_file):
     assert gf.trace_energy_dependence().dtype == float
 
 
+def test_greensfunction_sphavg_full_spin_matrix(test_file):
+    """
+    Basic test of greensfunction (sphavg) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'), index=1)
+
+    assert isinstance(gf.energy_dependence_full_matrix(), np.ndarray)
+    assert gf.energy_dependence_full_matrix().shape == (128, 10, 10)  #(nz,2*2*l+1,2*2*l+1)
+    assert gf.energy_dependence_full_matrix().dtype == float
+
+    assert gf.energy_dependence_full_matrix(both_contours=True).shape == (128, 10, 10, 2)  #(nz,2*2*l+1,2*2*l+1,2)
+    assert gf.energy_dependence_full_matrix(both_contours=True).dtype == complex
+
+
+def test_greensfunction_radial_full_spin_matrix(test_file):
+    """
+    Basic test of greensfunction (radial) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_radial.hdf'), l=2)
+
+    assert isinstance(gf.energy_dependence_full_matrix(), np.ndarray)
+    assert gf.energy_dependence_full_matrix().shape == (128, 10, 10)  #(nz,2*2*l+1,2*2*l+1)
+    assert gf.energy_dependence_full_matrix().dtype == float
+
+    assert gf.energy_dependence_full_matrix(both_contours=True).shape == (128, 10, 10, 2)  #(nz,2*2*l+1,2*2*l+1,2)
+    assert gf.energy_dependence_full_matrix(both_contours=True).dtype == complex
+
+
 def test_greensfunction_kresolved(test_file):
     """
     Basic test of greensfunction
