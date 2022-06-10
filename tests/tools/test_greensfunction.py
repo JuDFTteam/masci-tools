@@ -146,6 +146,10 @@ def test_greensfunction_sphavg_complete_spin(test_file):
     assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
     assert gf.energy_dependence(both_contours=True).dtype == complex
 
+    assert isinstance(gf.trace_energy_dependence(), np.ndarray)
+    assert gf.trace_energy_dependence().shape == (128, 2, 2)
+    assert gf.trace_energy_dependence().dtype == float
+
 
 def test_greensfunction_radial_complete_spin(test_file):
     """
@@ -163,6 +167,10 @@ def test_greensfunction_radial_complete_spin(test_file):
 
     assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
     assert gf.energy_dependence(both_contours=True).dtype == complex
+
+    assert isinstance(gf.trace_energy_dependence(), np.ndarray)
+    assert gf.trace_energy_dependence().shape == (128, 2, 2)
+    assert gf.trace_energy_dependence().dtype == float
 
 
 def test_greensfunction_kresolved(test_file):

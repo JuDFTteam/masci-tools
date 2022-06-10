@@ -721,7 +721,7 @@ class GreensFunction:
 
         return data.real
 
-    def trace_energy_dependence(self, spin: int, imag: bool = True) -> np.ndarray:
+    def trace_energy_dependence(self, spin: int | None = None, imag: bool = True) -> np.ndarray:
         """
         Select trace of data with energy dependence
 
@@ -734,10 +734,16 @@ class GreensFunction:
         if self.l != self.lp:
             raise ValueError('Trace only supported for l==lp')
 
+        shape = self.points.shape
+        if spin is None:
+            shape += (
+                2,
+                2,
+            )
         if self.kresolved:
-            data = np.zeros((*self.points.shape, self.extras['nkpts']))
-        else:
-            data = np.zeros(self.points.shape)
+            shape += (self.extras['nkpts'],)
+
+        data = np.zeros(shape)
         for m in range(-self.l, self.l + 1):
             data += self.energy_dependence(m=m, mp=m, spin=spin, imag=imag)
 
