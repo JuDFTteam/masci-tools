@@ -2,6 +2,7 @@
 """
 Tests of the matplotib plotting functions
 """
+from pathlib import Path
 
 import pytest
 
@@ -109,11 +110,13 @@ def test_mpl_save_defaults(file_regression):
                               'labelrotation': 0
                           })
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_mpl_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        save_mpl_defaults(Path(td) / 'defaults')
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
+
+    file_regression.check(txt)
     reset_mpl_plot_defaults()
 
 
@@ -137,16 +140,20 @@ def test_mpl_load_defaults(file_regression):
                               'labelrotation': 0
                           })
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_mpl_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        save_mpl_defaults(Path(td) / 'defaults')
+
         reset_mpl_plot_defaults()
-        load_mpl_defaults(file.name)
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_mpl_defaults(file.name)
+        load_mpl_defaults(Path(td) / 'defaults')
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+    with tempfile.TemporaryDirectory() as td:
+        save_mpl_defaults(Path(td) / 'defaults')
+
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
+
+    file_regression.check(txt)
 
     reset_mpl_plot_defaults()
 
