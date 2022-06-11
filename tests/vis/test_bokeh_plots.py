@@ -2,6 +2,8 @@
 Tests of the bokeh visualization. Since the concrete visualization is difficult
 to test we check the content of the underlying json for correctness
 """
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -83,12 +85,13 @@ def test_bokeh_save_defaults(file_regression):
                                 'active_inspect': 'hover'
                             })
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_bokeh_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        save_bokeh_defaults(Path(td) / 'defaults')
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
 
+    file_regression.check(txt)
     reset_bokeh_plot_defaults()
 
 
@@ -109,19 +112,20 @@ def test_bokeh_load_defaults(file_regression):
                                 'active_inspect': 'hover'
                             })
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_bokeh_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        save_bokeh_defaults(Path(td) / 'defaults')
 
         reset_bokeh_plot_defaults()
 
-        load_bokeh_defaults(file.name)
+        load_bokeh_defaults(Path(td) / 'defaults')
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        save_bokeh_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        save_bokeh_defaults(Path(td) / 'defaults')
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
 
+    file_regression.check(txt)
     reset_bokeh_plot_defaults()
 
 
