@@ -2,6 +2,7 @@
 Tests of the fleur_inpgen module
 """
 import tempfile
+from pathlib import Path
 import numpy as np
 from masci_tools.io.common_functions import convert_to_pystd
 
@@ -21,12 +22,38 @@ def test_write_inpgen_file_defaults_dict(file_regression):
         'kind_name': 'Si'
     }]
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, file=tmp.name)
+        write_inpgen_file(cell, sites, kinds, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
+
+
+def test_write_inpgen_file_defaults_dict_filename(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    sites = [{
+        'position': (0.0, 0.0, 0.0),
+        'kind_name': 'Si'
+    }, {
+        'position': (1.3575, 1.3575, 1.3575),
+        'kind_name': 'Si'
+    }]
+
+    with tempfile.TemporaryDirectory() as td:
+
+        write_inpgen_file(cell, sites, kinds, file=Path(td) / 'result.txt')
+
+        with open(Path(td) / 'result.txt', encoding='utf-8') as file:
+            content = file.read()
+
+    file_regression.check(content, basename='test_write_inpgen_file_defaults_dict')
 
 
 def test_write_inpgen_file_defaults_str(file_regression):
@@ -56,9 +83,10 @@ def test_write_inpgen_file_defaults_tuple(file_regression):
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
     sites = [((0.0, 0.0, 0.0), 'Si', 'Si'), ((1.3575, 1.3575, 1.3575), 'Si', 'Si')]
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, file=tmp.name)
+        write_inpgen_file(cell, sites, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -76,9 +104,10 @@ def test_write_inpgen_file_defaults_direct(file_regression):
         AtomSiteProperties(position=(1.3575, 1.3575, 1.3575), symbol='Si', kind='Si')
     ]
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, file=tmp.name)
+        write_inpgen_file(cell, sites, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -120,9 +149,10 @@ def test_write_inpgen_file_parameters(file_regression):
         }
     }
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp.name)
+        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -166,9 +196,10 @@ def test_write_inpgen_file_econfig(file_regression):
         }
     }
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp.name)
+        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -212,9 +243,10 @@ def test_write_inpgen_file_soc_qss(file_regression):
         }
     }
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp.name)
+        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -255,9 +287,10 @@ def test_write_inpgen_file_film(file_regression):
         },
     }
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp.name, pbc=(True, True, False))
+        write_inpgen_file(cell, sites, kinds, input_params=parameters, file=tmp, pbc=(True, True, False))
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -304,9 +337,10 @@ def test_write_inpgen_file_x_and_bunchatom(file_regression):
         'kind_name': 'Nb'
     }]
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
+    with tempfile.TemporaryFile('w+') as tmp:
 
-        write_inpgen_file(cell, sites, kinds, file=tmp.name, pbc=(True, True, False))
+        write_inpgen_file(cell, sites, kinds, file=tmp, pbc=(True, True, False))
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
@@ -449,8 +483,10 @@ def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     params = get_parameter_data(xmltree, schema_dict)
     atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
 
-    with tempfile.NamedTemporaryFile('r') as tmp:
-        write_inpgen_file(cell, atoms, input_params=params, file=tmp.name)
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, atoms, input_params=params, file=tmp)
+        tmp.seek(0)
         content = tmp.read()
 
     file_regression.check(content)
