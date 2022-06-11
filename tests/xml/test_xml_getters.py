@@ -3,6 +3,7 @@ Tests of the xml_getters
 """
 import pytest
 import os
+from pathlib import Path
 
 file_path2 = '../files/fleur/Max-R5'
 
@@ -14,9 +15,20 @@ inpxmlfilefolder_valid = [
 ]
 
 broken_inputs = [
-    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
-    'SiHybrid8kpt_nosym', 'SiHybrid8kpt_sym', 'SiHybridGammaNoInv', 'Fe_bulk_SS_conv', 'Fe_film_SSFT',
-    'Max-R5/NiO_ldauXML', 'Max-R5/Bi2Te3XML'
+    'CoHybridPBE0',
+    'CoUnfold',
+    'gw1Interface',
+    'GaAsWannSOC',
+    'TiO2eelsXML',
+    'gw2Interface',
+    'Fe_film_SS_conv',
+    'SiHybrid8kpt_nosym',
+    'SiHybrid8kpt_sym',
+    'SiHybridGammaNoInv',
+    'Fe_bulk_SS_conv',
+    'Fe_film_SSFT',
+    os.fspath(Path('Max-R5') / 'NiO_ldauXML'),
+    os.fspath(Path('Max-R5') / 'Bi2Te3XML'),
 ]
 
 TEST_FILM_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
