@@ -3,18 +3,14 @@ Script to keep docstrings of XML setter functions and their corresponding method
 on the FleurXMLModifier in sync
 Is used as a pre-commit hook
 """
-from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, NMMPMAT_SETTERS, SCHEMA_DICT_SETTERS
-import inspect
 import ast
 import sys
+from pathlib import Path
 
-from masci_tools.io import fleurxmlmodifier
-
-ALL_SETTERS = {**XPATH_SETTERS, **NMMPMAT_SETTERS, **SCHEMA_DICT_SETTERS}
 INDENT = 4
 
 
-def get_method_docstring(func):
+def get_method_docstring(name, docstring, module):
     """
     Get the corresponding method docstring of a given XML setter function
 
@@ -25,31 +21,31 @@ def get_method_docstring(func):
         - Indentation is adjusted to two levels (function -> method)
     """
 
-    lines = [line for line in func.__doc__.split('\n') \
+    lines = [line for line in docstring.split('\n') \
                 if all(x not in line for x in (':param xmltree:', ':param schema_dict:', ':param nmmplines:', ':returns'))]
 
-    module_name = inspect.getmodule(func).__name__
     additional_lines = [
-        INDENT * ' ' + f'Appends a :py:func:`~{module_name}.{func.__name__}()` to',
-        INDENT * ' ' + 'the list of tasks that will be done on the xmltree.', INDENT * ' '
+        f'Appends a :py:func:`~masci_tools.util.xml.{module}.{name}()` to',
+        'the list of tasks that will be done on the xmltree.', ''
     ]
     if lines[0]:
-        lines[0] = INDENT * ' ' + lines[0]
         lines.insert(0, '')
+    if lines[-1]:
+        lines.append('')
 
     for line in reversed(additional_lines):
         lines.insert(1, line)
 
+    print(lines[-2:], all(not line.strip() for line in lines[-2:]))
     while all(not line.strip() for line in lines[-2:]):
         lines.pop()
-    lines = [INDENT * ' ' + line if line.strip() else line.lstrip() for line in lines]
+    lines = [2 * INDENT * ' ' + line if line.strip() else line.lstrip() for line in lines]
     lines[-1] = 2 * INDENT * ' '
-    #One level of indentation has to be added since the original docstrings are in functions
-    #and the final ones should be in methods
+    #Two levels of indentation have to be added since the docstrings go into methods
     return '\n'.join(lines)
 
 
-def rewrite_docstrings(module_file, modifier_class_name):
+def rewrite_docstrings(module_file, modifier_class_name, setters, modules):
     """
     Rewrite all the docstrings of the XMl setter methods of the
     FleurXMLModifier class to be in sync with their corresponding functions
@@ -66,9 +62,9 @@ def rewrite_docstrings(module_file, modifier_class_name):
             continue
         function_definitions = [node for node in class_def.body if isinstance(node, ast.FunctionDef)]
         for f in function_definitions:
-            if f.name in ALL_SETTERS:
+            if f.name in setters:
                 try:
-                    docstring = get_method_docstring(ALL_SETTERS[f.name])
+                    docstring = get_method_docstring(f.name, setters[f.name], modules[f.name])
                 except Exception as exc:  #pylint: disable=broad-except
                     print(f'Docstring generation failed for: {f.name} ({exc})')
                     failed = True
@@ -85,5 +81,47 @@ def rewrite_docstrings(module_file, modifier_class_name):
         sys.exit(1)
 
 
+def gather_setter_functions(module_names, collection_file):
+    """
+    Gather all setter functions that are imported in collect_xml_setters
+    """
+
+    setter_files = [masci_tools_path / f'util/xml/{name}.py' for name in module_names]
+    docstrings = {}
+
+    for file in setter_files:
+        with open(file, encoding='utf-8') as f:
+            module = ast.parse(f.read())
+
+        name = file.stem
+
+        function_definitions = [node for node in module.body if isinstance(node, ast.FunctionDef)]
+        for f in function_definitions:
+            docstrings[f.name] = ast.get_docstring(f)
+
+    with open(collection_file, encoding='utf-8') as f:
+        module = ast.parse(f.read())
+
+    imports = [node for node in module.body if isinstance(node, ast.ImportFrom)]
+
+    collected_docstrings = {}
+    modules = {}
+
+    for import_stmt in imports:
+        if import_stmt.module in setter_module_names:
+            for alias in import_stmt.names:
+                collected_docstrings[alias.name] = docstrings[alias.name]
+                modules[alias.name] = import_stmt.module
+
+    return collected_docstrings, modules
+
+
 if __name__ == '__main__':
-    rewrite_docstrings(fleurxmlmodifier.__file__, 'FleurXMLModifier')
+
+    masci_tools_path = Path(__file__).parent.parent / 'masci_tools'
+
+    setter_module_names = ('xml_setters_names', 'xml_setters_nmmpmat', 'xml_setters_basic')
+    setter_docstrings, setter_modules = gather_setter_functions(setter_module_names,
+                                                                masci_tools_path / 'util/xml/collect_xml_setters.py')
+    rewrite_docstrings(masci_tools_path / 'io/fleurxmlmodifier.py', 'FleurXMLModifier', setter_docstrings,
+                       setter_modules)
