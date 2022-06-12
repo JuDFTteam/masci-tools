@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 INDENT = 4
+MASCI_TOOLS_PATH = Path(__file__).parent.parent / 'masci_tools'
 
 
 def get_method_docstring(name, docstring, module):
@@ -54,7 +55,7 @@ def rewrite_docstrings(module_file, modifier_class_name, setters, modules):
         content = f.read()
         module = ast.parse(content)
     class_definitions = [node for node in module.body if isinstance(node, ast.ClassDef)]
-    method_definitions = []
+
     failed = False
     for class_def in class_definitions:
         if class_def.name != modifier_class_name:
@@ -85,14 +86,12 @@ def gather_setter_functions(module_names, collection_file):
     Gather all setter functions that are imported in collect_xml_setters
     """
 
-    setter_files = [masci_tools_path / f'util/xml/{name}.py' for name in module_names]
+    setter_files = [MASCI_TOOLS_PATH / f'util/xml/{name}.py' for name in module_names]
     docstrings = {}
 
     for file in setter_files:
         with open(file, encoding='utf-8') as f:
             module = ast.parse(f.read())
-
-        name = file.stem
 
         function_definitions = [node for node in module.body if isinstance(node, ast.FunctionDef)]
         for f in function_definitions:
@@ -107,7 +106,7 @@ def gather_setter_functions(module_names, collection_file):
     modules = {}
 
     for import_stmt in imports:
-        if import_stmt.module in setter_module_names:
+        if import_stmt.module in module_names:
             for alias in import_stmt.names:
                 collected_docstrings[alias.name] = docstrings[alias.name]
                 modules[alias.name] = import_stmt.module
@@ -117,10 +116,8 @@ def gather_setter_functions(module_names, collection_file):
 
 if __name__ == '__main__':
 
-    masci_tools_path = Path(__file__).parent.parent / 'masci_tools'
-
     setter_module_names = ('xml_setters_names', 'xml_setters_nmmpmat', 'xml_setters_basic')
     setter_docstrings, setter_modules = gather_setter_functions(setter_module_names,
-                                                                masci_tools_path / 'util/xml/collect_xml_setters.py')
-    rewrite_docstrings(masci_tools_path / 'io/fleurxmlmodifier.py', 'FleurXMLModifier', setter_docstrings,
+                                                                MASCI_TOOLS_PATH / 'util/xml/collect_xml_setters.py')
+    rewrite_docstrings(MASCI_TOOLS_PATH / 'io/fleurxmlmodifier.py', 'FleurXMLModifier', setter_docstrings,
                        setter_modules)
