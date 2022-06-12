@@ -131,7 +131,7 @@ an initial guess for the density matrix.
 
 .. note::
     The ``n_mmp_mat`` file is a simple text file with no knowledge of which density matrix block corresponds to which
-    LDA+U procedure. They are read in the same order as they appear in the ``inp.xml`. For this reason the ``n_mmp_mat`
+    LDA+U procedure. They are read in the same order as they appear in the ``inp.xml``. For this reason the ``n_mmp_mat``
     file can become invalid if one adds/removes a LDA+U procedure to the ``inp.xml`` after the ``n_mmp_mat`` file was 
     initialized. Therefore any modifications to the ``n_mmp_mat`` file should be done after adding/removing or modifying the LDA+U configuration.
     
