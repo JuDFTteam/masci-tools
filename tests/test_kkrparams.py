@@ -210,9 +210,11 @@ class Test_fill_inputfile:
                               MIXFAC=0.05,
                               SCFSTEPS=1,
                               XC='LDA-VWN')
-        with tempfile.NamedTemporaryFile('r') as tmp:
-            p.fill_keywords_to_inputfile(output=tmp.name)
-            file_content = tmp.read()
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'out')
+
+            with open(Path(td) / 'out', encoding='utf-8') as file:
+                file_content = file.read()
 
         file_regression.check(file_content)
 
@@ -361,8 +363,8 @@ class Test_fill_inputfile:
         p.set_multiple_values(NATYP=natyp, SITE=cpa_sites)
         p.set_value('<CPA-CONC>', cpa_conc)
         p.set_value('FILES', ['output.pot', ''])
-        with tempfile.NamedTemporaryFile() as tmp:
-            p.fill_keywords_to_inputfile(is_voro_calc=True, output=tmp.name)
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(is_voro_calc=True, output=Path(td) / 'out')
 
     def test_set_rmtcore(self):
         #test rmtcore
@@ -379,9 +381,12 @@ class Test_fill_inputfile:
         bravais = array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
         k = kkrparams(**para_dict)
         k.set_multiple_values(ZATOM=zatom, NAEZ=natom, ALATBASIS=alat, RBASIS=positions, BRAVAIS=bravais)
-        with tempfile.NamedTemporaryFile('r') as tmp:
-            k.fill_keywords_to_inputfile(output=tmp.name)
-            txt = tmp.readlines()
+
+        with tempfile.TemporaryDirectory('w') as td:
+            k.fill_keywords_to_inputfile(output=Path(td) / 'out')
+
+            with open(Path(td) / 'out', encoding='utf-8') as file:
+                txt = file.readlines()
 
         naez = int(txt[search_string('NAEZ', txt)].split()[-1])
         rmtcore = []
@@ -419,9 +424,11 @@ class Test_fill_inputfile:
                               MIXFAC=0.05,
                               SCFSTEPS=1,
                               XC='LDA-VWN')
-        with tempfile.NamedTemporaryFile('r') as tmp:
-            p.fill_keywords_to_inputfile(output=tmp.name)
-            file_content = tmp.read()
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'out')
+
+            with open(Path(td) / 'out', encoding='utf-8') as file:
+                file_content = file.read()
 
         file_regression.check(file_content)
 
@@ -554,9 +561,11 @@ class Test_other:  # pylint: disable=missing-class-docstring
                               BRAVAIS=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
                               ALATBASIS=1,
                               FILES=['', 'shapenew'])
-        with tempfile.NamedTemporaryFile('r') as tmp:
-            p.fill_keywords_to_inputfile(output=tmp.name)
-            txt = tmp.readlines()
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'out')
+
+            with open(Path(td) / 'out', encoding='utf-8') as file:
+                txt = file.readlines()
         itmp = search_string('FILES', txt)
         potname = txt[itmp + 2].split()[0]
         shapename = txt[itmp + 4].split()[0]
