@@ -25,7 +25,7 @@ def display_xml(data: XMLLike) -> str:
     xmlstring = etree.tostring(data, encoding='unicode', pretty_print=True)
     return highlight(xmlstring, XmlLexer(), HtmlFormatter(noclasses=True,nobackground=False, style='monokai'))
 
-def compare_xml_diff(old: XMLLike, new: XMLLike):
+def xml_diff(old: XMLLike, new: XMLLike):
 
     old_lines = etree.tostring(old, encoding='unicode', pretty_print=True).split('\n')
     new_lines = etree.tostring(new, encoding='unicode', pretty_print=True).split('\n')
