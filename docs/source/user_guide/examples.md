@@ -15,19 +15,7 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-from lxml import etree
-from pygments import highlight
-from pygments.lexers import XmlLexer
-from pygments.formatters import HtmlFormatter
-
-def display_xml(data):
-
-    xmlstring = etree.tostring(data, encoding='unicode', pretty_print=True)
-    return highlight(xmlstring, XmlLexer(), HtmlFormatter(noclasses=True))
-
-html_formatter = get_ipython().display_formatter.formatters['text/html']
-html_formatter.for_type(etree._Element, display_xml)
-html_formatter.for_type(etree._ElementTree, display_xml)
+%load_ext masci_tools
 ```
 
 # Examples
@@ -39,3 +27,27 @@ from masci_tools.io.fleur_xml import load_inpxml
 xmltree, schema_dict = load_inpxml('files/inp.xml')
 xmltree
 ```
+
+```{code-cell} ipython3
+from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+fm = FleurXMLModifier()
+fm.set_inpchanges({
+    'itmax': 50,
+    'band': True
+})
+new_xmltree = fm.modify_xmlfile(xmltree)
+```
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+from masci_tools.util.ipython import xml_diff
+xml_diff(xmltree, new_xmltree)
+```
+
+```{code-cell} ipython3
+:tags: [hide-output]
+from masci_tools.util.ipython import xml_diff
+xml_diff(xmltree, new_xmltree)
+```
+
