@@ -111,7 +111,8 @@ module = [
     'h5py',
     'humanfriendly',
     'yaml',
-    'lxml.builder'
+    'lxml.builder',
+    'IPython.*'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
