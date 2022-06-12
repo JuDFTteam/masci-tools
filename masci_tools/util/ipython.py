@@ -14,7 +14,6 @@ import difflib
 from IPython.display import HTML  #pylint: disable=import-error
 
 
-
 def display_xml(data: XMLLike) -> str:
     """
     Display the given lxml XML tree as formatted HTML
