@@ -36,7 +36,6 @@ def get_method_docstring(name, docstring, module):
     for line in reversed(additional_lines):
         lines.insert(1, line)
 
-    print(lines[-2:], all(not line.strip() for line in lines[-2:]))
     while all(not line.strip() for line in lines[-2:]):
         lines.pop()
     lines = [2 * INDENT * ' ' + line if line.strip() else line.lstrip() for line in lines]
