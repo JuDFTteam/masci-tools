@@ -11,7 +11,7 @@ from pygments.formatters import HtmlFormatter  #pylint: disable=no-name-in-modul
 from masci_tools.util.typing import XMLLike
 from typing import Any
 import difflib
-from IPython.display import HTML
+from IPython.display import HTML #pylint: disable=import-error
 
 
 def display_xml(data: XMLLike) -> str:
