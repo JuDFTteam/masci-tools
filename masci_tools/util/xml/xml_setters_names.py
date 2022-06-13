@@ -279,6 +279,8 @@ def add_number_to_first_attrib(xmltree: XMLLike,
     :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
                  `rel`/`relative` multiplies the old value with `number_to_add`
                  `abs`/`absolute` adds the old value and `number_to_add`
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -597,7 +599,7 @@ def set_species_label(xmltree: XMLLike,
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
-    :param attributedict: a python dict specifying what you want to change.
+    :param changes: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
 
     :returns: xml etree of the new inp.xml
@@ -648,15 +650,15 @@ def set_species(xmltree: XMLLike,
 
     :return xmltree: xml etree of the new inp.xml
 
-    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    **changes** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a MT radius it
     can be done via::
 
-        attributedict = {'mtSphere' : {'radius' : 2.2}}
+        changes = {'mtSphere' : {'radius' : 2.2}}
 
     Another example::
 
-        'attributedict': {'special': {'socscale': 0.0}}
+        'changes': {'special': {'socscale': 0.0}}
 
     that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
     ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
@@ -696,7 +698,7 @@ def clone_species(xmltree: XMLLike,
     :param new_name: new name of the cloned species
     :param changes: a optional python dict specifying what you want to change.
 
-    :return xmltree: xml etree of the new inp.xml
+    :returns xmltree: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -845,7 +847,7 @@ def set_atomgroup(xmltree: XMLLike,
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributedict: a python dict specifying what you want to change.
+    :param changes: a python dict specifying what you want to change.
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
     :param filters: Dict specifying constraints to apply on the xpath.
@@ -1036,15 +1038,17 @@ def set_inpchanges(xmltree: XMLLike,
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :params changes: dictionary {attrib_name : value} with all the wanted changes.
+    :param changes: dictionary {attrib_name : value} with all the wanted changes.
     :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
     An example of changes::
 
-            changes = {'itmax' : 1,
-                       'l_noco': True,
-                       'ctail': False,
-                       'l_ss': True}
+        changes = {
+            'itmax' : 1,
+            'l_noco': True,
+            'ctail': False,
+            'l_ss': True
+        }
 
     :returns: an xmltree of the inp.xml file with changes.
     """

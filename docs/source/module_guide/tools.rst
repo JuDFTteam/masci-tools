@@ -16,6 +16,8 @@ Custom Datatypes
 
 Common XML utility
 ------------------
+.. automodule:: masci_tools.util.xml
+   :members:
 
 .. automodule:: masci_tools.util.xml.common_functions
    :members:
