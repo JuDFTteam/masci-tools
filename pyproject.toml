@@ -51,7 +51,8 @@ pre-commit = [
     'lxml-stubs~=0.4.0',
     'types-pytz',
     'types-tabulate',
-    'types-click'
+    'types-click',
+    'types-pygments'
     ]
 docs = [
     'sphinx~=4.5',
@@ -110,7 +111,8 @@ module = [
     'h5py',
     'humanfriendly',
     'yaml',
-    'lxml.builder'
+    'lxml.builder',
+    'IPython.*'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true

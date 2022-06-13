@@ -20,6 +20,7 @@
        type=kpoint_type)
   ```
 - Function `serialize_xml_arguments` to `masci_tools.util.xml.common_functions` to remove XML elements/trees from positional/keyword arguments and replace them with string representations of the XML. Can be used in AiiDA-Fleur
+- Module `masci_tools.util.ipython` and ipython extension (`%load_ext masci_tools`). Adds syntax highlighted XML tree output and creating HTML syntax highlighted diffs of XML trees [[#158]](https://github.com/JuDFTteam/masci-tools/pull/158)
 
 ### Improvements
 - Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
