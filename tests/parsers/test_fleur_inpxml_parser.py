@@ -4,6 +4,7 @@ Tests of the inp.xml parser for Fleur
 import pytest
 from masci_tools.io.parsers.fleur.fleur_inpxml_parser import inpxml_parser
 import os
+from pathlib import Path
 
 # Collect the input files
 file_path1 = '../files/fleur/aiida_fleur/inpxml'
@@ -20,8 +21,18 @@ inpxmlfilefolder_valid = [
 
 #These inputs are currently broken in the fleur tests
 broken_inputs = [
-    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
-    'SiHybrid8kpt_nosym', 'Fe_bulk_SS_conv', 'Fe_film_SSFT', 'Max-R5/NiO_ldauXML', 'Max-R5/Bi2Te3XML'
+    'CoHybridPBE0',
+    'CoUnfold',
+    'gw1Interface',
+    'GaAsWannSOC',
+    'TiO2eelsXML',
+    'gw2Interface',
+    'Fe_film_SS_conv',
+    'SiHybrid8kpt_nosym',
+    'Fe_bulk_SS_conv',
+    'Fe_film_SSFT',
+    os.fspath(Path('Max-R5') / 'NiO_ldauXML'),
+    os.fspath(Path('Max-R5') / 'Bi2Te3XML'),
 ]
 
 inp_dict_input = ['FePt_film_SSFT_LO/files/inp2.xml']

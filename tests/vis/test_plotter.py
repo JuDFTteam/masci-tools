@@ -1,6 +1,8 @@
 """
 Tests of the plotter base class
 """
+from pathlib import Path
+
 #pylint: disable=protected-access
 from masci_tools.vis.parameters import Plotter, ensure_plotter_consistency
 import pytest
@@ -132,11 +134,13 @@ def test_plotter_save_defaults(file_regression):
 
     p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        p.save_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        p.save_defaults(Path(td) / 'defaults')
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
+
+    file_regression.check(txt)
 
 
 def test_plotter_save_defaults_complete(file_regression):
@@ -149,11 +153,12 @@ def test_plotter_save_defaults_complete(file_regression):
 
     p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        p.save_defaults(file.name, save_complete=True)
+    with tempfile.TemporaryDirectory() as td:
+        p.save_defaults(Path(td) / 'defaults', save_complete=True)
 
-        txt = file.read().strip()
-        file_regression.check(txt)
+        with open(Path(td) / 'defaults', encoding='utf-8') as file:
+            txt = file.read().strip()
+    file_regression.check(txt)
 
 
 def test_plotter_load_defaults():
@@ -166,12 +171,12 @@ def test_plotter_load_defaults():
 
     p.set_defaults(continue_on_error=True, **{'B': 0, 'A': {'test3': 'extra'}, 'D': 'not a key'})
 
-    with tempfile.NamedTemporaryFile('r') as file:
-        p.save_defaults(file.name)
+    with tempfile.TemporaryDirectory() as td:
+        p.save_defaults(Path(td) / 'defaults')
 
         p_new = Plotter(TEST_DICT)
 
-        p_new.load_defaults(file.name)
+        p_new.load_defaults(Path(td) / 'defaults')
 
     expected_result = {'A': {'test1': 12, 'test2': 4, 'test3': 'extra'}, 'B': 0, 'C': 'title'}
 

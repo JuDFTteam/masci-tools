@@ -373,8 +373,8 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
     inpgen_file_content_str = ''.join(inpgen_file_content)
 
     if not return_contents:
-        if isinstance(file, io.IOBase):
-            file.write(inpgen_file_content_str)
+        if getattr(file, 'write', None) is not None:
+            file.write(inpgen_file_content_str)  #type: ignore[union-attr]
         else:
             with open(file, 'w', encoding='utf-8') as inpfile:  #type:ignore[arg-type]
                 inpfile.write(inpgen_file_content_str)

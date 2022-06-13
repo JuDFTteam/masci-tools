@@ -25,6 +25,11 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='function')
 def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir):
 
+    try:
+        import bokeh
+    except ImportError:
+        pytest.skip('Bokeh regression tests are skipped only executed if bokeh is installed')
+
     def _regression_bokeh_plot(bokeh_fig):
 
         basename = bokeh_basename()  #This will skip the test if bokeh is not installed
