@@ -412,11 +412,7 @@ class FleurXMLModifier:
         return new_xmltree, additional_files
 
     def set_inpchanges(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_inpchanges()` to
-        the list of tasks that will be done on the xmltree.
-
-        This method sets all the attribute and texts provided in the change_dict.
+        """Set the value of attributes/text occurring once in the XML tree
 
         The first occurrence of the attribute/tag is set
 
@@ -431,6 +427,9 @@ class FleurXMLModifier:
                 'ctail': False,
                 'l_ss': True
             }
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_inpchanges()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'change_dict' in kwargs:
             warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
@@ -439,11 +438,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
     def shift_value(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value()` to
-        the list of tasks that will be done on the xmltree.
-
-        Shifts numerical values of attributes directly in the inp.xml file.
+        """Add/Multiply values of attributes occurring once in the XML tree
 
         The first occurrence of the attribute is shifted
 
@@ -457,6 +452,9 @@ class FleurXMLModifier:
         An example of changes::
 
                 changes = {'itmax' : 1, 'dVac': -0.123}
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'change_dict' in kwargs:
             warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
@@ -465,11 +463,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
     def set_species(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_species()` to
-        the list of tasks that will be done on the xmltree.
-
-        Method to set parameters of a species tag of the fleur inp.xml file.
+        """Set the attributes of a species, specified by name position, etc.
 
         :param species_name: string, name of the specie you want to change
                              Can be name of the species, 'all' or 'all-<string>' (sets species with the string in the species name)
@@ -497,6 +491,9 @@ class FleurXMLModifier:
         ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_species()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
@@ -505,9 +502,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
     def set_species_label(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_species_label()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the attributes of a species, given by an atom label occurring in it's atom type
 
         This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
         method for a certain atom species that corresponds to an atom with a given label
@@ -515,6 +510,9 @@ class FleurXMLModifier:
         :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
         :param changes: a python dict specifying what you want to change.
         :param create: bool, if species does not exist create it and all subtags?
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_species_label()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
@@ -523,11 +521,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
     def clone_species(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.clone_species()` to
-        the list of tasks that will be done on the xmltree.
-
-        Method to create a new species from an existing one with evtl. modifications
+        """Clone (and possibly change) a species in the XML tree
 
         For reference of the changes dictionary look at :py:func:`set_species()`
 
@@ -535,16 +529,15 @@ class FleurXMLModifier:
                              Has to correspond to one single species (no 'all'/'all-<search_string>')
         :param new_name: new name of the cloned species
         :param changes: a optional python dict specifying what you want to change.
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.clone_species()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('clone_species', args, kwargs)
         self._tasks.append(ModifierTask('clone_species', args, kwargs))
 
     def switch_species(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species()` to
-        the list of tasks that will be done on the xmltree.
-
-        Method to switch the species of an atom group of the fleur inp.xml file.
+        """Change the species of an atom group, identified by species name, position, etc.
 
         :param new_species_name: name of the species to switch to
         :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
@@ -554,32 +547,30 @@ class FleurXMLModifier:
         :param changes: changes to do if the species is cloned
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('switch_species', args, kwargs)
         self._tasks.append(ModifierTask('switch_species', args, kwargs))
 
     def switch_species_label(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species_label()` to
-        the list of tasks that will be done on the xmltree.
-
-        Method to switch the species of an atom group of the fleur inp.xml file based on a label
-        of a contained atom
+        """Change the species of an atom group, identified by the lable of an atom in it's group
 
         :param atom_label: string, a label of the atom which group will be changed. 'all' to change all the groups
         :param new_species_name: name of the species to switch to
         :param clone: if True and the new species name does not exist and it corresponds to changing
                       from one species the species will be cloned with :py:func:`clone_species()`
         :param changes: changes to do if the species is cloned
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species_label()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('switch_species_label', args, kwargs)
         self._tasks.append(ModifierTask('switch_species_label', args, kwargs))
 
     def shift_value_species_label(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value_species_label()` to
-        the list of tasks that will be done on the xmltree.
-
+        """Add/Multiply numeric attributes in a or multiple atom species
         Shifts the value of an attribute on a species by label
         if atom_label contains 'all' then applies to all species
 
@@ -593,6 +584,9 @@ class FleurXMLModifier:
         Kwargs if the attribute_name does not correspond to a unique path:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value_species_label()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use attribute_name instead', DeprecationWarning)
@@ -604,11 +598,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
     def set_atomgroup(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
-        the list of tasks that will be done on the xmltree.
-
-        Method to set parameters of an atom group of the fleur inp.xml file.
+        """Set the attributes of a atom group, specified by species name, position, etc.
 
         :param changes: a python dict specifying what you want to change.
         :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
@@ -622,6 +612,9 @@ class FleurXMLModifier:
         can be done via::
 
             'changes': {'nocoParams': {'beta': val}}
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
@@ -633,11 +626,9 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
     def set_atomgroup_label(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup_label()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the attributes of a atom group, given by an atom label occuring in it's definition
 
-        This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
+        This method calls :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
         method for a certain atom species that corresponds to an atom with a given label.
 
         :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
@@ -649,6 +640,9 @@ class FleurXMLModifier:
         can be done via::
 
             'changes': {'nocoParams': {'beta': val}}
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup_label()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributedict' in kwargs:
             warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
@@ -660,14 +654,15 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
     def create_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.create_tag()` to
-        the list of tasks that will be done on the xmltree.
-
+        """Create a tag with a given name in the XML tree
         This method creates a tag with a uniquely identified xpath under the nodes of its parent.
         If there are no nodes evaluated the subtags can be created with `create_parents=True`
 
         The tag is always inserted in the correct place if a order is enforced by the schema
+
+        .. usage-example::
+
+            fm.create_tag('greensFunction')
 
         :param tag: str of the tag to create or etree Element or string representing the XML element with the same name to insert
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
@@ -681,16 +676,15 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.create_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('create_tag', args, kwargs)
         self._tasks.append(ModifierTask('create_tag', args, kwargs))
 
     def delete_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_tag()` to
-        the list of tasks that will be done on the xmltree.
-
-        This method deletes a tag with a uniquely identified xpath.
+        """Delete a tag with a given name from the XML tree
 
         :param tag: str of the tag to delete
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
@@ -702,16 +696,15 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.delete_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('delete_tag', args, kwargs)
         self._tasks.append(ModifierTask('delete_tag', args, kwargs))
 
     def delete_att(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.delete_att()` to
-        the list of tasks that will be done on the xmltree.
-
-        This method deletes a attribute with a uniquely identified xpath.
+        """Delete an attribute with a given name from the XML tree
 
         :param name: str of the attribute to delete
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
@@ -726,6 +719,9 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.delete_att()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attrib_name' in kwargs:
             warnings.warn('The argument attrib_name is deprecated. Use name instead', DeprecationWarning)
@@ -734,11 +730,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('delete_att', args, kwargs))
 
     def replace_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.replace_tag()` to
-        the list of tasks that will be done on the xmltree.
-
-        This method deletes a tag with a uniquely identified xpath.
+        """Replace a tag with a given name with a different XML element
 
         :param tag: str of the tag to replace
         :param element: etree Element or string representing the XML element to replace the tag
@@ -751,6 +743,9 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.replace_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'newelement' in kwargs:
             warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
@@ -759,9 +754,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
     def set_complex_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_complex_tag()` to
-        the list of tasks that will be done on the xmltree.
+        """Setattributes, text and subtags of a given tag in the XML tree
 
         Function to correctly set tags/attributes for a given tag.
         Goes through the attributedict and decides based on the schema_dict, how the corresponding
@@ -787,16 +780,17 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_complex_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_complex_tag', args, kwargs)
         self._tasks.append(ModifierTask('set_complex_tag', args, kwargs))
 
     def set_simple_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_simple_tag()` to
-        the list of tasks that will be done on the xmltree.
+        """Sets one or multiple ``simple`` tag(s) (no subtags/text) in an xmltree.
 
-        Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
+        A simple tag can only hold attributes and has no
         subtags. The tag is specified by its name and further specification
         If the tag can occur multiple times all existing tags are DELETED and new ones are written.
         If the tag only occurs once it will automatically be created if its missing.
@@ -813,17 +807,17 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_simple_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_simple_tag', args, kwargs)
         self._tasks.append(ModifierTask('set_simple_tag', args, kwargs))
 
     def set_text(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_text()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the value of text of tags in the XML tree possibly occurring mutliple times
 
-        Sets the text on tags in a xmltree to a given value, specified by the name of the tag and
-        further specifications. By default the text will be set on all nodes returned for the specified xpath.
+        By default the text will be set on all nodes returned for the specified xpath.
         If there are no nodes under the specified xpath a tag can be created with `create=True`.
         The text values are converted automatically according to the types
         with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -840,17 +834,17 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_text()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_text', args, kwargs)
         self._tasks.append(ModifierTask('set_text', args, kwargs))
 
     def set_first_text(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_text()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the value of text of the first occurrence of a tag in the XML tree
 
-        Sets the text the first occurrence of a tag in a xmltree to a given value, specified by the name of the tag and
-        further specifications. By default the text will be set on all nodes returned for the specified xpath.
+        By default the text will be set on all nodes returned for the specified xpath.
         If there are no nodes under the specified xpath a tag can be created with `create=True`.
         The text values are converted automatically according to the types
         with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -866,17 +860,16 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_text()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_first_text', args, kwargs)
         self._tasks.append(ModifierTask('set_first_text', args, kwargs))
 
     def set_attrib_value(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_attrib_value()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the value of an attribute possibly occurring multiple times
 
-        Sets an attribute in a xmltree to a given value, specified by its name and further
-        specifications.
         If there are no nodes under the specified xpath a tag can be created with `create=True`.
         The attribute values are converted automatically according to the types of the attribute
         with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -896,6 +889,9 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_attrib_value()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -907,12 +903,8 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
     def set_first_attrib_value(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_attrib_value()` to
-        the list of tasks that will be done on the xmltree.
+        """Set the value of the first occurrence of an attribute
 
-        Sets the first occurrence of an attribute in a xmltree to a given value, specified by its name and further
-        specifications.
         If there are no nodes under the specified xpath a tag can be created with `create=True`.
         The attribute values are converted automatically according to the types of the attribute
         with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -931,6 +923,9 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_attrib_value()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -942,13 +937,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
     def add_number_to_attrib(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_attrib()` to
-        the list of tasks that will be done on the xmltree.
-
-        Adds a given number to the attribute value in a xmltree specified by the name of the attribute
-        and optional further specification
-        If there are no nodes under the specified xpath an error is raised
+        """Add/Multiply values for multiple occurrences in the XML tree
 
         :param name: the attribute name to change
         :param number_to_add: number to add/multiply with the old attribute value
@@ -966,6 +955,9 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_attrib()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -977,13 +969,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
     def add_number_to_first_attrib(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_first_attrib()` to
-        the list of tasks that will be done on the xmltree.
-
-        Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
-        and optional further specification
-        If there are no nodes under the specified xpath an error is raised
+        """Add/Multiply value for the first occurrences of an attribute in the XML tree
 
         :param name: the attribute name to change
         :param number_to_add: number to add/multiply with the old attribute value
@@ -1000,6 +986,9 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_first_attrib()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -1011,10 +1000,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
     def xml_create_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_create_tag()` to
-        the list of tasks that will be done on the xmltree.
-
+        """Creates a tag under the given XPath
         This method evaluates an xpath expression and creates a tag in a xmltree under the
         returned nodes.
         If there are no nodes under the specified xpath an error is raised.
@@ -1034,21 +1020,23 @@ class FleurXMLModifier:
         :param several: bool, if True multiple tags od the given name are allowed
 
         :raises ValueError: If the insertion failed in any way (tag_order does not match, failed to insert, ...)
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_create_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('xml_create_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_create_tag', args, kwargs))
 
     def xml_replace_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_replace_tag()` to
-        the list of tasks that will be done on the xmltree.
-
-        Replace XML tags by a given tag on the given XML tree
+        """Replace XML tags under the XPath by a given tag
 
         :param xpath: a path to the tag to be replaced
         :param element: an Element or string representing the Element to replace the found tags with
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_replace_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'newelement' in kwargs:
             warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
@@ -1058,30 +1046,28 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
     def xml_delete_tag(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_tag()` to
-        the list of tasks that will be done on the xmltree.
-
-        Deletes a tag in the XML tree.
+        """Deletes a tag under the XPath in the XML tree.
 
         :param xpath: a path to the tag to be deleted
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_tag()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('xml_delete_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_delete_tag', args, kwargs))
 
     def xml_delete_att(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_att()` to
-        the list of tasks that will be done on the xmltree.
-
-        Deletes an attribute in the XML tree
+        """Deletes an attribute on the tags of the given XPath in the XML tree
 
         :param xpath: a path to the attribute to be deleted
         :param name: the name of an attribute to delete
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_delete_att()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -1090,11 +1076,8 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
     def xml_set_attrib_value_no_create(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_attrib_value_no_create()` to
-        the list of tasks that will be done on the xmltree.
-
-        Sets an attribute in a xmltree to a given value. By default the attribute will be set
+        """Sets the value of an attribute under the XPath
+        By default the attribute will be set
         on all nodes returned for the specified xpath.
 
         :param xpath: a path where to set the attributes
@@ -1103,6 +1086,9 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
         :raises ValueError: If the lengths of attribv or occurrences do not match number of nodes
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_attrib_value_no_create()` to
+        the list of tasks that will be done on the xmltree.
         """
         if 'attributename' in kwargs:
             warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
@@ -1114,11 +1100,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
     def xml_set_text_no_create(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_text_no_create()` to
-        the list of tasks that will be done on the xmltree.
-
-        Sets the text of a tag in a xmltree to a given value.
+        """Sets the text of a tag under the XPath
         By default the text will be set on all nodes returned for the specified xpath.
 
         :param xpath: a path where to set the text
@@ -1126,16 +1108,15 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the node to set. By default all are set.
 
         :raises ValueError: If the lengths of text or occurrences do not match number of nodes
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_basic.xml_set_text_no_create()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('xml_set_text_no_create', args, kwargs)
         self._tasks.append(ModifierTask('xml_set_text_no_create', args, kwargs))
 
     def set_nmmpmat(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.set_nmmpmat()` to
-        the list of tasks that will be done on the xmltree.
-
-        Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
+        """Routine sets the block in the n_mmp_mat file specified by species_name, orbital and spin
         to the desired density matrix
 
         :param species_name: string, name of the species you want to change
@@ -1151,16 +1132,15 @@ class FleurXMLModifier:
 
         :raises ValueError: If something in the input is wrong
         :raises KeyError: If no LDA+U procedure is found on a species
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.set_nmmpmat()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('set_nmmpmat', args, kwargs))
 
     def rotate_nmmpmat(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.rotate_nmmpmat()` to
-        the list of tasks that will be done on the xmltree.
-
-        Rotate the density matrix with the given angles phi and theta
+        """Rotate the density matrix with the given angles phi and theta
 
         :param species_name: string, name of the species you want to change
         :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
@@ -1171,16 +1151,15 @@ class FleurXMLModifier:
 
         :raises ValueError: If something in the input is wrong
         :raises KeyError: If no LDA+U procedure is found on a species
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.rotate_nmmpmat()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('rotate_nmmpmat', args, kwargs)
         self._tasks.append(ModifierTask('rotate_nmmpmat', args, kwargs))
 
     def align_nmmpmat_to_sqa(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.align_nmmpmat_to_sqa()` to
-        the list of tasks that will be done on the xmltree.
-
-        Align the density matrix with the given SQA of the associated species
+        """Align the density matrix with the given SQA of the associated species
 
         :param species_name: string, name of the species you want to change
         :param orbital: integer or string ('all'), orbital quantum number of the LDA+U procedure to be modified
@@ -1193,17 +1172,18 @@ class FleurXMLModifier:
 
         :raises ValueError: If something in the input is wrong
         :raises KeyError: If no LDA+U procedure is found on a species
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_nmmpmat.align_nmmpmat_to_sqa()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('align_nmmpmat_to_sqa', args, kwargs)
         self._tasks.append(ModifierTask('align_nmmpmat_to_sqa', args, kwargs))
 
     def set_kpointlist(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointlist()` to
-        the list of tasks that will be done on the xmltree.
+        """Create a k-point list with the given points and weights
 
-        Explicitly create a kPointList from the given kpoints and weights. This routine will add the
-        specified kPointList with the given name.
+        .. note::
+            If no name is given, a name of the form ``default-<number>`` is generated    
 
         .. warning::
             For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
@@ -1217,31 +1197,29 @@ class FleurXMLModifier:
                                corresponding to the given index
         :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
         :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointlist()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_kpointlist', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointlist', args, kwargs))
 
     def switch_kpointset(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_kpointset()` to
-        the list of tasks that will be done on the xmltree.
-
-        Switch the used k-point set
+        """Switch the used k-point set
 
         .. warning::
             This method is only supported for input versions after the Max5 release
 
         :param list_name: name of the kPoint set to use
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.switch_kpointset()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('switch_kpointset', args, kwargs)
         self._tasks.append(ModifierTask('switch_kpointset', args, kwargs))
 
     def set_nkpts(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_nkpts()` to
-        the list of tasks that will be done on the xmltree.
-
-        Sets a k-point mesh directly into inp.xml
+        """Sets a k-point mesh directly specific for inputs of version Max4
 
         .. warning::
             This method is only supported for input versions before the Max5 release
@@ -1249,16 +1227,15 @@ class FleurXMLModifier:
         :param count: number of k-points
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_nkpts()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_nkpts', args, kwargs)
         self._tasks.append(ModifierTask('set_nkpts', args, kwargs))
 
     def set_kpath(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
-        the list of tasks that will be done on the xmltree.
-
-        Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
+        """Sets a k-path directly as an alternative kpoint set with purpose 'bands'
 
         .. warning::
             This method is only supported for input versions before the Max5 release
@@ -1267,6 +1244,9 @@ class FleurXMLModifier:
         :param count: number of k-points
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
+
+        This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_kpath', args, kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))
