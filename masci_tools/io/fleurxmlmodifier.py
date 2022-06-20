@@ -811,7 +811,7 @@ class FleurXMLModifier:
             :title: Tag selection
             :description: Selection can be done by adding conditions on what the XPath should(n't) contain
 
-            fm.delete_att('alpha', contains='nocoParams')
+            fm.delete_att('alpha', contains='nocoParams', not_contains='species')
 
         .. usage-example::
             :title: Added filters
@@ -819,6 +819,7 @@ class FleurXMLModifier:
 
             fm.delete_att('alpha',
                           contains='nocoParams',
+                          not_contains='species'
                           filters={
                             'atomGroup': {
                                 'species': {'not-contains': 'Fe'}
@@ -849,7 +850,7 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
 
-            Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
 
         .. usage-example::
 
@@ -1092,6 +1093,37 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
 
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.add_number_to_attrib('itmax', 10)
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.add_number_to_attrib('radius', 1.05, mode='rel')
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.add_number_to_attrib('radius', 1.05, mode='rel', contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.add_number_to_attrib('spinUp',
+                                    -1,
+                                    contains='species',
+                                    filters={
+                                        'species': {
+                                            'atomicNumber': {'>': 30}
+                                    }})
+
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_attrib()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -1122,6 +1154,37 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.add_number_to_first_attrib('itmax', 10)
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.add_number_to_first_attrib('radius', 1.05, mode='rel')
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.add_number_to_first_attrib('radius', 1.05, mode='rel', contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.add_number_to_first_attrib('spinUp',
+                                          -1,
+                                          contains='species',
+                                          filters={
+                                              'species': {
+                                                  'atomicNumber': {'>': 30}
+                                          }})
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.add_number_to_first_attrib()` to
         the list of tasks that will be done on the xmltree.
