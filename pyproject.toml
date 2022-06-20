@@ -55,11 +55,11 @@ pre-commit = [
     'types-pygments'
     ]
 docs = [
-    'sphinx~=4.5',
+    'sphinx~=5.0',
     'sphinx_rtd_theme',
     'sphinx-click',
     'sphinx-autodoc-typehints',
-    "myst-parser~=0.15.2",
+    "myst-parser~=0.15",
     ]
 testing = [
     'pytest~=6.0',
