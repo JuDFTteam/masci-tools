@@ -38,7 +38,8 @@ extensions = ['myst_nb',
               'sphinx.ext.intersphinx',
               'sphinx_autodoc_typehints',
               'sphinx_copybutton',
-              'sphinx_click']
+              'sphinx_click',
+              'masci_tools.util.sphinxext']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'python': ('https://docs.python.org/3', None),
@@ -56,6 +57,10 @@ todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+usage_examples_conf = {
+    'template_dirs': ['user_guide/fleurxmlmodifier_usage_examples']
+}
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'

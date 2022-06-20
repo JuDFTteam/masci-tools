@@ -46,10 +46,6 @@ def create_tag(xmltree: XMLLike,
 
     The tag is always inserted in the correct place if a order is enforced by the schema
 
-    .. usage-example::
-
-        fm.create_tag('greensFunction')
-
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param tag: str of the tag to create or etree Element or string representing the XML element with the same name to insert
@@ -64,6 +60,53 @@ def create_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.create_tag('mtnocoparams')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.create_tag('lo')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.create_tag('lo', contains='species')
+
+    .. usage-example::
+        :title: Nested creation
+        :description: With ``create_parents=True`` evtl. missing parent tags are also created
+
+        fm.create_tag('diagElements',
+                      create_parents=True,
+                      contains='species',
+                      not_contains='torque')
+
+    .. usage-example::
+        :title: Creation of pre-created XML element
+        :description: Passing a XML element instead of a name will insert this element at the correct position
+
+        fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                      contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                      contains='species',
+                      filters={
+                        'species': {
+                            'name': {'contains': 'Fe'}
+                        }
+                      })
 
     :returns: xmltree with created tags
     """
@@ -409,7 +452,7 @@ def set_text(xmltree: XMLLike,
              create: bool = False,
              **kwargs: Any) -> XMLLike:
     """Set the value of text of tags in the XML tree possibly occurring mutliple times
-    
+
     By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
@@ -491,7 +534,7 @@ def set_simple_tag(xmltree: XMLLike,
                    create_parents: bool = False,
                    **kwargs: Any) -> XMLLike:
     """Sets one or multiple ``simple`` tag(s) (no subtags/text) in an xmltree.
-    
+
     A simple tag can only hold attributes and has no
     subtags. The tag is specified by its name and further specification
     If the tag can occur multiple times all existing tags are DELETED and new ones are written.
@@ -588,7 +631,7 @@ def set_species_label(xmltree: XMLLike,
                       changes: dict[str, Any],
                       create: bool = False) -> XMLLike:
     """Set the attributes of a species, given by an atom label occurring in it's atom type
-    
+
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
     method for a certain atom species that corresponds to an atom with a given label
 
@@ -1135,8 +1178,8 @@ def set_kpointlist(xmltree: XMLLike,
     """Create a k-point list with the given points and weights
 
     .. note::
-        If no name is given, a name of the form ``default-<number>`` is generated    
-    
+        If no name is given, a name of the form ``default-<number>`` is generated
+
     .. warning::
         For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
         `special_labels`, `switch` and `overwrite`)

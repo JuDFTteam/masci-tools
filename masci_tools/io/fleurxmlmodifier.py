@@ -660,10 +660,6 @@ class FleurXMLModifier:
 
         The tag is always inserted in the correct place if a order is enforced by the schema
 
-        .. usage-example::
-
-            fm.create_tag('greensFunction')
-
         :param tag: str of the tag to create or etree Element or string representing the XML element with the same name to insert
         :param complex_xpath: an optional xpath to use instead of the simple xpath for the evaluation
         :param filters: Dict specifying constraints to apply on the xpath.
@@ -676,6 +672,53 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.create_tag('mtnocoparams')
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.create_tag('lo')
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.create_tag('lo', contains='species')
+
+        .. usage-example::
+            :title: Nested creation
+            :description: With ``create_parents=True`` evtl. missing parent tags are also created
+
+            fm.create_tag('diagElements',
+                          create_parents=True,
+                          contains='species',
+                          not_contains='torque')
+
+        .. usage-example::
+            :title: Creation of pre-created XML element
+            :description: Passing a XML element instead of a name will insert this element at the correct position
+
+            fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                          contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                          contains='species',
+                          filters={
+                            'species': {
+                                'name': {'contains': 'Fe'}
+                            }
+                          })
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.create_tag()` to
         the list of tasks that will be done on the xmltree.
@@ -1183,7 +1226,7 @@ class FleurXMLModifier:
         """Create a k-point list with the given points and weights
 
         .. note::
-            If no name is given, a name of the form ``default-<number>`` is generated    
+            If no name is given, a name of the form ``default-<number>`` is generated
 
         .. warning::
             For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
