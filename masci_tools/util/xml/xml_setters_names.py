@@ -162,6 +162,37 @@ def delete_tag(xmltree: XMLLike,
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
 
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.delete_tag('expertModes')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.delete_tag('lo')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.delete_tag('lo', contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.delete_tag('lo',
+                      contains='species',
+                      filters={
+                        'species': {
+                            'name': {'contains': 'Fe'}
+                        }
+                      })
+
     :returns: xmltree with deleted tags
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
@@ -200,6 +231,37 @@ def delete_att(xmltree: XMLLike,
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
 
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.delete_att('mixparam')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.delete_att('alpha')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.delete_att('alpha', contains='nocoParams')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.delete_att('alpha',
+                      contains='nocoParams',
+                      filters={
+                        'atomGroup': {
+                            'species': {'not-contains': 'Fe'}
+                        }
+                      })
+
     :returns: xmltree with deleted attributes
     """
     from masci_tools.util.xml.xml_setters_basic import xml_delete_att
@@ -237,6 +299,37 @@ def replace_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.replace_tag('expertmodes', etree.Element('greensFunction'))
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.replace_tag('lo', etree.Element('ldaU', l='3'))
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.replace_tag('lo', etree.Element('ldaU', l='3'), contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.replace_tag('lo',
+                      etree.Element('ldaU', l='3'),
+                      contains='species',
+                      filters={
+                        'species': {
+                            'atomicNumber': {'>': 30}
+                      }})
 
     :returns: xmltree with replaced tags
     """
