@@ -30,6 +30,7 @@ except ImportError:
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.util.xml.common_functions import clear_xml
+from masci_tools.util.schema_dict_util import ensure_relaxation_xinclude
 from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
 from pathlib import Path
@@ -351,7 +352,7 @@ class FleurXMLModifier:
 
         :returns: a modified xmltree and if existent a modified density matrix file
         """
-        original_xmltree, _ = load_inpxml(original_inpxmlfile)
+        original_xmltree, schema_dict = load_inpxml(original_inpxmlfile)
 
         if original_nmmp_file is not None:
             if isinstance(original_nmmp_file, (str, Path)):
@@ -367,6 +368,8 @@ class FleurXMLModifier:
                                                                self._tasks,
                                                                validate_changes=validate_changes)
 
+        ensure_relaxation_xinclude(new_xmltree, schema_dict)
+        etree.indent(new_xmltree)
         if new_nmmp_lines is None:
             return new_xmltree
         return new_xmltree, new_nmmp_lines

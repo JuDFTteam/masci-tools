@@ -19,7 +19,7 @@ attribute from the right place in the given etree
 from __future__ import annotations
 
 from masci_tools.io.parsers import fleur_schema
-from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, process_xpath_argument
+from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, eval_xpath, process_xpath_argument
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.typing import XPathLike, XMLLike
 from lxml import etree
@@ -88,7 +88,6 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: list or single value, converted in convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.converters import convert_from_xml
 
     list_return = kwargs.pop('list_return', False)
@@ -158,7 +157,6 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: list or single value, converted in convert_xml_text
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.util.xml.converters import convert_from_xml
 
     list_return = kwargs.pop('list_return', False)
@@ -239,7 +237,7 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import eval_xpath, split_off_tag
+    from masci_tools.util.xml.common_functions import split_off_tag
     from masci_tools.util.xml.converters import convert_from_xml
 
     only_required = kwargs.pop('only_required', False)
@@ -487,7 +485,7 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import eval_xpath, get_xml_attribute
+    from masci_tools.util.xml.common_functions import get_xml_attribute
     from masci_tools.util.xml.converters import convert_from_xml
 
     strict_missing_error = kwargs.pop('strict_missing_error', False)
@@ -612,7 +610,7 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: bool, True if any tag with the attribute exists
     """
-    from masci_tools.util.xml.common_functions import eval_xpath, split_off_attrib
+    from masci_tools.util.xml.common_functions import split_off_attrib
 
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
@@ -731,8 +729,6 @@ def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: etree Elements obtained via the simple xpath expression
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
-
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath_builder = XPathBuilder(tag_xpath, strict=True, filters=filters)
 
@@ -767,11 +763,6 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
 
     :raises ValueError: if the tag can not be found in the given xmltree
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
-
-    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
-    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
-    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
 
     excluded_tree = copy.deepcopy(xmltree)
 
@@ -815,23 +806,51 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
         parent = included_tag.getparent()
         if parent is None:
             raise ValueError('Could not find parent of included tag')
+        parent.replace(included_tag, _get_xinclude_elem(file_name))
 
-        xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(file_name), nsmap=INCLUDE_NSMAP)
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))
-
-        parent.replace(included_tag, xinclude_elem)
-
-    if 'relax.xml' not in included_trees:
-        #The relax.xml include should always be there
-        xinclude_elem = etree.Element(INCLUDE_TAG, href='relax.xml', nsmap=INCLUDE_NSMAP)
-        xinclude_elem.append(etree.Element(FALLBACK_TAG))
-        root.append(xinclude_elem)
+    #The relax.xml include should always be there
+    ensure_relaxation_xinclude(excluded_tree, schema_dict)
 
     etree.indent(excluded_tree)
     for tree in included_trees.values():
         etree.indent(tree)
 
     return excluded_tree, included_trees
+
+
+def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict) -> None:
+    """
+    Ensure that the xinclude tag for the ``relax.xml`` is added if no
+    ``relaxation`` is present in the ``inp.xml``
+
+    :param xmltree: an xml-tree which will be processed
+    :param schema_dict: Schema dictionary containing all the necessary information
+
+    :returns: xmltree, which either contains the relaxation section or a xinclude tag
+    """
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    if not tag_exists(xmltree, schema_dict, 'relaxation') and \
+       len(eval_xpath(xmltree, '//xi:include[href=$file]', namespaces=INCLUDE_NSMAP, file='relax.xml', list_return=True)) == 0: #type:ignore
+        root = xmltree.getroot()
+        root.append(_get_xinclude_elem('relax.xml'))
+
+
+def _get_xinclude_elem(include_file: str | os.PathLike) -> etree._Element:
+    """
+    Get the XInclude element for the given file name
+
+    :param include_file: file name or pathlike for the file to be included
+
+    :returns: etree Element for the XInclude of the given file
+    """
+    INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
+    INCLUDE_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'include')
+    FALLBACK_TAG = etree.QName(INCLUDE_NSMAP['xi'], 'fallback')
+
+    xinclude_elem = etree.Element(INCLUDE_TAG, href=os.fspath(include_file), nsmap=INCLUDE_NSMAP)
+    xinclude_elem.append(etree.Element(FALLBACK_TAG))
+
+    return xinclude_elem
 
 
 def _select_tag_xpath(node: XMLLike | etree.XPathElementEvaluator,
