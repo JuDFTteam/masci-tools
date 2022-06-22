@@ -45,7 +45,9 @@ intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'lxml': ('https://lxml.de/apidoc/',None),
                        'h5py': ('https://docs.h5py.org/en/latest/', None)}
 
-myst_enable_extensions = ['colon_fence']
+myst_enable_extensions = ['colon_fence',
+                          'fieldlist',
+                          'dollarmath']
 
 todo_include_todos = True
 
