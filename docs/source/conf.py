@@ -47,7 +47,8 @@ intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
 
 myst_enable_extensions = ['colon_fence',
                           'fieldlist',
-                          'dollarmath']
+                          'dollarmath',
+                          'deflist']
 
 todo_include_todos = True
 
