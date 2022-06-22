@@ -38,7 +38,7 @@ string of the content. The content no longer has to be manually encoded as bytes
 
 ### For Developers
 - Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)
-- Docs: Converted to `MyST` markdown and where appropriate introduced `myst-nb` for executing code cells in the documentation, e.g. generate plotting examples
+- Docs: Converted to `MyST` markdown and where appropriate introduced `myst-nb` for executing code cells in the documentation, e.g. generate plotting examples [[#157]](https://github.com/JuDFTteam/masci-tools/pull/157)
 - Bokeh regression tests now strip out the bokeh version from the test files
 - Added pre-commit hook, which generates the docstrings for the `FleurXMLModifier` registration methods from their XML setter function counterparts [[#166]](https://github.com/JuDFTteam/masci-tools/pull/166)
 
