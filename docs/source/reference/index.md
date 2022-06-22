@@ -3,6 +3,6 @@
 ```{toctree}
 :maxdepth: 2
 
-_changelog.md
+_changelog
 module_guide/index
 ```
