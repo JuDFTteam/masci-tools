@@ -22,6 +22,10 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal  #type:ignore[misc]
 import numpy as np
 from collections.abc import Sequence
 from masci_tools.util.typing import FileLike
@@ -670,3 +674,40 @@ def fac(n: int) -> int:
     if n < 2:
         return 1
     return n * fac(n - 1)
+
+
+def get_spin_rotation(alpha: float, beta: float) -> np.ndarray:
+    """
+    Get matrix to rotate the spin frame by the given angles alpha/beta
+
+    :param alpha: angle in radians
+    :param beta: angle in radians
+    """
+    return np.array([[np.exp(-1j * alpha / 2.0) * np.cos(beta / 2),
+                      np.exp(-1j * alpha / 2.0) * np.sin(beta / 2)],
+                     [-np.exp(1j * alpha / 2.0) * np.sin(beta / 2),
+                      np.exp(1j * alpha / 2.0) * np.cos(beta / 2)]])
+
+
+def get_pauli_matrix(direction: Literal['x', 'y', 'z'], alpha: float = 0.0, beta: float = 0.0) -> np.ndarray:
+    """
+    Get the pauli matrix with additional rotation applied
+
+    :param direction: str (x,y or z) for which pauli matrix to return
+    :param alpha: angle in radians
+    :param beta: angle in radians
+    """
+    if direction == 'x':
+        sigma = np.array([[0, 1], [1, 0]], dtype=complex)
+    elif direction == 'y':
+        sigma = np.array([[0, -1j], [1j, 0]], dtype=complex)
+    elif direction == 'z':
+        sigma = np.array([[1, 0], [0, -1]], dtype=complex)
+    else:
+        raise ValueError(f'Invalid value {direction} for direction argument')
+
+    if abs(alpha) > 1e-12 or abs(beta) > 1e-12:
+        rot = get_spin_rotation(alpha, beta)
+        sigma = rot.T.conj() @ sigma @ rot
+
+    return sigma

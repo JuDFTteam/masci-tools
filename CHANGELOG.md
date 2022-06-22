@@ -21,6 +21,7 @@
   ```
 - Function `serialize_xml_arguments` to `masci_tools.util.xml.common_functions` to remove XML elements/trees from positional/keyword arguments and replace them with string representations of the XML. Can be used in AiiDA-Fleur
 - Module `masci_tools.util.ipython` and ipython extension (`%load_ext masci_tools`). Adds syntax highlighted XML tree output and creating HTML syntax highlighted diffs of XML trees [[#158]](https://github.com/JuDFTteam/masci-tools/pull/158)
+- Added calculation of Jij Tensor from intersite Green's functions [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
 
 ### Improvements
 - Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
@@ -30,6 +31,7 @@
 - `load_inpxml` and `load_outxml` now consistently accept the XML file given as a
 string of the content. The content no longer has to be manually encoded as bytes
 - The method `FleurXMLModifier.modify_xmlfile` now always returns two things. The modified XML tree and a dictionary with all additional file contents, e.g. `n_mmp_mat`.
+- Support for aligning spin/real-space frames of Green's functions. Several further imporvements/bugfixes for Green's function modules [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
 
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
