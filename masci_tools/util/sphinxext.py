@@ -128,7 +128,7 @@ def _render_templates(template_folder, usage_examples, config, template_config):
             output_folder.mkdir()
 
         with open(output_folder / f'{name}.md', 'w', encoding='utf-8') as file:
-            file.write(template.render(examples=examples))
+            file.write(template.render(examples=examples, title=f"``{name}``"))
             logger.info('Rendered Usage example to "%s".', os.fspath(template_folder / f'{name}.md'))
 
 
@@ -170,7 +170,7 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
                 'usage-example')  #For checking after the fact if there were usage examples provided
 
             example = {
-                'title': self.options.get('title', ''),
+                'title': self.options.get('title', 'Simple Usage'),
                 'error': self.options.get('result', 'success').lower() == 'error',
                 'inputfile': self.options.get('inputfile', 'inp.xml'),
                 'code': '\n'.join(self.content)
@@ -220,7 +220,6 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
 
                     examples = UsageExampleTemplateBlock.collected_examples
                     for entry in examples:
-                        entry['title'] = f"``{method.name}``: {entry['title']}"
                         if not 'description' in entry and short_desc:
                             entry['description'] = short_desc
 
@@ -258,7 +257,7 @@ class UsageExampleBlock(SphinxDirective):
         self.assert_has_content()
 
         description = self.options.pop('description', '')
-        title_text = self.options.pop('title', 'Default')
+        title_text = self.options.pop('title', 'Simple Usage')
         for key in ('result', 'inputfile'):
             self.options.pop(key, None)
 
