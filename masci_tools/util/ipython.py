@@ -38,10 +38,10 @@ def xml_diff(old: XMLLike, new: XMLLike, indent: bool = True) -> HTML:
 
     STYLES = {
         'control': 'font-weight: bold',
-        'delete': 'background-color: hsla(0, 100%, 74%, 0.5); color: #000000;',
-        'delete-detail': 'background-color: hsla(0, 100%, 74%, 0.5); color: #000000;',
-        'insert': 'background-color: hsla(102, 100%, 74%, 0.5); color: #000000;',
-        'insert-detail': 'background-color: hsla(102, 100%, 74%, 0.5); color: #000000;',
+        'delete': 'background-color: hsla(0, 100%, 74%, 0.5);',
+        'delete-detail': 'background-color: hsla(0, 100%, 60%, 0.5);',
+        'insert': 'background-color: hsla(102, 100%, 74%, 0.5);',
+        'insert-detail': 'background-color: hsla(102, 100%, 60%, 0.5);',
     }
 
     if indent:
