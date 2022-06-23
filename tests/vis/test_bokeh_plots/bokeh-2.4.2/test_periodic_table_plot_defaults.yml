@@ -12225,7 +12225,7 @@ roots:
       text: atomic radius
       text_font_size: 13px
       x: 7.3
-      y: 5.532592592592592
+      y: 5.53259
     type: Label
   - attributes:
       border_line_alpha: 0.0
@@ -12233,7 +12233,7 @@ roots:
       text: year discovered
       text_font_size: 13px
       x: 7.3
-      y: 5.382592592592593
+      y: 5.38259
     type: Label
   - attributes:
       axis_label: ''

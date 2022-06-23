@@ -183,7 +183,7 @@ roots:
     type: LinearAxis
   - attributes:
       high: -0.05
-      low: 0.4964466313297577
+      low: 0.49645
       palette:
       - '#08306b'
       - '#08316d'
@@ -542,7 +542,7 @@ roots:
       dimension: height
       line_dash:
       - 6
-      location: 0.63895407737518
+      location: 0.63895
     type: Span
   - type: TapTool
   - type: Title

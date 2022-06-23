@@ -198,6 +198,8 @@ def fixture_clean_bokeh_json():
                     data[key] = encode_base64_dict(np.around(np.array(val), decimals=np_precision))
                 else:
                     data[key] = val
+            elif isinstance(val, float):
+                data[key] = round(val, np_precision)
         data = {key: val for key, val in data.items() if val not in (None, [], {})}
 
         return data

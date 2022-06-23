@@ -327,7 +327,7 @@ roots:
     type: HoverTool
   - attributes:
       high: 10.0
-      low: 1.353352832366127
+      low: 1.35335
       palette:
       - '#0C0786'
       - '#100787'
