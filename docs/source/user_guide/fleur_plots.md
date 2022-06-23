@@ -555,3 +555,66 @@ ax = plot_fleur_dos(data,
                     limits={'energy': (-9,5)},
                     spinpol=False)
 ```
+
+#### Selecting a specific spin channel
+
+Providing `only_spin='up'` or `'down'` will plot only the given spin channel
+
+```{code-cell} ipython3
+---
+mystnb:
+  image:
+    align: center
+    width: 100%
+    classes: shadow bg-primary
+  figure:
+    caption: |
+      DOS for a bulk Fe fcc structure (only spin up).
+    name: fleur-dos-only-spin-up
+---
+from masci_tools.io.parsers.hdf5 import HDF5Reader
+from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+from masci_tools.vis.fleur import plot_fleur_dos
+
+#Read in data
+with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
+   data, attributes = h5reader.read(recipe=FleurDOS)
+
+#Plot the data
+#Notice that you get the axis object of this plot is returned
+#if you want to make any special additions
+ax = plot_fleur_dos(data,
+                    attributes,
+                    limits={'energy': (-9,5)},
+                    only_spin='up')
+```
+
+```{code-cell} ipython3
+---
+mystnb:
+  remove_code_source: true
+  image:
+    align: center
+    width: 100%
+    classes: shadow bg-primary
+  figure:
+    caption: |
+      DOS for a bulk Fe fcc structure (only spin down).
+    name: fleur-dos-only-spin-down
+---
+from masci_tools.io.parsers.hdf5 import HDF5Reader
+from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+from masci_tools.vis.fleur import plot_fleur_dos
+
+#Read in data
+with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
+   data, attributes = h5reader.read(recipe=FleurDOS)
+
+#Plot the data
+#Notice that you get the axis object of this plot is returned
+#if you want to make any special additions
+ax = plot_fleur_dos(data,
+                    attributes,
+                    limits={'energy': (-9,5)},
+                    only_spin='down')
+```
