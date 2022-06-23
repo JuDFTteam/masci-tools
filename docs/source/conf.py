@@ -27,7 +27,7 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser',
+extensions = ['myst_nb',
               'sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.todo',
@@ -37,6 +37,7 @@ extensions = ['myst_parser',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
               'sphinx_autodoc_typehints',
+              'sphinx_copybutton',
               'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
@@ -44,7 +45,10 @@ intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'lxml': ('https://lxml.de/apidoc/',None),
                        'h5py': ('https://docs.h5py.org/en/latest/', None)}
 
-myst_enable_extensions = []
+myst_enable_extensions = ['colon_fence',
+                          'fieldlist',
+                          'dollarmath',
+                          'deflist']
 
 todo_include_todos = True
 
