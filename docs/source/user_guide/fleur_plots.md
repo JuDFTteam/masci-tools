@@ -496,6 +496,7 @@ ax = plot_fleur_dos(data, attributes,
 ```{code-cell} ipython3
 ---
 mystnb:
+  remove_code_source: true
   image:
     align: center
     width: 100%
