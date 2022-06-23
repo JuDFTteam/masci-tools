@@ -220,7 +220,7 @@ with HDF5Reader('files/banddos_spinpol_bands.hdf') as h5reader:
 ax = plot_fleur_bands(data,
                       attributes,
                       weight='MT:1d',
-                      limits={'y': (-9,5)})
+                      limits={'y': (-9,4)})
 ```
 
 ### Plotting options for bandstructure plots
@@ -260,7 +260,7 @@ with HDF5Reader('files/banddos_spinpol_bands.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_bands(data,
                       attributes,
-                      limits={'y': (-9,5)},
+                      limits={'y': (-9,4)},
                       markersize=10,
                       spinpol=False)
 ```
@@ -292,7 +292,7 @@ with HDF5Reader('files/banddos_spinpol_bands.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_bands(data,
                       attributes,
-                      limits={'y': (-9,5)},
+                      limits={'y': (-9,4)},
                       weight='MT:1d',
                       spinpol=False)
 ```
@@ -326,7 +326,7 @@ with HDF5Reader('files/banddos_spinpol_bands.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_bands(data,
                       attributes,
-                      limits={'y': (-9,5)},
+                      limits={'y': (-9,4)},
                       only_spin='up',
                       markersize=10,
                       color='darkblue')
@@ -359,7 +359,7 @@ with HDF5Reader('files/banddos_spinpol_bands.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_bands(data,
                       attributes,
-                      limits={'y': (-9,5)},
+                      limits={'y': (-9,4)},
                       only_spin='down',
                       markersize=10,
                       color='darkred')
@@ -435,7 +435,7 @@ with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_dos(data,
                     attributes,
-                    limits={'energy': (-9,5)})
+                    limits={'energy': (-9,4)})
 ```
 
 ### Plotting options for DOS plots
@@ -553,7 +553,7 @@ with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_dos(data,
                     attributes,
-                    limits={'energy': (-9,5)},
+                    limits={'energy': (-9,4)},
                     spinpol=False)
 ```
 
@@ -586,7 +586,7 @@ with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_dos(data,
                     attributes,
-                    limits={'energy': (-9,5)},
+                    limits={'energy': (-9,4)},
                     only_spin='up')
 ```
 
@@ -616,6 +616,6 @@ with HDF5Reader('files/banddos_spinpol_dos.hdf') as h5reader:
 #if you want to make any special additions
 ax = plot_fleur_dos(data,
                     attributes,
-                    limits={'energy': (-9,5)},
+                    limits={'energy': (-9,4)},
                     only_spin='down')
 ```
