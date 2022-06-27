@@ -24,6 +24,7 @@ except ImportError:
 
 from masci_tools.util.typing import XPathLike, XMLLike
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
+from masci_tools.util.xml.common_functions import process_xpath_argument
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 from masci_tools.io.parsers import fleur_schema
 
@@ -78,15 +79,7 @@ def create_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
     parent_xpath, tag_name = split_off_tag(base_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(parent_xpath, complex_xpath, filters)
 
     xmltree = xml_create_tag_schema_dict(xmltree,
                                          schema_dict,
@@ -129,14 +122,7 @@ def delete_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_delete_tag(xmltree, complex_xpath, occurrences=occurrences)
@@ -176,14 +162,7 @@ def delete_att(xmltree: XMLLike,
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     tag_xpath, name = split_off_attrib(base_xpath)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(tag_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, tag_xpath, complex_xpath)
 
     return xml_delete_att(xmltree, complex_xpath, name, occurrences=occurrences)
@@ -221,14 +200,7 @@ def replace_tag(xmltree: XMLLike,
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
 
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
     check_complex_xpath(xmltree, base_xpath, complex_xpath)
 
     return xml_replace_tag(xmltree, complex_xpath, element, occurrences=occurrences)
@@ -274,15 +246,7 @@ def add_number_to_attrib(xmltree: XMLLike,
 
     attrib_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(attrib_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_add_number_to_attrib(xmltree,
                                     schema_dict,
@@ -315,6 +279,8 @@ def add_number_to_first_attrib(xmltree: XMLLike,
     :param mode: str (either `rel`/`relative` or `abs`/`absolute`).
                  `rel`/`relative` multiplies the old value with `number_to_add`
                  `abs`/`absolute` adds the old value and `number_to_add`
+    :param filters: Dict specifying constraints to apply on the xpath.
+                    See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     Kwargs:
         :param tag_name: str, name of the tag where the attribute should be parsed
@@ -383,15 +349,7 @@ def set_attrib_value(xmltree: XMLLike,
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(base_xpath)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_attrib_value(xmltree,
                                 schema_dict,
@@ -484,15 +442,7 @@ def set_text(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_text(xmltree, schema_dict, complex_xpath, base_xpath, text, occurrences=occurrences, create=create)
 
@@ -580,15 +530,7 @@ def set_simple_tag(xmltree: XMLLike,
     tag_info = schema_dict['tag_info'][base_xpath]
 
     assert len(tag_info['simple'] | tag_info['complex']) == 0, f"Given tag '{tag_name}' is not simple"
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(parent_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(parent_xpath, complex_xpath, filters)
 
     return xml_set_simple_tag(xmltree,
                               schema_dict,
@@ -640,15 +582,7 @@ def set_complex_tag(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
     base_xpath = schema_dict.tag_xpath(tag_name, **kwargs)
-
-    if complex_xpath is None:
-        complex_xpath = XPathBuilder(base_xpath, filters=filters, strict=True)
-    elif filters is not None:
-        if not isinstance(complex_xpath, XPathBuilder):
-            raise ValueError(
-                'Provide only one of filters or complex_xpath (Except when complx_xpath is given as a XPathBuilder)')
-        for key, val in filters.items():
-            complex_xpath.add_filter(key, val)
+    complex_xpath = process_xpath_argument(base_xpath, complex_xpath, filters)
 
     return xml_set_complex_tag(xmltree, schema_dict, complex_xpath, base_xpath, changes, create=create)
 
@@ -665,25 +599,22 @@ def set_species_label(xmltree: XMLLike,
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param atom_label: string, a label of the atom which specie will be changed. 'all' to change all the species
-    :param attributedict: a python dict specifying what you want to change.
+    :param changes: a python dict specifying what you want to change.
     :param create: bool, if species does not exist create it and all subtags?
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
 
     if atom_label == 'all':
         return set_species(xmltree, schema_dict, 'all', changes, create=create)
-
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     species_to_set = set(
         evaluate_attribute(xmltree,
                            schema_dict,
                            'species',
                            filters={'atomGroup': {
-                               label_path: {
+                               ('/filmPos/@label', '/relPos/@label'): {
                                    '=': f'{atom_label: >20}'
                                }
                            }},
@@ -719,15 +650,15 @@ def set_species(xmltree: XMLLike,
 
     :return xmltree: xml etree of the new inp.xml
 
-    **attributedict** is a python dictionary containing dictionaries that specify attributes
+    **changes** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a MT radius it
     can be done via::
 
-        attributedict = {'mtSphere' : {'radius' : 2.2}}
+        changes = {'mtSphere' : {'radius' : 2.2}}
 
     Another example::
 
-        'attributedict': {'special': {'socscale': 0.0}}
+        'changes': {'special': {'socscale': 0.0}}
 
     that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
     ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
@@ -767,7 +698,7 @@ def clone_species(xmltree: XMLLike,
     :param new_name: new name of the cloned species
     :param changes: a optional python dict specifying what you want to change.
 
-    :return xmltree: xml etree of the new inp.xml
+    :returns xmltree: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -827,7 +758,7 @@ def shift_value_species_label(xmltree: XMLLike,
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
     from masci_tools.util.xml.common_functions import split_off_attrib
 
@@ -843,11 +774,9 @@ def shift_value_species_label(xmltree: XMLLike,
     attr_base_path = schema_dict.attrib_xpath(attribute_name, **kwargs)
     tag_base_xpath, attribute_name = split_off_attrib(attr_base_path)
 
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
     filters = None
     if atom_label != 'all':
-        filters = {'atomGroup': {label_path: {'=': f'{atom_label: >20}'}}}
+        filters = {'atomGroup': {('/filmPos/@label', '/relPos/@label'): {'=': f'{atom_label: >20}'}}}
 
     species_to_set = set(evaluate_attribute(xmltree, schema_dict, 'species', filters=filters, list_return=True))
 
@@ -885,18 +814,16 @@ def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, 
         'changes': {'nocoParams': {'beta': val}}
 
     """
-    from masci_tools.util.schema_dict_util import tag_exists, evaluate_attribute
+    from masci_tools.util.schema_dict_util import evaluate_attribute
     if atom_label == 'all':
         return set_atomgroup(xmltree, schema_dict, changes, species='all')
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     species_to_set = set(
         evaluate_attribute(xmltree,
                            schema_dict,
                            'species',
                            filters={'atomGroup': {
-                               label_path: {
+                               ('/filmPos/@label', '/relPos/@label'): {
                                    '=': f'{atom_label: >20}'
                                }
                            }},
@@ -920,7 +847,7 @@ def set_atomgroup(xmltree: XMLLike,
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :param attributedict: a python dict specifying what you want to change.
+    :param changes: a python dict specifying what you want to change.
     :param position: position of an atom group to be changed. If equals to 'all', all species will be changed
     :param species: atom groups, corresponding to the given species will be changed
     :param filters: Dict specifying constraints to apply on the xpath.
@@ -979,13 +906,8 @@ def switch_species_label(xmltree: XMLLike,
 
     :returns: xml etree of the new inp.xml
     """
-    from masci_tools.util.schema_dict_util import tag_exists
-
     if atom_label == 'all':
         return switch_species(xmltree, schema_dict, new_species_name, species='all', clone=clone, changes=changes)
-
-    film = tag_exists(xmltree, schema_dict, 'filmPos')
-    label_path = f"/{'filmPos' if film else 'relPos'}/@label"
 
     return switch_species(xmltree,
                           schema_dict,
@@ -993,7 +915,7 @@ def switch_species_label(xmltree: XMLLike,
                           clone=clone,
                           changes=changes,
                           filters={'atomGroup': {
-                              label_path: {
+                              ('/filmPos/@label', '/relPos/@label'): {
                                   '=': f'{atom_label: >20}'
                               }
                           }})
@@ -1116,15 +1038,17 @@ def set_inpchanges(xmltree: XMLLike,
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
-    :params changes: dictionary {attrib_name : value} with all the wanted changes.
+    :param changes: dictionary {attrib_name : value} with all the wanted changes.
     :param path_spec: dict, with ggf. necessary further specifications for the path of the attribute
 
     An example of changes::
 
-            changes = {'itmax' : 1,
-                       'l_noco': True,
-                       'ctail': False,
-                       'l_ss': True}
+        changes = {
+            'itmax' : 1,
+            'l_noco': True,
+            'ctail': False,
+            'l_ss': True
+        }
 
     :returns: an xmltree of the inp.xml file with changes.
     """
@@ -1192,8 +1116,8 @@ def set_kpointlist(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.xml_setters_basic import xml_delete_tag
     import numpy as np
 
@@ -1220,20 +1144,16 @@ def set_kpointlist(xmltree: XMLLike,
 
         xmltree = xml_delete_tag(xmltree, f"{kpointlist_xpath}[@name='{name}']")
 
-    new_kpo = etree.Element('kPointList', name=name, count=f'{nkpts:d}', type=kpoint_type)
-    for indx, (kpoint, weight) in enumerate(zip(kpoints, weights)):
-        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
-        if indx in special_labels:
-            new_k = etree.Element('kPoint', weight=weight, label=special_labels[indx])
-        else:
-            new_k = etree.Element('kPoint', weight=weight)
-        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    xmltree = create_tag(xmltree, schema_dict, new_kpo)
+    new_kpointset = E.kpointlist(*(E.kpoint(kpoint, weight=weight, label=special_labels[indx])
+                                   if indx in special_labels else E.kpoint(kpoint, weight=weight)
+                                   for indx, (kpoint, weight) in enumerate(zip(kpoints, weights))),
+                                 name=name,
+                                 count=nkpts,
+                                 type=kpoint_type)
 
+    xmltree = create_tag(xmltree, schema_dict, new_kpointset)
     if switch:
         xmltree = switch_kpointset(xmltree, schema_dict, name)
 
@@ -1262,8 +1182,8 @@ def set_kpointlist_max4(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import eval_simple_xpath
-    from masci_tools.util.xml.converters import convert_to_xml
     import numpy as np
 
     if not isinstance(kpoints, (list, np.ndarray)) or not isinstance(weights, (list, np.ndarray)):
@@ -1280,16 +1200,14 @@ def set_kpointlist_max4(xmltree: XMLLike,
         if 'kPoint' in child.tag:
             bzintegration_tag.remove(child)
 
-    new_kpo = etree.Element('kPointList', posScale='1.0', weightScale='1.0', count=f'{nkpts:d}')
-    for kpoint, weight in zip(kpoints, weights):
-        weight, _ = convert_to_xml(weight, schema_dict, 'weight')
-        new_k = etree.Element('kPoint', weight=weight)
-        res: tuple[str, bool] = convert_to_xml(kpoint, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    xmltree = create_tag(xmltree, schema_dict, new_kpo, not_contains='altKPoint')
+    new_kpointset = E.kpointlist(*(E.kpoint(kpoint, weight=weight) for kpoint, weight in zip(kpoints, weights)),
+                                 posscale=1,
+                                 weightscale=1,
+                                 count=nkpts)
+
+    xmltree = create_tag(xmltree, schema_dict, new_kpointset, not_contains='altKPoint')
 
     return xmltree
 
@@ -1432,26 +1350,27 @@ def set_kpath_max4(xmltree: XMLLike,
 
     :returns: an xmltree of the inp.xml file with changes.
     """
+    from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import tag_exists
-    from masci_tools.util.xml.converters import convert_to_fortran_bool, convert_to_xml
-    from masci_tools.util.xml.xml_setters_basic import xml_replace_tag
-
-    alt_kpt_set_xpath = schema_dict.tag_xpath('altKPointSet')
 
     if not tag_exists(xmltree, schema_dict, 'kPointCount', contains='altKPoint'):
         xmltree = create_tag(xmltree, schema_dict, 'kPointCount', contains='altKPoint', create_parents=True)
         xmltree = set_first_attrib_value(xmltree, schema_dict, 'purpose', 'bands')
 
-    new_kpo = etree.Element('kPointCount', count=f'{count}', gamma=f'{convert_to_fortran_bool(gamma)}')
-    for label, coord in kpath.items():
-        new_k = etree.Element('specialPoint', name=f'{label}')
-        res: tuple[str, bool] = convert_to_xml(coord, schema_dict, 'kpoint', text=True)  #type:ignore
-        text, _ = res
-        new_k.text = text
-        new_kpo.append(new_k)
+    E = FleurElementMaker(schema_dict)
 
-    kpath_xpath = f"{alt_kpt_set_xpath}[@purpose='bands']/kPointCount"
-
-    xmltree = xml_replace_tag(xmltree, kpath_xpath, new_kpo)
+    new_kpointpath = E.kpointcount(
+        *(E.specialpoint(kpt, name=name) for name, kpt in kpath.items()),
+        count=count,
+        gamma=gamma,
+    )
+    xmltree = replace_tag(xmltree,
+                          schema_dict,
+                          'kPointCount',
+                          new_kpointpath,
+                          contains='altKPoint',
+                          filters={'altKPointSet': {
+                              'purpose': 'bands'
+                          }})
 
     return xmltree

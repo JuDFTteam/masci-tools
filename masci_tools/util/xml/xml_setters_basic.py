@@ -30,7 +30,7 @@ def xml_replace_tag(xmltree: XMLLike,
                     element: str | etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
-    replaces xml tags by another tag on an xmletree in place
+    Replace XML tags by a given tag on the given XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
@@ -80,7 +80,7 @@ def xml_delete_att(xmltree: XMLLike,
                    name: str,
                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
-    Deletes an xml attribute in an xmletree.
+    Deletes an attribute in the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
@@ -117,7 +117,7 @@ def xml_delete_att(xmltree: XMLLike,
 
 def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterable[int] | None = None) -> XMLLike:
     """
-    Deletes a xml tag in an xmletree.
+    Deletes a tag in the XML tree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be deleted

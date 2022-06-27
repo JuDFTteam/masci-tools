@@ -31,8 +31,13 @@ def test_load_inpxml(test_file):
     assert xmltree is not None
     assert schema_dict['inp_version'] == '0.34'
 
-    #Pass file content
+    #Pass file content as bytes
     with open(TEST_INPXML_PATH, 'rb') as inpfile:
+        content = inpfile.read()
+    xmltree, schema_dict = load_inpxml(content, base_url=TEST_INPXML_PATH)
+
+    #Pass file content as string
+    with open(TEST_INPXML_PATH, encoding='utf-8') as inpfile:
         content = inpfile.read()
     xmltree, schema_dict = load_inpxml(content, base_url=TEST_INPXML_PATH)
 
@@ -48,7 +53,7 @@ def test_load_inpxml(test_file):
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file content
-    with open(TEST_INPXML_PATH, 'rb') as inpfile:
+    with open(TEST_INPXML_PATH, encoding='utf-8') as inpfile:
         content = inpfile.read()
     with pytest.warns(UserWarning):
         xmltree, schema_dict = load_inpxml(content)
@@ -85,8 +90,13 @@ def test_load_outxml(test_file):
     assert schema_dict['out_version'] == '0.34'
     assert schema_dict['inp_version'] == '0.34'
 
-    #Pass file content
+    #Pass file content as bytes
     with open(TEST_OUTXML_PATH, 'rb') as outfile:
+        content = outfile.read()
+    xmltree, schema_dict = load_outxml(content, base_url=TEST_OUTXML_PATH)
+
+    #Pass file content as string
+    with open(TEST_OUTXML_PATH, encoding='utf-8') as outfile:
         content = outfile.read()
     xmltree, schema_dict = load_outxml(content, base_url=TEST_OUTXML_PATH)
 
@@ -104,7 +114,7 @@ def test_load_outxml(test_file):
     assert schema_dict['inp_version'] == '0.34'
 
     #Pass file content with pathlib base_url
-    with open(TEST_OUTXML_PATH, 'rb') as outfile:
+    with open(TEST_OUTXML_PATH, encoding='utf-8') as outfile:
         content = outfile.read()
     with pytest.warns(UserWarning):
         xmltree, schema_dict = load_outxml(content)

@@ -126,8 +126,9 @@ class MatplotlibPlotter(Plotter):
             'length': 2.5
         },
         'colorbar': True,
-        'colorbar_padding': 0.1,
-        'colorbar_options': {},
+        'colorbar_options': {
+            'pad': 0.1
+        },
         # legend properties
         'legend': False,
         'legend_show_data_labels': False,
@@ -264,8 +265,6 @@ class MatplotlibPlotter(Plotter):
         'Parameters for minor ticks on the y-axis (Size, fontsize, ...)',
         'colorbar':
         'If True and the function implements color mapping, a colorbar is shown',
-        'colorbar_padding':
-        'Specifies the space between plot and colorbar',
         'colorbar_options':
         'Parameters for displaying the colorbar (Fontsize, ...)',
         # legend properties
@@ -298,15 +297,19 @@ class MatplotlibPlotter(Plotter):
 
     _MATPLOTLIB_GENERAL_ARGS = {
         'save_plots', 'save_format', 'tightlayout', 'save_raw_plot_data', 'raw_plot_data_format', 'show', 'legend',
-        'legend_options', 'colorbar', 'colorbar_padding', 'colorbar_options', 'tick_paramsy', 'tick_paramsx',
-        'tick_paramsy_minor', 'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale',
-        'limits', 'xticks', 'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size',
-        'repeat_colors_after', 'color_cycle', 'color_cycle_always_advance'
+        'legend_options', 'colorbar', 'colorbar_options', 'tick_paramsy', 'tick_paramsx', 'tick_paramsy_minor',
+        'tick_paramsx_minor', 'font_options', 'line_options', 'labelfontsize', 'lines', 'scale', 'limits', 'xticks',
+        'xticklabels', 'yticks', 'yticklabels', 'figure_kwargs', 'title_font_size', 'repeat_colors_after',
+        'color_cycle', 'color_cycle_always_advance'
         'sub_colormap', 'save_options'
     }
 
     _TYPE_TO_KWARGS = {
         'default': {'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder'},
+        'colormap_scatter': {
+            'linewidth', 'linestyle', 'marker', 'markersize', 'color', 'plot_label', 'plot_alpha', 'zorder', 'cmap',
+            'norm'
+        },
         'area': {'area_linecolor', 'area_alpha', 'zorder'},
         'colormesh': {
             'linewidth', 'linestyle', 'shading', 'rasterized', 'cmap', 'norm', 'edgecolor', 'facecolor', 'plot_label',
@@ -394,6 +397,10 @@ class MatplotlibPlotter(Plotter):
                     plot_kwargs['cmap'] = plt.get_cmap(plot_kwargs['cmap'])
 
                 plot_kwargs['cmap'] = self.truncate_colormap(plot_kwargs['cmap'], *self['sub_colormap'])
+
+        if self['limits'] is not None and 'color' in self['limits'] and 'cmap' in plot_kwargs:
+            if 'norm' not in plot_kwargs:
+                plot_kwargs['vmin'], plot_kwargs['vmax'] = self['limits']['color']
 
         if list_of_dicts:
             plot_kwargs = self.dict_of_lists_to_list_of_dicts(plot_kwargs,
@@ -633,19 +640,35 @@ class MatplotlibPlotter(Plotter):
 
         if self['colorbar']:
             if isinstance(self['cmap'], list):
-                raise ValueError('show_colorbar only available for single colormaps')
-            mappable = cm.ScalarMappable(cmap=self['cmap'], norm=self['norm'])
-            if self['limits'] is not None:
-                if 'color' in self['limits']:
-                    cmin = self['limits']['color'][0]
-                    cmax = self['limits']['color'][1]
-                    mappable.set_clim(cmin, cmax)
+                cmaps = self['cmap']
+            else:
+                cmaps = [self['cmap']]
+            bar_ax = None
+            cmin = cmax = None
+            if self['limits'] is not None and 'color' in self['limits']:
+                cmin, cmax = self['limits']['color']
 
             coptions = copy.deepcopy(self['colorbar_options'])
             labelsize = coptions.pop('labelsize', None)
-            cbar = plt.colorbar(mappable, ax=ax, pad=self['colorbar_padding'], **coptions)
-            if labelsize is not None:
-                cbar.ax.tick_params(labelsize=labelsize)
+            label = coptions.pop('label', '')
+
+            for indx, cmap in enumerate(cmaps):
+                mappable = cm.ScalarMappable(cmap=cmap, norm=self['norm'])
+                if cmin is not None:
+                    mappable.set_clim(cmin, cmax)
+
+                cbar = plt.colorbar(mappable, ax=bar_ax or ax, **coptions)
+
+                if indx < len(cmaps) - 1:
+                    cbar.ax.tick_params(labelsize=0)
+                elif labelsize is not None:
+                    cbar.ax.tick_params(labelsize=labelsize)
+
+                if bar_ax is None:
+                    bar_ax = cbar.ax
+                    coptions['fraction'] = 0.3
+
+            cbar.set_label(label)
 
     @staticmethod
     def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):

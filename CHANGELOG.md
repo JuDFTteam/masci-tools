@@ -1,5 +1,53 @@
 # Changelog
 
+## v.0.11.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.1...v0.11.0)
+
+This release adds some improvements to the XML and HDF5 handling mainly for better AiiDA-Fleur
+support. Also major updates to documentation configurations and Green's function calculations.
+
+### Added
+- Added `FleurElementMaker` class. This can be used to create XML elements compatible with a given version from scratch.
+  Has case-insensitivity and converts values to strings for XML [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+  Example
+  ```python
+   from masci_tools.util.xml.builder import FleurElementMaker
+   E = FleurElementMaker.fromVersion('0.35')
+   new_kpointset = E.kpointlist(
+       *(
+           E.kpoint(kpoint, weight=weight, label=special_labels[indx]) if indx in special_labels else
+           E.kpoint(kpoint, weight=weight) for indx, (kpoint, weight) in enumerate(zip(kpoints, weights))
+       ),
+       name=name,
+       count=nkpts,
+       type=kpoint_type)
+  ```
+- Function `serialize_xml_arguments` to `masci_tools.util.xml.common_functions` to remove XML elements/trees from positional/keyword arguments and replace them with string representations of the XML. Can be used in AiiDA-Fleur
+- Module `masci_tools.util.ipython` and ipython extension (`%load_ext masci_tools`). Adds syntax highlighted XML tree output and creating HTML syntax highlighted diffs of XML trees [[#158]](https://github.com/JuDFTteam/masci-tools/pull/158)
+- Added calculation of Jij Tensor from intersite Green's functions [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
+
+### Improvements
+- Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- `convert_to_xml` is made more strict. Conversion `int` to `str` uses the `{:d}` format specifier and string conversion is no longer always attempted [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
+- Improvements to Colorbar creation in matplotlib plotting methods. Limits are now set consistently with `limits={'color': (low, high)}` in the plot and colorbar. Spinpolarized bandplots now show two colorbars for the two colormaps if requested
+- `get_parameter_data` now also extracts the `gamma` switch for kpoint generation for more consistent roundtrips. This is only set if the first kpoint in the mesh is the gamma point and there are multiple
+- `load_inpxml` and `load_outxml` now consistently accept the XML file given as a
+string of the content. The content no longer has to be manually encoded as bytes
+- The method `FleurXMLModifier.modify_xmlfile` now always returns two things. The modified XML tree and a dictionary with all additional file contents, e.g. `n_mmp_mat`.
+- Support for aligning spin/real-space frames of Green's functions. Several further imporvements/bugfixes for Green's function modules [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
+
+### Bugfixes
+- Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
+- Fixes in `plot_fleur_bands`, when providing custom weights without spin suffixes, i.e. `_up`/`_down`
+- Fix in `HDF5Reader`. IO like objects without an attached filename would lead to an  early error. This is the case for example for some readers in the file repository implementation used in AiiDA v2.0
+- Fix in `HDF5Reader`. The file handles for compressed files in the AiiDA v2 repository have to be copied into a temporary file first before they can be used
+
+### For Developers
+- Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)
+- Docs: Converted to `MyST` markdown and where appropriate introduced `myst-nb` for executing code cells in the documentation, e.g. generate plotting examples [[#157]](https://github.com/JuDFTteam/masci-tools/pull/157)
+- Bokeh regression tests now strip out the bokeh version from the test files
+- Added pre-commit hook, which generates the docstrings for the `FleurXMLModifier` registration methods from their XML setter function counterparts [[#166]](https://github.com/JuDFTteam/masci-tools/pull/166)
+
 ## v0.10.1
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.0...v0.10.1)
 
@@ -13,11 +61,11 @@ This release provides several new features in the XML modification/evaluation fo
 working with DFT+U density matrix files are also fixed.
 ### Added
 - New XML setter `align_nmmpmat_to_sqa` to rotate the density matrix file according to SQAs specified either for noco or second variation SOC [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
-- Added `task_list` property to `FleurXMLModifier` to construct a list which can be used to replicate the same `FleurXMLModifier` with the `fromList()` classmethod [[#149]](https://github.com/JuDFTteam/masci-tools/pull/#149)
-- Added `FleurXMLContext`, which acts as a holder of th XML elements,  schema dictionary, constants and logger to reduce the amount of information/clutter in functions evaluating things from the XML file [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
+- Added `task_list` property to `FleurXMLModifier` to construct a list which can be used to replicate the same `FleurXMLModifier` with the `fromList()` classmethod [[#149]](https://github.com/JuDFTteam/masci-tools/pull/149)
+- Added `FleurXMLContext`, which acts as a holder of th XML elements,  schema dictionary, constants and logger to reduce the amount of information/clutter in functions evaluating things from the XML file [[#152]](https://github.com/JuDFTteam/masci-tools/pull/152)
 
   Note: The class `ParseTasks` used in the `outxml_parser` was simplified and placed into the `outxml_parser` module and the decorator `register_parsing_function` was removed. This was done without deprecation since they were exclusively used in the `outxml_parser` and were the main cause of cyclic import problems previously
-- Added several predefined conversions to/from input version `0.35` to `inpxml_converter` [[#153]](https://github.com/JuDFTteam/masci-tools/pull/#153)
+- Added several predefined conversions to/from input version `0.35` to `inpxml_converter` [[#153]](https://github.com/JuDFTteam/masci-tools/pull/153)
 
 ### Improvements
 - Added `inverse` argument to nmmpmat XML setters. These will correctly produce the inverse rotation operation for the given angles. Also allow setting `orbital='all'` in `rotate_nmmpmat` to rotate all blocks by the given angles [[#140]](https://github.com/JuDFTteam/masci-tools/pull/140)
@@ -28,11 +76,11 @@ working with DFT+U density matrix files are also fixed.
 - Added basic tests of `masci_tools.tools.greensfunction` module and fixed several bugs found due to this [[#150]](https://github.com/JuDFTteam/masci-tools/pull/150)
 - Fixed bug in XML setters operating on the DFT+U density matrix file not correctly extracting the number of spin blocks when only setting `l_mperp`
 - Fixed bug, when using the `FleurXMLModifier` directly (not in `aiida-fleur`), included XML files were not handled
-- Fixed bug in `outxml_parser`, when the XML file had to be repaired and more than one iteration was present the wrong iteration was chosen as the last stable iteration [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
+- Fixed bug in `outxml_parser`, when the XML file had to be repaired and more than one iteration was present the wrong iteration was chosen as the last stable iteration [[#152]](https://github.com/JuDFTteam/masci-tools/pull/152)
 
 ### Deprecated
-- The module `masci_tools.io.io_fleurxml` is renamed to `masci_tools.io.fleur_xml` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
-- The module `masci_tools.util.parse_task_decorator` is removed. All decorators are now availaibe under `masci_tools.io.parsers.fleur` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/#152)
+- The module `masci_tools.io.io_fleurxml` is renamed to `masci_tools.io.fleur_xml` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/152)
+- The module `masci_tools.util.parse_task_decorator` is removed. All decorators are now availaibe under `masci_tools.io.parsers.fleur` [[#152]](https://github.com/JuDFTteam/masci-tools/pull/152)
 
 ### For Developers
 - Added `py.typed` marker to masci-tools, since a large part of the outside facing code (especially the XML APIs are typed). With this marker other packages can use the typehints in this package

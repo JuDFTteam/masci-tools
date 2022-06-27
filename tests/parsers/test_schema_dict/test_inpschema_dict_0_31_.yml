@@ -1061,6 +1061,7 @@ tag_info:
       output: null
       relaxation: null
       xcFunctional: null
+    name: fleurInput
     optional: !!set
       comment: null
       constants: null
@@ -1078,6 +1079,7 @@ tag_info:
     attribs: !!set {}
     complex: !!set
       atomGroup: null
+    name: atomGroups
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -1092,6 +1094,7 @@ tag_info:
       species: null
       vcaAddCharge: null
     complex: !!set {}
+    name: atomGroup
     optional: !!set
       atomicCutoffs: null
       energyParameters: null
@@ -1145,6 +1148,7 @@ tag_info:
       orbcomp: null
       wannier: null
     complex: !!set {}
+    name: absPos
     optional: !!set {}
     optional_attribs:
       label: null
@@ -1160,6 +1164,7 @@ tag_info:
       lmaxAPW: null
       lnonsphr: null
     complex: !!set {}
+    name: atomicCutoffs
     optional: !!set {}
     optional_attribs:
       lmaxapw: null
@@ -1174,6 +1179,7 @@ tag_info:
       p: null
       s: null
     complex: !!set {}
+    name: energyParameters
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1186,6 +1192,7 @@ tag_info:
       orbcomp: null
       wannier: null
     complex: !!set {}
+    name: filmPos
     optional: !!set {}
     optional_attribs:
       label: null
@@ -1200,6 +1207,7 @@ tag_info:
       calculate: null
       relaxXYZ: null
     complex: !!set {}
+    name: force
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1215,6 +1223,7 @@ tag_info:
       phi: null
       theta: null
     complex: !!set {}
+    name: ldaU
     optional: !!set {}
     optional_attribs:
       phi: '0.0'
@@ -1230,6 +1239,7 @@ tag_info:
       n: null
       type: null
     complex: !!set {}
+    name: lo
     optional: !!set {}
     optional_attribs:
       ederiv: '0'
@@ -1243,6 +1253,7 @@ tag_info:
       logIncrement: null
       radius: null
     complex: !!set {}
+    name: mtSphere
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1259,6 +1270,7 @@ tag_info:
       l_magn: null
       l_relax: null
     complex: !!set {}
+    name: nocoParams
     optional: !!set {}
     optional_attribs:
       l_magn: F
@@ -1273,6 +1285,7 @@ tag_info:
       orbcomp: null
       wannier: null
     complex: !!set {}
+    name: relPos
     optional: !!set {}
     optional_attribs:
       label: null
@@ -1286,6 +1299,7 @@ tag_info:
     attribs: !!set {}
     complex: !!set
       species: null
+    name: atomSpecies
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -1306,6 +1320,7 @@ tag_info:
       vcaAddCharge: null
     complex: !!set
       electronConfig: null
+    name: species
     optional: !!set
       electronConfig: null
       energyParameters: null
@@ -1351,6 +1366,7 @@ tag_info:
       lmaxAPW: null
       lnonsphr: null
     complex: !!set {}
+    name: atomicCutoffs
     optional: !!set {}
     optional_attribs:
       lmaxapw: null
@@ -1361,6 +1377,7 @@ tag_info:
   /fleurInput/atomSpecies/species/electronConfig:
     attribs: !!set {}
     complex: !!set {}
+    name: electronConfig
     optional: !!set
       stateOccupation: null
       valenceConfig: null
@@ -1384,6 +1401,7 @@ tag_info:
       spinUp: null
       state: null
     complex: !!set {}
+    name: stateOccupation
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1397,6 +1415,7 @@ tag_info:
       p: null
       s: null
     complex: !!set {}
+    name: energyParameters
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1408,6 +1427,7 @@ tag_info:
       calculate: null
       relaxXYZ: null
     complex: !!set {}
+    name: force
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1423,6 +1443,7 @@ tag_info:
       phi: null
       theta: null
     complex: !!set {}
+    name: ldaU
     optional: !!set {}
     optional_attribs:
       phi: '0.0'
@@ -1438,6 +1459,7 @@ tag_info:
       n: null
       type: null
     complex: !!set {}
+    name: lo
     optional: !!set {}
     optional_attribs:
       ederiv: '0'
@@ -1451,6 +1473,7 @@ tag_info:
       logIncrement: null
       radius: null
     complex: !!set {}
+    name: mtSphere
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1467,6 +1490,7 @@ tag_info:
       l_magn: null
       l_relax: null
     complex: !!set {}
+    name: nocoParams
     optional: !!set {}
     optional_attribs:
       l_magn: F
@@ -1481,6 +1505,7 @@ tag_info:
       lcutwf: null
       select: null
     complex: !!set {}
+    name: prodBasis
     optional: !!set {}
     optional_attribs:
       select: 4 0 4 2
@@ -1495,6 +1520,7 @@ tag_info:
       socscale: null
       vca_charge: null
     complex: !!set {}
+    name: special
     optional: !!set {}
     optional_attribs:
       b_field_mt: '0.0'
@@ -1511,6 +1537,7 @@ tag_info:
       bzIntegration: null
       fields: null
       nocoParams: null
+    name: calculationSetup
     optional: !!set
       energyParameterLimits: null
       expertModes: null
@@ -1551,6 +1578,7 @@ tag_info:
       altKPointSet: null
       kPointCount: null
       kPointList: null
+    name: bzIntegration
     optional: !!set
       altKPointSet: null
     optional_attribs:
@@ -1578,6 +1606,7 @@ tag_info:
     complex: !!set
       kPointCount: null
       kPointList: null
+    name: altKPointSet
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -1597,6 +1626,7 @@ tag_info:
       count: null
       gamma: null
     complex: !!set {}
+    name: kPointCount
     optional: !!set
       specialPoint: null
     optional_attribs: {}
@@ -1612,6 +1642,7 @@ tag_info:
     attribs: !!set
       name: null
     complex: !!set {}
+    name: specialPoint
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1625,6 +1656,7 @@ tag_info:
       denZ: null
       gamma: null
     complex: !!set {}
+    name: kPointDensity
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1637,6 +1669,7 @@ tag_info:
       posScale: null
       weightScale: null
     complex: !!set {}
+    name: kPointList
     optional: !!set {}
     optional_attribs:
       count: null
@@ -1652,6 +1685,7 @@ tag_info:
     attribs: !!set
       weight: null
     complex: !!set {}
+    name: kPoint
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1662,6 +1696,7 @@ tag_info:
     attribs: !!set
       filename: null
     complex: !!set {}
+    name: kPointListFile
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1675,6 +1710,7 @@ tag_info:
       ny: null
       nz: null
     complex: !!set {}
+    name: kPointMesh
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1686,6 +1722,7 @@ tag_info:
       count: null
       gamma: null
     complex: !!set {}
+    name: kPointCount
     optional: !!set
       specialPoint: null
     optional_attribs: {}
@@ -1701,6 +1738,7 @@ tag_info:
     attribs: !!set
       name: null
     complex: !!set {}
+    name: specialPoint
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1714,6 +1752,7 @@ tag_info:
       denZ: null
       gamma: null
     complex: !!set {}
+    name: kPointDensity
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1726,6 +1765,7 @@ tag_info:
       posScale: null
       weightScale: null
     complex: !!set {}
+    name: kPointList
     optional: !!set {}
     optional_attribs:
       count: null
@@ -1741,6 +1781,7 @@ tag_info:
     attribs: !!set
       weight: null
     complex: !!set {}
+    name: kPoint
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1751,6 +1792,7 @@ tag_info:
     attribs: !!set
       filename: null
     complex: !!set {}
+    name: kPointListFile
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1764,6 +1806,7 @@ tag_info:
       ny: null
       nz: null
     complex: !!set {}
+    name: kPointMesh
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1777,6 +1820,7 @@ tag_info:
       frcor: null
       kcrel: null
     complex: !!set {}
+    name: coreElectrons
     optional: !!set {}
     optional_attribs:
       coretail_lmax: '0'
@@ -1793,6 +1837,7 @@ tag_info:
       Kmax: null
       numbands: null
     complex: !!set {}
+    name: cutoffs
     optional: !!set {}
     optional_attribs:
       gmaxxc: null
@@ -1806,6 +1851,7 @@ tag_info:
       ellow: null
       elup: null
     complex: !!set {}
+    name: energyParameterLimits
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1821,6 +1867,7 @@ tag_info:
       pot8: null
       secvar: null
     complex: !!set {}
+    name: expertModes
     optional: !!set {}
     optional_attribs:
       eig66: F
@@ -1845,6 +1892,7 @@ tag_info:
       sig_b_2: null
       zsigma: null
     complex: !!set {}
+    name: fields
     optional: !!set
       shape: null
     optional_attribs:
@@ -1875,6 +1923,7 @@ tag_info:
       l_f: null
       qfix: null
     complex: !!set {}
+    name: geometryOptimization
     optional: !!set {}
     optional_attribs:
       epsdisp: '0.001'
@@ -1893,6 +1942,7 @@ tag_info:
       mixParam: null
       spinf: null
     complex: !!set {}
+    name: ldaU
     optional: !!set {}
     optional_attribs:
       l_linmix: F
@@ -1911,6 +1961,7 @@ tag_info:
       lflip: null
       swsp: null
     complex: !!set {}
+    name: magnetism
     optional: !!set {}
     optional_attribs:
       fixed_moment: '0.0'
@@ -1934,6 +1985,7 @@ tag_info:
       sso_opt: null
       thetaJ: null
     complex: !!set {}
+    name: nocoParams
     optional: !!set
       qsc: null
     optional_attribs:
@@ -1962,6 +2014,7 @@ tag_info:
       vM: null
       zrfs1: null
     complex: !!set {}
+    name: oneDParams
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -1976,6 +2029,7 @@ tag_info:
       lexp: null
       tolerance: null
     complex: !!set {}
+    name: prodBasis
     optional: !!set {}
     optional_attribs:
       ewaldlambda: '3'
@@ -1993,6 +2047,7 @@ tag_info:
       statesAbove: null
       statesBelow: null
     complex: !!set {}
+    name: rdmft
     optional: !!set {}
     optional_attribs:
       occeps: '0.00001'
@@ -2011,6 +2066,7 @@ tag_info:
       precondParam: null
       spinf: null
     complex: !!set {}
+    name: scfLoop
     optional: !!set {}
     optional_attribs:
       maxiterbroyd: '99'
@@ -2031,6 +2087,7 @@ tag_info:
       spav: null
       theta: null
     complex: !!set {}
+    name: soc
     optional: !!set {}
     optional_attribs:
       'off': F
@@ -2045,6 +2102,7 @@ tag_info:
       qy: null
       qz: null
     complex: !!set {}
+    name: spinSpiralQPointMesh
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2057,6 +2115,7 @@ tag_info:
       bulkLattice: null
       filmLattice: null
       symmetryOperations: null
+    name: cell
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2076,6 +2135,7 @@ tag_info:
       scale: null
     complex: !!set
       bravaisMatrix: null
+    name: bulkLattice
     optional: !!set
       a2: null
     optional_attribs: {}
@@ -2104,6 +2164,7 @@ tag_info:
     attribs: !!set
       scale: null
     complex: !!set {}
+    name: a1
     optional: !!set {}
     optional_attribs:
       scale: '1.0'
@@ -2115,6 +2176,7 @@ tag_info:
     attribs: !!set
       scale: null
     complex: !!set {}
+    name: a2
     optional: !!set {}
     optional_attribs:
       scale: '1.0'
@@ -2125,6 +2187,7 @@ tag_info:
   /fleurInput/cell/bulkLattice/bravaisMatrix:
     attribs: !!set {}
     complex: !!set {}
+    name: bravaisMatrix
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2144,6 +2207,7 @@ tag_info:
     attribs: !!set
       scale: null
     complex: !!set {}
+    name: c
     optional: !!set {}
     optional_attribs:
       scale: '1.0'
@@ -2159,6 +2223,7 @@ tag_info:
       scale: null
     complex: !!set
       bravaisMatrix: null
+    name: filmLattice
     optional: !!set
       a2: null
       vacuumEnergyParameters: null
@@ -2187,6 +2252,7 @@ tag_info:
     attribs: !!set
       scale: null
     complex: !!set {}
+    name: a1
     optional: !!set {}
     optional_attribs:
       scale: '1.0'
@@ -2198,6 +2264,7 @@ tag_info:
     attribs: !!set
       scale: null
     complex: !!set {}
+    name: a2
     optional: !!set {}
     optional_attribs:
       scale: '1.0'
@@ -2208,6 +2275,7 @@ tag_info:
   /fleurInput/cell/filmLattice/bravaisMatrix:
     attribs: !!set {}
     complex: !!set {}
+    name: bravaisMatrix
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2229,6 +2297,7 @@ tag_info:
       spinUp: null
       vacuum: null
     complex: !!set {}
+    name: vacuumEnergyParameters
     optional: !!set {}
     optional_attribs:
       spindown: null
@@ -2242,6 +2311,7 @@ tag_info:
       spgrp: null
       zrfs: null
     complex: !!set {}
+    name: symmetry
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2252,6 +2322,7 @@ tag_info:
     attribs: !!set
       filename: null
     complex: !!set {}
+    name: symmetryFile
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2262,6 +2333,7 @@ tag_info:
     attribs: !!set {}
     complex: !!set
       symOp: null
+    name: symmetryOperations
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2273,6 +2345,7 @@ tag_info:
   /fleurInput/cell/symmetryOperations/symOp:
     attribs: !!set {}
     complex: !!set {}
+    name: symOp
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2291,6 +2364,7 @@ tag_info:
   /fleurInput/constants:
     attribs: !!set {}
     complex: !!set {}
+    name: constants
     optional: !!set
       constant: null
     optional_attribs: {}
@@ -2306,6 +2380,7 @@ tag_info:
       name: null
       value: null
     complex: !!set {}
+    name: constant
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2318,6 +2393,7 @@ tag_info:
       DMI: null
       Jij: null
       spinSpiralDispersion: null
+    name: forceTheorem
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2335,6 +2411,7 @@ tag_info:
       theta: null
     complex: !!set
       qVectors: null
+    name: DMI
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2344,6 +2421,7 @@ tag_info:
   /fleurInput/forceTheorem/DMI/qVectors:
     attribs: !!set {}
     complex: !!set {}
+    name: qVectors
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2359,6 +2437,7 @@ tag_info:
       thetaj: null
     complex: !!set
       qVectors: null
+    name: Jij
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2368,6 +2447,7 @@ tag_info:
   /fleurInput/forceTheorem/Jij/qVectors:
     attribs: !!set {}
     complex: !!set {}
+    name: qVectors
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2383,6 +2463,7 @@ tag_info:
       phi: null
       theta: null
     complex: !!set {}
+    name: MAE
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2392,6 +2473,7 @@ tag_info:
   /fleurInput/forceTheorem/spinSpiralDispersion:
     attribs: !!set {}
     complex: !!set {}
+    name: spinSpiralDispersion
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2414,6 +2496,7 @@ tag_info:
     complex: !!set
       coreSpectrum: null
       wannier: null
+    name: output
     optional: !!set
       chargeDensitySlicing: null
       checks: null
@@ -2453,6 +2536,7 @@ tag_info:
       numkpt: null
       pallst: null
     complex: !!set {}
+    name: chargeDensitySlicing
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2465,6 +2549,7 @@ tag_info:
       disp: null
       vchk: null
     complex: !!set {}
+    name: checks
     optional: !!set {}
     optional_attribs:
       cdinf: F
@@ -2490,6 +2575,7 @@ tag_info:
       numPoints: null
       verbose: null
     complex: !!set {}
+    name: coreSpectrum
     optional: !!set {}
     optional_attribs:
       alpha_ex: '0.024'
@@ -2512,6 +2598,7 @@ tag_info:
       ndir: null
       sigma: null
     complex: !!set {}
+    name: densityOfStates
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2523,6 +2610,7 @@ tag_info:
       energyLo: null
       energyUp: null
     complex: !!set {}
+    name: magneticCircularDichroism
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2535,6 +2623,7 @@ tag_info:
       plplot: null
       score: null
     complex: !!set {}
+    name: plotting
     optional: !!set {}
     optional_attribs:
       iplot: '0'
@@ -2550,6 +2639,7 @@ tag_info:
       eonly: null
       form66: null
     complex: !!set {}
+    name: specialOutput
     optional: !!set {}
     optional_attribs:
       bmt: F
@@ -2566,6 +2656,7 @@ tag_info:
       supercellZ: null
       unfoldBand: null
     complex: !!set {}
+    name: unfoldingBand
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2585,6 +2676,7 @@ tag_info:
       star: null
       tworkf: null
     complex: !!set {}
+    name: vacuumDOS
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2599,6 +2691,7 @@ tag_info:
       sgwf: null
       socgwf: null
     complex: !!set {}
+    name: wannier
     optional: !!set
       bandSelection: null
       jobList: null
@@ -2622,6 +2715,7 @@ tag_info:
       minSpinDown: null
       minSpinUp: null
     complex: !!set {}
+    name: bandSelection
     optional: !!set {}
     optional_attribs:
       maxspindown: null
@@ -2635,6 +2729,7 @@ tag_info:
     complex: !!set
       displacements: null
       relaxation-history: null
+    name: relaxation
     optional: !!set
       displacements: null
       relaxation-history: null
@@ -2646,6 +2741,7 @@ tag_info:
   /fleurInput/relaxation/displacements:
     attribs: !!set {}
     complex: !!set {}
+    name: displacements
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2660,6 +2756,7 @@ tag_info:
     attribs: !!set {}
     complex: !!set
       step: null
+    name: relaxation-history
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2672,6 +2769,7 @@ tag_info:
     attribs: !!set
       energy: null
     complex: !!set {}
+    name: step
     optional: !!set {}
     optional_attribs: {}
     order:
@@ -2687,6 +2785,7 @@ tag_info:
       name: null
       relativisticCorrections: null
     complex: !!set {}
+    name: xcFunctional
     optional: !!set
       LibXCID: null
       LibXCName: null
@@ -2713,6 +2812,7 @@ tag_info:
       etot_exchange: null
       exchange: null
     complex: !!set {}
+    name: LibXCID
     optional: !!set {}
     optional_attribs:
       etot_correlation: null
@@ -2728,6 +2828,7 @@ tag_info:
       etot_exchange: null
       exchange: null
     complex: !!set {}
+    name: LibXCName
     optional: !!set {}
     optional_attribs:
       etot_correlation: null
@@ -2744,6 +2845,7 @@ tag_info:
       idsprsv: null
       iggachk: null
     complex: !!set {}
+    name: ggaPrinting
     optional: !!set {}
     optional_attribs: {}
     order: []
@@ -2758,6 +2860,7 @@ tag_info:
       lwb: null
       ndvgrd: null
     complex: !!set {}
+    name: xcParams
     optional: !!set {}
     optional_attribs: {}
     order: []

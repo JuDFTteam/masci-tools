@@ -15,7 +15,7 @@ general attribute conditions from simple XPath expressions
 """
 from __future__ import annotations
 
-from typing import Any, Iterable
+from typing import Any, Iterable, Dict
 import sys
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -24,7 +24,7 @@ else:
 
 from lxml import etree
 
-FilterType: TypeAlias = 'dict[str, Any]'
+FilterType: TypeAlias = Dict[str, Any]
 """
 Type for filters argument for XPathBuilder
 """

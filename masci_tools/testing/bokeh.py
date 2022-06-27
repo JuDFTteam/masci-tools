@@ -25,6 +25,11 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='function')
 def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir):
 
+    try:
+        import bokeh
+    except ImportError:
+        pytest.skip('Bokeh regression tests are skipped only executed if bokeh is installed')
+
     def _regression_bokeh_plot(bokeh_fig):
 
         basename = bokeh_basename()  #This will skip the test if bokeh is not installed
@@ -42,15 +47,18 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
                 if not pytestconfig.getoption('--add-bokeh-version'):
                     if prev_version is not None:
                         basename = Path(f'bokeh-{prev_version}') / filename
-                        warnings.warn(f'Results for bokeh version {basename.parent} not available.'
-                                      f'Using the last available version {prev_version}'
-                                      'Use the option --add-bokeh-version to add results for this version')
+                        warnings.warn(f'Results for bokeh version {current_version} not available.\n'
+                                      f'Using the last available version {prev_version}\n'
+                                      '    Use the option --add-bokeh-version to add results for this version')
 
             from bokeh.io import curdoc
 
             curdoc().clear()
             curdoc().add_root(bokeh_fig)
-            data_regression.check(clean_bokeh_json(curdoc().to_json()), basename=os.fspath(basename))
+
+            result = clean_bokeh_json(curdoc().to_json())
+            result.pop('version', None)
+            data_regression.check(result, basename=os.fspath(basename))
 
     return _regression_bokeh_plot
 
@@ -186,8 +194,12 @@ def fixture_clean_bokeh_json():
                     data[key] = normalize_list_of_dicts(val)
                 elif all(isinstance(x, int) for x in val) and data_entry:
                     data[key] = encode_base64_dict(np.array(val))
+                elif all(isinstance(x, float) for x in val) and data_entry:
+                    data[key] = encode_base64_dict(np.around(np.array(val), decimals=np_precision))
                 else:
                     data[key] = val
+            elif isinstance(val, float):
+                data[key] = round(val, np_precision)
         data = {key: val for key, val in data.items() if val not in (None, [], {})}
 
         return data

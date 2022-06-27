@@ -30,6 +30,7 @@ def test_greensfunction_sphavg(test_file):
     assert gf.sphavg
 
     assert isinstance(gf.energy_dependence(spin=1), np.ndarray)
+    assert not np.isnan(gf.energy_dependence(spin=1)).any()
     assert gf.energy_dependence(spin=1).shape == (128, 5, 5)  #(nz,2*l+1,2*l+1)
     assert gf.energy_dependence(spin=1).dtype == float
 
@@ -42,6 +43,26 @@ def test_greensfunction_sphavg(test_file):
     assert isinstance(gf.trace_energy_dependence(spin=1), np.ndarray)
     assert gf.trace_energy_dependence(spin=1).shape == (128,)
     assert gf.trace_energy_dependence(spin=1).dtype == float
+
+
+def test_greensfunction_single_element_no_selection(test_file):
+    """
+    Basic test of greensfunction
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'))
+
+    elem = gf.element._replace(atomDiff=gf.element.atomDiff.tolist())
+    assert elem == GreensfElement(l=2,
+                                  lp=2,
+                                  atomType=1,
+                                  atomTypep=1,
+                                  sphavg=True,
+                                  onsite=True,
+                                  kresolved=False,
+                                  contour=1,
+                                  nLO=0,
+                                  atomDiff=[0., 0., 0.])
 
 
 def test_greensfunction_radial(test_file):
@@ -67,6 +88,7 @@ def test_greensfunction_radial(test_file):
     assert not gf.sphavg
 
     assert isinstance(gf.energy_dependence(spin=1), np.ndarray)
+    assert not np.isnan(gf.energy_dependence(spin=1)).any()
     assert gf.energy_dependence(spin=1).shape == (128, 5, 5)  #(nz,2*l+1,2*l+1)
     assert gf.energy_dependence(spin=1).dtype == float
 
@@ -137,6 +159,7 @@ def test_greensfunction_sphavg_complete_spin(test_file):
     gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'), index=1)
 
     assert isinstance(gf.energy_dependence(), np.ndarray)
+    assert not np.isnan(gf.energy_dependence()).any()
     assert gf.energy_dependence().shape == (128, 5, 5, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2)
     assert gf.energy_dependence().dtype == float
 
@@ -145,6 +168,10 @@ def test_greensfunction_sphavg_complete_spin(test_file):
 
     assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
     assert gf.energy_dependence(both_contours=True).dtype == complex
+
+    assert isinstance(gf.trace_energy_dependence(), np.ndarray)
+    assert gf.trace_energy_dependence().shape == (128, 2, 2)
+    assert gf.trace_energy_dependence().dtype == float
 
 
 def test_greensfunction_radial_complete_spin(test_file):
@@ -155,6 +182,7 @@ def test_greensfunction_radial_complete_spin(test_file):
     gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_radial.hdf'), l=2)
 
     assert isinstance(gf.energy_dependence(), np.ndarray)
+    assert not np.isnan(gf.energy_dependence()).any()
     assert gf.energy_dependence().shape == (128, 5, 5, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2)
     assert gf.energy_dependence().dtype == float
 
@@ -163,6 +191,41 @@ def test_greensfunction_radial_complete_spin(test_file):
 
     assert gf.energy_dependence(both_contours=True).shape == (128, 5, 5, 2, 2, 2)  #(nz,2*l+1,2*l+1, spin1, spin2,2)
     assert gf.energy_dependence(both_contours=True).dtype == complex
+
+    assert isinstance(gf.trace_energy_dependence(), np.ndarray)
+    assert gf.trace_energy_dependence().shape == (128, 2, 2)
+    assert gf.trace_energy_dependence().dtype == float
+
+
+def test_greensfunction_sphavg_full_spin_matrix(test_file):
+    """
+    Basic test of greensfunction (sphavg) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'), index=1)
+
+    assert isinstance(gf.energy_dependence_full_matrix(), np.ndarray)
+    assert gf.energy_dependence_full_matrix().shape == (128, 10, 10)  #(nz,2*2*l+1,2*2*l+1)
+    assert gf.energy_dependence_full_matrix().dtype == float
+
+    assert gf.energy_dependence_full_matrix(both_contours=True).shape == (128, 10, 10, 2)  #(nz,2*2*l+1,2*2*l+1,2)
+    assert gf.energy_dependence_full_matrix(both_contours=True).dtype == complex
+
+
+def test_greensfunction_radial_full_spin_matrix(test_file):
+    """
+    Basic test of greensfunction (radial) energy_dependence without giving the spin argument
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_radial.hdf'), l=2)
+
+    assert isinstance(gf.energy_dependence_full_matrix(), np.ndarray)
+    assert not np.isnan(gf.energy_dependence_full_matrix()).any()
+    assert gf.energy_dependence_full_matrix().shape == (128, 10, 10)  #(nz,2*2*l+1,2*2*l+1)
+    assert gf.energy_dependence_full_matrix().dtype == float
+
+    assert gf.energy_dependence_full_matrix(both_contours=True).shape == (128, 10, 10, 2)  #(nz,2*2*l+1,2*2*l+1,2)
+    assert gf.energy_dependence_full_matrix(both_contours=True).dtype == complex
 
 
 def test_greensfunction_kresolved(test_file):
@@ -187,6 +250,7 @@ def test_greensfunction_kresolved(test_file):
     assert gf.sphavg
 
     assert isinstance(gf.energy_dependence(spin=1), np.ndarray)
+    assert not np.isnan(gf.energy_dependence(spin=1)).any()
     assert gf.energy_dependence(spin=1).shape == (200, 5, 5, 20)  #(nz,2*l+1,2*l+1)
     assert gf.energy_dependence(spin=1).dtype == float
 
@@ -225,3 +289,64 @@ def test_plot_kresolved_greensfunction_mpl_bokeh(check_bokeh_plot, test_file):
     fig = plot_kresolved_greensfunction(gf, show=False, backend='bokeh')
 
     check_bokeh_plot(fig)
+
+
+def test_greensfunction_moment(test_file):
+    """
+    Basic test of greensfunction
+    """
+
+    gf = GreensFunction.fromFile(test_file('fleur/greensf/greensf_sphavg.hdf'), index=1)
+
+    elem = gf.element._replace(atomDiff=gf.element.atomDiff.tolist())
+    assert elem == GreensfElement(l=2,
+                                  lp=2,
+                                  atomType=1,
+                                  atomTypep=1,
+                                  sphavg=True,
+                                  onsite=True,
+                                  kresolved=False,
+                                  contour=1,
+                                  nLO=0,
+                                  atomDiff=[0., 0., 0.])
+
+    assert not gf.mperp
+    assert gf.sphavg
+
+    zeroth_moment = gf.moment(0)
+    zeroth_moment_up = gf.moment(0, spin=1)
+
+    first_moment = gf.moment(1)
+    occupation = gf.occupation()
+
+    assert isinstance(zeroth_moment, np.ndarray)
+    assert not np.isnan(zeroth_moment).any()
+    assert zeroth_moment.shape == (5, 5, 2, 2)  #(2*l+1,2*l+1,2,2)
+    assert zeroth_moment.dtype == complex
+
+    expected = np.array([[[[0.40715, 0.], [0., 0.178766]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[0.010302, 0.], [0., -0.037962]]],
+                         [[[0., 0.], [0., 0.]], [[0.396848, 0.], [0., 0.216728]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]]],
+                         [[[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]], [[0.417452, 0.], [0., 0.140803]],
+                          [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]]],
+                         [[[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[0.396848, 0.], [0., 0.216728]], [[0., 0.], [0., 0.]]],
+                         [[[0.010302, 0.], [0., -0.037962]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[0.40715, 0.], [0., 0.178766]]]])
+    assert np.allclose(zeroth_moment, expected, atol=1e-6)
+
+    assert np.allclose(zeroth_moment[..., 0, 0], zeroth_moment_up)
+    assert np.allclose(zeroth_moment, occupation)
+
+    expected = np.array([[[[3.323959, 0.], [0., 1.506008]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[0.148914, 0.], [0., -0.381151]]],
+                         [[[0., 0.], [0., 0.]], [[3.175045, 0.], [0., 1.88716]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]]],
+                         [[[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]], [[3.472873, 0.], [0., 1.124857]],
+                          [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]]],
+                         [[[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[3.175045, 0.], [0., 1.88716]], [[0., 0.], [0., 0.]]],
+                         [[[0.148914, 0.], [0., -0.381151]], [[0., 0.], [0., 0.]], [[0., 0.], [0., 0.]],
+                          [[0., 0.], [0., 0.]], [[3.323959, 0.], [0., 1.506008]]]])
+    assert np.allclose(first_moment, expected, atol=1e-6)

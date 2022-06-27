@@ -11,12 +11,12 @@
 ###############################################################################
 """
 This module contains the dictionary with all defined tasks for the outxml_parser.
-The entries in the TASK_DEFINITION dict specify how to parse specific attributes tags.
+The entries in the ``TASK_DEFINITION`` dict specify how to parse specific attributes tags.
 
 This needs to be maintained if the specifications do not work for a new schema version
 because of changed attribute names for example.
 
-Each entry in the TASK_DEFINITION dict can contain a series of keys, which by default
+Each entry in the ``TASK_DEFINITION`` dict can contain a series of keys, which by default
 correspond to the keys in the output dictionary
 
 The following keys are expected in each entry:
@@ -24,12 +24,12 @@ The following keys are expected in each entry:
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
 
-If `parse_type` is not equal to `xmlGetter` the following key is required:
+If `parse_type` is not equal to ``xmlGetter`` the following key is required:
     :param path_spec: dict with all the arguments that should be passed to tag_xpath
                       or attrib_xpath to get the correct path
     :param kwargs: additional arguments to pass to the parsing function
 
-In the case of `xmlGetter` the following keys are allowed:
+In the case of ``xmlGetter`` the following keys are allowed:
     :param name: name of the function in `masci_tools.util.xml.xml_getters` (required)
     :param result_names: list of str defining the keys under which to enter the outputs of the function
 
@@ -56,12 +56,12 @@ These are denoted with underscores in their names and are all optional:
 
 
 The following keys are special at the moment:
-    - ```fleur_modes``` specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
+    - ``fleur_modes`` specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
       this is used to determine, whether additional things should be parsed
 
 Following is the current specification of tasks
 
-.. literalinclude:: ../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
+.. literalinclude:: ../../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
    :lines: 66-
    :linenos:
@@ -274,9 +274,9 @@ TASKS_DEFINITION = {
                 'name': 'occupationDistance'
             },
             'kwargs': {
-                'iteration_path': True
+                'iteration_path': True,
+                'list_return': True
             },
-            'force_list': True,
             'subdict': 'ldahia_info',
         },
         'element_distance': {
@@ -285,9 +285,9 @@ TASKS_DEFINITION = {
                 'name': 'elementDistance'
             },
             'kwargs': {
-                'iteration_path': True
+                'iteration_path': True,
+                'list_return': True
             },
-            'force_list': True,
             'subdict': 'ldahia_info',
         }
     },

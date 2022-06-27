@@ -48,6 +48,12 @@
          <kPointList name="second-set" count="1" type="mesh" nx="1" ny="1" nz="1">
             <kPoint weight="    1.000000" label='test'>    0.000000     0.000000     0.000000</kPoint>
          </kPointList>
+         <kPointList name="third-set" count="1" type="mesh" nx="2" ny="2" nz="1">
+            <kPoint weight="    1.000000">    0.000000     0.000000     0.000000</kPoint>
+            <kPoint weight="    2.000000">    1.000000     0.000000     0.000000</kPoint>
+            <kPoint weight="    3.000000">    0.000000     1.000000     0.000000</kPoint>
+            <kPoint weight="    4.000000">    0.000000     0.000000     1.000000</kPoint>
+         </kPointList>
          </kPointLists>
       </bzIntegration>
       <!-- symmetry operations included here -->

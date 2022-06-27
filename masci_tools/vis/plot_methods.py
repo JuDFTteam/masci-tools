@@ -33,6 +33,8 @@ from .matplotlib_plotter import MatplotlibPlotter
 from .parameters import ensure_plotter_consistency, NestedPlotParameters
 from .data import process_data_arguments
 
+from .helpers import exclude_points, mpl_single_line_or_area, get_special_kpoint_ticks
+
 import warnings
 import copy
 import typing
@@ -41,7 +43,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from pprint import pprint
-import pandas as pd
 
 plot_params = MatplotlibPlotter()
 
@@ -188,41 +189,19 @@ def single_scatterplot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    #ax.xaxis.set_major_formatter(DateFormatter("%b %y"))
-    #if yerr or xerr:
-    #    p1 = ax.errorbar(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g, yerr=yerr, xerr=xerr)
-    #else:
-    #    p1 = ax.plot(xdata, ydata, linetyp, label=plotlabel, color=color,
-    #                 linewidth=linewidth_g, markersize=markersize_g)
-    # TODO customizable error bars fmt='o', ecolor='g', capthick=2, ...
-    # there the if is prob better...
     plot_kwargs = plot_params.plot_kwargs()
     entry, source = plot_data.items(first=True)
 
-    if plot_params['area_plot']:
-        linecolor = plot_kwargs.pop('area_linecolor', None)
-        if plot_params['area_vertical']:
-            result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **plot_kwargs, **kwargs)
-        else:
-            result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **plot_kwargs, **kwargs)
-        plot_kwargs.pop('alpha', None)
-        plot_kwargs.pop('label', None)
-        plot_kwargs.pop('color', None)
-        if plot_params['area_enclosing_line']:
-            if linecolor is None:
-                linecolor = result.get_facecolor()[0]
-            ax.errorbar(entry.x,
-                        entry.y,
-                        yerr=entry.yerr,
-                        xerr=entry.xerr,
-                        alpha=plot_params['plot_alpha'],
-                        color=linecolor,
-                        data=source,
-                        **plot_kwargs,
-                        **kwargs)
-    else:
-        ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **plot_kwargs, **kwargs)
+    ax = mpl_single_line_or_area(ax,
+                                 entry,
+                                 source,
+                                 area=plot_params['area_plot'],
+                                 area_vertical=plot_params['area_vertical'],
+                                 area_enclosing_line=plot_params['area_enclosing_line'],
+                                 area_line_alpha=plot_params['plot_alpha'],
+                                 advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                 **plot_kwargs,
+                                 **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -328,69 +307,27 @@ def multiple_scatterplots(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+    if exclude_points_outside_plot_area:
         #Mask the values to exclude the ones outside the plotting area
-        mask = None
-        if 'y' in plot_params['limits']:
-            ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
-            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
-            mask = plot_data.get_mask(y_mask, data_key='y')
-        if 'x' in plot_params['limits']:
-            xlimits = plot_params['limits']['x']
-            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
-            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
-            x_mask = plot_data.get_mask(x_mask, data_key='x')
-            if mask is None:
-                mask = x_mask
-            else:
-                mask = [x & y for x, y, in zip(x_mask, mask)]
-
-        if mask is not None:
-            plot_data.mask_data(mask)
+        exclude_points(plot_data, 'x', 'y', limits=plot_params['limits'])
 
     # TODO good checks for input and setting of internals before plotting
     # allow all arguments as value then use for all or as lists with the righ length.
 
     plot_kwargs = plot_params.plot_kwargs()
-    colors = []
 
     for indx, ((entry, source), params) in enumerate(zip(plot_data.items(), plot_kwargs)):
 
-        if plot_params[('area_plot', indx)]:
-            #Workaround for https://github.com/JuDFTteam/masci-tools/issues/129
-            #fill_between does not advance the color cycle messing up the following colors
-            if params.get('color') is None:
-                #This is not ideal but it is the only way I found
-                #of accessing the state of the color cycle
-                params['color'] = ax._get_lines.get_next_color()  #pylint: disable=protected-access
-            linecolor = params.pop('area_linecolor', None)
-            if plot_params[('area_vertical', indx)]:
-                result = ax.fill_betweenx(entry.y, entry.x, x2=entry.shift, data=source, **params, **kwargs)
-            else:
-                result = ax.fill_between(entry.x, entry.y, y2=entry.shift, data=source, **params, **kwargs)
-            colors.append(result.get_facecolor()[0])
-            params.pop('alpha', None)
-            params.pop('label', None)
-            params.pop('color', None)
-            if plot_params[('area_enclosing_line', indx)]:
-                if linecolor is None:
-                    linecolor = result.get_facecolor()[0]
-                ax.errorbar(entry.x,
-                            entry.y,
-                            yerr=entry.yerr,
-                            xerr=entry.xerr,
-                            alpha=plot_params[('plot_alpha', indx)],
-                            color=linecolor,
-                            data=source,
-                            label=None,
-                            **params,
-                            **kwargs)
-        else:
-            if params.get('color') is not None and plot_params['color_cycle_always_advance']:
-                ax._get_lines.get_next_color()  #pylint: disable=protected-access
-            result = ax.errorbar(entry.x, entry.y, yerr=entry.yerr, xerr=entry.xerr, data=source, **params, **kwargs)
-            colors.append(result.lines[0].get_color())
+        ax = mpl_single_line_or_area(ax,
+                                     entry,
+                                     source,
+                                     area=plot_params[('area_plot', indx)],
+                                     area_vertical=plot_params[('area_vertical', indx)],
+                                     area_enclosing_line=plot_params[('area_enclosing_line', indx)],
+                                     area_line_alpha=plot_params[('plot_alpha', indx)],
+                                     advance_color_cycle=plot_params['color_cycle_always_advance'],
+                                     **params,
+                                     **kwargs)
 
     plot_params.set_scale(ax)
     plot_params.set_limits(ax)
@@ -496,28 +433,11 @@ def multi_scatter_plot(xdata,
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
-    if exclude_points_outside_plot_area and plot_params['limits'] is not None:
+    if exclude_points_outside_plot_area:
         #Mask the values to exclude the ones outside the plotting area
-        mask = None
-        if 'y' in plot_params['limits']:
-            ylimits = plot_params['limits']['y']
-            ylimits = ylimits[0] - 0.1 * (1 + abs(ylimits[0])), ylimits[1] + 0.1 * (1 + abs(ylimits[1]))
-            y_mask = lambda y, ylimits=tuple(ylimits): np.logical_and(y > ylimits[0], y < ylimits[1])
-            mask = plot_data.get_mask(y_mask, data_key='y')
-        if 'x' in plot_params['limits']:
-            xlimits = plot_params['limits']['x']
-            xlimits = xlimits[0] - 0.1 * (1 + abs(xlimits[0])), xlimits[1] + 0.1 * (1 + abs(xlimits[1]))
-            x_mask = lambda x, xlimits=tuple(xlimits): np.logical_and(x > xlimits[0], x < xlimits[1])
-            x_mask = plot_data.get_mask(x_mask, data_key='x')
-            if mask is None:
-                mask = x_mask
-            else:
-                mask = [x & y for x, y, in zip(x_mask, mask)]
+        exclude_points(plot_data, 'x', 'y', limits=plot_params['limits'])
 
-        if mask is not None:
-            plot_data.mask_data(mask)
-
-    plot_kwargs = plot_params.plot_kwargs(ignore='markersize', extra_keys={'cmap'})
+    plot_kwargs = plot_params.plot_kwargs('colormap_scatter', ignore='markersize')
 
     legend_elements = []
     legend_labels = []
@@ -662,16 +582,13 @@ def waterfall_plot(xdata,
                                        copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
-    clim = None
-    if 'limits' in kwargs:
-        clim = kwargs['limits'].get('color', None)
-    else:
-        kwargs['limits'] = {}
-    if clim is None:
-        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
-    kwargs['limits']['color'] = clim
+    clim = plot_data.min('z'), plot_data.max('z')
 
-    plot_params.set_defaults(default_type='function', markersize=30, linewidth=0, area_plot=False)
+    plot_params.set_defaults(default_type='function',
+                             markersize=30,
+                             linewidth=0,
+                             area_plot=False,
+                             limits={'color': clim})
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
@@ -730,20 +647,12 @@ def surface_plot(xdata,
                                        copy_data=copy_data,
                                        forbid_split_up={'x', 'y', 'z'})
 
-    clim = None
-    if 'limits' in kwargs:
-        clim = kwargs['limits'].get('color', None)
-    else:
-        kwargs['limits'] = {}
-    if clim is None:
-        clim = (kwargs.get('vmin', plot_data.min('z')), kwargs.get('vmax', plot_data.max('z')))
-    kwargs['limits']['color'] = clim
-
-    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False)
+    clim = plot_data.min('z'), plot_data.max('z')
+    plot_params.set_defaults(default_type='function', linewidth=0, area_plot=False, limits={'color': clim})
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, axis=axis, projection='3d')
 
-    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap'})
+    plot_kwargs = plot_params.plot_kwargs(ignore=['markersize', 'marker'], extra_keys={'cmap', 'norm'})
     data = plot_data.values(first=True)
 
     ax.plot_surface(data.x, data.y, data.z, **plot_kwargs, **kwargs)
@@ -1994,31 +1903,19 @@ def plot_bands(kpath,
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
 
-    if special_kpoints is None:
-        special_kpoints = []
-
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
 
     entries = plot_data.keys(first=True)
     if entries.size is not None:
         ylimits = (-15, 15)
         if 'limits' in kwargs:
-            if 'y' in kwargs['limits']:
-                ylimits = kwargs['limits']['y']
+            ylimits = kwargs['limits'].get('y', (-15, 15))
 
         mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
         weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
-        if 'vmax' not in kwargs:
-            kwargs['vmax'] = weight_max
 
         if scale_color:
-            plot_params.set_defaults(default_type='function', cmap='Blues')
+            plot_params.set_defaults(default_type='function', cmap='Blues', limits={'color': (0, weight_max)})
             if 'cmap' not in kwargs:
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
@@ -2038,7 +1935,11 @@ def plot_bands(kpath,
                              line_options={'zorder': -1},
                              plot_label='Eigenvalues',
                              legend_remove_duplicates=True,
-                             colorbar=False)
+                             colorbar=False,
+                             colorbar_options={
+                                 'pad': 0.05,
+                                 'label': 'Weight'
+                             })
 
     if line_plot:
         plot_params.set_defaults(default_type='function', marker=None)
@@ -2158,33 +2059,20 @@ def plot_spinpol_bands(kpath,
             raise ValueError('color_data should not be provided when scale_color is True')
         plot_data.copy_data('size', 'color', rename_original=True)
 
-    if special_kpoints is None:
-        special_kpoints = {}
-
+    weight_max = None
     if any(entry.size is not None for entry in plot_data.keys()):
 
         ylimits = (-15, 15)
         if 'limits' in kwargs:
-            if 'y' in kwargs['limits']:
-                ylimits = kwargs['limits']['y']
+            ylimits = kwargs['limits'].get('y', (-15, 15))
 
         mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
         weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
 
-        if 'vmax' not in kwargs:
-            kwargs['vmax'] = weight_max
-
         transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
         plot_data.apply('size', transform)
 
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
-
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
     cmaps = None
@@ -2198,6 +2086,8 @@ def plot_spinpol_bands(kpath,
             cmaps = 'Blues'
 
     limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}
+    if weight_max is not None:
+        limits['color'] = (0, weight_max)
     plot_params.set_defaults(default_type='function',
                              lines=lines,
                              limits=limits,
@@ -2211,7 +2101,11 @@ def plot_spinpol_bands(kpath,
                              line_options={'zorder': -1},
                              plot_label=['Spin Up', 'Spin Down'],
                              zorder=[2, 1],
-                             colorbar=False)
+                             colorbar=False,
+                             colorbar_options={
+                                 'pad': 0.05,
+                                 'label': 'Weight'
+                             })
 
     if line_plot:
         plot_params.set_defaults(default_type='function', marker=None)
@@ -2296,17 +2190,7 @@ def plot_spectral_function(kpath,
                                        },
                                        copy_data=copy_data)
 
-    if special_kpoints is None:
-        special_kpoints = []
-
-    xticks = []
-    xticklabels = []
-    for label, pos in special_kpoints:
-        if label in ('Gamma', 'g'):
-            label = r'$\Gamma$'
-        xticklabels.append(label)
-        xticks.append(pos)
-
+    xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
     limits = {'x': (plot_data.min('kpath'), plot_data.max('kpath')), 'y': (-15, 15)}

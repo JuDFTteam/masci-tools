@@ -4498,37 +4498,37 @@ roots:
       dimension: height
       line_dash:
       - 6
-      location: 0.325724555583458
+      location: 0.32572
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 1.302898222333832
+      location: 1.3029
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 2.1007571802081184
+      location: 2.10076
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 2.7522062913750363
+      location: 2.75221
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 3.2128503754791113
+      location: 3.21285
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 4.134138543687261
+      location: 4.13414
     type: Span
   - type: TapTool
   - type: Title
@@ -4564,4 +4564,3 @@ roots:
   - type: ZoomInTool
   - type: ZoomOutTool
 title: Bokeh Application
-version: 2.4.2

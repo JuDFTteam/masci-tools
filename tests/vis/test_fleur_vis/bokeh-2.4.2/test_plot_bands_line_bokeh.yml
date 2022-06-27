@@ -2641,7 +2641,7 @@ roots:
       dimension: height
       line_dash:
       - 6
-      location: 0.63895407737518
+      location: 0.63895
     type: Span
   - type: TapTool
   - type: Title
@@ -2669,4 +2669,3 @@ roots:
   - type: ZoomInTool
   - type: ZoomOutTool
 title: Bokeh Application
-version: 2.4.2

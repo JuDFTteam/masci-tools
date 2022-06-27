@@ -14,14 +14,15 @@ This module contains a generic HDF5 reader
 """
 from __future__ import annotations
 
-import io
+import tempfile
+import shutil
 import os
 from types import TracebackType
 import h5py
 import warnings
 import logging
 from pathlib import Path
-from typing import Callable, NamedTuple, Any, cast
+from typing import IO, Callable, NamedTuple, Any, cast
 from masci_tools.util.typing import FileLike
 try:
     from typing import TypedDict
@@ -70,6 +71,8 @@ class HDF5Reader:
     :param file: filepath to hdf file or opened file handle (mode 'rb')
     :param move_to_memory: bool if True after reading and transforming the data
                            all leftover h5py.Datasets are moved into np.arrays
+    :param filename: Name of the file. Only used for logging. If not given and the file
+                     provides the information extract it from there
 
     The recipe is passed to the :py:meth:`HDF5Reader.read()` method and consists
     of a dict specifying which attributes and datasets to read in and how to transform them
@@ -97,19 +100,17 @@ class HDF5Reader:
     _transforms: dict[str, Callable[[Any], Any]] = {}
     _attribute_transforms: set[str] = set()
 
-    def __init__(self, file: FileLike, move_to_memory: bool = True) -> None:
+    def __init__(self, file: FileLike, move_to_memory: bool = True, filename: str = 'UNKNOWN') -> None:
 
         self._original_file = file
         self.file: h5py.File = None
+        self._tempfile: IO[Any] | None = None
 
-        if isinstance(self._original_file, (io.IOBase, Path)):
-            self.filename = self._original_file.name
-        elif isinstance(self._original_file, bytes):
-            self.filename = os.fsdecode(self._original_file)
+        self.filename = filename
+        if self.filename == 'UNKNOWN':
+            self.filename, extension = self._get_filename_and_extension(self._original_file)
         else:
-            self.filename = cast(str, self._original_file)
-
-        extension = Path(self.filename).suffix
+            extension = Path(self.filename).suffix
 
         if extension and extension not in ('.hdf', '.hdf5', '.h5'):
             logger.exception('Wrong File Type for %s: Got %s', self.__class__.__name__, self.filename)
@@ -120,14 +121,47 @@ class HDF5Reader:
         self._move_to_memory = move_to_memory
 
     def __enter__(self) -> HDF5Reader:
-        self.file = h5py.File(self._original_file, 'r')
+        try:
+            self.file = h5py.File(self._original_file, 'r')
+        except NotImplementedError:
+            #This except clause catches a special case resulting from
+            #the AiiDA v2 file repository. The h5py.File constructor
+            #wants to determine the end of the file stream and tries
+            #`os.seek` with the argument `whence=2` (i.e. read starting from the end of the stream)
+            #The AiiDA v2 file repository cannot support this case if the
+            #files are compressed/packed (compressed streams want to be read only forwards)
+            #To circumvent this we copy the file into a temporary file and
+            #construct the File this way. Notice that we do not lose performance
+            #if the files are not yet packed, e.g. while workflows are running :)
+            #The solution below is taken out of a mailing list suggestion for this
+            #exact problem
+            self._tempfile = tempfile.TemporaryFile()
+            # Copy the content of source to target in chunks
+            shutil.copyfileobj(self._original_file, self._tempfile)  #type: ignore[arg-type]
+            self._tempfile.seek(0)  # Make sure to reset the pointer to the beginning of the stream
+            self.file = h5py.File(self._tempfile, 'r')
+
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None,
                  exc_traceback: TracebackType | None) -> None:
         self.file.close()
+        if self._tempfile is not None:
+            self._tempfile.close()
         logger.debug('Closed h5py.File with id %s', self.file.id)
+
+    @staticmethod
+    def _get_filename_and_extension(file: FileLike) -> tuple[str, str]:
+        """Extract the filename and extension of the given file if possible
+        """
+        filename: str = getattr(file, 'name', 'UNKNOWN')
+        if isinstance(file, bytes):
+            filename = os.fsdecode(file)
+        elif isinstance(file, str):
+            filename = file
+
+        return filename, Path(filename).suffix
 
     def _read_dataset(self, h5path: str, strict: bool = True) -> h5py.Dataset | None:
         """Return in the dataset specified by the given h5path

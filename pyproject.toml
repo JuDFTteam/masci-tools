@@ -46,20 +46,21 @@ pre-commit = [
     'mypy==0.940',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
-    'pylint~=2.11.1',
+    'pylint~=2.14',
     'pytest~=6.0',
     'lxml-stubs~=0.4.0',
     'types-pytz',
     'types-tabulate',
-    'types-click'
+    'types-click',
+    'types-pygments'
     ]
 docs = [
-    'sphinx~=4.1',
+    'sphinx~=5.0',
     'sphinx_rtd_theme',
     'sphinx-click',
-    'sphinx-toolbox<=2.15.2',
     'sphinx-autodoc-typehints',
-    "myst-parser~=0.15.2",
+    'myst-nb',
+    'sphinx-copybutton'
     ]
 testing = [
     'pytest~=6.0',
@@ -110,7 +111,9 @@ disallow_subclassing_any = true
 module = [
     'h5py',
     'humanfriendly',
-    'yaml'
+    'yaml',
+    'lxml.builder',
+    'IPython.*'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
@@ -156,7 +159,6 @@ disable = [
     "line-too-long",
     "locally-disabled",
     "wildcard-import",
-    "locally-enabled",
     "too-many-instance-attributes",
     "fixme",
     "len-as-condition",
@@ -170,7 +172,6 @@ disable = [
     "missing-function-docstring",
     "too-many-locals",
     "too-many-branches",
-    "no-self-use",
     "c-extension-no-member",
     "too-many-statements",
     "too-many-nested-blocks",
@@ -199,7 +200,7 @@ split_arguments_when_comma_terminated = true
 indent_dictionary_value = false
 
 [bumpver]
-current_version = "0.10.1"
+current_version = "0.11.0"
 version_pattern = "MAJOR.MINOR.PATCH[TAGNUM]"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

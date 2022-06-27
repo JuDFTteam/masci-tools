@@ -24,9 +24,9 @@ Here we collect physical constants which are used throughout the code. That way 
     - For KKR constants versions used in masci-tools v0.4.0-dev7 - v0.4.6, more specifically starting from commit c171563, Feb 16, 2021, to prior to commit 66953f8, Apr 28, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``'interim'``.
     - For KKR constants versions used prior to masci-tools v0.4.0-dev7, more specifically prior to commit c171563, Feb 16, 2021, set ``MASCI_TOOLS_USE_OLD_CONSTANTS`` to ``'old'`` or ``'True'``.
 
-.. literalinclude:: ../../../masci_tools/util/constants.py
+.. literalinclude:: ../../../../masci_tools/util/constants.py
    :language: python
-   :lines: 28-
+   :lines: 36-
    :linenos:
 
 """

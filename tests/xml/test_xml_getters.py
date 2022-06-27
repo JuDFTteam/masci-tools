@@ -3,6 +3,7 @@ Tests of the xml_getters
 """
 import pytest
 import os
+from pathlib import Path
 
 file_path2 = '../files/fleur/Max-R5'
 
@@ -14,9 +15,20 @@ inpxmlfilefolder_valid = [
 ]
 
 broken_inputs = [
-    'CoHybridPBE0', 'CoUnfold', 'gw1Interface', 'GaAsWannSOC', 'TiO2eelsXML', 'gw2Interface', 'Fe_film_SS_conv',
-    'SiHybrid8kpt_nosym', 'SiHybrid8kpt_sym', 'SiHybridGammaNoInv', 'Fe_bulk_SS_conv', 'Fe_film_SSFT',
-    'Max-R5/NiO_ldauXML', 'Max-R5/Bi2Te3XML'
+    'CoHybridPBE0',
+    'CoUnfold',
+    'gw1Interface',
+    'GaAsWannSOC',
+    'TiO2eelsXML',
+    'gw2Interface',
+    'Fe_film_SS_conv',
+    'SiHybrid8kpt_nosym',
+    'SiHybrid8kpt_sym',
+    'SiHybridGammaNoInv',
+    'Fe_bulk_SS_conv',
+    'Fe_film_SSFT',
+    os.fspath(Path('Max-R5') / 'NiO_ldauXML'),
+    os.fspath(Path('Max-R5') / 'Bi2Te3XML'),
 ]
 
 TEST_FILM_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
@@ -490,6 +502,19 @@ def test_parameter_special_los_not_allowed(load_inpxml, data_regression):
     data_regression.check(para)
 
 
+def test_parameter_kpoint_with_gamma(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
+    node = xmltree.xpath('//kPointListSelection')[0]
+    node.set('listName', 'third-set')
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)
+
+
 def test_parameter_output(load_outxml, data_regression):
 
     from masci_tools.util.xml.xml_getters import get_parameter_data
@@ -796,7 +821,8 @@ def test_get_special_kpoints_multiple(load_inpxml):
 
     assert special_points == {
         'default': [(1, 'these'), (6, 'are'), (11, 'very'), (15, 'special')],
-        'second-set': [(0, 'test')]
+        'second-set': [(0, 'test')],
+        'third-set': []
     }
 
 

@@ -21,7 +21,16 @@ import logging
 __copyright__ = ('Copyright (c), Forschungszentrum Jülich GmbH, IAS-1/PGI-1, Germany. '
                  'All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file.'
-__version__ = '0.10.1'
+__version__ = '0.11.0'
 __authors__ = 'The JuDFT team. Also see AUTHORS.txt file.'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+
+def load_ipython_extension(ipython):
+    """
+    Load ipython extensions in this package
+    """
+    from masci_tools.util.ipython import register_formatters
+
+    register_formatters(ipython)

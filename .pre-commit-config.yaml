@@ -5,7 +5,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.2.0
     hooks:
     - id: double-quote-string-fixer
       types: [python]
@@ -42,7 +42,7 @@ repos:
       ]
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.1
+    rev: v2.32.0
     hooks:
     -   id: pyupgrade
         args: [
@@ -51,6 +51,13 @@ repos:
 
 - repo: local
   hooks:
+
+  #Since this runs after the formatter the docstrings should already satisfy all other hooks
+  - id: make-fleurxmlmodifier-doc
+    name: Generate Docstrings for Setter methods of FleurXMLModifier
+    entry: python ./utils/write_fleurxmlmodifier_docstrings.py
+    language: system
+    pass_filenames: false
 
   - id: pylint-errors
     name: pylint-errors
@@ -103,4 +110,5 @@ repos:
             masci_tools/tools/greensfunction.py|
             masci_tools/cmdline/parameters/slice.py|
             masci_tools/vis/parameters.py|
+            masci_tools/util/ipython.py|
         )$

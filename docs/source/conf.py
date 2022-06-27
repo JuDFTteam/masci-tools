@@ -27,7 +27,7 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser',
+extensions = ['myst_nb',
               'sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.todo',
@@ -36,17 +36,20 @@ extensions = ['myst_parser',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
-              'sphinx_toolbox.more_autodoc.typehints',
-              'sphinx_toolbox.more_autodoc.overloads',
               'sphinx_autodoc_typehints',
+              'sphinx_copybutton',
               'sphinx_click']
 
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'python': ('https://docs.python.org/3', None),
                        'lxml': ('https://lxml.de/apidoc/',None),
-                       'h5py': ('https://docs.h5py.org/en/latest/', None)}
+                       'h5py': ('https://docs.h5py.org/en/latest/', None),
+                       'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
 
-myst_enable_extensions = []
+myst_enable_extensions = ['colon_fence',
+                          'fieldlist',
+                          'dollarmath',
+                          'deflist']
 
 todo_include_todos = True
 
@@ -255,7 +258,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
         # No sphinx_rtd_theme installed
         pass
 
-autodoc_mock_imports = ['bokeh']
+autodoc_mock_imports = ['bokeh', '_typeshed']
 
 
 # -- Options for manual page output ---------------------------------------
@@ -397,15 +400,10 @@ nitpick_ignore = [
     ('py:obj', 'plum'),
     ('py:class', 'etree._XPathObject'),
     ('py:class', 'h5py._hl.group.Group'),
-    ('py:class', 'etree._Element'),
-    ('py:class', 'etree.XPath'),
     ('py:class', 'TypeAlias'),
-    ('py:class', 'Logger'),
-    ('py:class', 'FilterType'),
-    ('py:class', 'XMLLike'),
-    ('py:class', 'etree.XPathElementEvaluator'),
     ('py:class', 'contextlib._GeneratorContextManager'),
-    ('py:data', 'masci_tools.io.parsers.fleur.fleur_outxml_parser.F')
+    ('py:data', 'masci_tools.io.parsers.fleur.fleur_outxml_parser.F'),
+    ('py:class', 'np.ndarray')
 ]
 
 
