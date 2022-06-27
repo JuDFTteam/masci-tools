@@ -3313,20 +3313,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        field: color_up
-      hatch_color:
-        field: color_up
-      line_color:
-        field: color_up
-      size:
-        field: max_weight_up
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -3357,6 +3343,20 @@ roots:
         field: color_up
       line_alpha:
         value: 0.2
+      line_color:
+        field: color_up
+      size:
+        field: max_weight_up
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
+      fill_color:
+        field: color_up
+      hatch_color:
+        field: color_up
       line_color:
         field: color_up
       size:
@@ -3367,11 +3367,6 @@ roots:
         field: eigenvalues_up
     type: Scatter
   - type: Selection
-  - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
   - attributes:
       dimension: height
       line_dash:
@@ -3413,6 +3408,11 @@ roots:
       line_dash:
       - 6
       location: 4.13414
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

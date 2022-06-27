@@ -52,18 +52,6 @@ roots:
         value: 10.88455
       dw:
         value: 1.16013
-      image:
-        field: image
-      x:
-        value: 0
-      y:
-        value: -5.42305
-    type: Image
-  - attributes:
-      dh:
-        value: 10.88455
-      dw:
-        value: 1.16013
       global_alpha:
         value: 0.1
       image:
@@ -80,6 +68,18 @@ roots:
         value: 1.16013
       global_alpha:
         value: 0.2
+      image:
+        field: image
+      x:
+        value: 0
+      y:
+        value: -5.42305
+    type: Image
+  - attributes:
+      dh:
+        value: 10.88455
+      dw:
+        value: 1.16013
       image:
         field: image
       x:
@@ -919,12 +919,6 @@ roots:
   - type: SaveTool
   - type: Selection
   - attributes:
-      line_color: white
-      line_dash:
-      - 6
-      location: 0
-    type: Span
-  - attributes:
       dimension: height
       line_color: white
       line_dash:
@@ -937,6 +931,12 @@ roots:
       line_dash:
       - 6
       location: 1.16013
+    type: Span
+  - attributes:
+      line_color: white
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

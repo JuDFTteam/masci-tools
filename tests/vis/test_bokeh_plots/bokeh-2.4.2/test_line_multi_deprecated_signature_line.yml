@@ -72,14 +72,6 @@ roots:
         value: y
     type: LegendItem
   - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: x
-      y:
-        field: y
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
@@ -90,6 +82,14 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x
+      y:
+        field: y
+    type: Line
+  - attributes:
       line_color: '#1f77b4'
       line_width: 2.0
       x:

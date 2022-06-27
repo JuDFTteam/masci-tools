@@ -251,14 +251,6 @@ roots:
         value: distance
     type: LegendItem
   - attributes:
-      line_color: darkred
-      line_width: 2.0
-      x:
-        field: iteration
-      y:
-        field: distance
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: darkred
       line_width: 2.0
@@ -277,14 +269,6 @@ roots:
         field: distance
     type: Line
   - attributes:
-      line_color: darkred
-      line_width: 2.0
-      x:
-        field: iteration_energy_0
-      y:
-        field: energy_diff_0
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: darkred
       line_width: 2.0
@@ -295,6 +279,22 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: darkred
+      line_width: 2.0
+      x:
+        field: iteration_energy_0
+      y:
+        field: energy_diff_0
+    type: Line
+  - attributes:
+      line_color: darkred
+      line_width: 2.0
+      x:
+        field: iteration
+      y:
+        field: distance
+    type: Line
+  - attributes:
       line_color: darkred
       line_width: 2.0
       x:
@@ -432,6 +432,50 @@ roots:
         field: distance
     type: Scatter
   - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: darkred
+      hatch_alpha:
+        value: 0.1
+      hatch_color:
+        value: darkred
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        value: 12
+      x:
+        field: iteration_energy_0
+      y:
+        field: energy_diff_0
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: darkred
+      hatch_alpha:
+        value: 0.2
+      hatch_color:
+        value: darkred
+      line_alpha:
+        value: 0.2
+      line_color:
+        value: darkred
+      marker:
+        value: square
+      size:
+        value: 12
+      x:
+        field: iteration_energy_0
+      y:
+        field: energy_diff_0
+    type: Scatter
+  - attributes:
       fill_color:
         value: darkred
       hatch_alpha:
@@ -450,50 +494,6 @@ roots:
         field: iteration
       y:
         field: distance
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        value: darkred
-      hatch_alpha:
-        value: 0.1
-      hatch_color:
-        value: darkred
-      line_alpha:
-        value: 0.1
-      line_color:
-        value: darkred
-      marker:
-        value: square
-      size:
-        value: 12
-      x:
-        field: iteration_energy_0
-      y:
-        field: energy_diff_0
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.2
-      fill_color:
-        value: darkred
-      hatch_alpha:
-        value: 0.2
-      hatch_color:
-        value: darkred
-      line_alpha:
-        value: 0.2
-      line_color:
-        value: darkred
-      marker:
-        value: square
-      size:
-        value: 12
-      x:
-        field: iteration_energy_0
-      y:
-        field: energy_diff_0
     type: Scatter
   - attributes:
       fill_color:

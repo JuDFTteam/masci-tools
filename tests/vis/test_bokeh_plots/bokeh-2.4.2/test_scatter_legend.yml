@@ -104,18 +104,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        value: 6
-      x:
-        field: x
-      y:
-        field: y
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -142,6 +130,18 @@ roots:
         value: 0.2
       line_alpha:
         value: 0.2
+      line_color:
+        value: '#1f77b4'
+      size:
+        value: 6
+      x:
+        field: x
+      y:
+        field: y
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
       line_color:
         value: '#1f77b4'
       size:

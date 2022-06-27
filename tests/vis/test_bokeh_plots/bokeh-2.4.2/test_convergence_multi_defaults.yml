@@ -2715,14 +2715,6 @@ roots:
         value: distance 9
     type: LegendItem
   - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: iteration_0
-      y:
-        field: distance_0
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
@@ -2739,14 +2731,6 @@ roots:
         field: iteration_0
       y:
         field: distance_0
-    type: Line
-  - attributes:
-      line_color: '#aec7e8'
-      line_width: 2.0
-      x:
-        field: iteration_1
-      y:
-        field: distance_1
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -2767,14 +2751,6 @@ roots:
         field: distance_1
     type: Line
   - attributes:
-      line_color: '#8c564b'
-      line_width: 2.0
-      x:
-        field: iteration_10
-      y:
-        field: distance_10
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#8c564b'
       line_width: 2.0
@@ -2791,14 +2767,6 @@ roots:
         field: iteration_10
       y:
         field: distance_10
-    type: Line
-  - attributes:
-      line_color: '#c49c94'
-      line_width: 2.0
-      x:
-        field: iteration_11
-      y:
-        field: distance_11
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -2819,14 +2787,6 @@ roots:
         field: distance_11
     type: Line
   - attributes:
-      line_color: '#e377c2'
-      line_width: 2.0
-      x:
-        field: iteration_12
-      y:
-        field: distance_12
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#e377c2'
       line_width: 2.0
@@ -2843,14 +2803,6 @@ roots:
         field: iteration_12
       y:
         field: distance_12
-    type: Line
-  - attributes:
-      line_color: '#f7b6d2'
-      line_width: 2.0
-      x:
-        field: iteration_13
-      y:
-        field: distance_13
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -2871,14 +2823,6 @@ roots:
         field: distance_13
     type: Line
   - attributes:
-      line_color: '#7f7f7f'
-      line_width: 2.0
-      x:
-        field: iteration_14
-      y:
-        field: distance_14
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#7f7f7f'
       line_width: 2.0
@@ -2895,14 +2839,6 @@ roots:
         field: iteration_14
       y:
         field: distance_14
-    type: Line
-  - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: iteration_2
-      y:
-        field: distance_2
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -2923,14 +2859,6 @@ roots:
         field: distance_2
     type: Line
   - attributes:
-      line_color: '#ffbb78'
-      line_width: 2.0
-      x:
-        field: iteration_3
-      y:
-        field: distance_3
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#ffbb78'
       line_width: 2.0
@@ -2947,14 +2875,6 @@ roots:
         field: iteration_3
       y:
         field: distance_3
-    type: Line
-  - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: iteration_4
-      y:
-        field: distance_4
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -2975,14 +2895,6 @@ roots:
         field: distance_4
     type: Line
   - attributes:
-      line_color: '#98df8a'
-      line_width: 2.0
-      x:
-        field: iteration_5
-      y:
-        field: distance_5
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#98df8a'
       line_width: 2.0
@@ -2999,14 +2911,6 @@ roots:
         field: iteration_5
       y:
         field: distance_5
-    type: Line
-  - attributes:
-      line_color: '#d62728'
-      line_width: 2.0
-      x:
-        field: iteration_6
-      y:
-        field: distance_6
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3027,14 +2931,6 @@ roots:
         field: distance_6
     type: Line
   - attributes:
-      line_color: '#ff9896'
-      line_width: 2.0
-      x:
-        field: iteration_7
-      y:
-        field: distance_7
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#ff9896'
       line_width: 2.0
@@ -3051,14 +2947,6 @@ roots:
         field: iteration_7
       y:
         field: distance_7
-    type: Line
-  - attributes:
-      line_color: '#9467bd'
-      line_width: 2.0
-      x:
-        field: iteration_8
-      y:
-        field: distance_8
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3079,14 +2967,6 @@ roots:
         field: distance_8
     type: Line
   - attributes:
-      line_color: '#c5b0d5'
-      line_width: 2.0
-      x:
-        field: iteration_9
-      y:
-        field: distance_9
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#c5b0d5'
       line_width: 2.0
@@ -3103,14 +2983,6 @@ roots:
         field: iteration_9
       y:
         field: distance_9
-    type: Line
-  - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: iteration_energy_0
-      y:
-        field: energy_diff_0
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3131,14 +3003,6 @@ roots:
         field: energy_diff_0
     type: Line
   - attributes:
-      line_color: '#aec7e8'
-      line_width: 2.0
-      x:
-        field: iteration_energy_1
-      y:
-        field: energy_diff_1
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#aec7e8'
       line_width: 2.0
@@ -3155,14 +3019,6 @@ roots:
         field: iteration_energy_1
       y:
         field: energy_diff_1
-    type: Line
-  - attributes:
-      line_color: '#8c564b'
-      line_width: 2.0
-      x:
-        field: iteration_energy_10
-      y:
-        field: energy_diff_10
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3183,14 +3039,6 @@ roots:
         field: energy_diff_10
     type: Line
   - attributes:
-      line_color: '#c49c94'
-      line_width: 2.0
-      x:
-        field: iteration_energy_11
-      y:
-        field: energy_diff_11
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#c49c94'
       line_width: 2.0
@@ -3207,14 +3055,6 @@ roots:
         field: iteration_energy_11
       y:
         field: energy_diff_11
-    type: Line
-  - attributes:
-      line_color: '#e377c2'
-      line_width: 2.0
-      x:
-        field: iteration_energy_12
-      y:
-        field: energy_diff_12
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3235,14 +3075,6 @@ roots:
         field: energy_diff_12
     type: Line
   - attributes:
-      line_color: '#f7b6d2'
-      line_width: 2.0
-      x:
-        field: iteration_energy_13
-      y:
-        field: energy_diff_13
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#f7b6d2'
       line_width: 2.0
@@ -3259,14 +3091,6 @@ roots:
         field: iteration_energy_13
       y:
         field: energy_diff_13
-    type: Line
-  - attributes:
-      line_color: '#7f7f7f'
-      line_width: 2.0
-      x:
-        field: iteration_energy_14
-      y:
-        field: energy_diff_14
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3287,14 +3111,6 @@ roots:
         field: energy_diff_14
     type: Line
   - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: iteration_energy_2
-      y:
-        field: energy_diff_2
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#ff7f0e'
       line_width: 2.0
@@ -3311,14 +3127,6 @@ roots:
         field: iteration_energy_2
       y:
         field: energy_diff_2
-    type: Line
-  - attributes:
-      line_color: '#ffbb78'
-      line_width: 2.0
-      x:
-        field: iteration_energy_3
-      y:
-        field: energy_diff_3
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3339,14 +3147,6 @@ roots:
         field: energy_diff_3
     type: Line
   - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: iteration_energy_4
-      y:
-        field: energy_diff_4
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#2ca02c'
       line_width: 2.0
@@ -3363,14 +3163,6 @@ roots:
         field: iteration_energy_4
       y:
         field: energy_diff_4
-    type: Line
-  - attributes:
-      line_color: '#98df8a'
-      line_width: 2.0
-      x:
-        field: iteration_energy_5
-      y:
-        field: energy_diff_5
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3391,14 +3183,6 @@ roots:
         field: energy_diff_5
     type: Line
   - attributes:
-      line_color: '#d62728'
-      line_width: 2.0
-      x:
-        field: iteration_energy_6
-      y:
-        field: energy_diff_6
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#d62728'
       line_width: 2.0
@@ -3415,14 +3199,6 @@ roots:
         field: iteration_energy_6
       y:
         field: energy_diff_6
-    type: Line
-  - attributes:
-      line_color: '#ff9896'
-      line_width: 2.0
-      x:
-        field: iteration_energy_7
-      y:
-        field: energy_diff_7
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3443,14 +3219,6 @@ roots:
         field: energy_diff_7
     type: Line
   - attributes:
-      line_color: '#9467bd'
-      line_width: 2.0
-      x:
-        field: iteration_energy_8
-      y:
-        field: energy_diff_8
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#9467bd'
       line_width: 2.0
@@ -3467,14 +3235,6 @@ roots:
         field: iteration_energy_8
       y:
         field: energy_diff_8
-    type: Line
-  - attributes:
-      line_color: '#c5b0d5'
-      line_width: 2.0
-      x:
-        field: iteration_energy_9
-      y:
-        field: energy_diff_9
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -3487,6 +3247,246 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: '#c5b0d5'
+      line_width: 2.0
+      x:
+        field: iteration_energy_9
+      y:
+        field: energy_diff_9
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: iteration_0
+      y:
+        field: distance_0
+    type: Line
+  - attributes:
+      line_color: '#aec7e8'
+      line_width: 2.0
+      x:
+        field: iteration_1
+      y:
+        field: distance_1
+    type: Line
+  - attributes:
+      line_color: '#8c564b'
+      line_width: 2.0
+      x:
+        field: iteration_10
+      y:
+        field: distance_10
+    type: Line
+  - attributes:
+      line_color: '#c49c94'
+      line_width: 2.0
+      x:
+        field: iteration_11
+      y:
+        field: distance_11
+    type: Line
+  - attributes:
+      line_color: '#e377c2'
+      line_width: 2.0
+      x:
+        field: iteration_12
+      y:
+        field: distance_12
+    type: Line
+  - attributes:
+      line_color: '#f7b6d2'
+      line_width: 2.0
+      x:
+        field: iteration_13
+      y:
+        field: distance_13
+    type: Line
+  - attributes:
+      line_color: '#7f7f7f'
+      line_width: 2.0
+      x:
+        field: iteration_14
+      y:
+        field: distance_14
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: iteration_2
+      y:
+        field: distance_2
+    type: Line
+  - attributes:
+      line_color: '#ffbb78'
+      line_width: 2.0
+      x:
+        field: iteration_3
+      y:
+        field: distance_3
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: iteration_4
+      y:
+        field: distance_4
+    type: Line
+  - attributes:
+      line_color: '#98df8a'
+      line_width: 2.0
+      x:
+        field: iteration_5
+      y:
+        field: distance_5
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: iteration_6
+      y:
+        field: distance_6
+    type: Line
+  - attributes:
+      line_color: '#ff9896'
+      line_width: 2.0
+      x:
+        field: iteration_7
+      y:
+        field: distance_7
+    type: Line
+  - attributes:
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: iteration_8
+      y:
+        field: distance_8
+    type: Line
+  - attributes:
+      line_color: '#c5b0d5'
+      line_width: 2.0
+      x:
+        field: iteration_9
+      y:
+        field: distance_9
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: iteration_energy_0
+      y:
+        field: energy_diff_0
+    type: Line
+  - attributes:
+      line_color: '#aec7e8'
+      line_width: 2.0
+      x:
+        field: iteration_energy_1
+      y:
+        field: energy_diff_1
+    type: Line
+  - attributes:
+      line_color: '#8c564b'
+      line_width: 2.0
+      x:
+        field: iteration_energy_10
+      y:
+        field: energy_diff_10
+    type: Line
+  - attributes:
+      line_color: '#c49c94'
+      line_width: 2.0
+      x:
+        field: iteration_energy_11
+      y:
+        field: energy_diff_11
+    type: Line
+  - attributes:
+      line_color: '#e377c2'
+      line_width: 2.0
+      x:
+        field: iteration_energy_12
+      y:
+        field: energy_diff_12
+    type: Line
+  - attributes:
+      line_color: '#f7b6d2'
+      line_width: 2.0
+      x:
+        field: iteration_energy_13
+      y:
+        field: energy_diff_13
+    type: Line
+  - attributes:
+      line_color: '#7f7f7f'
+      line_width: 2.0
+      x:
+        field: iteration_energy_14
+      y:
+        field: energy_diff_14
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: iteration_energy_2
+      y:
+        field: energy_diff_2
+    type: Line
+  - attributes:
+      line_color: '#ffbb78'
+      line_width: 2.0
+      x:
+        field: iteration_energy_3
+      y:
+        field: energy_diff_3
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: iteration_energy_4
+      y:
+        field: energy_diff_4
+    type: Line
+  - attributes:
+      line_color: '#98df8a'
+      line_width: 2.0
+      x:
+        field: iteration_energy_5
+      y:
+        field: energy_diff_5
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: iteration_energy_6
+      y:
+        field: energy_diff_6
+    type: Line
+  - attributes:
+      line_color: '#ff9896'
+      line_width: 2.0
+      x:
+        field: iteration_energy_7
+      y:
+        field: energy_diff_7
+    type: Line
+  - attributes:
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: iteration_energy_8
+      y:
+        field: energy_diff_8
+    type: Line
+  - attributes:
       line_color: '#c5b0d5'
       line_width: 2.0
       x:
@@ -3580,20 +3580,6 @@ roots:
   - type: SaveTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        value: '#1f77b4'
-      hatch_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        value: 6
-      x:
-        field: iteration_0
-      y:
-        field: distance_0
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -3632,20 +3618,6 @@ roots:
         field: iteration_0
       y:
         field: distance_0
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#aec7e8'
-      hatch_color:
-        value: '#aec7e8'
-      line_color:
-        value: '#aec7e8'
-      size:
-        value: 6
-      x:
-        field: iteration_1
-      y:
-        field: distance_1
     type: Scatter
   - attributes:
       fill_alpha:
@@ -3688,20 +3660,6 @@ roots:
         field: distance_1
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#8c564b'
-      hatch_color:
-        value: '#8c564b'
-      line_color:
-        value: '#8c564b'
-      size:
-        value: 6
-      x:
-        field: iteration_10
-      y:
-        field: distance_10
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -3740,20 +3698,6 @@ roots:
         field: iteration_10
       y:
         field: distance_10
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#c49c94'
-      hatch_color:
-        value: '#c49c94'
-      line_color:
-        value: '#c49c94'
-      size:
-        value: 6
-      x:
-        field: iteration_11
-      y:
-        field: distance_11
     type: Scatter
   - attributes:
       fill_alpha:
@@ -3796,20 +3740,6 @@ roots:
         field: distance_11
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#e377c2'
-      hatch_color:
-        value: '#e377c2'
-      line_color:
-        value: '#e377c2'
-      size:
-        value: 6
-      x:
-        field: iteration_12
-      y:
-        field: distance_12
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -3848,20 +3778,6 @@ roots:
         field: iteration_12
       y:
         field: distance_12
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#f7b6d2'
-      hatch_color:
-        value: '#f7b6d2'
-      line_color:
-        value: '#f7b6d2'
-      size:
-        value: 6
-      x:
-        field: iteration_13
-      y:
-        field: distance_13
     type: Scatter
   - attributes:
       fill_alpha:
@@ -3904,20 +3820,6 @@ roots:
         field: distance_13
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#7f7f7f'
-      hatch_color:
-        value: '#7f7f7f'
-      line_color:
-        value: '#7f7f7f'
-      size:
-        value: 6
-      x:
-        field: iteration_14
-      y:
-        field: distance_14
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -3956,20 +3858,6 @@ roots:
         field: iteration_14
       y:
         field: distance_14
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#ff7f0e'
-      hatch_color:
-        value: '#ff7f0e'
-      line_color:
-        value: '#ff7f0e'
-      size:
-        value: 6
-      x:
-        field: iteration_2
-      y:
-        field: distance_2
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4012,20 +3900,6 @@ roots:
         field: distance_2
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#ffbb78'
-      hatch_color:
-        value: '#ffbb78'
-      line_color:
-        value: '#ffbb78'
-      size:
-        value: 6
-      x:
-        field: iteration_3
-      y:
-        field: distance_3
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4064,20 +3938,6 @@ roots:
         field: iteration_3
       y:
         field: distance_3
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#2ca02c'
-      hatch_color:
-        value: '#2ca02c'
-      line_color:
-        value: '#2ca02c'
-      size:
-        value: 6
-      x:
-        field: iteration_4
-      y:
-        field: distance_4
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4120,20 +3980,6 @@ roots:
         field: distance_4
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#98df8a'
-      hatch_color:
-        value: '#98df8a'
-      line_color:
-        value: '#98df8a'
-      size:
-        value: 6
-      x:
-        field: iteration_5
-      y:
-        field: distance_5
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4172,20 +4018,6 @@ roots:
         field: iteration_5
       y:
         field: distance_5
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#d62728'
-      hatch_color:
-        value: '#d62728'
-      line_color:
-        value: '#d62728'
-      size:
-        value: 6
-      x:
-        field: iteration_6
-      y:
-        field: distance_6
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4228,20 +4060,6 @@ roots:
         field: distance_6
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#ff9896'
-      hatch_color:
-        value: '#ff9896'
-      line_color:
-        value: '#ff9896'
-      size:
-        value: 6
-      x:
-        field: iteration_7
-      y:
-        field: distance_7
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4280,20 +4098,6 @@ roots:
         field: iteration_7
       y:
         field: distance_7
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#9467bd'
-      hatch_color:
-        value: '#9467bd'
-      line_color:
-        value: '#9467bd'
-      size:
-        value: 6
-      x:
-        field: iteration_8
-      y:
-        field: distance_8
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4336,20 +4140,6 @@ roots:
         field: distance_8
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#c5b0d5'
-      hatch_color:
-        value: '#c5b0d5'
-      line_color:
-        value: '#c5b0d5'
-      size:
-        value: 6
-      x:
-        field: iteration_9
-      y:
-        field: distance_9
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4388,20 +4178,6 @@ roots:
         field: iteration_9
       y:
         field: distance_9
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#1f77b4'
-      hatch_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_0
-      y:
-        field: energy_diff_0
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4444,20 +4220,6 @@ roots:
         field: energy_diff_0
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#aec7e8'
-      hatch_color:
-        value: '#aec7e8'
-      line_color:
-        value: '#aec7e8'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_1
-      y:
-        field: energy_diff_1
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4496,20 +4258,6 @@ roots:
         field: iteration_energy_1
       y:
         field: energy_diff_1
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#8c564b'
-      hatch_color:
-        value: '#8c564b'
-      line_color:
-        value: '#8c564b'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_10
-      y:
-        field: energy_diff_10
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4552,20 +4300,6 @@ roots:
         field: energy_diff_10
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#c49c94'
-      hatch_color:
-        value: '#c49c94'
-      line_color:
-        value: '#c49c94'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_11
-      y:
-        field: energy_diff_11
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4604,20 +4338,6 @@ roots:
         field: iteration_energy_11
       y:
         field: energy_diff_11
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#e377c2'
-      hatch_color:
-        value: '#e377c2'
-      line_color:
-        value: '#e377c2'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_12
-      y:
-        field: energy_diff_12
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4660,20 +4380,6 @@ roots:
         field: energy_diff_12
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#f7b6d2'
-      hatch_color:
-        value: '#f7b6d2'
-      line_color:
-        value: '#f7b6d2'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_13
-      y:
-        field: energy_diff_13
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4712,20 +4418,6 @@ roots:
         field: iteration_energy_13
       y:
         field: energy_diff_13
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#7f7f7f'
-      hatch_color:
-        value: '#7f7f7f'
-      line_color:
-        value: '#7f7f7f'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_14
-      y:
-        field: energy_diff_14
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4768,20 +4460,6 @@ roots:
         field: energy_diff_14
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#ff7f0e'
-      hatch_color:
-        value: '#ff7f0e'
-      line_color:
-        value: '#ff7f0e'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_2
-      y:
-        field: energy_diff_2
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4820,20 +4498,6 @@ roots:
         field: iteration_energy_2
       y:
         field: energy_diff_2
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#ffbb78'
-      hatch_color:
-        value: '#ffbb78'
-      line_color:
-        value: '#ffbb78'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_3
-      y:
-        field: energy_diff_3
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4876,20 +4540,6 @@ roots:
         field: energy_diff_3
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#2ca02c'
-      hatch_color:
-        value: '#2ca02c'
-      line_color:
-        value: '#2ca02c'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_4
-      y:
-        field: energy_diff_4
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -4928,20 +4578,6 @@ roots:
         field: iteration_energy_4
       y:
         field: energy_diff_4
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#98df8a'
-      hatch_color:
-        value: '#98df8a'
-      line_color:
-        value: '#98df8a'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_5
-      y:
-        field: energy_diff_5
     type: Scatter
   - attributes:
       fill_alpha:
@@ -4984,20 +4620,6 @@ roots:
         field: energy_diff_5
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#d62728'
-      hatch_color:
-        value: '#d62728'
-      line_color:
-        value: '#d62728'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_6
-      y:
-        field: energy_diff_6
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -5036,20 +4658,6 @@ roots:
         field: iteration_energy_6
       y:
         field: energy_diff_6
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#ff9896'
-      hatch_color:
-        value: '#ff9896'
-      line_color:
-        value: '#ff9896'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_7
-      y:
-        field: energy_diff_7
     type: Scatter
   - attributes:
       fill_alpha:
@@ -5092,20 +4700,6 @@ roots:
         field: energy_diff_7
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#9467bd'
-      hatch_color:
-        value: '#9467bd'
-      line_color:
-        value: '#9467bd'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_8
-      y:
-        field: energy_diff_8
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -5144,20 +4738,6 @@ roots:
         field: iteration_energy_8
       y:
         field: energy_diff_8
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#c5b0d5'
-      hatch_color:
-        value: '#c5b0d5'
-      line_color:
-        value: '#c5b0d5'
-      size:
-        value: 6
-      x:
-        field: iteration_energy_9
-      y:
-        field: energy_diff_9
     type: Scatter
   - attributes:
       fill_alpha:
@@ -5190,6 +4770,426 @@ roots:
         value: '#c5b0d5'
       line_alpha:
         value: 0.2
+      line_color:
+        value: '#c5b0d5'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_9
+      y:
+        field: energy_diff_9
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      hatch_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        value: 6
+      x:
+        field: iteration_0
+      y:
+        field: distance_0
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#aec7e8'
+      hatch_color:
+        value: '#aec7e8'
+      line_color:
+        value: '#aec7e8'
+      size:
+        value: 6
+      x:
+        field: iteration_1
+      y:
+        field: distance_1
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#8c564b'
+      hatch_color:
+        value: '#8c564b'
+      line_color:
+        value: '#8c564b'
+      size:
+        value: 6
+      x:
+        field: iteration_10
+      y:
+        field: distance_10
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c49c94'
+      hatch_color:
+        value: '#c49c94'
+      line_color:
+        value: '#c49c94'
+      size:
+        value: 6
+      x:
+        field: iteration_11
+      y:
+        field: distance_11
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#e377c2'
+      hatch_color:
+        value: '#e377c2'
+      line_color:
+        value: '#e377c2'
+      size:
+        value: 6
+      x:
+        field: iteration_12
+      y:
+        field: distance_12
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#f7b6d2'
+      hatch_color:
+        value: '#f7b6d2'
+      line_color:
+        value: '#f7b6d2'
+      size:
+        value: 6
+      x:
+        field: iteration_13
+      y:
+        field: distance_13
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#7f7f7f'
+      hatch_color:
+        value: '#7f7f7f'
+      line_color:
+        value: '#7f7f7f'
+      size:
+        value: 6
+      x:
+        field: iteration_14
+      y:
+        field: distance_14
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      hatch_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        value: 6
+      x:
+        field: iteration_2
+      y:
+        field: distance_2
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ffbb78'
+      hatch_color:
+        value: '#ffbb78'
+      line_color:
+        value: '#ffbb78'
+      size:
+        value: 6
+      x:
+        field: iteration_3
+      y:
+        field: distance_3
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      hatch_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        value: 6
+      x:
+        field: iteration_4
+      y:
+        field: distance_4
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#98df8a'
+      hatch_color:
+        value: '#98df8a'
+      line_color:
+        value: '#98df8a'
+      size:
+        value: 6
+      x:
+        field: iteration_5
+      y:
+        field: distance_5
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      hatch_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        value: 6
+      x:
+        field: iteration_6
+      y:
+        field: distance_6
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff9896'
+      hatch_color:
+        value: '#ff9896'
+      line_color:
+        value: '#ff9896'
+      size:
+        value: 6
+      x:
+        field: iteration_7
+      y:
+        field: distance_7
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      hatch_color:
+        value: '#9467bd'
+      line_color:
+        value: '#9467bd'
+      size:
+        value: 6
+      x:
+        field: iteration_8
+      y:
+        field: distance_8
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c5b0d5'
+      hatch_color:
+        value: '#c5b0d5'
+      line_color:
+        value: '#c5b0d5'
+      size:
+        value: 6
+      x:
+        field: iteration_9
+      y:
+        field: distance_9
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      hatch_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_0
+      y:
+        field: energy_diff_0
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#aec7e8'
+      hatch_color:
+        value: '#aec7e8'
+      line_color:
+        value: '#aec7e8'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_1
+      y:
+        field: energy_diff_1
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#8c564b'
+      hatch_color:
+        value: '#8c564b'
+      line_color:
+        value: '#8c564b'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_10
+      y:
+        field: energy_diff_10
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c49c94'
+      hatch_color:
+        value: '#c49c94'
+      line_color:
+        value: '#c49c94'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_11
+      y:
+        field: energy_diff_11
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#e377c2'
+      hatch_color:
+        value: '#e377c2'
+      line_color:
+        value: '#e377c2'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_12
+      y:
+        field: energy_diff_12
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#f7b6d2'
+      hatch_color:
+        value: '#f7b6d2'
+      line_color:
+        value: '#f7b6d2'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_13
+      y:
+        field: energy_diff_13
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#7f7f7f'
+      hatch_color:
+        value: '#7f7f7f'
+      line_color:
+        value: '#7f7f7f'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_14
+      y:
+        field: energy_diff_14
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      hatch_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_2
+      y:
+        field: energy_diff_2
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ffbb78'
+      hatch_color:
+        value: '#ffbb78'
+      line_color:
+        value: '#ffbb78'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_3
+      y:
+        field: energy_diff_3
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      hatch_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_4
+      y:
+        field: energy_diff_4
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#98df8a'
+      hatch_color:
+        value: '#98df8a'
+      line_color:
+        value: '#98df8a'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_5
+      y:
+        field: energy_diff_5
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      hatch_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_6
+      y:
+        field: energy_diff_6
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff9896'
+      hatch_color:
+        value: '#ff9896'
+      line_color:
+        value: '#ff9896'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_7
+      y:
+        field: energy_diff_7
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      hatch_color:
+        value: '#9467bd'
+      line_color:
+        value: '#9467bd'
+      size:
+        value: 6
+      x:
+        field: iteration_energy_8
+      y:
+        field: energy_diff_8
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#c5b0d5'
+      hatch_color:
+        value: '#c5b0d5'
       line_color:
         value: '#c5b0d5'
       size:

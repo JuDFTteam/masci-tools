@@ -159,13 +159,6 @@ roots:
         value: simulation data
     type: LegendItem
   - attributes:
-      line_width: 2.0
-      x:
-        field: scaling
-      y:
-        field: energy
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_width: 2.0
       x:
@@ -182,13 +175,6 @@ roots:
         field: energy
     type: Line
   - attributes:
-      line_width: 2.0
-      x:
-        field: scaling
-      y:
-        field: fit
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_width: 2.0
       x:
@@ -198,6 +184,20 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: fit
+    type: Line
+  - attributes:
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
       line_width: 2.0
       x:
         field: scaling
@@ -248,48 +248,6 @@ roots:
         value: 0.1
       line_alpha:
         value: 0.1
-      size:
-        value: 6
-      x:
-        field: scaling
-      y:
-        field: energy
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.2
-      fill_color:
-        value: black
-      hatch_alpha:
-        value: 0.2
-      line_alpha:
-        value: 0.2
-      size:
-        value: 6
-      x:
-        field: scaling
-      y:
-        field: energy
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: black
-      size:
-        value: 6
-      x:
-        field: scaling
-      y:
-        field: energy
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        value: black
-      hatch_alpha:
-        value: 0.1
-      line_alpha:
-        value: 0.1
       marker:
         value: square
       size:
@@ -318,6 +276,38 @@ roots:
         field: fit
     type: Scatter
   - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.1
+      line_alpha:
+        value: 0.1
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: black
+      hatch_alpha:
+        value: 0.2
+      line_alpha:
+        value: 0.2
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Scatter
+  - attributes:
       fill_color:
         value: black
       marker:
@@ -328,6 +318,16 @@ roots:
         field: scaling
       y:
         field: fit
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: black
+      size:
+        value: 6
+      x:
+        field: scaling
+      y:
+        field: energy
     type: Scatter
   - type: Selection
   - type: Selection

@@ -830,14 +830,6 @@ roots:
         value: Total up/down
     type: LegendItem
   - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: INT_down
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#ff7f0e'
       line_width: 2.0
@@ -854,14 +846,6 @@ roots:
         field: energy_grid
       y:
         field: INT_down
-    type: Line
-  - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: INT_up
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -882,14 +866,6 @@ roots:
         field: INT_up
     type: Line
   - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: MT:1_down
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#2ca02c'
       line_width: 2.0
@@ -906,14 +882,6 @@ roots:
         field: energy_grid
       y:
         field: MT:1_down
-    type: Line
-  - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: MT:1_up
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -934,14 +902,6 @@ roots:
         field: MT:1_up
     type: Line
   - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: Total_down
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
@@ -958,14 +918,6 @@ roots:
         field: energy_grid
       y:
         field: Total_down
-    type: Line
-  - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: energy_grid
-      y:
-        field: Total_up
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -978,6 +930,54 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: Total_up
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: INT_down
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: INT_up
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: MT:1_down
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: MT:1_up
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: energy_grid
+      y:
+        field: Total_down
+    type: Line
+  - attributes:
       line_color: '#1f77b4'
       line_width: 2.0
       x:
@@ -1054,12 +1054,12 @@ roots:
   - type: Selection
   - type: Selection
   - attributes:
+      dimension: height
       line_dash:
       - 6
       location: 0
     type: Span
   - attributes:
-      dimension: height
       line_dash:
       - 6
       location: 0
