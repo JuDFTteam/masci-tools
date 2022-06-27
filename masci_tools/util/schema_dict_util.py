@@ -735,7 +735,8 @@ def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
     return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
 
 
-def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict, included_tags: Iterable[str],
+def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.InputSchemaDict,
+                     included_tags: Iterable[str],
                      **kwargs: os.PathLike) -> tuple[etree._ElementTree, dict[os.PathLike | str, etree._ElementTree]]:
     """
     Split the xmltree back up according to the given included tags.
@@ -818,7 +819,7 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Sche
     return excluded_tree, included_trees
 
 
-def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.SchemaDict) -> None:
+def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.InputSchemaDict) -> None:
     """
     Ensure that the xinclude tag for the ``relax.xml`` is added if no
     ``relaxation`` is present in the ``inp.xml``
@@ -828,6 +829,9 @@ def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_s
 
     :returns: xmltree, which either contains the relaxation section or a xinclude tag
     """
+    if schema_dict.inp_version <= (0, 28):
+        return
+
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
     if not tag_exists(xmltree, schema_dict, 'relaxation') and \
        len(eval_xpath(xmltree, '//xi:include[href=$file]', namespaces=INCLUDE_NSMAP, file='relax.xml', list_return=True)) == 0: #type:ignore
