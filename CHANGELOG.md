@@ -1,5 +1,13 @@
 # Changelog
 
+## v.0.11.1
+
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.0...v0.11.1)
+
+### Bugfixes
+- Bugfix in `reverse_xinclude`. Version `0.11.0` broke this function for versions, where the `relaxation` tag was not allowed.
+
+
 ## v.0.11.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.1...v0.11.0)
 
