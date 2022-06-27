@@ -43,7 +43,8 @@ extensions = ['myst_nb',
 intersphinx_mapping = {'numpy': ('https://numpy.org/doc/stable/', None),
                        'python': ('https://docs.python.org/3', None),
                        'lxml': ('https://lxml.de/apidoc/',None),
-                       'h5py': ('https://docs.h5py.org/en/latest/', None)}
+                       'h5py': ('https://docs.h5py.org/en/latest/', None),
+                       'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None)}
 
 myst_enable_extensions = ['colon_fence',
                           'fieldlist',

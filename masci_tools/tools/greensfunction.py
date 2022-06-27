@@ -16,9 +16,11 @@ and written to ``greensf.hdf`` files by fleur
 from __future__ import annotations
 
 from itertools import groupby, chain
+import warnings
 import numpy as np
 import h5py
 from typing import Iterator, Any, NamedTuple, Generator
+
 try:
     from typing import Literal
 except ImportError:
@@ -27,6 +29,7 @@ except ImportError:
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation, HDF5Recipe
 from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.io.common_functions import get_spin_rotation, get_wigner_matrix
 from masci_tools.util.typing import FileLike
 
 
@@ -206,6 +209,29 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int |
                 Transformation(name='get_first_element', args=(), kwargs={})
             ]
         }
+
+        recipe['attributes']['atom_label'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Label of the atom for the first set of coefficients',
+            'transforms': [
+                Transformation(name='get_attribute', args=('atom',), kwargs={}),
+                Transformation(name='convert_to_str', args=(), kwargs={'join': True}),
+            ]
+        }
+
+        recipe['attributes']['atom_labelp'] = {
+            'h5path':
+            f'/{group_name}/element-{index}/',
+            'description':
+            'Label of the atom for the second set of coefficients',
+            'transforms': [
+                Transformation(name='get_attribute', args=('atomp',), kwargs={}),
+                Transformation(name='convert_to_str', args=(), kwargs={'join': True}),
+            ]
+        }
+
     return recipe
 
 
@@ -457,12 +483,31 @@ class GreensFunction:
 
         self.points = data.pop('energy_points')
         self.weights = data.pop('energy_weights')
+        self.spins: int = attributes['spins']
+        self.mperp: bool = attributes['mperp']
+        self.lmax: int = attributes['lmax']
 
-        self.data = data
+        #Convert from Fortran to python indexing order
+        self._data: dict[CoefficientName, np.ndarray] = {name: d.T for name, d in data.items()}  #type: ignore[misc]
+        if self.mperp:
+            axes = list(range(len(self._data[next(iter(self._data.keys()))].shape)))
+            axes[2] = 1
+            axes[1] = 2
+            self._data = {
+                name: np.concatenate((d, np.transpose(d[:, :, :, [2], ...].conj(), axes=axes)), axis=3)
+                for name, d in self._data.items()
+            }
+
         self.extras = attributes
+
+        self._angle_alpha = attributes.get('alpha', 0.0), attributes.get('alphap', 0.0)
+        self._angle_beta = attributes.get('beta', 0.0), attributes.get('betap', 0.0)
+        self._local_spin_frame = attributes.get('local_spin_frame', True)
+        self._local_real_frame = attributes.get('local_real_frame', True)
 
         self.kpoints = None
         self.kpath = None
+        self._nkpts = attributes.get('nkpts', 0)
         if self.kresolved:
             self.kpoints = attributes['kpoints']
             if attributes['kpoints_kind'] == 'path':
@@ -495,11 +540,10 @@ class GreensFunction:
                         self.scalar_products[key] = val.T[lo_list_atomtype, ...]
                     elif key.endswith('ulo'):
                         self.scalar_products[key] = val.T[lo_list_atomtypep, ...]
-                #TODO: Same selections for radial_functions
 
-        self.spins: int = attributes['spins']
-        self.mperp: bool = attributes['mperp']
-        self.lmax: int = attributes['lmax']
+                all_ulo = self.radial_functions['ulo']
+                self.radial_functions['ulo'] = all_ulo[self.atomType - 1, :, lo_list_atomtype, ...]
+                self.radial_functions['ulop'] = all_ulo[self.atomTypep - 1, :, lo_list_atomtypep, ...]
 
     @classmethod
     def fromFile(cls, file: Any, index: int | None = None, **selection_params: Any) -> GreensFunction:
@@ -515,9 +559,9 @@ class GreensFunction:
         """
 
         if index is None:
-            if not selection_params:
-                raise ValueError('If index is not given, parameters for selection need to be provided')
             elements = listElements(file)
+            if len(elements) > 1 and not selection_params:
+                raise ValueError('If index is not given, parameters for selection need to be provided')
             indices = select_element_indices(elements, **selection_params)
             if len(indices) == 1:
                 index = indices[0] + 1
@@ -544,6 +588,126 @@ class GreensFunction:
             return self.element._asdict()[attr]
         raise AttributeError(f'{self.__class__.__name__!r} object has no attribute {attr!r}')
 
+    def _ensure_spinoffdiagonal(self) -> None:
+        """
+        Ensure that the Green's function stores the spin-offdiagonal elements
+        """
+
+        if self.mperp:
+            return  #Nothing to do
+
+        self.mperp = True
+
+        EMPTY = None
+        for name, data in self._data.items():
+            if EMPTY is None:
+                EMPTY = np.zeros_like(data[:, :, :, [0, 1], ...])
+            self._data[name] = np.concatenate((data, EMPTY), axis=3)
+
+    def _get_spin_matrix(self, name: CoefficientName) -> np.ndarray:
+        """
+        Get the 2x2 spin matrix for the given coefficient
+
+        :param name: name of the coefficient
+
+        :returns: numpy array for the 2x2 spin matrix coefficient
+        """
+
+        data = self._data[name]
+        if not self.mperp:
+            data = np.concatenate((data, np.zeros_like(data[:, :, :, [0, 1], ...])), axis=3)
+        #Reorder spin entries so that the spin-diagonal contributions also
+        #end up on the diagonal of the 2x2 matrix
+        # the final matrix looks like this (indices like spin dimension above)
+        # | 0  2 |
+        # | 3  1 |
+        spin_order = [0, 2, 3, 1]
+        data = data[:, :, :, spin_order, ...]
+        shape = tuple(chain(data.shape[:3], (2, 2), data.shape[4:]))
+        data = np.reshape(data, shape)
+
+        return data
+
+    def _set_spin_matrix(self, name: CoefficientName, spin_matrix: np.ndarray) -> None:
+        """
+        Set the data according to the 2x2 spin matrix for the given coefficient
+
+        :param name: name of the coefficient
+        :param spin_matrix: data for the coefficient
+        """
+
+        if not self.mperp:
+            warnings.warn('Setting the spin matrix with mperp=False will dismiss the offdiagonal part')
+
+        data = self._data[name]
+        data[:, :, :, 0, ...] = spin_matrix[:, :, :, 0, 0, ...]
+        data[:, :, :, 1, ...] = spin_matrix[:, :, :, 1, 1, ...]
+        if self.mperp:
+            data[:, :, :, 2, ...] = spin_matrix[:, :, :, 1, 0, ...]
+            data[:, :, :, 3, ...] = spin_matrix[:, :, :, 0, 1, ...]
+
+    def to_global_frame(self) -> None:
+        """
+        Rotate the Green's function into the global real space and spin space frame
+        """
+
+        if not self._local_real_frame and not self._local_spin_frame:
+            return  # Nothing to do
+        self._ensure_spinoffdiagonal()
+
+        alpha, alphap = self._angle_alpha
+        beta, betap = self._angle_beta
+
+        if self._local_spin_frame:
+            rot_spin = get_spin_rotation(-alpha, -beta)
+            rotp_spin = get_spin_rotation(-alphap, -betap)
+
+            for name in self._data.keys():
+                data = self._get_spin_matrix(name)
+                data = np.einsum('ij,xyzjk...,km->xyzim...', rot_spin, data, rotp_spin.T.conj())
+                self._set_spin_matrix(name, data)
+            self._local_spin_frame = False
+
+        if self._local_real_frame:
+            rot_real_space = get_wigner_matrix(self.l, alpha, beta, inverse=True)
+            rotp_real_space = get_wigner_matrix(self.lp, alphap, betap, inverse=True)
+
+            for name, data in self._data.items():
+                data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
+                self._data[name] = data
+            self._local_real_frame = False
+
+    def to_local_frame(self) -> None:
+        """
+        Rotate the Green's function into the local real space and spin space frame
+        """
+
+        if self._local_real_frame and self._local_spin_frame:
+            return  # Nothing to do
+        self._ensure_spinoffdiagonal()
+
+        alpha, alphap = self._angle_alpha
+        beta, betap = self._angle_beta
+
+        if not self._local_spin_frame:
+            rot_spin = get_spin_rotation(alpha, beta)
+            rotp_spin = get_spin_rotation(alphap, betap)
+
+            for name in self._data.keys():
+                data = self._get_spin_matrix(name)
+                data = np.einsum('ij,xyzjk...,km->xyzim...', rot_spin, data, rotp_spin.T.conj())
+                self._set_spin_matrix(name, data)
+            self._local_spin_frame = True
+
+        if not self._local_real_frame:
+            rot_real_space = get_wigner_matrix(self.l, alpha, beta)
+            rotp_real_space = get_wigner_matrix(self.lp, alphap, betap)
+
+            for name, data in self._data.items():
+                data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
+                self._data[name] = data
+            self._local_real_frame = True
+
     def get_coefficient(self, name: CoefficientName, spin: int | None = None, radial: bool = False) -> np.ndarray:
         """
         Get the coefficient with the given name from the data attribute
@@ -558,7 +722,7 @@ class GreensFunction:
         """
         if spin is not None:
             spin -= 1
-            spin_index = min(spin, 2 if self.mperp else self.nspins - 1)
+            spin_index = min(spin, 3 if self.mperp else self.nspins - 1)
 
         if radial and self.sphavg:
             raise ValueError("No radial dependence possible. Green's function is spherically averaged")
@@ -566,7 +730,25 @@ class GreensFunction:
         coeff: Any = 1 if spin is not None else np.ones((2, 2))
         if name != 'sphavg':
             if radial:
-                raise NotImplementedError()
+                if name.startswith('ulo'):
+                    r = self.radial_functions['ulo']
+                elif name.startswith('u'):
+                    r = self.radial_functions['u'][self.atomType - 1]
+                else:
+                    r = self.radial_functions['d'][self.atomType - 1]
+                if name.endswith('ulo'):
+                    rp = self.radial_functions['ulop']
+                elif name.endswith('u'):
+                    rp = self.radial_functions['u'][self.atomTypep - 1]
+                else:
+                    rp = self.radial_functions['d'][self.atomTypep - 1]
+                if not self.onsite:
+                    #The radial functions are stored as r*u(r), meaning
+                    #when multiplied they produce the right factor for
+                    #integration. For intersite components these are
+                    #independent so we need to multiply each radial function by r
+                    r *= self.radial_functions['rmsh'][self.atomType - 1]
+                    rp *= self.radial_functions['rmsh'][self.atomTypep - 1]
             else:
                 if spin is not None:
                     spin1, spin2 = self.to_spin_indices(spin)
@@ -576,29 +758,17 @@ class GreensFunction:
         elif not self.sphavg:
             raise ValueError("No entry sphavg available. Green's function is stored radially resolved")
 
-        data = self.data[name].T  #Converting from fortran index order
         if spin is not None:
-            data = data[:, :, :, spin_index, ...]
+            data = self._data[name][:, :, :, spin_index, ...]
         else:
-            if self.mperp:
-                #Build up the full 2x2 spin matrix for the coefficient
-                axes = list(range(len(data.shape)))
-                axes[2] = 1
-                axes[1] = 2
-                spin_offd = np.transpose(data[:, :, :, [2], ...].conj(), axes=axes)
-                data = np.concatenate((data, spin_offd), axis=3)
-            else:
-                data = np.concatenate((data, np.empty_like(data[:, :, :, [0, 1], ...])), axis=3)
-            #Reorder spin entries so that the spin-diagonal contributions also
-            #end up on the diagonal of the 2x2 matrix
-            spin_order = [0, 2, 3, 1]
-            data = data[:, :, :, spin_order, ...]
-            shape = tuple(chain(data.shape[:3], (2, 2), data.shape[4:]))
-            data = np.reshape(data, shape)
+            data = self._get_spin_matrix(name)
 
         if self.kresolved:
             #Move upper/lower contour index to last one
             return np.swapaxes(data, -2, -1)
+
+        if radial:
+            raise NotImplementedError()
 
         if spin is not None:
             if name == 'uloulo':
@@ -608,10 +778,10 @@ class GreensFunction:
             return data * coeff
 
         if name == 'uloulo':
-            return np.einsum('...ijkl,...ijkl->...ijkl', data, coeff)
+            return np.einsum('...ijklm,...ijkl->...ijklm', data, coeff)
         if 'lo' in name:
-            return np.einsum('...ijk,...ijk->...ijk', data, coeff)
-        return np.einsum('...ij,...ij->...ij', data, coeff)
+            return np.einsum('...ijkl,...ijk->...ijkl', data, coeff)
+        return np.einsum('...ijl,...ij->...ijl', data, coeff)
 
     @staticmethod
     def to_m_index(m: int) -> int:
@@ -722,17 +892,20 @@ class GreensFunction:
         else:
             mp_index = slice(self.lmax - self.l, self.lmax + self.lp + 1, 1)
 
+        kwargs: dict[str, Any] = {
+            'spin': spin,
+        }
         if self.sphavg:
-            gf = self.get_coefficient('sphavg', spin=spin)[:, m_index, mp_index, ...]
+            gf = self.get_coefficient('sphavg', **kwargs)[:, m_index, mp_index, ...]
         else:
-            gf =  self.get_coefficient('uu', spin=spin)[:,m_index,mp_index,...] \
-                + self.get_coefficient('ud', spin=spin)[:,m_index,mp_index,...] \
-                + self.get_coefficient('du', spin=spin)[:,m_index,mp_index,...] \
-                + self.get_coefficient('dd', spin=spin)[:,m_index,mp_index,...] \
-                + np.sum(self.get_coefficient('uulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
-                + np.sum(self.get_coefficient('ulou', spin=spin)[:,m_index,mp_index,...], axis=-1) \
-                + np.sum(self.get_coefficient('dulo', spin=spin)[:,m_index,mp_index,...], axis=-1) \
-                + np.sum(self.get_coefficient('uloulo', spin=spin)[:,m_index,mp_index,...], axis=(-1,-2))
+            gf =  self.get_coefficient('uu', **kwargs)[:,m_index,mp_index,...] \
+                + self.get_coefficient('ud', **kwargs)[:,m_index,mp_index,...] \
+                + self.get_coefficient('du', **kwargs)[:,m_index,mp_index,...] \
+                + self.get_coefficient('dd', **kwargs)[:,m_index,mp_index,...] \
+                + np.sum(self.get_coefficient('uulo', **kwargs)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('ulou', **kwargs)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', **kwargs)[:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', **kwargs)[:,m_index,mp_index,...], axis=(-1,-2))
 
         if both_contours:
             return gf
@@ -763,13 +936,47 @@ class GreensFunction:
                 2,
             )
         if self.kresolved:
-            shape += (self.extras['nkpts'],)
+            shape += (self._nkpts,)
 
         data = np.zeros(shape)
         for m in range(-self.l, self.l + 1):
             data += self.energy_dependence(m=m, mp=m, spin=spin, imag=imag)
 
         return data
+
+    def moment(self, n: int, spin: int | None = None) -> np.ndarray:
+        r"""
+        Calculate the integral
+
+        .. math::
+            M_n\ =\ -\frac{1}{4\pi i} \mathrm{Im} \int_\mathrm{Contour}\!\mathrm{dz} z^n G(z)
+
+        :param n: power of z in the integral
+        :param spin: optional integer spin between 1 and nspins
+        """
+        gz = self.energy_dependence(spin=spin, both_contours=True)
+
+        weights = np.array([self.weights, -self.weights.conj()]).T
+        zn = np.array([self.points**n, self.points.conj()**n]).T
+
+        moment = 1j / (4 * np.pi) * np.einsum('zm,zm,z...m->...', weights, zn, gz)
+
+        return moment
+
+    def occupation(self, spin: int | None = None) -> np.ndarray:
+        r"""
+        Calculate the 0-th moment of the green's function
+
+        .. math::
+            n\ =\ -\frac{1}{4\pi i} \mathrm{Im} \int_\mathrm{Contour}\!\mathrm{dz} G(z)
+
+        .. note::
+            Only if the energy contour ends at the fermi energy/is correlty weighted
+            to produce occupations, will this function produce occupations
+
+        :param spin: optional integer spin between 1 and nspins
+        """
+        return self.moment(0, spin=spin)
 
 
 class colors:
@@ -925,10 +1132,11 @@ def select_element_indices(elements: list[GreensfElement], show: bool = False, *
     return found_elements
 
 
-def intersite_shells_from_file(
-        hdffile: FileLike,
-        reference_atom: int,
-        show: bool = False) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+def intersite_shells_from_file(hdffile: FileLike,
+                               reference_atom: int,
+                               show: bool = False,
+                               max_shells: int | None = None
+                               ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a given ``greensf.hdf`` file
@@ -936,13 +1144,14 @@ def intersite_shells_from_file(
     :param hdffile: filepath or file handle to a greensf.hdf file
     :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
     :param show: if True the elements belonging to a shell are printed in a shell
+    :param max_shells: optional int, if given only the first max_shells shells are constructed
 
     :returns: flat iterator with distance and the two corresponding :py:class:`GreensFunction`
               instances for each Jij calculation
     """
 
     elements = listElements(hdffile)
-    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
+    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show, max_shells=max_shells)
 
     def shell_iterator(
         shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
@@ -957,10 +1166,11 @@ def intersite_shells_from_file(
     return shell_iterator(jij_pairs)
 
 
-def intersite_shells(
-        greensfunctions: list[GreensFunction],
-        reference_atom: int,
-        show: bool = False) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+def intersite_shells(greensfunctions: list[GreensFunction],
+                     reference_atom: int,
+                     show: bool = False,
+                     max_shells: int | None = None
+                     ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a list of given :py:class:`GreensFunction`
@@ -968,13 +1178,14 @@ def intersite_shells(
     :param greensfunctions: List of Greens Function to use
     :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
     :param show: if True the elements belonging to a shell are printed in a shell
+    :param max_shells: optional int, if given only the first max_shells shells are constructed
 
     :returns: flat iterator with distance and the two corresponding :py:class:`GreensFunction`
               instances for each Jij calculation
     """
 
     elements = [gf.element for gf in greensfunctions]
-    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show)
+    jij_pairs = intersite_shell_indices(elements, reference_atom, show=show, max_shells=max_shells)
 
     def shell_iterator(
         shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
@@ -988,7 +1199,8 @@ def intersite_shells(
 
 def intersite_shell_indices(elements: list[GreensfElement],
                             reference_atom: int,
-                            show: bool = False) -> list[tuple[np.floating[Any], list[tuple[int, int]]]]:
+                            show: bool = False,
+                            max_shells: int | None = None) -> list[tuple[np.floating[Any], list[tuple[int, int]]]]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a list of :py:class:`GreensfElement`
@@ -996,6 +1208,7 @@ def intersite_shell_indices(elements: list[GreensfElement],
     :param elements: list of GreenfElements to use
     :param reference_atom: integer of the atom to calculate the Jij's for (correspinds to the i)
     :param show: if True the elements belonging to a shell are printed in a shell
+    :param max_shells: optional int, if given only the first max_shells shells are constructed
 
     :returns: list of tuples with distance and all indices of pairs in the shell
     """
@@ -1005,9 +1218,14 @@ def intersite_shell_indices(elements: list[GreensfElement],
     #sort the elements according to shells
     index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])
     elements_sorted = [elements[index] for index in index_sorted]
-    jij_pairs = []
+    jij_pairs: list[tuple[np.floating[Any], list[tuple[int, int]]]] = []
+    num_shells = 0
     for dist, shell in groupby(zip(index_sorted, elements_sorted), key=lambda k: distances[k[0]]):
         if dist > 1e-12:
+            num_shells += 1
+            if max_shells is not None and num_shells > max_shells:
+                return jij_pairs
+
             if show:
                 print(f'\nFound shell at distance: {dist}')
                 print('The following elements are present:')
