@@ -118,11 +118,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install libxml2 headers (for lxml build)
+    - name: Install Build dependecies (for experimental builds)
       if: ${{ matrix.experimental }}
       run: |
         sudo apt-get update
-        sudo apt-get install -y libxml2-dev libxslt-dev
+        sudo apt-get install -y libxml2-dev libxslt-dev libhdf5-serial-dev
 
     - name: Install python dependencies
       run: |
