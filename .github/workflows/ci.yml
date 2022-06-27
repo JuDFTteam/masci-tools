@@ -123,6 +123,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libxml2-dev libxslt-dev libhdf5-serial-dev
+        pip install --upgrade pip setuptools wheel
+        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy scipy
+        pip install --upgrade cython
+        pip list
 
     - name: Install python dependencies
       run: |
