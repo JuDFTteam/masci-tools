@@ -79,7 +79,7 @@ class FleurXMLModifier:
         #fmode.undo(revert_all=True)
 
         #To apply the changes to an input file use the modify_xmlfile method
-        new_xmltree = fmode.modify_xmlfile('/path/to/input/file/inp.xml')
+        new_xmltree, additional_files = fmode.modify_xmlfile('/path/to/input/file/inp.xml')
 
     """
 
@@ -339,7 +339,7 @@ class FleurXMLModifier:
     def modify_xmlfile(self,
                        original_inpxmlfile: XMLFileLike,
                        original_nmmp_file: FileLike | list[str] | None = None,
-                       validate_changes: bool = True) -> tuple[etree._ElementTree, list[str]] | etree._ElementTree:
+                       validate_changes: bool = True) -> tuple[etree._ElementTree, dict[str, str]]:
         """
         Applies the registered modifications to a given inputfile
 
@@ -355,7 +355,9 @@ class FleurXMLModifier:
         original_xmltree, schema_dict = load_inpxml(original_inpxmlfile)
 
         if original_nmmp_file is not None:
-            if isinstance(original_nmmp_file, (str, Path)):
+            if isinstance(original_nmmp_file, str) and not Path(original_nmmp_file).is_file():
+                original_nmmp_lines = original_nmmp_file.split('\n')
+            elif isinstance(original_nmmp_file, (str, Path)):
                 with open(original_nmmp_file, encoding='utf-8') as n_mmp_file:
                     original_nmmp_lines = n_mmp_file.read().split('\n')
             else:
@@ -370,9 +372,11 @@ class FleurXMLModifier:
 
         ensure_relaxation_xinclude(new_xmltree, schema_dict)
         etree.indent(new_xmltree)
-        if new_nmmp_lines is None:
-            return new_xmltree
-        return new_xmltree, new_nmmp_lines
+
+        additional_files = {}
+        if new_nmmp_lines is not None:
+            additional_files['n_mmp_mat'] = '\n'.join(new_nmmp_lines)
+        return new_xmltree, additional_files
 
     def set_inpchanges(self, *args: Any, **kwargs: Any) -> None:
         """

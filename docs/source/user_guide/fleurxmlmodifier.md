@@ -24,7 +24,7 @@ from masci_tools.io.fleurxmlmodifier import  FleurXMLModifier
 
 fm = FleurXMLModifier()                                      # Initialise FleurXMLModifier class
 fm.set_inpchanges({'dos' : True, 'Kmax': 3.9 })              # Add changes
-new_xmltree = fm.modify_xmlfile('/path/to/original/inp.xml') #Apply
+new_xmltree, _ = fm.modify_xmlfile('/path/to/original/inp.xml') #Apply 
 ```
 
 ## User Methods
@@ -124,7 +124,8 @@ fm.set_species('Nd-1', {'ldaU':{'l': 3, 'U': 6.76, 'J': 0.76, 'l_amf': 'F'}})
 # Initialize n_mmp_mat file with the states m = -3 to m = 0 occupied for spin up
 # spin down is initialized with 0 by default, since no n_mmp_mat file is provided
 fm.set_nmmpmat('Nd-1', orbital=3, spin=1, state_occupations=[1,1,1,1,0,0,0])
-new_xmltree, nmmp_content = fm.modify_xmlfile('/path/to/original/inp.xml')
+new_xmltree, add_files = fm.modify_xmlfile('/path/to/original/inp.xml')
+print(add_files['n_mmp_mat'])
 ```
 
 :::{note}
