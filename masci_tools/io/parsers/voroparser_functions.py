@@ -13,7 +13,7 @@
 Everything that is needed to parse the output of a voronoi calculation.
 """
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_ef_from_potfile, open_general, convert_to_pystd)
+                                             get_version_info, get_ef_from_potfile, convert_to_pystd, get_outfile_txt)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
 from masci_tools.io.common_functions import get_Ry2eV
 import numpy as np
@@ -25,17 +25,16 @@ __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __contributors__ = ('Philipp Rüßmann')
-__version__ = 1.4
+__version__ = 1.5
 
 ####################################################################################
 
 
 def get_valence_min(outfile='out_voronoi'):
     """Construct minimum of energy contour (between valence band bottom and core states)"""
-    with open_general(outfile) as f:
-        txt = f.readlines()
-        searchstr = 'All other states are above'
-        valence_minimum = np.array([float(line.split(':')[1].split()[0]) for line in txt if searchstr in line])
+    txt = get_outfile_txt(outfile)
+    searchstr = 'All other states are above'
+    valence_minimum = np.array([float(line.split(':')[1].split()[0]) for line in txt if searchstr in line])
     return valence_minimum
 
 
@@ -232,15 +231,13 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
 
 
 def startpot_jellium(outfile):
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
-    itmp = search_string('JELLSTART POTENTIALS', tmptxt)
+    txt = get_outfile_txt(outfile)
+    itmp = search_string('JELLSTART POTENTIALS', txt)
     return itmp != -1
 
 
 def get_volumes(outfile):
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
 
     itmp = search_string('Total volume (alat^3)', tmptxt)
     if itmp >= 0:
@@ -259,30 +256,28 @@ def get_volumes(outfile):
 
 
 def get_cls_info(outfile):
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
-        itmp = 0
-        Ncls = 0
-        Natom = 0
-        cls_all = []
-        results = []
-        while itmp >= 0:
-            itmp = search_string('CLSGEN_TB: Atom', tmptxt)
-            if itmp >= 0:
-                tmpstr = tmptxt.pop(itmp)
-                tmpstr = tmpstr.split()
-                tmp = [int(tmpstr[2]), int(tmpstr[4]), float(tmpstr[6]), int(tmpstr[8]), int(tmpstr[10])]
-                results.append(tmp)
-                if int(tmpstr[8]) not in cls_all:
-                    Ncls += 1
-                    cls_all.append(int(tmpstr[8]))
-                Natom += 1
+    tmptxt = get_outfile_txt(outfile)
+    itmp = 0
+    Ncls = 0
+    Natom = 0
+    cls_all = []
+    results = []
+    while itmp >= 0:
+        itmp = search_string('CLSGEN_TB: Atom', tmptxt)
+        if itmp >= 0:
+            tmpstr = tmptxt.pop(itmp)
+            tmpstr = tmpstr.split()
+            tmp = [int(tmpstr[2]), int(tmpstr[4]), float(tmpstr[6]), int(tmpstr[8]), int(tmpstr[10])]
+            results.append(tmp)
+            if int(tmpstr[8]) not in cls_all:
+                Ncls += 1
+                cls_all.append(int(tmpstr[8]))
+            Natom += 1
     return Ncls, Natom, results
 
 
 def get_shape_array(outfile, atominfo):
-    with open_general(outfile) as f:
-        txt = f.readlines()
+    txt = get_outfile_txt(outfile)
     #naez/natyp number of items either one number (=ishape without cpa or two =[iatom, ishape] with CPA)
     # read in naez and/or natyp and then find ishape array (1..natyp[=naez without CPA])
     itmp = search_string('NAEZ= ', txt)
@@ -309,8 +304,7 @@ def get_shape_array(outfile, atominfo):
         raise ValueError(f'Neither NAEZ nor NATYP found in {outfile}')
 
     # read shape index from atominfo file
-    with open_general(atominfo) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(atominfo)
 
     itmp = search_string('<SHAPE>', tmptxt) + 1
     ishape = []
@@ -325,8 +319,7 @@ def get_shape_array(outfile, atominfo):
 
 
 def get_radii(naez, radii):
-    with open_general(radii) as f:
-        txt = f.readlines()
+    txt = get_outfile_txt(radii)
     results = []
     for iatom in range(naez):
         # IAT    Rmt0           Rout            Ratio(%)   dist(NN)      Rout/dist(NN) (%)
@@ -345,8 +338,7 @@ def get_radii(naez, radii):
 
 
 def get_fpradius(naez, atominfo):
-    with open_general(atominfo) as f:
-        txt = f.readlines()
+    txt = get_outfile_txt(atominfo)
     itmp = search_string('<FPRADIUS>', txt) + 1
     results = []
     for iatom in range(naez):
@@ -358,16 +350,14 @@ def get_fpradius(naez, atominfo):
 
 
 def get_alat(inpfile):
-    with open_general(inpfile) as f:
-        txt = f.readlines()
+    txt = get_outfile_txt(inpfile)
     itmp = search_string('ALATBASIS', txt)
     result = float(txt[itmp].split('ALATBASIS')[1].split('=')[1].split()[0])
     return result
 
 
 def get_radial_meshpoints(potfile):
-    with open_general(potfile) as f:  # make sure the file is properly closed
-        txt = f.readlines()
+    txt = get_outfile_txt(potfile)
     itmp = 0
     result = []
     while itmp >= 0:
