@@ -135,17 +135,17 @@ def write_nmmpmat_from_orbitals(orbital: int,
                                 phi: float | None = None,
                                 theta: float | None = None,
                                 inverse: bool = False) -> list[str]:
-    """
+    r"""
     Generate list of str for n_mmp_mat file from orbital occupations
 
     orbital occupations are provided in the following order
     (expressed as the spherical harmonics since it can be used for all orbitals):
 
-        - Y_l^0
-        - 1/sqrt(2) (Y_l^-1 + Y_l^1)
-        - i/sqrt(2) (Y_l^-1 - Y_l^1)
-        - 1/sqrt(2) (Y_l^-2 + Y_l^2)
-        - i/sqrt(2) (Y_l^-2 - Y_l^2)
+        - :math:`Y_l^0`
+        - :math:`\frac{1}{\sqrt{2}} \left(Y_l^{-1} + Y_l^1\right)`
+        - :math:`\frac{i}{\sqrt{2}} \left(Y_l^{-1} - Y_l^1\right)`
+        - :math:`\frac{1}{\sqrt{2}} \left(Y_l^{-2} + Y_l^2\right)`
+        - :math:`\frac{i}{\sqrt{2}} \left(Y_l^{-2} - Y_l^2\right)`
         - and so on ...
 
     :param orbital: int of the orbital for the current block
@@ -153,7 +153,7 @@ def write_nmmpmat_from_orbitals(orbital: int,
     :param phi: float, angle (radian), by which to rotate the density matrix
     :param theta: float, angle (radian), by which to rotate the density matrix
 
-    :returns: list of str formatted in lines for the n_mmp_mat file
+    :returns: list of str formatted in lines for the `n_mmp_mat` file
     """
 
     denmat = np.zeros((2 * orbital + 1, 2 * orbital + 1), dtype=complex)
