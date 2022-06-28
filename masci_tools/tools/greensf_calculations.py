@@ -185,6 +185,7 @@ def heisenberg_reciprocal(qpoints: np.ndarray, jij_data: pd.DataFrame, entry: st
     Calculate the fourier transform of an entry for interaction constants
 
     Example for $J_ij$
+
     .. math::
         J(\mathbf{q})\ =\ \sum_{ij} J_{ij} e^{i\mathbf{q}\cdot\mathbf{R}_{ij}}
 
