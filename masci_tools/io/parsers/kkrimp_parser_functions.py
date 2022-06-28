@@ -13,7 +13,7 @@
 Tools for the impurity caluclation plugin and its workflows
 """
 from numpy import array, ndarray, loadtxt
-from masci_tools.io.common_functions import search_string, open_general, get_version_info, convert_to_pystd
+from masci_tools.io.common_functions import search_string, get_outfile_txt, get_version_info, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
 import traceback
 from masci_tools.io.common_functions import get_Ry2eV
@@ -47,8 +47,7 @@ class KkrimpParserFunctions:
             * 'epts', list of complex valued energy points
             * 'weights', list of complex valued weights for energy integration
         """
-        with open_general(out_log) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(out_log)
         econt = {}
         itmp = search_string('[read_energy] number of energy points', tmptxt)
         if itmp >= 0:
@@ -72,8 +71,7 @@ class KkrimpParserFunctions:
         :returns: niter (int), nitermax (int), converged (bool), nmax_reached (bool), mixinfo (dict)
         :note: mixinfo contains information on mixing scheme and mixing factor used in the calculation
         """
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         # get rms and number of iterations
         itmp, niter, rms = 0, -1, -1
         while itmp >= 0:
@@ -119,8 +117,7 @@ class KkrimpParserFunctions:
         :param file: absolute path to out_log.000.txt of KKRimp calculation
         :returns: True(False) if SOC solver is (not) used
         """
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         itmp = search_string('Spin orbit coupling used?', tmptxt)
         itmp = int(tmptxt.pop(itmp).split()[-1])
         newsosol = itmp == 1
@@ -132,8 +129,7 @@ class KkrimpParserFunctions:
         :param file: file that is parsed to find number of atoms
         :returns: natom (int), number of atoms in impurity cluster
         """
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         itmp = search_string('NATOM is', tmptxt)
         natom = int(tmptxt.pop(itmp).split()[-1])
         return natom
@@ -151,8 +147,7 @@ class KkrimpParserFunctions:
         """
         import numpy as np
 
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         itmp = 0
         spinmom_all = []
         while itmp >= 0:
@@ -181,8 +176,7 @@ class KkrimpParserFunctions:
         :param outfile: timing file of the KKRimp run
         :returns: res (dict) timings in seconds, averaged over iterations
         """
-        with open_general(outfile) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(outfile)
         search_keys = [
             'time until scf starts', 'vpot->tmat', 'gref->gmat', 'gonsite->density', 'energyloop', 'Iteration number',
             'Total running time'
@@ -215,8 +209,7 @@ class KkrimpParserFunctions:
         :param file: file that is parsed
         :returns: 1 if calculation is paramagnetic, 2 otherwise
         """
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         itmp = search_string('NSPIN', tmptxt)
         nspin = int(tmptxt.pop(itmp).split()[-1])
         return nspin
@@ -233,8 +226,7 @@ class KkrimpParserFunctions:
         import numpy as np
         from math import sqrt  #pylint: disable=no-name-in-module
 
-        with open_general(file) as f:
-            lines = f.readlines()
+        lines = get_outfile_txt(file)
         startline = len(lines) - natom
         spinmom_at = np.array([lines[startline].split()])
         spinmom_at_all = np.array([lines[1].split()])
@@ -263,8 +255,7 @@ class KkrimpParserFunctions:
         """
         import numpy as np
 
-        with open_general(file) as f:
-            lines = f.readlines()
+        lines = get_outfile_txt(file)
         startline = len(lines) - natom
 
         orbmom_at = []
@@ -289,8 +280,7 @@ class KkrimpParserFunctions:
         :param potfile: file that is parsed
         :returns: EF (float), value of the Fermi energy in Ry
         """
-        with open_general(potfile) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(potfile)
         EF = float(tmptxt[3].split()[1])
         return EF
 
@@ -300,8 +290,7 @@ class KkrimpParserFunctions:
         :param file: file that is parsed
         :returns: Etot (list), values of the total energy in Ry for all iterations
         """
-        with open_general(file) as f:
-            tmptxt = f.readlines()
+        tmptxt = get_outfile_txt(file)
         itmp = 0
         Etot = []
         while itmp >= 0:
