@@ -8,7 +8,9 @@ calculated by Fleur. At the moment the following are implemented:
 """
 from __future__ import annotations
 
-from .greensfunction import intersite_shells, intersite_shells_from_file
+from masci_tools.util.typing import FileLike
+
+from .greensfunction import GreensFunction, intersite_shells, intersite_shells_from_file
 from masci_tools.io.common_functions import get_pauli_matrix
 
 import numpy as np
@@ -30,11 +32,11 @@ except ImportError:
 
 
 def calculate_heisenberg_jij(
-    hdffileORgreensfunctions,
-    reference_atom,
-    onsite_delta,
-    max_shells=None,
-):
+    hdffileORgreensfunctions: FileLike | list[GreensFunction],
+    reference_atom: int,
+    onsite_delta: np.ndarray,
+    max_shells: int | None = None,
+) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange constants form Green's functions using the formula
 
@@ -49,10 +51,10 @@ def calculate_heisenberg_jij(
     :returns: pandas DataFrame containing all the Jij constants
     """
 
-    shell_function = intersite_shells_from_file
     if isinstance(hdffileORgreensfunctions, list):
-        shell_function = intersite_shells
-    shells = shell_function(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+        shells = intersite_shells(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+    else:
+        shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
     jij_constants: dict[str, list[Any]] = defaultdict(list)
 
@@ -83,7 +85,10 @@ def calculate_heisenberg_jij(
     return pd.DataFrame.from_dict(jij_constants)
 
 
-def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite_delta, max_shells=None):
+def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[GreensFunction],
+                                reference_atom: int,
+                                onsite_delta: np.ndarray,
+                                max_shells: int | None = None) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange tensor :math:`\mathbf{J}` from Green's functions using the formula
 
@@ -100,10 +105,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite
     :returns: pandas DataFrame containing all the J_xx, J_xy, etc. constants
     """
 
-    shell_function = intersite_shells_from_file
     if isinstance(hdffileORgreensfunctions, list):
-        shell_function = intersite_shells
-    shells = shell_function(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+        shells = intersite_shells(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+    else:
+        shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
     jij_tensor: dict[str, list[Any]] = defaultdict(list)
 
@@ -129,8 +134,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite
         for sigmai_str in ('x', 'y', 'z'):
             for sigmaj_str in ('x', 'y', 'z'):
 
-                sigmai = get_pauli_matrix(sigmai_str)
-                sigmaj = get_pauli_matrix(sigmaj_str)
+                sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
+                sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
 
                 integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gij, sigmaj, gji)
                 jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
@@ -175,7 +180,7 @@ def decompose_jij_tensor(jij_tensor: pd.DataFrame, moment_direction: Literal['x'
     return jij_tensor
 
 
-def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
+def calculate_heisenberg_j0(greensfunction: GreensFunction, onsite_delta: float, show: bool = False) -> float:
     r"""
     Calculate spin stiffness J_0 for the given green's function using the formula
 
@@ -210,7 +215,7 @@ def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
     return j0
 
 
-def calculate_hybridization(greensfunction):
+def calculate_hybridization(greensfunction: GreensFunction) -> np.ndarray:
     r"""
     Calculate the hybridization function as
 

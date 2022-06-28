@@ -43,7 +43,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pre-commit = [
-    'mypy==0.940',
+    'mypy==0.961',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.14',
@@ -113,7 +113,9 @@ module = [
     'humanfriendly',
     'yaml',
     'lxml.builder',
-    'IPython.*'
+    'IPython.*',
+    'pandas',
+    'scipy'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
