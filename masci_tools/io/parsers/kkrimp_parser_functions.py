@@ -202,10 +202,10 @@ class KkrimpParserFunctions:
         niter = len(res.get(search_keys[-2], []))
         if niter > 0:
             for key in search_keys[1:6]:
-                if key in list(res.keys()):
+                if key in res:
                     res[key] = sum(res[key]) / niter
             for key in [search_keys[0], search_keys[-1]]:
-                if key in list(res.keys()):
+                if key in res:
                     res[key] = res[key][0]
         return res
 
@@ -356,7 +356,7 @@ class KkrimpParserFunctions:
             tmp_dict['compile_options'] = compile_options
             tmp_dict['calculation_serial_number'] = serial_number
             out_dict['code_info_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: Version Info'
             msg_list.append(msg)
             if debug:
@@ -380,7 +380,7 @@ class KkrimpParserFunctions:
             tmp_dict['rms_spin_per_atom'] = result_atoms_last_spin
             tmp_dict['rms_unit'] = 'unitless'
             out_dict['convergence_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: rms-error'
             msg_list.append(msg)
             if debug:
@@ -393,7 +393,7 @@ class KkrimpParserFunctions:
             out_dict['nspin'] = nspin
             out_dict['number_of_atoms_in_unit_cell'] = natom
             out_dict['use_newsosol'] = newsosol
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: nspin/natom'
             msg_list.append(msg)
             if debug:
@@ -407,7 +407,7 @@ class KkrimpParserFunctions:
                 out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
                 tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
                 out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: total magnetic moment'
             msg_list.append(msg)
             if debug:
@@ -424,7 +424,7 @@ class KkrimpParserFunctions:
                     out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = spinmom_atom_vec_all_iter
                     tmp_dict['spin_moment_unit'] = 'mu_Bohr'
                     out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: spin moment per atom'
             msg_list.append(msg)
             if debug:
@@ -440,7 +440,7 @@ class KkrimpParserFunctions:
                     out_dict['convergence_group']['orbital_moment_per_atom_all_iterations'] = orbmom_atom_all_iter
                     tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
                     out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: orbital moment'
             msg_list.append(msg)
             if debug:
@@ -450,7 +450,7 @@ class KkrimpParserFunctions:
             result = self._get_EF_potfile(files['out_pot'])
             out_dict['fermi_energy'] = result
             out_dict['fermi_energy_units'] = 'Ry'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: EF'
             msg_list.append(msg)
             if debug:
@@ -463,7 +463,7 @@ class KkrimpParserFunctions:
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
             out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: total energy'
             msg_list.append(msg)
             if debug:
@@ -475,7 +475,7 @@ class KkrimpParserFunctions:
             tmp_dict['number_of_warnings'] = len(result)
             tmp_dict['warnings_list'] = result
             out_dict['warnings_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: search for warnings'
             msg_list.append(msg)
             if debug:
@@ -485,7 +485,7 @@ class KkrimpParserFunctions:
             result = self._extract_timings(files['out_timing'])
             out_dict['timings_group'] = result
             out_dict['timings_unit'] = 'seconds'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: timings'
             msg_list.append(msg)
             if debug:
@@ -497,7 +497,7 @@ class KkrimpParserFunctions:
             out_dict['single_particle_energies_unit'] = 'eV'
             out_dict['total_energies_atom'] = etot_at * get_Ry2eV()
             out_dict['total_energies_atom_unit'] = 'eV'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: single particle energies'
             msg_list.append(msg)
             if debug:
@@ -515,7 +515,7 @@ class KkrimpParserFunctions:
             out_dict['total_charge_per_atom_unit'] = 'electron charge'
             out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
             out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: charges'
             msg_list.append(msg)
             if debug:
@@ -531,7 +531,7 @@ class KkrimpParserFunctions:
             tmp_dict['epoints_contour_unit'] = 'Rydberg'
             tmp_dict['epoints_weights'] = econt.get('weights')
             out_dict['energy_contour_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: energy contour'
             msg_list.append(msg)
             if debug:
@@ -545,7 +545,7 @@ class KkrimpParserFunctions:
             tmp_dict['energy_highest_lying_core_state_per_atom_unit'] = 'Rydberg'
             tmp_dict['descr_highest_lying_core_state_per_atom'] = descr_max
             out_dict['core_states_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: core_states'
             msg_list.append(msg)
             if debug:
@@ -562,7 +562,7 @@ class KkrimpParserFunctions:
             out_dict['convergence_group']['qbound'] = mixinfo[2]
             out_dict['convergence_group']['fcm'] = mixinfo[3]
             out_dict['convergence_group']['brymix'] = mixinfo[1]
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKRimp: scfinfo'
             msg_list.append(msg)
             if debug:

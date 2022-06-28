@@ -38,7 +38,7 @@ class Test_kkr_parser_functions:
                                                            self.timing_file, self.potfile_out, self.nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(self.grouping_ref)
         data_regression.check(out_dict)
@@ -59,7 +59,7 @@ class Test_kkr_parser_functions:
                                                                                    potfile_out, nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(self.grouping_ref)
         data_regression.check(out_dict)
@@ -80,7 +80,7 @@ class Test_kkr_parser_functions:
                                                            potfile_out, nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         data_regression.check(out_dict)
 
     def test_nosoc_kkr_output(self, data_regression):
@@ -100,7 +100,7 @@ class Test_kkr_parser_functions:
                                                            potfile_out, nonco_out_file)
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         data_regression.check(out_dict)
 
     def test_missing_outfile(self):
@@ -223,7 +223,7 @@ class Test_kkr_parser_functions:
                                                            potfile_out, 'wrong_name')
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         data_regression.check(out_dict)
 
     def test_parse_3Dsymmetries(self, data_regression):
@@ -237,5 +237,5 @@ class Test_kkr_parser_functions:
                                                            os.fspath(p / 'out_potential'),
                                                            os.fspath(p / 'nonco_angle_out.dat'))
         assert success
-        assert msg_list == []
+        assert not msg_list
         data_regression.check(out_dict)

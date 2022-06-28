@@ -47,9 +47,9 @@ def check_voronoi_output(potfile, outfile, delta_emin_safety=0.1):
     #print a table that summarizes the result
     e_core_max = np.zeros(len(ncore))
     print('pot    Highest core-level     low. val. state    diff')
-    for ipot in range(len(ncore)):
-        if ncore[ipot] > 0:
-            lval, emax, descr = get_highest_core_state(ncore[ipot], ecore[ipot], lcore[ipot])
+    for ipot, nc in enumerate(ncore):
+        if nc > 0:
+            lval, emax, descr = get_highest_core_state(nc, ecore[ipot], lcore[ipot])
             e_core_max[ipot] = emax
             print('%3i     %2s %10.6f            %6.2f         %6.2f' %
                   (ipot + 1, descr, emax, e_val_min[ipot], e_val_min[ipot] - emax))
@@ -78,7 +78,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         tmp_dict['compile_options'] = compile_options
         tmp_dict['calculation_serial_number'] = serial_number
         out_dict['code_info_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: Version Info'
         msg_list.append(msg)
         if debug:
@@ -93,7 +93,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         out_dict['emin_minus_efermi'] = diff_emin_ef * get_Ry2eV()
         out_dict['emin_minus_efermi_Ry_units'] = 'Ry'
         out_dict['emin_minus_efermi_units'] = 'eV'
-    except:
+    except:  # pylint: disable=bare-except
         msg = "Error parsing output of voronoi: 'EMIN'"
         msg_list.append(msg)
         if debug:
@@ -108,7 +108,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         tmp_dict['energy_highest_lying_core_state_per_atom_unit'] = 'Rydberg'
         tmp_dict['descr_highest_lying_core_state_per_atom'] = descr_max
         out_dict['core_states_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: core_states'
         msg_list.append(msg)
         if debug:
@@ -129,7 +129,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         tmpdict_all['cluster_info_atoms'] = clsinfo
         tmpdict_all['number_of_clusters'] = Ncls
         out_dict['cluster_info_group'] = tmpdict_all
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: Cluster Info'
         msg_list.append(msg)
         if debug:
@@ -137,7 +137,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
 
     try:
         out_dict['start_from_jellium_potentials'] = startpot_jellium(outfile)
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: Jellium startpot'
         msg_list.append(msg)
         if debug:
@@ -146,7 +146,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
     try:
         natyp, naez, shapes = get_shape_array(outfile, atominfo)
         out_dict['shapes'] = shapes
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: SHAPE Info'
         msg_list.append(msg)
         if debug:
@@ -165,7 +165,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         tmp_dict['volume_atoms'] = tmpdict_all
         tmp_dict['volume_unit'] = 'alat^3'
         out_dict['volumes_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: Volume Info'
         msg_list.append(msg)
         if debug:
@@ -185,7 +185,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
             tmpdict_all.append(tmpdict)
         tmpdict_all.append({'radii_units': 'alat'})
         out_dict['radii_atoms_group'] = tmpdict_all
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: radii.dat Info'
         msg_list.append(msg)
         if debug:
@@ -195,7 +195,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         results = get_fpradius(naez, atominfo)
         out_dict['fpradius_atoms'] = results
         out_dict['fpradius_atoms_unit'] = 'alat'
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: full potential radius'
         msg_list.append(msg)
         if debug:
@@ -205,7 +205,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
         result = get_alat(inputfile)
         out_dict['alat'] = result
         out_dict['alat_unit'] = 'a_Bohr'
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: alat'
         msg_list.append(msg)
         if debug:
@@ -214,7 +214,7 @@ def parse_voronoi_output(out_dict, outfile, potfile, atominfo, radii, inputfile,
     try:
         result = get_radial_meshpoints(potfile)
         out_dict['radial_meshpoints'] = result
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of voronoi: radial meshpoints'
         msg_list.append(msg)
         if debug:

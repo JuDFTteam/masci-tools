@@ -55,9 +55,10 @@ def open_general(filename_or_handle: FileLike, iomode: str | None = None) -> IO[
             if iomode is None:
                 f = open(f.name, f.mode, encoding='utf8')
             else:
-                f = open(f.name, iomode, encoding='utf8')
+                f = open(f.name, iomode, encoding='utf8')  #pylint: disable=consider-using-with
         else:  # make sure reading the file now starts at the beginning again
             f.seek(0)
+
     return f
 
 
