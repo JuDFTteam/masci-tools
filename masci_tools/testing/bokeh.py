@@ -140,10 +140,11 @@ def fixture_clean_bokeh_json():
                 normed = [(key, []) for key in key_order]
             for key, val in dict_val.items():
 
+                index = key_order.index(key)
                 if isinstance(val, dict):
                     normed = get_normalized_order(val, key_order, normed=normed)
+                    normed[index][1].extend(sorted(val.keys()))
                 else:
-                    index = key_order.index(key)
                     if not isinstance(val, list):
                         val = [val]
 
@@ -194,8 +195,12 @@ def fixture_clean_bokeh_json():
                     data[key] = normalize_list_of_dicts(val)
                 elif all(isinstance(x, int) for x in val) and data_entry:
                     data[key] = encode_base64_dict(np.array(val))
+                elif all(isinstance(x, float) for x in val) and data_entry:
+                    data[key] = encode_base64_dict(np.around(np.array(val), decimals=np_precision))
                 else:
                     data[key] = val
+            elif isinstance(val, float):
+                data[key] = round(val, np_precision)
         data = {key: val for key, val in data.items() if val not in (None, [], {})}
 
         return data

@@ -85,13 +85,6 @@ roots:
         value: simulation data
     type: LegendItem
   - attributes:
-      line_width: 2.0
-      x:
-        field: scaling
-      y:
-        field: energy
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_width: 2.0
       x:
@@ -101,6 +94,13 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: scaling
+      y:
+        field: energy
+    type: Line
+  - attributes:
       line_width: 2.0
       x:
         field: scaling

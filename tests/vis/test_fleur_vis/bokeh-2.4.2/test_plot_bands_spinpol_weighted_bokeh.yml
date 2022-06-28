@@ -321,11 +321,11 @@ roots:
       - 4.134138543687261
     type: FixedTicker
   - attributes:
-      name: eigenvalues_up
-    type: GlyphRenderer
-  - attributes:
       level: underlay
       name: eigenvalues_down
+    type: GlyphRenderer
+  - attributes:
+      name: eigenvalues_up
     type: GlyphRenderer
   - type: Grid
   - attributes:
@@ -381,7 +381,7 @@ roots:
     type: LinearAxis
   - attributes:
       high: -0.05
-      low: 0.9955054052935084
+      low: 0.99551
       palette:
       - '#08306b'
       - '#08316d'
@@ -642,7 +642,7 @@ roots:
     type: LinearColorMapper
   - attributes:
       high: -0.05
-      low: 0.9955054052935084
+      low: 0.99551
       palette:
       - '#67000d'
       - '#69000d'
@@ -932,20 +932,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        field: MT:1d_down
-      hatch_color:
-        field: MT:1d_down
-      line_color:
-        field: MT:1d_down
-      size:
-        field: size_1
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_down
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -984,20 +970,6 @@ roots:
         field: kpath
       y:
         field: eigenvalues_down
-    type: Scatter
-  - attributes:
-      fill_color:
-        field: MT:1d_up
-      hatch_color:
-        field: MT:1d_up
-      line_color:
-        field: MT:1d_up
-      size:
-        field: size_0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
     type: Scatter
   - attributes:
       fill_alpha:
@@ -1030,6 +1002,34 @@ roots:
         field: MT:1d_up
       line_alpha:
         value: 0.2
+      line_color:
+        field: MT:1d_up
+      size:
+        field: size_0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
+      fill_color:
+        field: MT:1d_down
+      hatch_color:
+        field: MT:1d_down
+      line_color:
+        field: MT:1d_down
+      size:
+        field: size_1
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_down
+    type: Scatter
+  - attributes:
+      fill_color:
+        field: MT:1d_up
+      hatch_color:
+        field: MT:1d_up
       line_color:
         field: MT:1d_up
       size:
@@ -1041,11 +1041,6 @@ roots:
     type: Scatter
   - type: Selection
   - type: Selection
-  - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
   - attributes:
       dimension: height
       line_dash:
@@ -1056,37 +1051,42 @@ roots:
       dimension: height
       line_dash:
       - 6
-      location: 0.325724555583458
+      location: 0.32572
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 1.302898222333832
+      location: 1.3029
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 2.1007571802081184
+      location: 2.10076
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 2.7522062913750363
+      location: 2.75221
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 3.2128503754791113
+      location: 3.21285
     type: Span
   - attributes:
       dimension: height
       line_dash:
       - 6
-      location: 4.134138543687261
+      location: 4.13414
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

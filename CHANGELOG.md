@@ -1,7 +1,24 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.1...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.1...develop)
+
+### Bugfixes
+- Fixed nondeterministic order in bokeh regression tests if multiple dictionaries with the same values but differing keys in the same list (e.g. Providing the same data for different columns)
+- Fixed wrong names for columns entered in `decompose_jij_tensor`, i.e. `J_ji` -> `J_ij`
+
+## v.0.11.1
+
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.0...v0.11.1)
+
+### Bugfixes
+- Bugfix in `reverse_xinclude`. Version `0.11.0` broke this function for versions, where the `relaxation` tag was not allowed.
+
+## v.0.11.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.10.1...v0.11.0)
+
+This release adds some improvements to the XML and HDF5 handling mainly for better AiiDA-Fleur
+support. Also major updates to documentation configurations and Green's function calculations.
 
 ### Added
 - Added `FleurElementMaker` class. This can be used to create XML elements compatible with a given version from scratch.
@@ -21,6 +38,7 @@
   ```
 - Function `serialize_xml_arguments` to `masci_tools.util.xml.common_functions` to remove XML elements/trees from positional/keyword arguments and replace them with string representations of the XML. Can be used in AiiDA-Fleur
 - Module `masci_tools.util.ipython` and ipython extension (`%load_ext masci_tools`). Adds syntax highlighted XML tree output and creating HTML syntax highlighted diffs of XML trees [[#158]](https://github.com/JuDFTteam/masci-tools/pull/158)
+- Added calculation of Jij Tensor from intersite Green's functions [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
 
 ### Improvements
 - Added `name` entry to `SchemaDict.tag_info` which contains the tag name in the original case [[#159]](https://github.com/JuDFTteam/masci-tools/pull/159)
@@ -29,6 +47,8 @@
 - `get_parameter_data` now also extracts the `gamma` switch for kpoint generation for more consistent roundtrips. This is only set if the first kpoint in the mesh is the gamma point and there are multiple
 - `load_inpxml` and `load_outxml` now consistently accept the XML file given as a
 string of the content. The content no longer has to be manually encoded as bytes
+- The method `FleurXMLModifier.modify_xmlfile` now always returns two things. The modified XML tree and a dictionary with all additional file contents, e.g. `n_mmp_mat`.
+- Support for aligning spin/real-space frames of Green's functions. Several further imporvements/bugfixes for Green's function modules [[#170]](https://github.com/JuDFTteam/masci-tools/pull/170)
 
 ### Bugfixes
 - Bugfix for `outxml_parser` returning a nested list for Hubbard 1 distances, where a flat list was expected. Removed `force_list` argument from the parsing task definition
@@ -38,6 +58,7 @@ string of the content. The content no longer has to be manually encoded as bytes
 
 ### For Developers
 - Docs: Updated `sphinx` and `sphinx-autodoc-typehints` versions and build docs on python 3.10 [[#156]](https://github.com/JuDFTteam/masci-tools/pull/156)
+- Docs: Converted to `MyST` markdown and where appropriate introduced `myst-nb` for executing code cells in the documentation, e.g. generate plotting examples [[#157]](https://github.com/JuDFTteam/masci-tools/pull/157)
 - Bokeh regression tests now strip out the bokeh version from the test files
 - Added pre-commit hook, which generates the docstrings for the `FleurXMLModifier` registration methods from their XML setter function counterparts [[#166]](https://github.com/JuDFTteam/masci-tools/pull/166)
 

@@ -220,14 +220,6 @@ roots:
         value: x_4
     type: LegendItem
   - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: x_0
-      y:
-        field: y_0
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
@@ -244,14 +236,6 @@ roots:
         field: x_0
       y:
         field: y_0
-    type: Line
-  - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: x_1
-      y:
-        field: y_1
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -272,14 +256,6 @@ roots:
         field: y_1
     type: Line
   - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: x_2
-      y:
-        field: y_2
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#2ca02c'
       line_width: 2.0
@@ -298,14 +274,6 @@ roots:
         field: y_2
     type: Line
   - attributes:
-      line_color: '#d62728'
-      line_width: 2.0
-      x:
-        field: x_3
-      y:
-        field: y_3
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#d62728'
       line_width: 2.0
@@ -322,14 +290,6 @@ roots:
         field: x_3
       y:
         field: y_3
-    type: Line
-  - attributes:
-      line_color: '#9467bd'
-      line_width: 2.0
-      x:
-        field: x_4
-      y:
-        field: y_4
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -342,6 +302,46 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: x_4
+      y:
+        field: y_4
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: x_0
+      y:
+        field: y_0
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: x_1
+      y:
+        field: y_1
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: x_2
+      y:
+        field: y_2
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: x_3
+      y:
+        field: y_3
+    type: Line
+  - attributes:
       line_color: '#9467bd'
       line_width: 2.0
       x:

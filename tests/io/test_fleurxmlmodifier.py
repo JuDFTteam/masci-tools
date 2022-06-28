@@ -94,9 +94,10 @@ def test_fleurxml_modifier_modify_xmlfile_simple(test_file):
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+    assert len(add_files) == 0
 
 
 def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
@@ -129,9 +130,10 @@ def test_fleurxml_modifier_modify_xmlfile_undo(test_file):
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+    assert len(add_files) == 0
 
 
 def test_fleurxml_modifier_from_list(test_file):
@@ -204,9 +206,10 @@ def test_fleurxml_modifier_from_list(test_file):
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+    assert len(add_files) == 0
 
 
 def test_fleurxml_modifier_task_list_construction():
@@ -415,9 +418,10 @@ def test_fleurxml_modifier_modify_xmlfile_undo_revert_all(test_file):
 
     #The underlying methods are tested in the specific tests for the setters
     #We only want to ensure that the procedure finishes without error
-    xmltree = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_PATH))
 
     assert xmltree is not None
+    assert len(add_files) == 0
 
 
 def test_fleurxmlmodifier_nmmpmat(test_file):
@@ -431,17 +435,17 @@ def test_fleurxmlmodifier_nmmpmat(test_file):
     # Found invalid diagonal element for species Ga-1, spin 1 and l=2
     with pytest.raises(ValueError, match=r'Changes were not valid \(n_mmp_mat file is not compatible\)'):
         fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH))
-    xmltree, nmmpmat = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH), validate_changes=False)
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH), validate_changes=False)
 
     assert xmltree is not None
-    assert nmmpmat is not None
+    assert add_files['n_mmp_mat'] is not None
 
-    xmltree, nmmpmat = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH),
-                                         original_nmmp_file=test_file(TEST_NMMPMAT_PATH),
-                                         validate_changes=False)
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_LDAU_PATH),
+                                           original_nmmp_file=test_file(TEST_NMMPMAT_PATH),
+                                           validate_changes=False)
 
     assert xmltree is not None
-    assert nmmpmat is not None
+    assert add_files['n_mmp_mat'] is not None
 
 
 def test_fleurxmlmodifier_deprecated_validate():
@@ -475,6 +479,7 @@ def test_fleurxmlmodifier_included_files(file_regression, test_file):
     fm.set_text('kPoint', [0.0, 0.0, 0.0],
                 complex_xpath="/fleurInput/cell/bzIntegration/kPointLists/kPointList[@name='TEST']/kPoint")
 
-    xmltree = fm.modify_xmlfile(test_file('fleur/test_clear.xml'), validate_changes=False)
+    xmltree, add_files = fm.modify_xmlfile(test_file('fleur/test_clear.xml'), validate_changes=False)
 
+    assert len(add_files) == 0
     file_regression.check(etree.tostring(xmltree, encoding='unicode', pretty_print=True), extension='.xml')

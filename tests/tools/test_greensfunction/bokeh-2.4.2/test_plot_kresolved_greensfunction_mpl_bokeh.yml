@@ -49,21 +49,9 @@ roots:
     type: Grid
   - attributes:
       dh:
-        value: 10.8845544983952
+        value: 10.88455
       dw:
-        value: 1.1601250788328799
-      image:
-        field: image
-      x:
-        value: 0
-      y:
-        value: -5.423047430738245
-    type: Image
-  - attributes:
-      dh:
-        value: 10.8845544983952
-      dw:
-        value: 1.1601250788328799
+        value: 1.16013
       global_alpha:
         value: 0.1
       image:
@@ -71,13 +59,13 @@ roots:
       x:
         value: 0
       y:
-        value: -5.423047430738245
+        value: -5.42305
     type: Image
   - attributes:
       dh:
-        value: 10.8845544983952
+        value: 10.88455
       dw:
-        value: 1.1601250788328799
+        value: 1.16013
       global_alpha:
         value: 0.2
       image:
@@ -85,7 +73,19 @@ roots:
       x:
         value: 0
       y:
-        value: -5.423047430738245
+        value: -5.42305
+    type: Image
+  - attributes:
+      dh:
+        value: 10.88455
+      dw:
+        value: 1.16013
+      image:
+        field: image
+      x:
+        value: 0
+      y:
+        value: -5.42305
     type: Image
   - attributes:
       click_policy: hide
@@ -911,19 +911,13 @@ roots:
     type: PolyAnnotation
   - type: PolySelectTool
   - attributes:
-      end: 5.461507067656956
-      start: -5.423047430738245
+      end: 5.46151
+      start: -5.42305
     type: Range1d
   - type: RedoTool
   - type: ResetTool
   - type: SaveTool
   - type: Selection
-  - attributes:
-      line_color: white
-      line_dash:
-      - 6
-      location: 0
-    type: Span
   - attributes:
       dimension: height
       line_color: white
@@ -936,7 +930,13 @@ roots:
       line_color: white
       line_dash:
       - 6
-      location: 1.1601250788328799
+      location: 1.16013
+    type: Span
+  - attributes:
+      line_color: white
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

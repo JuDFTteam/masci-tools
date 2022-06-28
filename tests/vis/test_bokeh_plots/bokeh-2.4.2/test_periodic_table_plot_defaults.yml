@@ -12225,7 +12225,7 @@ roots:
       text: atomic radius
       text_font_size: 13px
       x: 7.3
-      y: 5.532592592592592
+      y: 5.53259
     type: Label
   - attributes:
       border_line_alpha: 0.0
@@ -12233,7 +12233,7 @@ roots:
       text: year discovered
       text_font_size: 13px
       x: 7.3
-      y: 5.382592592592593
+      y: 5.38259
     type: Label
   - attributes:
       axis_label: ''
@@ -12621,6 +12621,42 @@ roots:
   - type: TapTool
   - attributes:
       text:
+        field: symbol
+      text_alpha:
+        value: 0.1
+      text_baseline:
+        value: middle
+      text_color:
+        value: black
+      text_font_size:
+        value: 14pt
+      text_font_style:
+        value: bold
+      x:
+        field: group
+      y:
+        field: period
+    type: Text
+  - attributes:
+      text:
+        field: symbol
+      text_alpha:
+        value: 0.2
+      text_baseline:
+        value: middle
+      text_color:
+        value: black
+      text_font_size:
+        value: 14pt
+      text_font_style:
+        value: bold
+      x:
+        field: group
+      y:
+        field: period
+    type: Text
+  - attributes:
+      text:
         field: atomic number
       text_alpha:
         value: 0.1
@@ -12640,20 +12676,6 @@ roots:
         field: atomic number
       text_alpha:
         value: 0.2
-      text_baseline:
-        value: middle
-      text_color:
-        value: black
-      text_font_size:
-        value: 12pt
-      x:
-        field: group
-      y:
-        field: period
-    type: Text
-  - attributes:
-      text:
-        field: atomic number
       text_baseline:
         value: middle
       text_color:
@@ -12692,72 +12714,6 @@ roots:
         value: black
       text_font_size:
         value: 10pt
-      x:
-        field: group
-      y:
-        field: period
-    type: Text
-  - attributes:
-      text:
-        field: atomic radius
-      text_baseline:
-        value: middle
-      text_color:
-        value: black
-      text_font_size:
-        value: 10pt
-      x:
-        field: group
-      y:
-        field: period
-    type: Text
-  - attributes:
-      text:
-        field: symbol
-      text_alpha:
-        value: 0.1
-      text_baseline:
-        value: middle
-      text_color:
-        value: black
-      text_font_size:
-        value: 14pt
-      text_font_style:
-        value: bold
-      x:
-        field: group
-      y:
-        field: period
-    type: Text
-  - attributes:
-      text:
-        field: symbol
-      text_alpha:
-        value: 0.2
-      text_baseline:
-        value: middle
-      text_color:
-        value: black
-      text_font_size:
-        value: 14pt
-      text_font_style:
-        value: bold
-      x:
-        field: group
-      y:
-        field: period
-    type: Text
-  - attributes:
-      text:
-        field: symbol
-      text_baseline:
-        value: middle
-      text_color:
-        value: black
-      text_font_size:
-        value: 14pt
-      text_font_style:
-        value: bold
       x:
         field: group
       y:
@@ -12784,6 +12740,50 @@ roots:
         field: year discovered
       text_alpha:
         value: 0.2
+      text_baseline:
+        value: middle
+      text_color:
+        value: black
+      text_font_size:
+        value: 10pt
+      x:
+        field: group
+      y:
+        field: period
+    type: Text
+  - attributes:
+      text:
+        field: symbol
+      text_baseline:
+        value: middle
+      text_color:
+        value: black
+      text_font_size:
+        value: 14pt
+      text_font_style:
+        value: bold
+      x:
+        field: group
+      y:
+        field: period
+    type: Text
+  - attributes:
+      text:
+        field: atomic number
+      text_baseline:
+        value: middle
+      text_color:
+        value: black
+      text_font_size:
+        value: 12pt
+      x:
+        field: group
+      y:
+        field: period
+    type: Text
+  - attributes:
+      text:
+        field: atomic radius
       text_baseline:
         value: middle
       text_color:

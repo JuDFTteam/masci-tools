@@ -225,20 +225,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        value: '#1f77b4'
-      hatch_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        value: 6
-      x:
-        field: x_0
-      y:
-        field: y_0
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -277,20 +263,6 @@ roots:
         field: x_0
       y:
         field: y_0
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#ff7f0e'
-      hatch_color:
-        value: '#ff7f0e'
-      line_color:
-        value: '#ff7f0e'
-      size:
-        value: 6
-      x:
-        field: x_1
-      y:
-        field: y_1
     type: Scatter
   - attributes:
       fill_alpha:
@@ -333,20 +305,6 @@ roots:
         field: y_1
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#2ca02c'
-      hatch_color:
-        value: '#2ca02c'
-      line_color:
-        value: '#2ca02c'
-      size:
-        value: 6
-      x:
-        field: x_2
-      y:
-        field: y_2
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -387,20 +345,6 @@ roots:
         field: y_2
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#d62728'
-      hatch_color:
-        value: '#d62728'
-      line_color:
-        value: '#d62728'
-      size:
-        value: 6
-      x:
-        field: x_3
-      y:
-        field: y_3
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -439,20 +383,6 @@ roots:
         field: x_3
       y:
         field: y_3
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#9467bd'
-      hatch_color:
-        value: '#9467bd'
-      line_color:
-        value: '#9467bd'
-      size:
-        value: 6
-      x:
-        field: x_4
-      y:
-        field: y_4
     type: Scatter
   - attributes:
       fill_alpha:
@@ -485,6 +415,76 @@ roots:
         value: '#9467bd'
       line_alpha:
         value: 0.2
+      line_color:
+        value: '#9467bd'
+      size:
+        value: 6
+      x:
+        field: x_4
+      y:
+        field: y_4
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      hatch_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        value: 6
+      x:
+        field: x_0
+      y:
+        field: y_0
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      hatch_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        value: 6
+      x:
+        field: x_1
+      y:
+        field: y_1
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      hatch_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        value: 6
+      x:
+        field: x_2
+      y:
+        field: y_2
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      hatch_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        value: 6
+      x:
+        field: x_3
+      y:
+        field: y_3
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      hatch_color:
+        value: '#9467bd'
       line_color:
         value: '#9467bd'
       size:

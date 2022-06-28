@@ -269,14 +269,6 @@ roots:
         value: simulation data
     type: LegendItem
   - attributes:
-      line_color: '#1f77b4'
-      line_width: 2.0
-      x:
-        field: scaling_0
-      y:
-        field: energy_0
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#1f77b4'
       line_width: 2.0
@@ -293,14 +285,6 @@ roots:
         field: scaling_0
       y:
         field: energy_0
-    type: Line
-  - attributes:
-      line_color: '#ff7f0e'
-      line_width: 2.0
-      x:
-        field: scaling_1
-      y:
-        field: energy_1
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -321,14 +305,6 @@ roots:
         field: energy_1
     type: Line
   - attributes:
-      line_color: '#2ca02c'
-      line_width: 2.0
-      x:
-        field: scaling_2
-      y:
-        field: energy_2
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#2ca02c'
       line_width: 2.0
@@ -347,14 +323,6 @@ roots:
         field: energy_2
     type: Line
   - attributes:
-      line_color: '#d62728'
-      line_width: 2.0
-      x:
-        field: scaling_3
-      y:
-        field: energy_3
-    type: Line
-  - attributes:
       line_alpha: 0.1
       line_color: '#d62728'
       line_width: 2.0
@@ -371,14 +339,6 @@ roots:
         field: scaling_3
       y:
         field: energy_3
-    type: Line
-  - attributes:
-      line_color: '#9467bd'
-      line_width: 2.0
-      x:
-        field: scaling_4
-      y:
-        field: energy_4
     type: Line
   - attributes:
       line_alpha: 0.1
@@ -391,6 +351,46 @@ roots:
     type: Line
   - attributes:
       line_alpha: 0.2
+      line_color: '#9467bd'
+      line_width: 2.0
+      x:
+        field: scaling_4
+      y:
+        field: energy_4
+    type: Line
+  - attributes:
+      line_color: '#1f77b4'
+      line_width: 2.0
+      x:
+        field: scaling_0
+      y:
+        field: energy_0
+    type: Line
+  - attributes:
+      line_color: '#ff7f0e'
+      line_width: 2.0
+      x:
+        field: scaling_1
+      y:
+        field: energy_1
+    type: Line
+  - attributes:
+      line_color: '#2ca02c'
+      line_width: 2.0
+      x:
+        field: scaling_2
+      y:
+        field: energy_2
+    type: Line
+  - attributes:
+      line_color: '#d62728'
+      line_width: 2.0
+      x:
+        field: scaling_3
+      y:
+        field: energy_3
+    type: Line
+  - attributes:
       line_color: '#9467bd'
       line_width: 2.0
       x:
@@ -434,20 +434,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        value: '#1f77b4'
-      hatch_color:
-        value: '#1f77b4'
-      line_color:
-        value: '#1f77b4'
-      size:
-        value: 6
-      x:
-        field: scaling_0
-      y:
-        field: energy_0
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -486,20 +472,6 @@ roots:
         field: scaling_0
       y:
         field: energy_0
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#ff7f0e'
-      hatch_color:
-        value: '#ff7f0e'
-      line_color:
-        value: '#ff7f0e'
-      size:
-        value: 6
-      x:
-        field: scaling_1
-      y:
-        field: energy_1
     type: Scatter
   - attributes:
       fill_alpha:
@@ -542,20 +514,6 @@ roots:
         field: energy_1
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#2ca02c'
-      hatch_color:
-        value: '#2ca02c'
-      line_color:
-        value: '#2ca02c'
-      size:
-        value: 6
-      x:
-        field: scaling_2
-      y:
-        field: energy_2
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -596,20 +554,6 @@ roots:
         field: energy_2
     type: Scatter
   - attributes:
-      fill_color:
-        value: '#d62728'
-      hatch_color:
-        value: '#d62728'
-      line_color:
-        value: '#d62728'
-      size:
-        value: 6
-      x:
-        field: scaling_3
-      y:
-        field: energy_3
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -648,20 +592,6 @@ roots:
         field: scaling_3
       y:
         field: energy_3
-    type: Scatter
-  - attributes:
-      fill_color:
-        value: '#9467bd'
-      hatch_color:
-        value: '#9467bd'
-      line_color:
-        value: '#9467bd'
-      size:
-        value: 6
-      x:
-        field: scaling_4
-      y:
-        field: energy_4
     type: Scatter
   - attributes:
       fill_alpha:
@@ -694,6 +624,76 @@ roots:
         value: '#9467bd'
       line_alpha:
         value: 0.2
+      line_color:
+        value: '#9467bd'
+      size:
+        value: 6
+      x:
+        field: scaling_4
+      y:
+        field: energy_4
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#1f77b4'
+      hatch_color:
+        value: '#1f77b4'
+      line_color:
+        value: '#1f77b4'
+      size:
+        value: 6
+      x:
+        field: scaling_0
+      y:
+        field: energy_0
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#ff7f0e'
+      hatch_color:
+        value: '#ff7f0e'
+      line_color:
+        value: '#ff7f0e'
+      size:
+        value: 6
+      x:
+        field: scaling_1
+      y:
+        field: energy_1
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#2ca02c'
+      hatch_color:
+        value: '#2ca02c'
+      line_color:
+        value: '#2ca02c'
+      size:
+        value: 6
+      x:
+        field: scaling_2
+      y:
+        field: energy_2
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#d62728'
+      hatch_color:
+        value: '#d62728'
+      line_color:
+        value: '#d62728'
+      size:
+        value: 6
+      x:
+        field: scaling_3
+      y:
+        field: energy_3
+    type: Scatter
+  - attributes:
+      fill_color:
+        value: '#9467bd'
+      hatch_color:
+        value: '#9467bd'
       line_color:
         value: '#9467bd'
       size:

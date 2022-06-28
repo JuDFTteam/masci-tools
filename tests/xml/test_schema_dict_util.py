@@ -720,3 +720,33 @@ def test_reverse_xinclude(load_inpxml):
 
     symmetry_tags = eval_xpath(sym_root, 'symOp', list_return=True)
     assert len(symmetry_tags) == 16
+
+
+def test_reverse_xinclude_old_file(load_inpxml):
+    """
+    Test of the reverse_xinclude function with an old file which can't have the relaxation tag
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+    from masci_tools.util.schema_dict_util import reverse_xinclude
+
+    xmltree, schema_dict = load_inpxml('fleur/aiida_fleur/inpxml/GaAsMultiForceXML/inp.xml', absolute=False)
+
+    cleared_tree, all_include_tags = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
+    reexcluded_root = reexcluded_tree.getroot()
+
+    assert len(included_trees) == 0
+
+    include_tags = eval_xpath(cleared_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0
+
+    include_tags = eval_xpath(reexcluded_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0

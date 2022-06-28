@@ -43,7 +43,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pre-commit = [
-    'mypy==0.940',
+    'mypy==0.961',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.14',
@@ -59,7 +59,8 @@ docs = [
     'sphinx_rtd_theme',
     'sphinx-click',
     'sphinx-autodoc-typehints',
-    "myst-parser~=0.15",
+    'myst-nb',
+    'sphinx-copybutton'
     ]
 testing = [
     'pytest~=6.0',
@@ -112,7 +113,9 @@ module = [
     'humanfriendly',
     'yaml',
     'lxml.builder',
-    'IPython.*'
+    'IPython.*',
+    'pandas',
+    'scipy'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
@@ -199,7 +202,7 @@ split_arguments_when_comma_terminated = true
 indent_dictionary_value = false
 
 [bumpver]
-current_version = "0.10.1"
+current_version = "0.11.1"
 version_pattern = "MAJOR.MINOR.PATCH[TAGNUM]"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

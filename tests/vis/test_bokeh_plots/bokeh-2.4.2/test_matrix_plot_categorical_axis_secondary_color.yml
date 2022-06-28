@@ -53,41 +53,11 @@ roots:
   - attributes:
       data:
         color:
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
-        - 2.3587708298569994
-        - 4.993517885992762
-        - 6.411803884299545
-        - 4.993517885992762
-        - 2.3587708298569994
-        - 3.291929878079056
-        - 6.96901560658112
-        - 8.948393168143697
-        - 6.96901560658112
-        - 3.291929878079056
-        - 3.6787944117144233
-        - 7.788007830714049
-        - 10.0
-        - 7.788007830714049
-        - 3.6787944117144233
-        - 3.291929878079056
-        - 6.969015606581122
-        - 8.948393168143697
-        - 6.969015606581122
-        - 3.291929878079056
-        - 2.3587708298570007
-        - 4.993517885992763
-        - 6.411803884299547
-        - 4.993517885992763
-        - 2.3587708298570007
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
+          __ndarray__: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         index:
           __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAAA==
           dtype: int64
@@ -95,41 +65,11 @@ roots:
           shape:
           - 35
         secondary_color:
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
+          __ndarray__: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         text:
         - '1.4'
         - '2.9'
@@ -242,41 +182,11 @@ roots:
   - attributes:
       data:
         color:
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
-        - 2.3587708298569994
-        - 4.993517885992762
-        - 6.411803884299545
-        - 4.993517885992762
-        - 2.3587708298569994
-        - 3.291929878079056
-        - 6.96901560658112
-        - 8.948393168143697
-        - 6.96901560658112
-        - 3.291929878079056
-        - 3.6787944117144233
-        - 7.788007830714049
-        - 10.0
-        - 7.788007830714049
-        - 3.6787944117144233
-        - 3.291929878079056
-        - 6.969015606581122
-        - 8.948393168143697
-        - 6.969015606581122
-        - 3.291929878079056
-        - 2.3587708298570007
-        - 4.993517885992763
-        - 6.411803884299547
-        - 4.993517885992763
-        - 2.3587708298570007
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
+          __ndarray__: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         index:
           __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAAA==
           dtype: int64
@@ -284,41 +194,11 @@ roots:
           shape:
           - 35
         secondary_color:
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
+          __ndarray__: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         text:
         - '1.4'
         - '2.9'
@@ -431,41 +311,11 @@ roots:
   - attributes:
       data:
         color:
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
-        - 2.3587708298569994
-        - 4.993517885992762
-        - 6.411803884299545
-        - 4.993517885992762
-        - 2.3587708298569994
-        - 3.291929878079056
-        - 6.96901560658112
-        - 8.948393168143697
-        - 6.96901560658112
-        - 3.291929878079056
-        - 3.6787944117144233
-        - 7.788007830714049
-        - 10.0
-        - 7.788007830714049
-        - 3.6787944117144233
-        - 3.291929878079056
-        - 6.969015606581122
-        - 8.948393168143697
-        - 6.969015606581122
-        - 3.291929878079056
-        - 2.3587708298570007
-        - 4.993517885992763
-        - 6.411803884299547
-        - 4.993517885992763
-        - 2.3587708298570007
-        - 1.353352832366127
-        - 2.865047968601901
-        - 3.6787944117144233
-        - 2.865047968601901
-        - 1.353352832366127
+          __ndarray__: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         index:
           __ndarray__: AAAAAAAAAAABAAAAAAAAAAIAAAAAAAAAAwAAAAAAAAAEAAAAAAAAAAUAAAAAAAAABgAAAAAAAAAHAAAAAAAAAAgAAAAAAAAACQAAAAAAAAAKAAAAAAAAAAsAAAAAAAAADAAAAAAAAAANAAAAAAAAAA4AAAAAAAAADwAAAAAAAAAQAAAAAAAAABEAAAAAAAAAEgAAAAAAAAATAAAAAAAAABQAAAAAAAAAFQAAAAAAAAAWAAAAAAAAABcAAAAAAAAAGAAAAAAAAAAZAAAAAAAAABoAAAAAAAAAGwAAAAAAAAAcAAAAAAAAAB0AAAAAAAAAHgAAAAAAAAAfAAAAAAAAACAAAAAAAAAAIQAAAAAAAAAiAAAAAAAAAA==
           dtype: int64
@@ -473,41 +323,11 @@ roots:
           shape:
           - 35
         secondary_color:
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
-        - -10.0
-        - -5.0
-        - 0.0
-        - 5.0
-        - 10.0
+          __ndarray__: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+          dtype: float64
+          order: little
+          shape:
+          - 35
         text:
         - '1.4'
         - '2.9'
@@ -1306,6 +1126,42 @@ roots:
     type: Patches
   - attributes:
       fill_alpha:
+        value: 0.1
+      fill_color:
+        field: secondary_color
+      hatch_alpha:
+        value: 0.1
+      hatch_color:
+        field: secondary_color
+      line_alpha:
+        value: 0.1
+      line_color:
+        field: secondary_color
+      xs:
+        field: x_axis
+      ys:
+        field: y_axis
+    type: Patches
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        field: secondary_color
+      hatch_alpha:
+        value: 0.2
+      hatch_color:
+        field: secondary_color
+      line_alpha:
+        value: 0.2
+      line_color:
+        field: secondary_color
+      xs:
+        field: x_axis
+      ys:
+        field: y_axis
+    type: Patches
+  - attributes:
+      fill_alpha:
         value: 0.6
       fill_color:
         field: color
@@ -1313,42 +1169,6 @@ roots:
         field: color
       line_color:
         field: color
-      xs:
-        field: x_axis
-      ys:
-        field: y_axis
-    type: Patches
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        field: secondary_color
-      hatch_alpha:
-        value: 0.1
-      hatch_color:
-        field: secondary_color
-      line_alpha:
-        value: 0.1
-      line_color:
-        field: secondary_color
-      xs:
-        field: x_axis
-      ys:
-        field: y_axis
-    type: Patches
-  - attributes:
-      fill_alpha:
-        value: 0.2
-      fill_color:
-        field: secondary_color
-      hatch_alpha:
-        value: 0.2
-      hatch_color:
-        field: secondary_color
-      line_alpha:
-        value: 0.2
-      line_color:
-        field: secondary_color
       xs:
         field: x_axis
       ys:

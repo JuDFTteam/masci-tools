@@ -2150,6 +2150,8 @@ roots:
         value: Eigenvalues
     type: LegendItem
   - attributes:
+      line_alpha: 0.1
+      line_color: blue
       line_width: 2.0
       x:
         field: kpath
@@ -2157,6 +2159,8 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
+      line_color: red
       line_width: 2.0
       x:
         field: kpath
@@ -2164,6 +2168,8 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.2
+      line_color: blue
       line_width: 2.0
       x:
         field: kpath
@@ -2171,6 +2177,8 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.2
+      line_color: red
       line_width: 2.0
       x:
         field: kpath
@@ -2178,6 +2186,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2185,6 +2194,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2192,6 +2202,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2199,6 +2210,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2206,6 +2218,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2213,6 +2226,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2220,6 +2234,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2227,6 +2242,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2234,6 +2250,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2241,6 +2258,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2248,6 +2266,7 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2255,6 +2274,167 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.1
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
+      line_width: 2.0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Line
+  - attributes:
+      line_alpha: 0.2
       line_width: 2.0
       x:
         field: kpath
@@ -2278,7 +2458,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2286,7 +2465,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2294,7 +2472,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2302,7 +2479,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2310,7 +2486,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2318,7 +2493,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2326,7 +2500,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2334,7 +2507,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2342,7 +2514,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2350,7 +2521,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2358,7 +2528,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2366,7 +2535,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2374,7 +2542,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2382,7 +2549,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2390,7 +2556,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
       line_width: 2.0
       x:
         field: kpath
@@ -2398,171 +2563,6 @@ roots:
         field: eigenvalues_up
     type: Line
   - attributes:
-      line_alpha: 0.1
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: blue
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.1
-      line_color: red
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_color: blue
-      line_width: 2.0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Line
-  - attributes:
-      line_alpha: 0.2
-      line_color: red
       line_width: 2.0
       x:
         field: kpath
@@ -2633,11 +2633,6 @@ roots:
   - type: Selection
   - type: Selection
   - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
-  - attributes:
       dimension: height
       line_dash:
       - 6
@@ -2647,7 +2642,12 @@ roots:
       dimension: height
       line_dash:
       - 6
-      location: 0.63895407737518
+      location: 0.63895
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title
