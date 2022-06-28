@@ -154,20 +154,20 @@ def decompose_jij_tensor(jij_tensor: pd.DataFrame, moment_direction: Literal['x'
     """
 
     if moment_direction == 'x':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_yy'] + jij_tensor['J_zz'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_yy'] - jij_tensor['J_zz'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_yz'] + jij_tensor['J_zy'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_yz'] - jij_tensor['J_zy'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_yy'] + jij_tensor['J_zz'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_yy'] - jij_tensor['J_zz'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_yz'] + jij_tensor['J_zy'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_yz'] - jij_tensor['J_zy'])  #Offdiagonal asymmetric
     elif moment_direction == 'y':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_zz'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_zz'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_xz'] + jij_tensor['J_zx'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_xz'] - jij_tensor['J_zx'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_zz'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_zz'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_xz'] + jij_tensor['J_zx'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_xz'] - jij_tensor['J_zx'])  #Offdiagonal asymmetric
     elif moment_direction == 'z':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_yy'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_yy'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_xy'] + jij_tensor['J_yx'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_xy'] - jij_tensor['J_yx'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_yy'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_yy'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_xy'] + jij_tensor['J_yx'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_xy'] - jij_tensor['J_yx'])  #Offdiagonal asymmetric
 
     else:
         raise ValueError(f'Invalid direction: {moment_direction}')

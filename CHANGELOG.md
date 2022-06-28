@@ -3,7 +3,9 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.1...develop)
 
-Nothing here yet
+### Bugfixes
+- Fixed nondeterministic order in bokeh regression tests if multiple dictionaries with the same values but differing keys in the same list (e.g. Providing the same data for different columns)
+- Fixed wrong names for columns entered in `decompose_jij_tensor`, i.e. `J_ji` -> `J_ij`
 
 ## v.0.11.1
 
