@@ -104,7 +104,7 @@ class Test_capture_wrong_input:  # pylint: disable=missing-class-docstring
                       ALATBASIS=1)
         p.set_value('LDAU_PARA', [1, 2])
         with pytest.raises(TypeError):
-            p._check_input_consistency()
+            p._check_input_consistency()  # pylint: disable=protected-access
 
     def test_inconsistency_bulk_mode_bravais(self):
         p = kkrparams(LMAX=2,

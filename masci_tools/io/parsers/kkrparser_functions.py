@@ -17,8 +17,8 @@ parser file where parse_kkr_outputfile is called
 import numpy as np
 from numpy import ndarray, array, loadtxt, shape
 from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
-                                             get_corestates_from_potential, get_highest_core_state, open_general,
-                                             convert_to_pystd)
+                                             get_corestates_from_potential, get_highest_core_state, convert_to_pystd,
+                                             get_outfile_txt)
 from masci_tools.io.common_functions import get_Ry2eV
 import traceback
 
@@ -48,8 +48,7 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=
     Returns: array of results
 
     """
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp = 0
     res = []
     while itmp >= 0:
@@ -110,7 +109,7 @@ def get_noco_rms(outfile, debug=False):
         print(outfile)
     try:
         rms_noco = parse_array_float(outfile, 'Total RMS(angles)', [1, ':', 1], debug=debug)
-    except:
+    except:  # pylint: disable=bare-except
         rms_noco = []
         if debug:
             traceback.print_exc()
@@ -143,8 +142,7 @@ def get_Etot(outfile):
 
 
 def find_warnings(outfile):
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     tmptxt_caps = [txt.upper() for txt in tmptxt]
     itmp = 0
     res = []
@@ -158,8 +156,7 @@ def find_warnings(outfile):
 
 
 def extract_timings(outfile):
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp = 0
     res = []
     search_keys = [
@@ -202,8 +199,7 @@ def get_single_particle_energies(outfile_000):
     extracts single particle energies from outfile_000 (output.000.txt)
     returns the valence contribution of the single particle energies
     """
-    with open_general(outfile_000) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_000)
     itmp = 0
     res = []
     while itmp >= 0:
@@ -215,8 +211,7 @@ def get_single_particle_energies(outfile_000):
 
 
 def get_econt_info(outfile_0init):
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
 
     itmp = search_string('E min', tmptxt)
     emin = float(tmptxt[itmp].split('min')[1].split('=')[1].split()[0])
@@ -262,9 +257,9 @@ def get_econt_info(outfile_0init):
 def get_core_states(potfile):
     ncore, energies, lmoments = get_corestates_from_potential(potfile=potfile)
     emax, lmax, descr_max = [], [], []
-    for ipot in range(len(ncore)):
-        if ncore[ipot] > 0:
-            lvalmax, energy_max, descr = get_highest_core_state(ncore[ipot], energies[ipot], lmoments[ipot])
+    for ipot, nc in enumerate(ncore):
+        if nc > 0:
+            lvalmax, energy_max, descr = get_highest_core_state(nc, energies[ipot], lmoments[ipot])
         else:
             lvalmax, energy_max, descr = None, None, 'no core states'
         emax.append(energy_max)
@@ -274,8 +269,7 @@ def get_core_states(potfile):
 
 
 def get_alatinfo(outfile_0init):
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     itmp = search_string('Lattice constants :', tmptxt)
     alat = float(tmptxt[itmp].split(':')[1].split('=')[1].split()[0])
     twopialat = float(tmptxt[itmp].split(':')[1].split('=')[2].split()[0])
@@ -283,23 +277,20 @@ def get_alatinfo(outfile_0init):
 
 
 def get_scfinfo(outfile_0init, outfile_000, outfile):
-    with open_general(outfile_000) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_000)
 
     itmp = search_string('ITERATION :', tmptxt)
     tmpval = tmptxt[itmp].split(':')[1].split()
     niter = int(tmpval[0])
     nitermax = int(tmpval[3])
 
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp1 = search_string('SCF ITERATION CONVERGED', tmptxt)
     itmp2 = search_string('NUMBER OF SCF STEPS EXHAUSTED', tmptxt)
     converged = itmp1 >= 0
     nmax_reached = itmp2 >= 0
 
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     itmp = search_string('STRMIX        FCM       QBOUND', tmptxt)
     tmpval = tmptxt[itmp + 1].split()
     strmix = float(tmpval[0])
@@ -321,8 +312,7 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     Extract kmesh info from output.0.txt and output.000.txt
     """
     # first get info from output.0.txt
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     nkmesh = []
     itmp = search_string('number of different k-meshes', tmptxt)
     nkmesh.append(int(tmptxt[itmp].split(':')[1].split()[0]))
@@ -340,8 +330,7 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     nkmesh.append(tmpdict)
 
     #next get kmesh_ie from output.000.txt
-    with open_general(outfile_000) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_000)
     kmesh_ie = []
     itmp = 0
     while itmp >= 0:
@@ -354,8 +343,7 @@ def get_kmeshinfo(outfile_0init, outfile_000):
 
 
 def get_symmetries(outfile_0init):
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     try:
         itmp = search_string('symmetries found for this lattice:', tmptxt)
         nsym = int(tmptxt[itmp].split(':')[1].split()[0])
@@ -382,8 +370,7 @@ def get_symmetries(outfile_0init):
 
 
 def get_ewald(outfile_0init):
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     itmp = search_string('setting bulk Madelung coefficients', tmptxt)
     if itmp >= 0:
         info = '3D'
@@ -408,8 +395,7 @@ def get_nspin(outfile_0init):
     """
     extract NSPIN value from output.0.txt
     """
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     itmp = search_string('NSPIN', tmptxt)
     nspin = int(tmptxt[itmp + 1].split()[0])
     return nspin
@@ -419,8 +405,7 @@ def get_natom(outfile_0init):
     """
     extract NATYP value from output.0.txt
     """
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     itmp = search_string('NATYP', tmptxt)
     natom = int(tmptxt[itmp + 1].split()[0])
     return natom
@@ -430,8 +415,7 @@ def use_newsosol(outfile_0init):
     """
     extract NEWSOSOL info from output.0.txt
     """
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     newsosol = False
     # old style (RUNOPT output)
     itmp = search_string('NEWSOSOL', tmptxt)
@@ -451,24 +435,22 @@ def use_BdG(outfile_0init):
     """
     extract BdG run info from output.0.txt
     """
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
-    use_BdG = False
+    tmptxt = get_outfile_txt(outfile_0init)
+    val_use_BdG = False
     itmp = search_string('<use_BdG>=', tmptxt)
     if itmp >= 0:
         if tmptxt[itmp].split()[1][:1].upper() == 'T':
-            use_BdG = True
+            val_use_BdG = True
         if tmptxt[itmp].split()[1][:1].upper() == 'F':
-            use_BdG = False
-    return use_BdG
+            val_use_BdG = False
+    return val_use_BdG
 
 
 def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     """
     Extract spin moment information from outfile and nonco_angles_out (if given)
     """
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp = 0
     result = []
     while itmp >= 0:
@@ -482,7 +464,7 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
             result.append(tmparray)
 
     # if the file is there, i.e. NEWSOSOL is used, then extract also direction of spins (angles theta and phi)
-    if nonco_out_file is not None and result != []:
+    if nonco_out_file is not None and result:
         angles = loadtxt(nonco_out_file, usecols=[0, 1])  # make sure only theta and phi are read in
         if len(shape(angles)) == 1:
             angles = array([angles])
@@ -497,8 +479,7 @@ def get_orbmom(outfile, natom):
     """
     read orbmom info from outfile and return array (iteration, atom)=orbmom
     """
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp = 0
     result = []
     while itmp >= 0:
@@ -518,8 +499,7 @@ def get_lattice_vectors(outfile_0init):
     """
     read direct and reciprocal lattice vectors in internal units (useful for qdos generation)
     """
-    with open_general(outfile_0init) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile_0init)
     vecs, rvecs = [], []
     tmpvecs = []
     for search_txt in ['a_1: ', 'a_2: ', 'a_3: ', 'b_1: ', 'b_2: ', 'b_3: ']:
@@ -565,7 +545,7 @@ def parse_kkr_outputfile(out_dict,
         tmp_dict['compile_options'] = compile_options
         tmp_dict['calculation_serial_number'] = serial_number
         out_dict['code_info_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: Version Info'
         msg_list.append(msg)
         if debug:
@@ -578,7 +558,7 @@ def parse_kkr_outputfile(out_dict,
         out_dict['nspin'] = nspin
         out_dict['number_of_atoms_in_unit_cell'] = natom
         out_dict['use_newsosol'] = newsosol
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: nspin/natom'
         msg_list.append(msg)
         if debug:
@@ -587,7 +567,7 @@ def parse_kkr_outputfile(out_dict,
     try:
         # extract some BdG infos
         out_dict['use_BdG'] = use_BdG(outfile_0init)
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: BdG'
         msg_list.append(msg)
         if debug:
@@ -599,7 +579,7 @@ def parse_kkr_outputfile(out_dict,
         tmp_dict['number_of_warnings'] = len(result)
         tmp_dict['warnings_list'] = result
         out_dict['warnings_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: search for warnings'
         msg_list.append(msg)
         if debug:
@@ -609,7 +589,7 @@ def parse_kkr_outputfile(out_dict,
         result = extract_timings(timing_file)
         out_dict['timings_group'] = result
         out_dict['timings_unit'] = 'seconds'
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: timings'
         msg_list.append(msg)
         if debug:
@@ -637,7 +617,7 @@ def parse_kkr_outputfile(out_dict,
         out_dict['energy_contour_group'] = tmp_dict
         if Npol == 0:
             doscalc = True
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: energy contour'
         msg_list.append(msg)
         if debug:
@@ -649,7 +629,7 @@ def parse_kkr_outputfile(out_dict,
         out_dict['two_pi_over_alat_internal'] = twopioveralat
         out_dict['alat_internal_unit'] = 'a_Bohr'
         out_dict['two_pi_over_alat_internal_unit'] = '1/a_Bohr'
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: alat, 2*pi/alat'
         msg_list.append(msg)
         if debug:
@@ -662,7 +642,7 @@ def parse_kkr_outputfile(out_dict,
         tmp_dict['number_kpoints_per_kmesh'] = nkmesh[1]
         tmp_dict['kmesh_energypoint'] = kmesh_ie
         out_dict['kmesh_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: kmesh'
         msg_list.append(msg)
         if debug:
@@ -675,7 +655,7 @@ def parse_kkr_outputfile(out_dict,
         tmp_dict['number_of_used_symmetries'] = nsym_used
         tmp_dict['symmetry_description'] = desc
         out_dict['symmetries_group'] = tmp_dict
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: symmetries'
         msg_list.append(msg)
         if debug:
@@ -695,7 +675,7 @@ def parse_kkr_outputfile(out_dict,
             tmp_dict['gsum_number_of_shells'] = gsum[2]
             tmp_dict['gsum_cutoff_unit'] = '1/a_Bohr'
             out_dict['ewald_sum_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: ewald summation for madelung poterntial'
             msg_list.append(msg)
             if debug:
@@ -707,7 +687,7 @@ def parse_kkr_outputfile(out_dict,
         out_dict['reciprocal_bravais_matrix'] = recbv
         out_dict['direct_bravais_matrix_unit'] = 'alat'
         out_dict['reciprocal_bravais_matrix_unit'] = '2*pi / alat'
-    except:
+    except:  # pylint: disable=bare-except
         msg = 'Error parsing output of KKR: lattice vectors (direct/reciprocal)'
         msg_list.append(msg)
         if debug:
@@ -723,7 +703,7 @@ def parse_kkr_outputfile(out_dict,
             tmp_dict['energy_highest_lying_core_state_per_atom_unit'] = 'Rydberg'
             tmp_dict['descr_highest_lying_core_state_per_atom'] = descr_max
             out_dict['core_states_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: core_states'
             msg_list.append(msg)
             if debug:
@@ -747,7 +727,7 @@ def parse_kkr_outputfile(out_dict,
             tmp_dict['rms_spin_per_atom'] = result_atoms_last_spin
             tmp_dict['rms_unit'] = 'unitless'
             out_dict['convergence_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: rms-error'
             msg_list.append(msg)
             if debug:
@@ -759,7 +739,7 @@ def parse_kkr_outputfile(out_dict,
             out_dict['convergence_group']['charge_neutrality_all_iterations'] = result
             tmp_dict['charge_neutrality_unit'] = 'electrons'
             out_dict['convergence_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: charge neutrality'
             msg_list.append(msg)
             if debug:
@@ -773,7 +753,7 @@ def parse_kkr_outputfile(out_dict,
                 out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
                 tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
                 out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: total magnetic moment'
             msg_list.append(msg)
             if debug:
@@ -795,7 +775,7 @@ def parse_kkr_outputfile(out_dict,
                     out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = result[:, :]
                     tmp_dict['spin_moment_unit'] = 'mu_Bohr'
                     out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: spin moment per atom'
             msg_list.append(msg)
             if debug:
@@ -820,7 +800,7 @@ def parse_kkr_outputfile(out_dict,
                     tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
                     #tmp_dict['orbital_moment_angles_per_atom_unit'] = 'degree'
                     out_dict['magnetism_group'] = tmp_dict
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: orbital moment'
             msg_list.append(msg)
             if debug:
@@ -833,7 +813,7 @@ def parse_kkr_outputfile(out_dict,
                 if len(result) > 0:
                     out_dict['convergence_group']['noco_angles_rms_all_iterations'] = result[:]
                     out_dict['convergence_group']['noco_angles_rms_all_iterations_unit'] = 'degrees'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: noco angles rms value'
             msg_list.append(msg)
             if debug:
@@ -845,7 +825,7 @@ def parse_kkr_outputfile(out_dict,
             out_dict['fermi_energy_units'] = 'Ry'
             out_dict['convergence_group']['fermi_energy_all_iterations'] = result
             out_dict['convergence_group']['fermi_energy_all_iterations_units'] = 'Ry'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: EF'
             msg_list.append(msg)
             if debug:
@@ -855,7 +835,7 @@ def parse_kkr_outputfile(out_dict,
             result = get_DOS_EF(outfile)
             out_dict['dos_at_fermi_energy'] = result[-1]
             out_dict['convergence_group']['dos_at_fermi_energy_all_iterations'] = result
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: DOS@EF'
             msg_list.append(msg)
             if debug:
@@ -868,7 +848,7 @@ def parse_kkr_outputfile(out_dict,
             out_dict['total_energy_Ry'] = result[-1]
             out_dict['total_energy_Ry_unit'] = 'Rydberg'
             out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: total energy'
             msg_list.append(msg)
         if debug:
@@ -878,7 +858,7 @@ def parse_kkr_outputfile(out_dict,
             result = get_single_particle_energies(outfile_000)
             out_dict['single_particle_energies'] = result * get_Ry2eV()
             out_dict['single_particle_energies_unit'] = 'eV'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: single particle energies'
             msg_list.append(msg)
             if debug:
@@ -896,7 +876,7 @@ def parse_kkr_outputfile(out_dict,
             out_dict['total_charge_per_atom_unit'] = 'electron charge'
             out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
             out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: charges'
             msg_list.append(msg)
             if debug:
@@ -917,7 +897,7 @@ def parse_kkr_outputfile(out_dict,
             out_dict['convergence_group']['fcm'] = mixinfo[3]
             out_dict['convergence_group']['idtbry'] = mixinfo[4]
             out_dict['convergence_group']['brymix'] = mixinfo[5]
-        except:
+        except:  # pylint: disable=bare-except
             msg = 'Error parsing output of KKR: scfinfo'
             msg_list.append(msg)
             if debug:

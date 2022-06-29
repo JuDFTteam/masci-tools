@@ -59,10 +59,25 @@ def open_general(filename_or_handle: FileLike, iomode: str | None = None) -> IO[
             if iomode is None:
                 f = open(f.name, f.mode, encoding='utf8')
             else:
-                f = open(f.name, iomode, encoding='utf8')
+                f = open(f.name, iomode, encoding='utf8')  #pylint: disable=consider-using-with
         else:  # make sure reading the file now starts at the beginning again
             f.seek(0)
+
     return f
+
+
+def get_outfile_txt(outfile):
+    """Get the content of a file
+    In case the outfile is a file handle, we just roll it back and read everything in again.
+    For an ordinary file path we open the file in a context manager and then read it.
+    """
+    if getattr(outfile, 'readlines', None) is not None:
+        outfile.seek(0)
+        tmptxt = outfile.readlines()
+    else:
+        with open_general(outfile) as f:
+            tmptxt = f.readlines()
+    return tmptxt
 
 
 def skipHeader(seq: Iterable[Any], n: int) -> Generator[Any, None, None]:
@@ -204,8 +219,7 @@ def vec_to_angles(vec: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray] 
 
 
 def get_version_info(outfile: FileLike) -> tuple[str, str, str]:
-    with open_general(outfile) as f:
-        tmptxt = f.readlines()
+    tmptxt = get_outfile_txt(outfile)
     itmp = search_string('Code version:', tmptxt)
     if itmp == -1:  # try to find serial number from header of file
         itmp = search_string('# serial:', tmptxt)
@@ -223,8 +237,7 @@ def get_version_info(outfile: FileLike) -> tuple[str, str, str]:
 
 def get_corestates_from_potential(potfile: FileLike = 'potential') -> tuple[list, list, list]:
     """Read core states from potential file"""
-    with open_general(potfile) as f:
-        txt = f.readlines()
+    txt = get_outfile_txt(potfile)
 
     #get start of each potential part
     istarts = [iline for iline in range(len(txt)) if 'POTENTIAL' in txt[iline]]
@@ -361,9 +374,8 @@ def get_ef_from_potfile(potfile: FileLike) -> float:
     """
     extract fermi energy from potfile
     """
-    with open_general(potfile) as f:
-        txt = f.readlines()
-    ef = float(txt[3].split()[1])
+    tmptxt = get_outfile_txt(potfile)
+    ef = float(tmptxt[3].split()[1])
     return ef
 
 

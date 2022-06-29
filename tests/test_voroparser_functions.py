@@ -34,7 +34,7 @@ class Test_voronoi_parser_functions:
         out_dict['parser_warnings'] = msg_list
 
         assert success
-        assert msg_list == []
+        assert not msg_list
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(self.grouping_ref)
 
@@ -54,7 +54,7 @@ class Test_voronoi_parser_functions:
                                                                                radii, inputfile)
         out_dict['parser_warnings'] = msg_list
         assert success
-        assert msg_list == []
+        assert not msg_list
         groups = [i for i in list(out_dict.keys()) if 'group' in i]
         assert set(groups) == set(self.grouping_ref)
 
