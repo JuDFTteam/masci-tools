@@ -3,9 +3,16 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.1...develop)
 
+### Improvements
+- Several changes in KKR IO functions to make them compatible with `aiida-core>=2.0` [[#175]](https://github.com/JuDFTteam/masci-tools/pull/175)
+- Add function to calculate fourier transform of e.g. `J_ij` constants calculated from Green's functions (`masci_tools.tools.greensf_calculations.heisenberg_reciprocal`)
+
 ### Bugfixes
 - Fixed nondeterministic order in bokeh regression tests if multiple dictionaries with the same values but differing keys in the same list (e.g. Providing the same data for different columns)
 - Fixed wrong names for columns entered in `decompose_jij_tensor`, i.e. `J_ji` -> `J_ij`
+
+### Deprecations
+- Deprecated the unused modules `util/kkr_rms_tracker.py` and `util/modify_potential.py`
 
 ## v.0.11.1
 
