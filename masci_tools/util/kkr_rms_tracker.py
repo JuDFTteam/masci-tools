@@ -9,6 +9,10 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
+# pylint: skip-file
+import warnings
+
+warnings.warn('This module is deprecated and will be removed in the future.', DeprecationWarning)
 
 from numpy import array, sum, sqrt, log, abs, loadtxt, zeros_like, shape
 from matplotlib.pyplot import plot, figure, subplot, show, ion, title, suptitle, legend, gca, ioff, axvline, gcf
