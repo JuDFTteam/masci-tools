@@ -297,11 +297,11 @@ roots:
       - 4.134138543687261
     type: FixedTicker
   - attributes:
-      name: eigenvalues_up
-    type: GlyphRenderer
-  - attributes:
       level: underlay
       name: eigenvalues_down
+    type: GlyphRenderer
+  - attributes:
+      name: eigenvalues_up
     type: GlyphRenderer
   - type: Grid
   - attributes:
@@ -426,6 +426,46 @@ roots:
         field: eigenvalues_down
     type: Scatter
   - attributes:
+      fill_alpha:
+        value: 0.1
+      fill_color:
+        value: blue
+      hatch_alpha:
+        value: 0.1
+      hatch_color:
+        value: blue
+      line_alpha:
+        value: 0.1
+      line_color:
+        value: blue
+      size:
+        value: 6
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        value: blue
+      hatch_alpha:
+        value: 0.2
+      hatch_color:
+        value: blue
+      line_alpha:
+        value: 0.2
+      line_color:
+        value: blue
+      size:
+        value: 6
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
       fill_color:
         value: red
       hatch_color:
@@ -440,46 +480,6 @@ roots:
         field: eigenvalues_down
     type: Scatter
   - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        value: blue
-      hatch_alpha:
-        value: 0.1
-      hatch_color:
-        value: blue
-      line_alpha:
-        value: 0.1
-      line_color:
-        value: blue
-      size:
-        value: 6
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes:
-      fill_alpha:
-        value: 0.2
-      fill_color:
-        value: blue
-      hatch_alpha:
-        value: 0.2
-      hatch_color:
-        value: blue
-      line_alpha:
-        value: 0.2
-      line_color:
-        value: blue
-      size:
-        value: 6
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes:
       fill_color:
         value: blue
       hatch_color:
@@ -495,11 +495,6 @@ roots:
     type: Scatter
   - type: Selection
   - type: Selection
-  - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
   - attributes:
       dimension: height
       line_dash:
@@ -541,6 +536,11 @@ roots:
       line_dash:
       - 6
       location: 4.13414
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

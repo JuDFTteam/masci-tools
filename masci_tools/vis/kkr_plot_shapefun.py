@@ -8,6 +8,9 @@
 # For further information on the license, see the LICENSE.txt file            #
 #                                                                             #
 ###############################################################################
+"""
+Tool to visualize the KKR shapefunctions
+"""
 
 
 def plot_shapefun(pos, out, mode):

@@ -839,12 +839,12 @@ class GreensFunction:
         return str(self.element)
 
     def energy_dependence_full_matrix(self, imag: bool = True, both_contours: bool = False) -> np.ndarray:
-        """
-        Get the full matrix nspins*(2*l+1) x nspins*(2*lp+1)
+        r"""
+        Get the full matrix :math:`N_{\mathrm{spins}}(2l+1) \times N_{\mathrm{spins}}(2l^\prime+1)`
 
         :param both_contours: bool id True the data is not added for both energy contours
-        :param imag: bool if True and both_contours is False the imaginary part 1/2i(G(z)-G(z^*)) is returned
-                     otherwise the real part 1/2(G(z)+G(z^*))
+        :param imag: bool if True and both_contours is False the imaginary part :math:`\frac{1}{2i}\left[G\left(z\right)-G\left(z^\ast\right)\right]` is returned
+                     otherwise the real part :math:`\frac{1}{2}\left[G\left(z\right)+G\left(z^\ast\right)\right]`
 
         :returns: numpy array with the selected data
         """
@@ -867,15 +867,15 @@ class GreensFunction:
                           spin: int | None = None,
                           imag: bool = True,
                           both_contours: bool = False) -> np.ndarray:
-        """
+        r"""
         Select data with energy dependence
 
         :param m: optional integer magnetic quantum number between -l and l
         :param mp: optional integer magnetic quantum number between -lp and lp
         :param spin: optional integer spin between 1 and nspins
         :param both_contours: bool id True the data is not added for both energy contours
-        :param imag: bool if True and both_contours is False the imaginary part 1/2i(G(z)-G(z^*)) is returned
-                     otherwise the real part 1/2(G(z)+G(z^*))
+        :param imag: bool if True and both_contours is False the imaginary part:math:`\frac{1}{2i}\left[G\left(z\right)-G\left(z^\ast\right)\right]` is returned
+                     otherwise the real part :math:`\frac{1}{2}\left[G\left(z\right)+G\left(z^\ast\right)\right]`
 
         :returns: numpy array with the selected data
         """
@@ -917,12 +917,12 @@ class GreensFunction:
         return data.real
 
     def trace_energy_dependence(self, spin: int | None = None, imag: bool = True) -> np.ndarray:
-        """
+        r"""
         Select trace of data with energy dependence
 
         :param spin: integer spin between 1 and nspins
-        :param imag: bool if True the imaginary part 1/2i(G(z)-G(z^*)) is returned
-                     otherwise the real part 1/2(G(z)+G(z^*))
+        :param imag: bool if True the imaginary part :math:`\frac{1}{2i}\left[G\left(z\right)-G\left(z^\ast\right)\right]` is returned
+                     otherwise the real part :math:`\frac{1}{2}\left[G\left(z\right)+G\left(z^\ast\right)\right]`
 
         :returns: numpy array with the selected and traced over data
         """
@@ -1216,7 +1216,7 @@ def intersite_shell_indices(elements: list[GreensfElement],
     distances = [round(np.linalg.norm(elem.atomDiff), 12) for elem in elements]
 
     #sort the elements according to shells
-    index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])
+    index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])  #type: ignore[arg-type,return-value]
     elements_sorted = [elements[index] for index in index_sorted]
     jij_pairs: list[tuple[np.floating[Any], list[tuple[int, int]]]] = []
     num_shells = 0

@@ -473,20 +473,6 @@ roots:
   - type: ResetTool
   - type: SaveTool
   - attributes:
-      fill_color:
-        field: MT:1d_up
-      hatch_color:
-        field: MT:1d_up
-      line_color:
-        field: MT:1d_up
-      size:
-        field: size_0
-      x:
-        field: kpath
-      y:
-        field: eigenvalues_up
-    type: Scatter
-  - attributes:
       fill_alpha:
         value: 0.1
       fill_color:
@@ -517,6 +503,20 @@ roots:
         field: MT:1d_up
       line_alpha:
         value: 0.2
+      line_color:
+        field: MT:1d_up
+      size:
+        field: size_0
+      x:
+        field: kpath
+      y:
+        field: eigenvalues_up
+    type: Scatter
+  - attributes:
+      fill_color:
+        field: MT:1d_up
+      hatch_color:
+        field: MT:1d_up
       line_color:
         field: MT:1d_up
       size:
@@ -528,11 +528,6 @@ roots:
     type: Scatter
   - type: Selection
   - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
-  - attributes:
       dimension: height
       line_dash:
       - 6
@@ -543,6 +538,11 @@ roots:
       line_dash:
       - 6
       location: 0.63895
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

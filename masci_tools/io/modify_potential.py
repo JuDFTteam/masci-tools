@@ -12,12 +12,6 @@
 """
 Tools for the impurity caluclation plugin and its workflows
 """
-from sys import version_info
-if version_info[0] >= 3:
-
-    def raw_input(msg):
-        return eval(eval(input(msg)))
-
 
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
@@ -43,7 +37,7 @@ class modify_potential:
 
     def _read_input(self, filepath):
         #print(filepath)
-        with open(filepath) as file:
+        with open(filepath, encoding='utf8') as file:
             data = file.readlines()
 
         if 'shapefun' in filepath:
@@ -56,8 +50,8 @@ class modify_potential:
         # read file
         index1 = []
         index2 = []
-        for i in range(len(data)):
-            if self._check_potstart(data[i], mode=mode):
+        for i, d in enumerate(data):
+            if self._check_potstart(d, mode=mode):
                 index1.append(i)
                 if len(index1) > 1:
                     index2.append(i - 1)
@@ -67,8 +61,8 @@ class modify_potential:
         if mode == 'shape' and len(index1) < 1:
             index1 = []
             index2 = []
-            for i in range(len(data)):
-                if self._check_potstart(data[i], mode=mode, shape_ver='old'):
+            for i, d in enumerate(data):
+                if self._check_potstart(d, mode=mode, shape_ver='old'):
                     index1.append(i)
                 if len(index1) > 1:
                     index2.append(i - 1)
@@ -97,7 +91,7 @@ class modify_potential:
 
         order = list(range(len(index1)))
 
-        with open(scoefpath) as f:
+        with open(scoefpath, encoding='utf8') as f:
             lines = f.readlines()
             natomtemp = int(lines[0])
             filedata = lines[1:natomtemp + 1]
@@ -109,8 +103,8 @@ class modify_potential:
         order = listnew
 
         datanew = []
-        for i in range(len(order)):
-            for ii in range(index1[order[i]], index2[order[i]] + 1):
+        for i in order:
+            for ii in range(index1[i], index2[i] + 1):
                 datanew.append(data[ii])
 
         # add header to shapefun_new
@@ -155,10 +149,10 @@ class modify_potential:
             # check if also replace_from_pot2 is given correctly
             if replace_from_pot2 is None:
                 raise ValueError('replace_from_pot2 not given')
-            else:
-                replace_from_pot2 = array(replace_from_pot2)
-                if shape(replace_from_pot2)[1] != 2:
-                    raise ValueError('replace_from_pot2 needs to be a 2D array!')
+
+            replace_from_pot2 = array(replace_from_pot2)
+            if shape(replace_from_pot2)[1] != 2:
+                raise ValueError('replace_from_pot2 needs to be a 2D array!')
         else:
             if replace_from_pot2 is not None:
                 raise ValueError('replace_from_pot2 given but potfile_2 not given')
@@ -179,5 +173,5 @@ class modify_potential:
                     datanew.append(data[ii])
 
         # write out new potential
-        with open(potfile_out, 'w') as f:
+        with open(potfile_out, 'w', encoding='utf8') as f:
             f.writelines(datanew)

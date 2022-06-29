@@ -12,6 +12,12 @@
 # edited by Philipp Ruessmann 2014
 # added averaging of spin up/down by Philipp Sep. 2015
 # pylint: skip-file
+import warnings
+
+warnings.warn(
+    'This module is deprecated and will be removed in the future. '
+    'Use masci_tools.io.modify_potential instead.', DeprecationWarning)
+
 from numpy import *
 from sys import argv, exit
 

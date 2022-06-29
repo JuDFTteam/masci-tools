@@ -140,10 +140,11 @@ def fixture_clean_bokeh_json():
                 normed = [(key, []) for key in key_order]
             for key, val in dict_val.items():
 
+                index = key_order.index(key)
                 if isinstance(val, dict):
                     normed = get_normalized_order(val, key_order, normed=normed)
+                    normed[index][1].extend(sorted(val.keys()))
                 else:
-                    index = key_order.index(key)
                     if not isinstance(val, list):
                         val = [val]
 

@@ -1126,6 +1126,42 @@ roots:
     type: Patches
   - attributes:
       fill_alpha:
+        value: 0.1
+      fill_color:
+        field: secondary_color
+      hatch_alpha:
+        value: 0.1
+      hatch_color:
+        field: secondary_color
+      line_alpha:
+        value: 0.1
+      line_color:
+        field: secondary_color
+      xs:
+        field: x_axis
+      ys:
+        field: y_axis
+    type: Patches
+  - attributes:
+      fill_alpha:
+        value: 0.2
+      fill_color:
+        field: secondary_color
+      hatch_alpha:
+        value: 0.2
+      hatch_color:
+        field: secondary_color
+      line_alpha:
+        value: 0.2
+      line_color:
+        field: secondary_color
+      xs:
+        field: x_axis
+      ys:
+        field: y_axis
+    type: Patches
+  - attributes:
+      fill_alpha:
         value: 0.6
       fill_color:
         field: color
@@ -1133,42 +1169,6 @@ roots:
         field: color
       line_color:
         field: color
-      xs:
-        field: x_axis
-      ys:
-        field: y_axis
-    type: Patches
-  - attributes:
-      fill_alpha:
-        value: 0.1
-      fill_color:
-        field: secondary_color
-      hatch_alpha:
-        value: 0.1
-      hatch_color:
-        field: secondary_color
-      line_alpha:
-        value: 0.1
-      line_color:
-        field: secondary_color
-      xs:
-        field: x_axis
-      ys:
-        field: y_axis
-    type: Patches
-  - attributes:
-      fill_alpha:
-        value: 0.2
-      fill_color:
-        field: secondary_color
-      hatch_alpha:
-        value: 0.2
-      hatch_color:
-        field: secondary_color
-      line_alpha:
-        value: 0.2
-      line_color:
-        field: secondary_color
       xs:
         field: x_axis
       ys:

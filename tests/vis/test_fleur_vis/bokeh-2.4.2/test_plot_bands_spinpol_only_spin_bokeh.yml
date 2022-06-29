@@ -229,11 +229,6 @@ roots:
     type: Scatter
   - type: Selection
   - attributes:
-      line_dash:
-      - 6
-      location: 0
-    type: Span
-  - attributes:
       dimension: height
       line_dash:
       - 6
@@ -274,6 +269,11 @@ roots:
       line_dash:
       - 6
       location: 4.13414
+    type: Span
+  - attributes:
+      line_dash:
+      - 6
+      location: 0
     type: Span
   - type: TapTool
   - type: Title

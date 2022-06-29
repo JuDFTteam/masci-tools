@@ -8,7 +8,9 @@ calculated by Fleur. At the moment the following are implemented:
 """
 from __future__ import annotations
 
-from .greensfunction import intersite_shells, intersite_shells_from_file
+from masci_tools.util.typing import FileLike
+
+from .greensfunction import GreensFunction, intersite_shells, intersite_shells_from_file
 from masci_tools.io.common_functions import get_pauli_matrix
 
 import numpy as np
@@ -30,11 +32,11 @@ except ImportError:
 
 
 def calculate_heisenberg_jij(
-    hdffileORgreensfunctions,
-    reference_atom,
-    onsite_delta,
-    max_shells=None,
-):
+    hdffileORgreensfunctions: FileLike | list[GreensFunction],
+    reference_atom: int,
+    onsite_delta: np.ndarray,
+    max_shells: int | None = None,
+) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange constants form Green's functions using the formula
 
@@ -49,10 +51,10 @@ def calculate_heisenberg_jij(
     :returns: pandas DataFrame containing all the Jij constants
     """
 
-    shell_function = intersite_shells_from_file
     if isinstance(hdffileORgreensfunctions, list):
-        shell_function = intersite_shells
-    shells = shell_function(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+        shells = intersite_shells(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+    else:
+        shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
     jij_constants: dict[str, list[Any]] = defaultdict(list)
 
@@ -83,7 +85,10 @@ def calculate_heisenberg_jij(
     return pd.DataFrame.from_dict(jij_constants)
 
 
-def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite_delta, max_shells=None):
+def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[GreensFunction],
+                                reference_atom: int,
+                                onsite_delta: np.ndarray,
+                                max_shells: int | None = None) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange tensor :math:`\mathbf{J}` from Green's functions using the formula
 
@@ -100,10 +105,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite
     :returns: pandas DataFrame containing all the J_xx, J_xy, etc. constants
     """
 
-    shell_function = intersite_shells_from_file
     if isinstance(hdffileORgreensfunctions, list):
-        shell_function = intersite_shells
-    shells = shell_function(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+        shells = intersite_shells(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
+    else:
+        shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
     jij_tensor: dict[str, list[Any]] = defaultdict(list)
 
@@ -129,8 +134,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions, reference_atom, onsite
         for sigmai_str in ('x', 'y', 'z'):
             for sigmaj_str in ('x', 'y', 'z'):
 
-                sigmai = get_pauli_matrix(sigmai_str)
-                sigmaj = get_pauli_matrix(sigmaj_str)
+                sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
+                sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
 
                 integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gij, sigmaj, gji)
                 jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
@@ -154,20 +159,20 @@ def decompose_jij_tensor(jij_tensor: pd.DataFrame, moment_direction: Literal['x'
     """
 
     if moment_direction == 'x':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_yy'] + jij_tensor['J_zz'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_yy'] - jij_tensor['J_zz'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_yz'] + jij_tensor['J_zy'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_yz'] - jij_tensor['J_zy'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_yy'] + jij_tensor['J_zz'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_yy'] - jij_tensor['J_zz'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_yz'] + jij_tensor['J_zy'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_yz'] - jij_tensor['J_zy'])  #Offdiagonal asymmetric
     elif moment_direction == 'y':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_zz'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_zz'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_xz'] + jij_tensor['J_zx'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_xz'] - jij_tensor['J_zx'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_zz'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_zz'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_xz'] + jij_tensor['J_zx'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_xz'] - jij_tensor['J_zx'])  #Offdiagonal asymmetric
     elif moment_direction == 'z':
-        jij_tensor['J_ji'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_yy'])  #Isotropic
-        jij_tensor['A_ji'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_yy'])  #Difference in diagonal
-        jij_tensor['S_ji'] = 1 / 2 * (jij_tensor['J_xy'] + jij_tensor['J_yx'])  #Offdiagonal symmetric
-        jij_tensor['D_ji'] = 1 / 2 * (jij_tensor['J_xy'] - jij_tensor['J_yx'])  #Offdiagonal asymmetric
+        jij_tensor['J_ij'] = 1 / 2 * (jij_tensor['J_xx'] + jij_tensor['J_yy'])  #Isotropic
+        jij_tensor['A_ij'] = 1 / 2 * (jij_tensor['J_xx'] - jij_tensor['J_yy'])  #Difference in diagonal
+        jij_tensor['S_ij'] = 1 / 2 * (jij_tensor['J_xy'] + jij_tensor['J_yx'])  #Offdiagonal symmetric
+        jij_tensor['D_ij'] = 1 / 2 * (jij_tensor['J_xy'] - jij_tensor['J_yx'])  #Offdiagonal asymmetric
 
     else:
         raise ValueError(f'Invalid direction: {moment_direction}')
@@ -175,7 +180,32 @@ def decompose_jij_tensor(jij_tensor: pd.DataFrame, moment_direction: Literal['x'
     return jij_tensor
 
 
-def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
+def heisenberg_reciprocal(qpoints: np.ndarray, jij_data: pd.DataFrame, entry: str = 'J_ij') -> np.ndarray:
+    r"""
+    Calculate the fourier transform of an entry for interaction constants
+
+    Example for :math:`J_{ij}`
+
+    .. math::
+        J(\mathbf{q})\ =\ \sum_{ij} J_{ij} e^{i\mathbf{q}\cdot\mathbf{R}_{ij}}
+
+    where :math:`\mathbf{R}_{ij}` is the connecting vector associated with the :math:`J_{ij}`
+
+    :param qpoints: numpy array containing the coordinates of the qpoints
+    :param jij_data: DataFrame generated by the above calculation functions
+    :param entry: str of the entry to calculate
+
+    :returns: numpy array containing the Fourier transform
+    """
+    interactions = jij_data[entry]
+    r_vectors = np.array([jij_data['R_ij_x'], jij_data['R_ij_y'], jij_data['R_ij_z']]).T
+    expo = np.exp(1j * np.einsum('qi,ki->qk', qpoints, r_vectors))
+
+    interactions_reciprocal = np.einsum('k,qk->q', interactions, expo)
+    return interactions_reciprocal
+
+
+def calculate_heisenberg_j0(greensfunction: GreensFunction, onsite_delta: float, show: bool = False) -> float:
     r"""
     Calculate spin stiffness J_0 for the given green's function using the formula
 
@@ -210,7 +240,7 @@ def calculate_heisenberg_j0(greensfunction, onsite_delta, show=False):
     return j0
 
 
-def calculate_hybridization(greensfunction):
+def calculate_hybridization(greensfunction: GreensFunction) -> np.ndarray:
     r"""
     Calculate the hybridization function as
 
