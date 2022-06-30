@@ -78,8 +78,8 @@ def calculate_heisenberg_jij(
         jij_constants['R_ij_x'].append(g1.atomDiff.tolist()[0])
         jij_constants['R_ij_y'].append(g1.atomDiff.tolist()[1])
         jij_constants['R_ij_z'].append(g1.atomDiff.tolist()[2])
-        jij_constants['Atom i'].append(g1.extras['atom_label'])
-        jij_constants['Atom j'].append(g1.extras['atom_labelp'])
+        jij_constants['Atom i'].append(f"{g1.extras['atom_label']}({g1.extras['element']})")
+        jij_constants['Atom j'].append(f"{g1.extras['atom_labelp']}({g1.extras['elementp']})")
         jij_constants['J_ij'].append(jij.real * 1000)  #Convert to meV
 
     return pd.DataFrame.from_dict(jij_constants)
@@ -128,8 +128,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         jij_tensor['R_ij_x'].append(g1.atomDiff.tolist()[0])
         jij_tensor['R_ij_y'].append(g1.atomDiff.tolist()[1])
         jij_tensor['R_ij_z'].append(g1.atomDiff.tolist()[2])
-        jij_tensor['Atom i'].append(g1.extras['atom_label'])
-        jij_tensor['Atom j'].append(g1.extras['atom_labelp'])
+        jij_tensor['Atom i'].append(f"{g1.extras['atom_label']}({g1.extras['element']})")
+        jij_tensor['Atom j'].append(f"{g1.extras['atom_labelp']}({g1.extras['elementp']})")
 
         for sigmai_str in ('x', 'y', 'z'):
             for sigmaj_str in ('x', 'y', 'z'):

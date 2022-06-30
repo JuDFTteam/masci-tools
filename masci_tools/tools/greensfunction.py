@@ -232,6 +232,14 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int |
             ]
         }
 
+    if version is not None and version >= 8:
+        recipe['attributes']['atoms_elements'] = {
+            'h5path': '/atoms/atomicNumbers',
+            'description': 'Atomic numbers',
+            'transforms': [Transformation(name='periodic_elements')]
+        }
+        recipe['attributes']['atoms_groups'] = {'h5path': '/atoms/equivAtomsGroup'}
+
     return recipe
 
 
@@ -504,6 +512,13 @@ class GreensFunction:
         self._angle_beta = attributes.get('beta', 0.0), attributes.get('betap', 0.0)
         self._local_spin_frame = attributes.get('local_spin_frame', True)
         self._local_real_frame = attributes.get('local_real_frame', True)
+
+        self.extras['element'] = 'Unknown'
+        self.extras['elementp'] = 'Unknown'
+        if 'atoms_elements' in self.extras:
+            element_map = self.extras['atoms_elements']
+            self.extras['element'] = element_map[list(self.extras['atoms_groups']).index(self.atomType)]
+            self.extras['elementp'] = element_map[list(self.extras['atoms_groups']).index(self.atomTypep)]
 
         self.kpoints = None
         self.kpath = None
