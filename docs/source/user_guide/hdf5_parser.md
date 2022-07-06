@@ -67,7 +67,7 @@ The recipe for extracting bandstructure information form the `banddos.hdf` looks
 ```{literalinclude} ../../../masci_tools/io/parsers/hdf5/recipes.py
 :language: python
 :linenos: true
-:lines: 170-323
+:pyobject: bands_recipe_format
 ```
 
 Each recipe can define the `datasets` and `attributes` entry (if one is not defined,

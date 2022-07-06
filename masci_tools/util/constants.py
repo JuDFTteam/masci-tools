@@ -26,7 +26,7 @@ Here we collect physical constants which are used throughout the code. That way 
 
 .. literalinclude:: ../../../../masci_tools/util/constants.py
    :language: python
-   :lines: 36-
+   :start-after: HTR_TO_EV
    :linenos:
 
 """
