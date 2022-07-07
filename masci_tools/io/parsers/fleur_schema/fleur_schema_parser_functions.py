@@ -476,11 +476,8 @@ def _get_xpath(xmlschema_evaluator: etree.XPathDocumentEvaluator,
                                       name=tag_name,
                                       type=enforce_end_type)
     if stop_non_unique:
-        startPoints_copy = startPoints.copy()
-        for point in startPoints_copy:
-            if 'maxOccurs' in point.attrib:
-                if point.attrib['maxOccurs'] != '1':
-                    startPoints.remove(point)
+        startPoints = [elem for elem in startPoints if elem.attrib.get('maxOccurs', '1') == '1']
+
     for elem in startPoints:
         currentelem = elem
         currentTag = tag_name
@@ -1182,32 +1179,27 @@ def get_omittable_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, **kwar
         tag_type = tag.attrib['type']
         tag_name = tag.attrib['name']
 
-        if tag_name not in omittable_tags:
-            type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=tag_type)
-            if len(type_elem) == 0:
-                continue
-            type_elem = type_elem[0]
+        if tag_name in omittable_tags:
+            continue
 
-            omittable = False
-            for child in type_elem:
-                child_type = _normalized_name(child.tag)
+        type_elem = _xpath_eval(xmlschema_evaluator, '//xsd:complexType[@name=$name]', name=tag_type)
+        if len(type_elem) == 0:
+            continue
+        type_elem = type_elem[0]
 
-                if child_type == 'sequence':
-                    allowed_tags = 0
-                    for sequence_elem in child:
-                        elem_type = _normalized_name(sequence_elem.tag)
-                        if elem_type == 'element':
-                            allowed_tags += 1
-                        else:
-                            allowed_tags = 0  #So that it is not unintentionally accepted
-                            break
-                    if allowed_tags == 1:
-                        omittable = True
-                else:
-                    omittable = False
+        omittable = False
+        for child in type_elem:
+            child_type = _normalized_name(child.tag)
 
-            if omittable:
-                omittable_tags.append(tag_name)
+            if child_type == 'sequence':
+                if len(child) == 1 \
+                   and all(_normalized_name(elem.tag)=='element' for elem in child):
+                    omittable = True
+            else:
+                omittable = False
+
+        if omittable:
+            omittable_tags.append(tag_name)
     return omittable_tags
 
 
