@@ -74,7 +74,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
 
     assert inp_dict is not None
     assert isinstance(inp_dict, dict)
-    assert inp_dict != {}
+    assert inp_dict
 
     #Parse before
     parser = etree.XMLParser(attribute_defaults=True, encoding='utf-8')
@@ -83,7 +83,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
 
     assert inp_dict is not None
     assert isinstance(inp_dict, dict)
-    assert inp_dict != {}
+    assert inp_dict
 
     #Pass file handle
     with open(inpxmlfilepath, encoding='utf-8') as inpfile:
@@ -91,7 +91,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
 
     assert inp_dict is not None
     assert isinstance(inp_dict, dict)
-    assert inp_dict != {}
+    assert inp_dict
 
     #Pass file content
     with open(inpxmlfilepath, 'rb') as inpfile:
@@ -101,7 +101,7 @@ def test_inpxml_valid_inpxml(inpxmlfilepath):
 
     assert inp_dict is not None
     assert isinstance(inp_dict, dict)
-    assert inp_dict != {}
+    assert inp_dict
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist2)
@@ -156,6 +156,18 @@ def test_inpxml_newer_version(data_regression, clean_parser_log, test_file):
     """
 
     INPXML_FILEPATH = test_file('fleur/input_newer_version.xml')
+    warnings = {}
+    #The parser shoul not raise and just log all the failed conversions
+    inp_dict = inpxml_parser(INPXML_FILEPATH, parser_info_out=warnings)
+    data_regression.check({'input_dict': inp_dict, 'warnings': clean_parser_log(warnings)})
+
+
+def test_inpxml_kpoint_labels(data_regression, clean_parser_log, test_file):
+    """
+    test if valid inp.xml files with text and attributes on the text nodes are parsed correctly
+    """
+
+    INPXML_FILEPATH = test_file('fleur/Max-R6/inp_film.xml')
     warnings = {}
     #The parser shoul not raise and just log all the failed conversions
     inp_dict = inpxml_parser(INPXML_FILEPATH, parser_info_out=warnings)

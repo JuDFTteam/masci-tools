@@ -128,104 +128,92 @@ def inpxml_todict(parent: etree._Element,
 
     :return: a python dictionary
     """
+    #These keys have to never appear as an attribute/tag name
+    #The underscores should guarantee that
+    _TEXT_PLACEHOLDER = '__text__'
+    _OMIT_PLACEHOLDER = '__omit__'
 
     #Check if this is the first call to this routine
     if base_xpath is None:
         base_xpath = f'/{parent.tag}'
 
-    return_dict: dict[str, Any] = {}
-    if list(parent.items()):
-        return_dict = {str(key): val for key, val in parent.items()}
-        # Now we have to convert lazy fortran style into pretty things for the Database
-        for key in return_dict:
-            if key in schema_dict['attrib_types']:
-                return_dict[key], suc = convert_from_xml(return_dict[key],
+    content: dict[str, Any] = {}
+    # Now we have to convert lazy fortran style into pretty things for the Database
+    for key, value in parent.items():
+        attrib_name, value = str(key), str(value)
+        if attrib_name in schema_dict['attrib_types']:
+            content[attrib_name], suc = convert_from_xml(value,
                                                          schema_dict,
-                                                         key,
+                                                         attrib_name,
                                                          text=False,
                                                          constants=constants,
                                                          logger=logger)
-                if not suc and logger is not None:
-                    logger.warning("Failed to convert attribute '%s' Got: '%s'", key, return_dict[key])
-
-    if parent.text:
-        # has text, but we don't want all the '\n' s and empty strings in the database
-        if parent.text.strip() != '':  # might not be the best solutions
-            if parent.tag not in schema_dict['text_tags']:
-                if logger is not None:
-                    logger.error('Something is wrong in the schema_dict: %s is not in text_tags, but it has text',
-                                 parent.tag)
-                raise ValueError(
-                    f'Something is wrong in the schema_dict: {parent.tag} is not in text_tags, but it has text')
-
-            converted_text, suc = convert_from_xml(str(parent.text),
-                                                   schema_dict,
-                                                   parent.tag,
-                                                   text=True,
-                                                   constants=constants,
-                                                   logger=logger)
-
             if not suc and logger is not None:
-                logger.warning("Failed to text of '%s' Got: '%s'", parent.tag, parent.text)
+                logger.warning("Failed to convert attribute '%s' Got: '%s'", attrib_name, value)
 
-            if not return_dict:
-                return_dict = converted_text  #type:ignore
-            else:
-                return_dict['text_value'] = converted_text
-                if 'label' in return_dict:
-                    return_dict['text_label'] = return_dict['label']
-                    return_dict.pop('label')
+    # has text, but we don't want all the '\n' s and empty strings in the database
+    if parent.text and parent.text.strip() != '':
+
+        if parent.tag not in schema_dict['text_tags']:
+            if logger is not None:
+                logger.error('Something is wrong in the schema_dict: %s is not in text_tags, but it has text',
+                             parent.tag)
+            raise ValueError(
+                f'Something is wrong in the schema_dict: {parent.tag} is not in text_tags, but it has text')
+
+        converted_text, suc = convert_from_xml(str(parent.text),
+                                               schema_dict,
+                                               parent.tag,
+                                               text=True,
+                                               constants=constants,
+                                               logger=logger)
+
+        if not suc and logger is not None:
+            logger.warning("Failed to text of '%s' Got: '%s'", parent.tag, parent.text)
+
+        content[_TEXT_PLACEHOLDER] = converted_text
 
     tag_info = schema_dict['tag_info'].get(base_xpath, EMPTY_TAG_INFO)
     for element in parent:
 
-        new_base_xpath = f'{base_xpath}/{element.tag}'
-        omitt_contained_tags = element.tag in schema_dict['omitt_contained_tags']
-        new_return_dict = inpxml_todict(element,
-                                        schema_dict,
-                                        constants,
-                                        base_xpath=new_base_xpath,
-                                        omitted_tags=omitt_contained_tags,
-                                        logger=logger)
+        child_content = inpxml_todict(element,
+                                      schema_dict,
+                                      constants,
+                                      base_xpath=f'{base_xpath}/{element.tag}',
+                                      omitted_tags=element.tag in schema_dict['omitt_contained_tags'],
+                                      logger=logger)
 
-        if element.tag in tag_info['several']:
-            # make a list, otherwise the tag will be overwritten in the dict
-            if element.tag not in return_dict:  # is this the first occurrence?
-                if omitted_tags:
-                    if len(return_dict) == 0:
-                        return_dict = []  #type:ignore
-                else:
-                    return_dict[element.tag] = []
-            if omitted_tags:
-                return_dict.append(new_return_dict)  #type:ignore
-            elif 'text_value' in new_return_dict:
-                for key, value in new_return_dict.items():
-                    if key == 'text_value':
-                        return_dict[element.tag].append(value)
-                    elif key == 'text_label':
-                        if 'labels' not in return_dict:
-                            return_dict['labels'] = {}
-                        return_dict['labels'][value] = new_return_dict['text_value']
-                    else:
-                        if key not in return_dict:
-                            return_dict[key] = []
-                        elif not isinstance(return_dict[key], list):  #Key seems to be defined already
-                            if logger is not None:
-                                logger.error('%s cannot be extracted to the next level', key)
-                            raise ValueError(f'{key} cannot be extracted to the next level')
-                        return_dict[key].append(value)
-                for key in new_return_dict.keys():
-                    if key in ['text_value', 'text_label']:
-                        continue
-                    if len(return_dict[key]) != len(return_dict[element.tag]):
+        if _OMIT_PLACEHOLDER in child_content:
+            #We knoe that there is only one key here
+            child_content = child_content.pop(_OMIT_PLACEHOLDER)
+
+        tag_name = element.tag
+        if omitted_tags:
+            tag_name = _OMIT_PLACEHOLDER
+
+        if element.tag in tag_info['several']\
+           and _TEXT_PLACEHOLDER in child_content:
+            #The text is stored under the name of the tag
+            text_value = child_content.pop(_TEXT_PLACEHOLDER)
+            content.setdefault(tag_name, []).append(text_value)
+            child_tag_info = schema_dict['tag_info'].get(f'{base_xpath}/{element.tag}', EMPTY_TAG_INFO)
+            for key, value in child_content.items():
+                if key not in child_tag_info['optional_attribs']:
+                    #All required attributes are stored as lists
+                    if key in content and \
+                       not isinstance(content[key], list):  #Key seems to be defined already
                         if logger is not None:
-                            logger.error(
-                                'Extracted optional argument %s at the moment only label is supported correctly', key)
-                        raise ValueError(
-                            f'Extracted optional argument {key} at the moment only label is supported correctly')
-            else:
-                return_dict[element.tag].append(new_return_dict)
+                            logger.error('%s cannot be extracted to the next level', key)
+                        raise ValueError(f'{key} cannot be extracted to the next level')
+                    content.setdefault(key, []).append(value)
+                else:
+                    #All optional attributes are stored as dicts pointing to the text
+                    content.setdefault(key, {})[value] = text_value
+        elif element.tag in tag_info['several']:
+            content.setdefault(tag_name, []).append(child_content)
+        elif _TEXT_PLACEHOLDER in child_content:
+            content[tag_name] = child_content.pop(_TEXT_PLACEHOLDER)
         else:
-            return_dict[element.tag] = new_return_dict
+            content[tag_name] = child_content
 
-    return return_dict
+    return content
