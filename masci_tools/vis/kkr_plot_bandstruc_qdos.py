@@ -13,9 +13,95 @@
 dispersionplot function for plotting KKR bandstructures (i.e. qdos) files
 """
 
+import numpy as np
+
+
+def load_data(
+    p0='./',
+    reload_data=False,
+    nosave=False,
+    atoms=None,
+    ratios=False,
+    atoms2=None,
+    atoms3=None,
+    ef=None,
+):
+    """load the qdos data"""
+    import numpy as np
+    from os import listdir
+    from os.path import isdir
+    from subprocess import check_output
+
+    # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
+    if not isinstance(p0, str):
+        pathname_with_file = p0.name
+        p0 = pathname_with_file.replace('/qdos.01.1.dat', '')  #dos.atom1
+    # read in data
+    if p0[-1] != '/':
+        p0 += '/'
+    # read EF if not given as input
+    if ef is None:
+        if 'potential' in listdir(p0):
+            ef = float(open(p0 + 'potential').readlines()[3].split()[1])
+        else:
+            ef = 0
+    alat = float(
+        check_output('grep ALATBASIS ' + p0 + 'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
+    a0 = 2 * np.pi / alat / 0.52918
+
+    if reload_data or 'saved_data_dispersion.npy' not in np.sort(listdir(p0)):
+        first = True
+        first2 = True
+        first3 = True
+        print('reading qdos')
+        j = 0
+        for i in np.sort(listdir(p0)):
+            if 'qdos.' in i[:5] and not isdir(p0 + i):
+                iatom = i.replace('qdos.', '').split('.')[0]
+                if atoms is None or int(iatom) in atoms:
+                    j += 1
+                    print(j, p0, i)
+                    tmp = np.loadtxt(p0 + i)
+                    tmp[:, 2:5] = tmp[:, 2:5]
+                    if first:
+                        d = tmp
+                        first = False
+                    else:
+                        d[:, 5:] += tmp[:, 5:]
+                if ratios and (atoms2 is None or int(iatom) in atoms2):
+                    j += 1
+                    print(j, p0, i, 'atoms2=', atoms2)
+                    tmp = np.loadtxt(p0 + i)
+                    tmp[:, 2:5] = tmp[:, 2:5]
+                    if first2:
+                        d2 = tmp
+                        first2 = False
+                    else:
+                        d2[:, 5:] += tmp[:, 5:]
+                if (atoms3 is None or int(iatom) in atoms3) and ratios:
+                    j += 1
+                    print(j, p0, i, 'atoms3=', atoms3)
+                    tmp = np.loadtxt(p0 + i)
+                    tmp[:, 2:5] = tmp[:, 2:5]
+                    if first3:
+                        d3 = tmp
+                        first3 = False
+                    else:
+                        d3[:, 5:] += tmp[:, 5:]
+        if not nosave:
+            np.save(p0 + 'saved_data_dispersion', d)
+    else:
+        print(
+            'loading data'
+        )  #,'qdos files created on:',ctime(getctime('qdos.01.1.dat')), '.npy file created on:', ctime(getctime('saved_data_dispersion.npy'))
+        d = np.load(p0 + 'saved_data_dispersion.npy')
+
+    return a0, d, d2, d3, ef
+
 
 def dispersionplot(
     p0='./',
+    data_all = None, # alternative way, skips loading data with the load_data function
     totonly=True,
     s=20,
     ls_ef=':',
@@ -52,85 +138,34 @@ def dispersionplot(
 ):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
-    from numpy import loadtxt, load, save, log, abs, sum, sort, pi, shape, array  # pylint: disable=redefined-builtin
+    from numpy import log, abs, sum, sort, pi, shape, array  # pylint: disable=redefined-builtin
     from matplotlib.pyplot import figure, plot, axvline, scatter, axhline, xlabel, ylabel, title, colorbar, pcolormesh, cm, xlim, ylim, clim
     from os import listdir, getcwd
-    from os.path import isdir, getctime
+    from os.path import getctime
     from time import ctime
-    from subprocess import check_output
     from numpy import linspace
     from matplotlib.colors import ListedColormap
 
-    # deal with input of file handle instead of path (see plot_kkr of aiida_kkr)
-    if not isinstance(p0, str):
-        pathname_with_file = p0.name
-        p0 = pathname_with_file.replace('/qdos.01.1.dat', '')  #dos.atom1
+    if data_all is None:
+        a0, d, d2, d3, ef = load_data(p0=p0,
+                                      reload_data=reload_data,
+                                      nosave=nosave,
+                                      atoms=atoms,
+                                      ratios=ratios,
+                                      atoms2=atoms2,
+                                      atoms3=atoms3,
+                                      ef=ef)
+    else:
+        a0, d, d2, d3, ef = data_all
 
     if cmap is None:
         cmap = cm.viridis
+
     if newfig:
         figure()
 
-    # read in data
-    if p0[-1] != '/':
-        p0 += '/'
-    # read EF if not given as input
-    if ef is None:
-        if 'potential' in listdir(p0):
-            ef = float(open(p0 + 'potential').readlines()[3].split()[1])
-        else:
-            ef = 0
-    alat = float(
-        check_output('grep ALATBASIS ' + p0 + 'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
-    a0 = 2 * pi / alat / 0.52918
     if noscale:
         a0 = 1.
-    if reload_data or 'saved_data_dispersion.npy' not in sort(listdir(p0)):
-        first = True
-        first2 = True
-        first3 = True
-        print('reading qdos')
-        j = 0
-        for i in sort(listdir(p0)):
-            if 'qdos.' in i[:5] and not isdir(p0 + i):
-                iatom = i.replace('qdos.', '').split('.')[0]
-                if atoms is None or int(iatom) in atoms:
-                    j += 1
-                    print(j, p0, i)
-                    tmp = loadtxt(p0 + i)
-                    tmp[:, 2:5] = tmp[:, 2:5]
-                    if first:
-                        d = tmp
-                        first = False
-                    else:
-                        d[:, 5:] += tmp[:, 5:]
-                if ratios and (atoms2 is None or int(iatom) in atoms2):
-                    j += 1
-                    print(j, p0, i, 'atoms2=', atoms2)
-                    tmp = loadtxt(p0 + i)
-                    tmp[:, 2:5] = tmp[:, 2:5]
-                    if first2:
-                        d2 = tmp
-                        first2 = False
-                    else:
-                        d2[:, 5:] += tmp[:, 5:]
-                if (atoms3 is None or int(iatom) in atoms3) and ratios:
-                    j += 1
-                    print(j, p0, i, 'atoms3=', atoms3)
-                    tmp = loadtxt(p0 + i)
-                    tmp[:, 2:5] = tmp[:, 2:5]
-                    if first3:
-                        d3 = tmp
-                        first3 = False
-                    else:
-                        d3[:, 5:] += tmp[:, 5:]
-        if not nosave:
-            save(p0 + 'saved_data_dispersion', d)
-    else:
-        print(
-            'loading data'
-        )  #,'qdos files created on:',ctime(getctime('qdos.01.1.dat')), '.npy file created on:', ctime(getctime('saved_data_dispersion.npy'))
-        d = load(p0 + 'saved_data_dispersion.npy')
 
     d[:, 2:5] = d[:, 2:5] * a0
     if ratios:
@@ -173,7 +208,7 @@ def dispersionplot(
             y = d[:, 2 + as_e_dimension]
             el = len(set(y))
             ylab = r'k (1/Ang.)'
-        x = array([[i for i in range(len(d) // el)] for j in range(el)])  # pylint: disable=unnecessary-comprehension
+        x = array([[i for i in range(len(d) // el)] for j in range(el)])
     elif qcomponent != -1:
         x = xscale * d[:, 2:5][:, qcomponent]
 
