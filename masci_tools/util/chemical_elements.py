@@ -825,7 +825,7 @@ class ChemicalElements:
         if symbol in self._pte:
             if symbol not in self._special_elements:
                 print(info_msg_prefix + 'Symbol is a standard element of the periodic table. '
-                      'I will not expand definition by this element.')
+                                        'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same symbol has a different atomic number
@@ -833,14 +833,14 @@ class ChemicalElements:
                 stored_atomic_number = self._special_elements[symbol]
                 if atomic_number != stored_atomic_number:
                     print(info_msg_prefix + f"Found stored special element '{stored_atomic_number}' with same symbol. "
-                          f'I will replace the latter with the former.')
+                                            f'I will replace the latter with the former.')
                     _remove_special_element_from_definition(symbol=symbol, atomic_number=stored_atomic_number)
 
         # check atomic number
         if atomic_number in self._pte_inv:
             if atomic_number not in self._special_elements_inv:
                 print(info_msg_prefix + 'Atomic number is that of a standard element of the periodic table. '
-                      'I will not expand definition by this element.')
+                                        'I will not expand definition by this element.')
                 return
             else:
                 # now need to check if the stored special element with the same atomic number has a different symbol
@@ -848,7 +848,7 @@ class ChemicalElements:
                 stored_symbol = self._special_elements_inv[atomic_number]
                 if symbol != stored_symbol:
                     print(info_msg_prefix + f"Found stored special element '{stored_symbol}' with same atomic number. "
-                          f'I will replace the latter with the former.')
+                                            f'I will replace the latter with the former.')
                     _remove_special_element_from_definition(symbol=stored_symbol, atomic_number=atomic_number)
 
         # okay, now finally clear to expand allowed element definition
@@ -1061,7 +1061,7 @@ class ChemicalElements:
              title: str = '',
              colorby: str = 'group',
              attribute: str = None,
-             without_attribute: bool = False,
+             without_attribute: bool = True,
              missing_value=None,
              missing_color: str = '#bfbfbf',
              missing_name: str = 'Missing',
@@ -1099,9 +1099,9 @@ class ChemicalElements:
                a group subset.
         :param title: Title to appear above the periodic table.
         :param colorby: 'group': Colormap by selected groups, 'attribute': by mendeleev periodic table attribute.
-        :param attribute: Attribute's value displayed below elements. Either PTE attribute, or group values.
+        :param attribute: Attribute's value displayed below elements. Empty, PTE attribute, or group values.
         :param without_attribute: Do not display the attribute values below the elements.
-        :param missing_value: Replaces NaN values, e.g. for custom coloring.
+        :param missing_value: Replaces NaN values with the given value, e.g. for custom coloring.
         :type missing_value: str or numeric. Prefer same type as coloring input (group names or attribute).
         :param missing_color: Hex code of the color to be used for the missing values
                (#ffffff white, #bfbfbf light gray).
@@ -1152,11 +1152,8 @@ class ChemicalElements:
                 _colorby = pp.colorby if pp.colorby else colorby
                 if pp.attribute:
                     _attribute = pp.attribute
-                else:
-                    if attribute == title and pp.title_prefix:
-                        _attribute = pp.title_prefix + attribute
-                    else:
-                        _attribute = attribute
+                elif attribute == title:
+                    _attribute = _title
                 _without_attribute = pp.without_attribute if pp.without_attribute is not None else without_attribute
                 _colormap_name = pp.colormap_name if pp.colormap_name else colormap_name
                 _colormap = _copy.copy(pp.colormap) if pp.colormap else _colormap
@@ -1170,7 +1167,7 @@ class ChemicalElements:
         valid_attributes = self.list_of_attributes()
         if _colorby not in valid_colorby_values:
             raise KeyError(f"Specified argument 'colorby'='{_colorby}', but must be one of {valid_colorby_values}.")
-        if _attribute != _title and _attribute not in valid_attributes:
+        if  not _without_attribute and _attribute != _title and _attribute not in valid_attributes:
             raise KeyError(f"Specified argument 'attribute'='{_attribute}', but must be one of {valid_attributes}, "
                            f"or equal argument of parameter 'title'.")
 
@@ -1259,7 +1256,7 @@ class ChemicalElements:
                 for symbol in group.keys():
                     ptable.loc[ptable['symbol'] == symbol, [_title]] = group_key
 
-        if _without_attribute:
+        if not _attribute or _without_attribute:
             # create a column with empty values and set that as attribute to display for mendeleev.
             _attribute_mendel = 'empty'
             ptable['empty'] = ' '
