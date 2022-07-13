@@ -16,18 +16,16 @@ dispersionplot function for plotting KKR bandstructures (i.e. qdos) files
 import numpy as np
 
 
-def load_data(
-    p0='./',
-    reload_data=False,
-    nosave=False,
-    atoms=None,
-    ratios=False,
-    atoms2=None,
-    atoms3=None,
-    ef=None,
-):
+def load_data(p0='./',
+              reload_data=False,
+              nosave=False,
+              atoms=None,
+              ratios=False,
+              atoms2=None,
+              atoms3=None,
+              ef=None,
+              verbose=False):
     """load the qdos data"""
-    import numpy as np
     from os import listdir
     from os.path import isdir
     from subprocess import check_output
@@ -42,25 +40,29 @@ def load_data(
     # read EF if not given as input
     if ef is None:
         if 'potential' in listdir(p0):
-            ef = float(open(p0 + 'potential').readlines()[3].split()[1])
+            with open(p0 + 'potential', encoding='utf-8') as _f:
+                ef = float(_f.readlines()[3].split()[1])
         else:
             ef = 0
     alat = float(
         check_output('grep ALATBASIS ' + p0 + 'inputcard', shell=True).decode('utf-8').split('=')[1].split()[0])
     a0 = 2 * np.pi / alat / 0.52918
 
+    d2, d3 = None, None
     if reload_data or 'saved_data_dispersion.npy' not in np.sort(listdir(p0)):
         first = True
         first2 = True
         first3 = True
-        print('reading qdos')
+        if verbose:
+            print('reading qdos')
         j = 0
         for i in np.sort(listdir(p0)):
             if 'qdos.' in i[:5] and not isdir(p0 + i):
                 iatom = i.replace('qdos.', '').split('.')[0]
                 if atoms is None or int(iatom) in atoms:
                     j += 1
-                    print(j, p0, i)
+                    if verbose:
+                        print(j, p0, i)
                     tmp = np.loadtxt(p0 + i)
                     tmp[:, 2:5] = tmp[:, 2:5]
                     if first:
@@ -70,72 +72,75 @@ def load_data(
                         d[:, 5:] += tmp[:, 5:]
                 if ratios and (atoms2 is None or int(iatom) in atoms2):
                     j += 1
-                    print(j, p0, i, 'atoms2=', atoms2)
+                    if verbose:
+                        print(j, p0, i, 'atoms2=', atoms2)
                     tmp = np.loadtxt(p0 + i)
                     tmp[:, 2:5] = tmp[:, 2:5]
                     if first2:
                         d2 = tmp
                         first2 = False
                     else:
-                        d2[:, 5:] += tmp[:, 5:]
+                        d2[:, 5:] += tmp[:, 5:]  # pylint: disable=unsupported-assignment-operation
                 if (atoms3 is None or int(iatom) in atoms3) and ratios:
                     j += 1
-                    print(j, p0, i, 'atoms3=', atoms3)
+                    if verbose:
+                        print(j, p0, i, 'atoms3=', atoms3)
                     tmp = np.loadtxt(p0 + i)
                     tmp[:, 2:5] = tmp[:, 2:5]
                     if first3:
                         d3 = tmp
                         first3 = False
                     else:
-                        d3[:, 5:] += tmp[:, 5:]
+                        d3[:, 5:] += tmp[:, 5:]  # pylint: disable=unsupported-assignment-operation
         if not nosave:
+            if verbose:
+                print('saving data')
             np.save(p0 + 'saved_data_dispersion', d)
     else:
-        print(
-            'loading data'
-        )  #,'qdos files created on:',ctime(getctime('qdos.01.1.dat')), '.npy file created on:', ctime(getctime('saved_data_dispersion.npy'))
+        if verbose:
+            print('loading data')
         d = np.load(p0 + 'saved_data_dispersion.npy')
 
     return a0, d, d2, d3, ef
 
 
-def dispersionplot(
-    p0='./',
-    data_all = None, # alternative way, skips loading data with the load_data function
-    totonly=True,
-    s=20,
-    ls_ef=':',
-    lw_ef=1,
-    units='eV_rel',
-    noefline=False,
-    color='',
-    reload_data=False,
-    clrbar=True,
-    logscale=True,
-    nosave=False,
-    atoms=None,
-    ratios=False,
-    atoms2=None,
-    noscale=False,
-    newfig=False,
-    cmap=None,
-    alpha=1.0,
-    qcomponent=-2,
-    clims=None,
-    xscale=1.,
-    raster=True,
-    atoms3=None,
-    alpha_reverse=False,
-    return_data=False,
-    xshift=0.,
-    yshift=0.,
-    plotmode='pcolor',
-    ptitle=None,
-    ef=None,
-    as_e_dimension=None,
-    scale_alpha_data=False,
-    shading='gouraud',
-):
+def dispersionplot(  # pylint: disable=inconsistent-return-statements
+        p0='./',
+        data_all=None,  # alternative way, skips loading data with the load_data function
+        totonly=True,
+        s=20,
+        ls_ef=':',
+        lw_ef=1,
+        units='eV_rel',
+        noefline=False,
+        color='',
+        reload_data=False,
+        clrbar=True,
+        logscale=True,
+        nosave=False,
+        atoms=None,
+        ratios=False,
+        atoms2=None,
+        noscale=False,
+        newfig=False,
+        cmap=None,
+        alpha=1.0,
+        qcomponent=-2,
+        clims=None,
+        xscale=1.,
+        raster=True,
+        atoms3=None,
+        alpha_reverse=False,
+        return_data=False,
+        xshift=0.,
+        yshift=0.,
+        plotmode='pcolor',
+        ptitle=None,
+        ef=None,
+        as_e_dimension=None,
+        scale_alpha_data=False,
+        shading='gouraud',
+        verbose=False):
     """ plotting routine for qdos files - dispersion (E vs. q) """
     # import dependencies
     from numpy import log, abs, sum, sort, pi, shape, array  # pylint: disable=redefined-builtin
@@ -147,6 +152,7 @@ def dispersionplot(
     from matplotlib.colors import ListedColormap
 
     if data_all is None:
+        # load data from files
         a0, d, d2, d3, ef = load_data(p0=p0,
                                       reload_data=reload_data,
                                       nosave=nosave,
@@ -154,14 +160,21 @@ def dispersionplot(
                                       ratios=ratios,
                                       atoms2=atoms2,
                                       atoms3=atoms3,
-                                      ef=ef)
+                                      ef=ef,
+                                      verbose=verbose)
     else:
+        # simply unpack the data_all input
         a0, d, d2, d3, ef = data_all
+
+    if verbose:
+        print('loaded/unpacked data')
 
     if cmap is None:
         cmap = cm.viridis
 
     if newfig:
+        if verbose:
+            print('open new figure')
         figure()
 
     if noscale:
@@ -208,7 +221,7 @@ def dispersionplot(
             y = d[:, 2 + as_e_dimension]
             el = len(set(y))
             ylab = r'k (1/Ang.)'
-        x = array([[i for i in range(len(d) // el)] for j in range(el)])
+        x = array([list(range(len(d) // el)) for j in range(el)])
     elif qcomponent != -1:
         x = xscale * d[:, 2:5][:, qcomponent]
 
@@ -297,9 +310,10 @@ def dispersionplot(
 
     if return_data:
         data = abs(sum(d[:, 5:], axis=1))
+
         if ratios:
             data2 = abs(sum(d2[:, 5:], axis=1))
             data3 = abs(sum(d3[:, 5:], axis=1))
             return x, y, data, data2, data3
-        else:
-            return x, y, data
+
+        return x, y, data

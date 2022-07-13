@@ -84,7 +84,7 @@ def test_plot_dos4():
 @pytest.mark.mpl_image_compare(baseline_dir=DIR / Path('files/kkr/kkr_run_qdos/'), filename='test.png')
 def test_plot_qdos():
     gcf().clear()
-    dispersionplot(os.fspath(DIR / Path('files/kkr/kkr_run_qdos')), reload_data=True)
+    dispersionplot(p0=os.fspath(DIR / Path('files/kkr/kkr_run_qdos')), reload_data=True)
     title('')
     return gcf()
 
@@ -93,7 +93,7 @@ def test_plot_qdos():
 @pytest.mark.mpl_image_compare(baseline_dir=DIR / Path('files/kkr/kkr_run_qdos/'), filename='test2.png')
 def test_plot_qdos2():
     gcf().clear()
-    dispersionplot(os.fspath(DIR / Path('files/kkr/kkr_run_qdos')),
+    dispersionplot(p0=os.fspath(DIR / Path('files/kkr/kkr_run_qdos')),
                    reload_data=True,
                    ratios=False,
                    units='eV_rel',
