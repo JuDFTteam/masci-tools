@@ -8,6 +8,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - name: docs
+            sphinx-options: '' 
+            strict: true
+          - name: docs-nitpicky
+            sphinx-options: '-nW'
+            strict: false
+
+    name: ${{ matrix.name }}
+    continue-on-error: ${{ matrix.strict }}
+
     steps:
     - uses: actions/checkout@v3
 
@@ -37,8 +50,9 @@ jobs:
     - name: Build documentation
       env:
         READTHEDOCS: 'True'
+        SPHINXOPTS: ${{ matrix.sphinx-options }}
       run: |
-        SPHINXOPTS='-nW' make -C docs html
+        make -C docs html
 
   pre-commit:
     runs-on: ubuntu-latest
