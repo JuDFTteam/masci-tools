@@ -28,7 +28,7 @@ inpFilename = 'inp_' + structureFormula
 Binv = np.linalg.inv(structure.cell)
 frac_coordinates = structure.arrays['positions'].dot(Binv)
 
-with open(inpFilename, 'w+') as f:
+with open(inpFilename, 'w+', encoding='utf-8') as f:
     natoms = len(structure.arrays['numbers'])
     f.write(structureFormula + '\r\n')
     f.write('&input film=F /\r\n')

@@ -6,7 +6,7 @@ atomGroups:
   force:
     calculate: true
     relaxXYZ: TTT
-  labels:
+  label:
     '                 222':
     - 0.0
     - 0.0
@@ -22,7 +22,7 @@ atomGroups:
   force:
     calculate: true
     relaxXYZ: TTT
-  labels:
+  label:
     '                   2':
     - 0.5
     - 0.5

@@ -28,7 +28,7 @@ except ImportError:
 
 from masci_tools.io.parsers.hdf5 import HDF5Reader
 from masci_tools.io.parsers.hdf5.reader import Transformation, AttribTransformation, HDF5Recipe
-from masci_tools.util.constants import HTR_TO_EV
+from masci_tools.util.constants import BOHR_A, HTR_TO_EV
 from masci_tools.io.common_functions import get_spin_rotation, get_wigner_matrix
 from masci_tools.util.typing import FileLike
 
@@ -232,6 +232,14 @@ def _get_sphavg_recipe(group_name: str, index: int, contour: int, version: int |
             ]
         }
 
+    if version is not None and version >= 8:
+        recipe['attributes']['atoms_elements'] = {
+            'h5path': '/atoms/atomicNumbers',
+            'description': 'Atomic numbers',
+            'transforms': [Transformation(name='periodic_elements')]
+        }
+        recipe['attributes']['atoms_groups'] = {'h5path': '/atoms/equivAtomsGroup'}
+
     return recipe
 
 
@@ -418,6 +426,7 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     kresolved = element.attrs.get('l_kresolved', [0])[0] == 1
     atomDiff = np.array(element.attrs['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
+    atomDiff *= BOHR_A
     nLO = element.attrs['numLOs'][0]
 
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
@@ -504,6 +513,13 @@ class GreensFunction:
         self._angle_beta = attributes.get('beta', 0.0), attributes.get('betap', 0.0)
         self._local_spin_frame = attributes.get('local_spin_frame', True)
         self._local_real_frame = attributes.get('local_real_frame', True)
+
+        self.extras['element'] = 'Unknown'
+        self.extras['elementp'] = 'Unknown'
+        if 'atoms_elements' in self.extras:
+            element_map = self.extras['atoms_elements']
+            self.extras['element'] = element_map[list(self.extras['atoms_groups']).index(self.atomType)]
+            self.extras['elementp'] = element_map[list(self.extras['atoms_groups']).index(self.atomTypep)]
 
         self.kpoints = None
         self.kpath = None

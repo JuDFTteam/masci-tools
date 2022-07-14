@@ -143,10 +143,9 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
                 def cond_func(version):
                     if min_version is not None and max_version is not None:
                         return min_version_tuple <= version <= max_version_tuple
-                    elif min_version is not None:
+                    if min_version is not None:
                         return version >= min_version_tuple
-                    else:
-                        return version <= max_version_tuple
+                    return version <= max_version_tuple
 
                 registry[cond_func] = func
 

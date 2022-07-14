@@ -8,6 +8,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - name: docs
+            sphinx-options: '' 
+            allow-failure: false
+          - name: docs-nitpicky
+            sphinx-options: '-nW'
+            allow-failure: true
+
+    name: ${{ matrix.name }}
+    continue-on-error: ${{ matrix.allow-failure }}
+
     steps:
     - uses: actions/checkout@v3
 
@@ -37,8 +50,9 @@ jobs:
     - name: Build documentation
       env:
         READTHEDOCS: 'True'
+        SPHINXOPTS: ${{ matrix.sphinx-options }}
       run: |
-        SPHINXOPTS='-nW' make -C docs html
+        make -C docs html
 
   pre-commit:
     runs-on: ubuntu-latest
@@ -49,13 +63,13 @@ jobs:
         include:
           - name: pre-commit-errors
             skip-hooks: pylint-warnings
-            strict: false
+            allow-failure: false
           - name: pre-commit-warnings
             skip-hooks: pylint-errors
-            strict: true
+            allow-failure: true
 
     name: ${{ matrix.name }}
-    continue-on-error: ${{ matrix.strict }}
+    continue-on-error: ${{ matrix.allow-failure }}
 
     steps:
     - uses: actions/checkout@v3

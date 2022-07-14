@@ -15,7 +15,7 @@ Load both the outxml_parser and inpxml_parser
 
 from .fleur_inpxml_parser import inpxml_parser
 from .fleur_outxml_parser import outxml_parser, register_migration, conversion_function
-from . import task_migrations  #pylint: disable=unused-import
-from . import outxml_conversions  #pylint: disable=unused-import
+from . import task_migrations  #pylint: disable=unused-import,cyclic-import
+from . import outxml_conversions  #pylint: disable=unused-import,cyclic-import
 
 __all__ = ['inpxml_parser', 'outxml_parser', 'register_migration', 'conversion_function']

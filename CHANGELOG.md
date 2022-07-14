@@ -1,5 +1,20 @@
 # Changelog
 
+## latest
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...develop)
+
+Nothing here yet
+
+## v.0.11.3
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.2...v0.11.3)
+
+### Improvements
+- Changes to KKR plotting routine `dispersionplot` for compatibility with AiiDA v2.0
+- Connecting vectors for intersite `GreensFunction` are now saved in Angstroem. For better interoperability with ase, pymatgen, AiiDA
+
+### For Developers
+- Relaxed CI requirements for docs build. Nitpicky mode is no longer required to pass but is treated as a hint to look into the warnings
+
 ## v.0.11.2
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.1...v0.11.2)
 

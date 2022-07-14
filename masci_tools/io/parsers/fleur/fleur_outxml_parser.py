@@ -218,14 +218,12 @@ def outxml_parser(outxmlfile: XMLFileLike,
     if not list_return:
         #Convert one item lists to simple values
         for key, value in out_dict.items():
-            if isinstance(value, list):
-                if len(value) == 1:
-                    out_dict[key] = value[0]
+            if isinstance(value, list) and len(value) == 1:
+                out_dict[key] = value[0]
             elif isinstance(value, dict):
                 for subkey, subvalue in value.items():
-                    if isinstance(subvalue, list):
-                        if len(subvalue) == 1:
-                            out_dict[key][subkey] = subvalue[0]
+                    if isinstance(subvalue, list) and len(subvalue) == 1:
+                        out_dict[key][subkey] = subvalue[0]
 
     if parser_log_handler is not None:
         if logger is not None:
