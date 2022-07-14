@@ -13,13 +13,13 @@ jobs:
         include:
           - name: docs
             sphinx-options: '' 
-            strict: true
+            allow-failure: false
           - name: docs-nitpicky
             sphinx-options: '-nW'
-            strict: false
+            allow-failure: true
 
     name: ${{ matrix.name }}
-    continue-on-error: ${{ matrix.strict }}
+    continue-on-error: ${{ matrix.allow-failure }}
 
     steps:
     - uses: actions/checkout@v3
@@ -63,13 +63,13 @@ jobs:
         include:
           - name: pre-commit-errors
             skip-hooks: pylint-warnings
-            strict: false
+            allow-failure: false
           - name: pre-commit-warnings
             skip-hooks: pylint-errors
-            strict: true
+            allow-failure: true
 
     name: ${{ matrix.name }}
-    continue-on-error: ${{ matrix.strict }}
+    continue-on-error: ${{ matrix.allow-failure }}
 
     steps:
     - uses: actions/checkout@v3
