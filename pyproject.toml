@@ -88,7 +88,9 @@ Source = "https://github.com/JuDFTteam/masci-tools"
 
 [tool.coverage.run]
 omit = [
-    "venv/*"
+    "venv/*",
+    "masci_tools/util/kkr_rms_tracker.py",
+    "masci_tools/util/modifypotential.py"
 ]
 
 [tool.flit.module]

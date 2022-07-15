@@ -24,3 +24,7 @@ comment:
   layout: "header, diff"
   behavior: default
   require_changes: no
+
+ignore:
+  - "masci_tools/util/kkr_rms_tracker.py"
+  - "masci_tools/util/modifypotential.py"
