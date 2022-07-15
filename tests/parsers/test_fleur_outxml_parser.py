@@ -635,3 +635,20 @@ def test_outxml_optional_task_unknown(test_file):
 
     with pytest.raises(ValueError, match=r'Unknown optional task'):
         outxml_parser(OUTXML_FILEPATH, optional_tasks=['non_existent'])
+
+
+def test_outxml_no_iterations(data_regression, test_file, clean_parser_log):
+    """
+    Test the outxml_parser for a out.xml file without iterations
+    (e.g. fleur started with -check)
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/out_no_iterations.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings)
+
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
