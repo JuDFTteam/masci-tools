@@ -101,6 +101,5 @@
           <q> 0.2 0.0 0.0 </q>
  </spinSpiralDispersion>
 </forceTheorem>
- <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
 </fleurInput>
