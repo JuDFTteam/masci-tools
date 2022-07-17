@@ -21,6 +21,7 @@ extensions = ['myst_nb',
               'sphinx.ext.viewcode',
               'sphinx.ext.intersphinx',
               'sphinx_autodoc_typehints',
+              'sphinx_design',
               'sphinx_copybutton',
               'sphinx_click',
               'masci_tools.util.sphinxext']

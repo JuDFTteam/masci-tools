@@ -134,3 +134,279 @@ LDA+U procedure. They are read in the same order as they appear in the `inp.xml`
 file can become invalid if one adds/removes a LDA+U procedure to the `inp.xml` after the `n_mmp_mat` file was
 initialized. Therefore any modifications to the `n_mmp_mat` file should be done after adding/removing or modifying the LDA+U configuration.
 :::
+
+## Modification methods
+
+::::::{dropdown} Simple changes
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_inpchanges**
+:text-align: center
+Change the value of multiple text or attribute values at once.
++++
+:::{button-ref} set_inpchanges
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+::::::{dropdown} Modifying atom species
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_species**
+:text-align: center
+Change parameters or add new elements in `species` elements.
++++
+:::{button-ref} set_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+::::::{dropdown} Modifying atom groups
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_atomgroup**
+:text-align: center
+Change parameters or add new elements in `atomGroup` elements,
+i.e. the elmements containing the symmetry equivalent atoms.
++++
+:::{button-ref} set_atomgroup
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+::::::{dropdown} Modifying kpoint sets
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **switch_kpointset**
+:text-align: center
+Switch the used kpoint set
++++
+:::{button-ref} switch_kpointset
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+::::::{dropdown} Setting generic XML elements and attributes
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_attrib_value**
+:text-align: center
+Set abitrary XML attribute values
++++
+:::{button-ref} set_attrib_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_first_attrib_value**
+:text-align: center
+Set abitrary XML attribute values for the
+first occurrence of the given attribute in the XML tree
++++
+:::{button-ref} set_first_attrib_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+
+::::{grid-item-card} **set_text**
+:text-align: center
+Set the text of arbitrary XML elements
++++
+:::{button-ref} set_text
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_first_text**
+:text-align: center
+Set the text of arbitrary XML elements for the first
+occurrence of the given element in the XML tree
++++
+:::{button-ref} set_first_text
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **add_number_to_attrib**
+:text-align: center
+Add to or multiply the values of arbitrary XML
+attributes
++++
+:::{button-ref} add_number_to_attrib
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **add_number_to_first_attrib**
+:text-align: center
+Add to or multiply the values of arbitrary XML
+attributes for the first occurrence of the given attribute
+in the XML tree
++++
+:::{button-ref} add_number_to_first_attrib
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_simple_tag**
+:text-align: center
+Create or change arbitrary simple XML elements, i.e. elements
+without child elements
++++
+:::{button-ref} set_simple_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_complex_tag**
+:text-align: center
+Create or change an arbitrary complex XML element, i.e. an element
+with child elements.
++++
+:::{button-ref} set_complex_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
+
+::::::{dropdown} Manipulating the DFT+U density matrix
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_nmmpmat**
+:text-align: center
+Initialize the `n_mmp_mat` file with a given density matrix
++++
+:::{button-ref} set_nmmpmat
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+
+::::::{dropdown} Using explicit XPath expressions for modifications
+:color: warning
+:icon: Alert
+:animate: fade-in-slide-down
+
+These routines should be used with a lot of care, since they have
+much less checks than all other setting functions
+
+:::::{grid} 2
+
+::::{grid-item-card} **xml_create_tag**
+:text-align: center
+Create a XML element with the given name as a child of the
+results of the XPath expression
++++
+:::{button-ref} xml_create_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
