@@ -120,6 +120,14 @@ class UsageExampleBlock(SphinxDirective):
 def generate_usage_example_files(app):
     """
     Generate the markdown files for the specified usage examples
+
+    The process consists of two steps:
+        1. The module specified in the individual configurations (``config.yml`` files in the ``template_dirs``
+           specified in the ``conf.py`` file)
+           is parsed to extract the
+           information specified in ``.. usage-example::`` directives.
+        2. The information extracted is used to render the jinja template
+           in the ``template_dirs``
     """
     logger.info('Generating usage examples ...')
 
