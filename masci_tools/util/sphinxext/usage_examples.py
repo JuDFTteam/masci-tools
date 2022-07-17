@@ -6,14 +6,17 @@ to the FleurXMLModifier. A template can be given, which is filled
 in with the options and content from `usage-example` directives in
 the docstrings of the specified methods
 """
+from __future__ import annotations
 import os
 from pathlib import Path
 import copy
 import ast
 from contextlib import redirect_stderr, contextmanager
+from typing import Any, TypedDict, Generator, cast
 import yaml
 import io
 
+from sphinx.application import Sphinx
 from sphinx.util.logging import getLogger
 from sphinx.errors import ConfigError, ExtensionError
 from sphinx.util.docutils import register_directive
@@ -21,7 +24,7 @@ from sphinx.util.docutils import SphinxDirective
 
 from docutils.core import publish_doctree
 from docutils.parsers.rst.directives.body import CodeBlock
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import directives, Directive
 from docutils import nodes
 from docutils.parsers.rst.roles import set_classes
 from docutils.utils.code_analyzer import Lexer, LexerError
@@ -45,6 +48,17 @@ DEFAULT_TEMPLATE_CONFIG = {
     'include-private-methods': False,
     'output-folder': 'examples'
 }
+
+
+class UsageExample(TypedDict, total=False):
+    """
+    Dict representing information from ``..usage-example`` directives
+    """
+    title: str
+    error: bool
+    inputfile: str
+    code: str
+    description: str
 
 
 class UsageExampleBlock(SphinxDirective):
@@ -117,7 +131,7 @@ class UsageExampleBlock(SphinxDirective):
         return [admonition_node]
 
 
-def generate_usage_example_files(app):
+def generate_usage_example_files(app: Sphinx) -> None:
     """
     Generate the markdown files for the specified usage examples
 
@@ -135,39 +149,41 @@ def generate_usage_example_files(app):
     config.update(app.config.usage_examples_conf)
 
     for template_folder in config['template_dirs']:
-        template_folder, template_conf = _load_template_conf(template_folder, app.builder.srcdir)
+        template_folder_path, template_conf = _load_template_conf(template_folder,
+                                                                  app.builder.srcdir)  #type: ignore[union-attr]
         usage_examples = _gather_usage_examples(**template_conf)
-        _render_templates(template_folder, usage_examples, config, template_conf)
+        _render_templates(template_folder_path, usage_examples, config, template_conf)
 
 
-def _load_template_conf(template_folder, srcdir):
+def _load_template_conf(template_folder: str, srcdir: str) -> tuple[Path, dict[str, Any]]:
     """
     Load the configuration for the current template folder
 
     :param template_folder: Filepath to the folder containing the template
     :param srcdir: directory containing the conf.py
     """
-    template_folder = Path(srcdir) / template_folder
+    template_folder_path = Path(srcdir) / template_folder
 
     config = copy.deepcopy(DEFAULT_TEMPLATE_CONFIG)
-    with open(template_folder / TEMPLATE_CONFIG_FILE, encoding='utf-8') as file:
+    with open(template_folder_path / TEMPLATE_CONFIG_FILE, encoding='utf-8') as file:
         config.update(yaml.safe_load(file))
 
     if config['exclude-methods'] is not None:
-        config['exclude-methods'] = set(config['exclude-methods'])
+        config['exclude-methods'] = set(config['exclude-methods'])  #type: ignore[assignment,arg-type]
 
     if config['module-file'] is None:
         raise ConfigError(f'The template in {template_folder} does not define a module')
-    config['module-file'] = template_folder / config['module-file']
+    config['module-file'] = template_folder_path / config['module-file']  #type: ignore[assignment,operator]
 
     if config['class-name'] is None:
-        raise ConfigError(f'The template in {template_folder} does not define a class')
+        raise ConfigError(f'The template in {template_folder_path} does not define a class')
 
     config = {k.replace('-', '_'): v for k, v in config.items()}
-    return template_folder, config
+    return template_folder_path, config
 
 
-def _render_templates(template_folder, usage_examples, config, template_config):
+def _render_templates(template_folder: Path, usage_examples: dict[str, list[UsageExample]], config: dict[str, Any],
+                      template_config: dict[str, Any]) -> None:
     """
     Render all usage-example with the specified jinja template
 
@@ -197,7 +213,11 @@ def _render_templates(template_folder, usage_examples, config, template_config):
             logger.info('Rendered Usage example to "%s".', os.fspath(template_folder / f'{name}.md'))
 
 
-def _gather_usage_examples(module_file, class_name, exclude_methods=None, include_private_methods=False, **kwargs):
+def _gather_usage_examples(module_file: Path,
+                           class_name: str,
+                           exclude_methods: set[str] | None = None,
+                           include_private_methods: bool = False,
+                           **kwargs: Any) -> dict[str, list[UsageExample]]:
     """
     Gather all usage-example blocks for the specified methods
 
@@ -209,7 +229,7 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
     :returns: dict mapping method names to the list of usage examples defined in it's docstring
     """
 
-    class UsageExampleTemplateBlock(CodeBlock):
+    class UsageExampleTemplateBlock(CodeBlock):  #type: ignore[misc]
         """
         Dummy directive which extract the information
         of usage-example directives
@@ -226,7 +246,7 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
             'inputfile': directives.unchanged,
         }
         has_content = True
-        collected_examples = []
+        collected_examples: list[UsageExample] = []
 
         def run(self):
             self.assert_has_content()
@@ -234,12 +254,12 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
             self.options.setdefault('classes', []).append(
                 'usage-example')  #For checking after the fact if there were usage examples provided
 
-            example = {
+            example = UsageExample({
                 'title': self.options.get('title', 'Simple Usage'),
                 'error': self.options.get('result', 'success').lower() == 'error',
                 'inputfile': self.options.get('inputfile', 'inp.xml'),
                 'code': '\n'.join(self.content)
-            }
+            })
             if 'description' in self.options:
                 example['description'] = self.options['description']
             self.collected_examples.append(example)
@@ -256,7 +276,7 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
         module = ast.parse(file.read())
 
     usage_examples = {}
-    with patch_directive('usage-example', UsageExampleTemplateBlock):
+    with patch_directive('usage-example', cast(type[Directive], UsageExampleTemplateBlock)):
 
         class_definitions = [node for node in module.body if isinstance(node, ast.ClassDef)]
 
@@ -270,7 +290,9 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
                         continue
 
                     docstring = ast.get_docstring(method, clean=True)
-                    short_desc = ast.get_docstring(method, clean=False).split('\n')[0]
+                    short_desc = ast.get_docstring(method, clean=False)
+                    if short_desc is not None:
+                        short_desc = short_desc.split('\n')[0]
 
                     #Ignore unknown directive errors
                     with redirect_stderr(io.StringIO()):
@@ -291,7 +313,7 @@ def _gather_usage_examples(module_file, class_name, exclude_methods=None, includ
 
 
 @contextmanager
-def patch_directive(name, directive):
+def patch_directive(name: str, directive: type[Directive]) -> Generator[None, None, None]:
     """
     Temporarily replace the directive of the given name
     with a different one

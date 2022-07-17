@@ -16,9 +16,10 @@ Example of the usage-example directive without a connected template.
 
 """
 from .usage_examples import UsageExampleBlock, generate_usage_example_files, DEFAULT_CONF
+from sphinx.application import Sphinx
 
 
-def setup(app):
+def setup(app: Sphinx) -> None:
     """
     This function sets up the Sphinx extension. It is called, when
     ``masci_tools.util.sphinxext`` is added to the extensions in a conf.py file
