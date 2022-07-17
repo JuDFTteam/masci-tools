@@ -38,104 +38,7 @@ new_xmltree, _ = fm.modify_xmlfile('/path/to/original/inp.xml') #Apply
   last task or all tasks from the list of changes.
 
 (modify-methods)=
-
-### Modification registration methods
-
-The registration methods can be separated into two groups. First of all,
-there are XML methods that require deeper knowledge about the structure of an `inp.xml` file.
-All of them require an xpath input and start their method names start with `xml_`:
-
-- {py:meth}`FleurXMLModifier.xml_set_attrib_value_no_create()`: Set attributes on the result(s) of the given xpath
-- {py:meth}`FleurXMLModifier.xml_set_text_no_create()`: Set text on the result(s) of the given xpath
-- {py:meth}`FleurXMLModifier.xml_create_tag()`: Insert
-  an xml element in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_delete_tag()`: Delete
-  an xml element in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_delete_att()`: Delete
-  an attribute in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_replace_tag()`: Replace an xml element on the result(s) of the given xpath.
-
-On the other hand, there are shortcut methods that already know some paths:
-
-- {py:meth}`FleurXMLModifier.set_species()`: Specific
-  user-friendly method to change species parameters.
-- {py:meth}`FleurXMLModifier.clone_species()`: Method to
-  create a clone of a given species with optional modifications
-- {py:meth}`FleurXMLModifier.set_atomgroup()`:  Specific
-  method to change atom group parameters.
-- {py:meth}`FleurXMLModifier.set_species_label()`: Specific
-  user-friendly method to change a species of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_atomgroup_label()`:  Specific
-  method to change atom group parameters of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.switch_species()`: user-friendly method for switching the atom species of a atom group
-- {py:meth}`FleurXMLModifier.switch_species_label()`: user-friendly method for switching the atom species of a atom group with an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_nkpts()`: user-friendly method for setting the `kPointCount` (**Only for MaX4 and older**)
-- {py:meth}`FleurXMLModifier.set_kpath()`: user-friendly method for setting the path for a bandstructure calculations (**Only for MaX4 and older**)
-- {py:meth}`FleurXMLModifier.set_kpointlist()`: user-friendly method for setting/creating a `kPointlist` from lists
-- {py:meth}`FleurXMLModifier.switch_kpointset()`: user-friendly method for switching the used kpoint set in a calculation (**Only for MaX5 and newer**)
-- {py:meth}`FleurXMLModifier.set_inpchanges()`: Specific
-  user-friendly method for easy changes of attribute key value type.
-- {py:meth}`FleurXMLModifier.shift_value()`: Specific
-  user-friendly method to shift value of an attribute.
-- {py:meth}`FleurXMLModifier.shift_value_species_label()`: Specific
-  user-friendly method to shift value of an attribute of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_attrib_value()`: user-friendly method for setting attributes in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_first_attrib_value()`: user-friendly method for setting the first occurrence of an attribute in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.add_number_to_attrib()`: user-friendly method for adding to or multiplying values of attributes in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.add_number_to_first_attrib()`: user-friendly method for adding to or multiplying values of the first occurrence of the attribute in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_text()`: user-friendly method for setting text on xml elements in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_first_text()`: user-friendly method for setting the text on the first occurrence of an xml element in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.set_simple_tag()`: user-friendly method for creating and setting attributes on simple xml elements (only attributes) in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.set_complex_tag()`: user-friendly method for creating complex tags in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.create_tag()`: User-friendly method for inserting a tag in the right place by specifying it's name
-- {py:meth}`FleurXMLModifier.delete_tag()`: User-friendly method for delete a tag by specifying it's name
-- {py:meth}`FleurXMLModifier.delete_att()`: User-friendly method for deleting an attribute from a tag by specifying it's name
-- {py:meth}`FleurXMLModifier.replace_tag()`: User-friendly method for replacing a tag by another by specifying its name
-- {py:meth}`FleurXMLModifier.set_nmmpmat()`: Specific
-  method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
-- {py:meth}`FleurXMLModifier.rotate_nmmpmat()`: Specific
-  method for rotating a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space
-- {py:meth}`FleurXMLModifier.align_nmmpmat_to_sqa()`: Specific
-  method for aligning a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space with the SQA already specified in the `inp.xml`
-
-% The figure below shows a comparison between the use of XML and shortcut methods.
-%
-% .. image:: images/registration_methods.png
-%   :width: 100%
-%   :align: center
-
-## Modifying the density matrix for LDA+U calculations
-
-The above mentioned {py:meth}`FleurXMLModifier.set_nmmpmat()`, {py:meth}`FleurXMLModifier.rotate_nmmpmat()` and
-{py:meth}`FleurXMLModifier.align_nmmpmat_to_sqa()` take a special role in the modification registration methods,
-as the modifications are not done on the `inp.xml` file but the density matrix file `n_mmp_mat` used by Fleur
-for LDA+U calculations. The resulting new `n_mmp_mat` file is returned next to the new `inp.xml` by
-the {py:meth}`FleurXMLModifier.modify_xmlfile()`.
-
-The code example below shows how to use this method to add a LDA+U procedure to an atom species and provide
-an initial guess for the density matrix.
-
-```python
-from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
-
-fm = FleurXMLModifier()
-# Add LDA+U procedure
-fm.set_species('Nd-1', {'ldaU':{'l': 3, 'U': 6.76, 'J': 0.76, 'l_amf': 'F'}})
-# Initialize n_mmp_mat file with the states m = -3 to m = 0 occupied for spin up
-# spin down is initialized with 0 by default, since no n_mmp_mat file is provided
-fm.set_nmmpmat('Nd-1', orbital=3, spin=1, state_occupations=[1,1,1,1,0,0,0])
-new_xmltree, add_files = fm.modify_xmlfile('/path/to/original/inp.xml')
-print(add_files['n_mmp_mat'])
-```
-
-:::{note}
-The `n_mmp_mat` file is a simple text file with no knowledge of which density matrix block corresponds to which
-LDA+U procedure. They are read in the same order as they appear in the `inp.xml`. For this reason the `n_mmp_mat`
-file can become invalid if one adds/removes a LDA+U procedure to the `inp.xml` after the `n_mmp_mat` file was
-initialized. Therefore any modifications to the `n_mmp_mat` file should be done after adding/removing or modifying the LDA+U configuration.
-:::
-
-## Modification methods
+### Modification methods
 
 ::::::{dropdown} Simple changes
 :open:
@@ -157,7 +60,22 @@ Change the value of multiple text or attribute values at once.
 Show Examples
 :::
 ::::
+
+::::{grid-item-card} **shift_value**
+:text-align: center
+Shift or multiply the value of multiple text or attribute values at once.
++++
+:::{button-ref} shift_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
 :::::
+
 ::::::
 
 ::::::{dropdown} Modifying atom species
@@ -169,9 +87,39 @@ Show Examples
 
 ::::{grid-item-card} **set_species**
 :text-align: center
-Change parameters or add new elements in `species` elements.
+Change parameters or add new tags in atomic `species` elements.
+For example changing the MT radius or adding DFT+U.
 +++
 :::{button-ref} set_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_species_label**
+:text-align: center
+Change parameters or add new tags in atomic `species` of a
+specific atom. The atom is identified by it's label.
++++
+:::{button-ref} set_species_label
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **clone_species**
+:text-align: center
+Duplicate a given species element with a different name.
++++
+:::{button-ref} clone_species
 :ref-type: ref
 :click-parent:
 :expand:
@@ -193,7 +141,7 @@ Show Examples
 ::::{grid-item-card} **set_atomgroup**
 :text-align: center
 Change parameters or add new elements in `atomGroup` elements,
-i.e. the elmements containing the symmetry equivalent atoms.
+i.e. the elements containing the symmetry equivalent atoms.
 +++
 :::{button-ref} set_atomgroup
 :ref-type: ref
@@ -204,6 +152,51 @@ i.e. the elmements containing the symmetry equivalent atoms.
 Show Examples
 :::
 ::::
+
+::::{grid-item-card} **set_atomgroup_label**
+:text-align: center
+Change parameters or add new elements in `atomGroup` elements,
+i.e. the elements containing the symmetry equivalent atoms.
+The group to modify is identified by a given label of an atom.
++++
+:::{button-ref} set_atomgroup_label
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **switch_species**
+:text-align: center
+Change the species of a given atom group.
++++
+:::{button-ref} switch_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **switch_species_label**
+:text-align: center
+Change the species of a atom group containing a given atom.
++++
+:::{button-ref} switch_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
 :::::
 ::::::
 
@@ -216,9 +209,9 @@ Show Examples
 
 ::::{grid-item-card} **switch_kpointset**
 :text-align: center
-Switch the used kpoint set
+Switch the used kpoint set {bdg-success-line}`MaX 5.0 or newer`
 +++
-:::{button-ref} switch_kpointset
+:::{button-ref} switch_kpointset 
 :ref-type: ref
 :click-parent:
 :expand:
@@ -227,6 +220,49 @@ Switch the used kpoint set
 Show Examples
 :::
 ::::
+
+::::{grid-item-card} **set_kpointlist**
+:text-align: center
+Create a k-point list from a list of coordinates and weights.
++++
+:::{button-ref} set_kpointlist 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_nkpts**
+:text-align: center
+Set the number of kpts (`kpointCount`) {bdg-danger-line}`MaX 4.0 or older`
++++
+:::{button-ref} set_nkpts 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_kpath**
+:text-align: center
+Set a explicit path for bandstructure {bdg-danger-line}`MaX 4.0 or older`
++++
+:::{button-ref} set_kpath 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
 :::::
 ::::::
 
@@ -379,6 +415,36 @@ Initialize the `n_mmp_mat` file with a given density matrix
 Show Examples
 :::
 ::::
+
+::::{grid-item-card} **rotate_nmmpmat**
+:text-align: center
+Rotate one or multiple block(s) of the `n_mmp_mat` with euler angles
++++
+:::{button-ref} rotate_nmmpmat
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **align_nmmpmat_to_sqa**
+:text-align: center
+Rotate one or multiple blocks of the `n_mmp_mat` with euler angles to align
+with the spin-quantization axis specified.
++++
+:::{button-ref} align_nmmpmat_to_sqa
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
 :::::
 ::::::
 
@@ -408,5 +474,115 @@ Show Examples
 :::
 ::::
 
+::::{grid-item-card} **xml_delete_tag**
+:text-align: center
+Delete the results of the XPath expression.
++++
+:::{button-ref} xml_delete_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_delete_att**
+:text-align: center
+Delete a give  XML attribute from the results of the XPath expression.
++++
+:::{button-ref} xml_delete_att
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_replace_tag**
+:text-align: center
+Replace the results of the XPath expression with a given XML element.
++++
+:::{button-ref} xml_replace_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_set_attrib_value_no_create**
+:text-align: center
+Set XML attribute values on the results of the XPath expression.
++++
+:::{button-ref} xml_set_attrib_value_no_create
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_set_text_no_create**
+:text-align: center
+Set text on the results of the XPath expression.
++++
+:::{button-ref} xml_set_text_no_create
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+
+
 :::::
 ::::::
+
+
+% The figure below shows a comparison between the use of XML and shortcut methods.
+%
+% .. image:: images/registration_methods.png
+%   :width: 100%
+%   :align: center
+
+## Modifying the density matrix for LDA+U calculations
+
+The above mentioned {py:meth}`FleurXMLModifier.set_nmmpmat()`, {py:meth}`FleurXMLModifier.rotate_nmmpmat()` and
+{py:meth}`FleurXMLModifier.align_nmmpmat_to_sqa()` take a special role in the modification registration methods,
+as the modifications are not done on the `inp.xml` file but the density matrix file `n_mmp_mat` used by Fleur
+for LDA+U calculations. The resulting new `n_mmp_mat` file is returned next to the new `inp.xml` by
+the {py:meth}`FleurXMLModifier.modify_xmlfile()`.
+
+The code example below shows how to use this method to add a LDA+U procedure to an atom species and provide
+an initial guess for the density matrix.
+
+```python
+from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+fm = FleurXMLModifier()
+# Add LDA+U procedure
+fm.set_species('Nd-1', {'ldaU':{'l': 3, 'U': 6.76, 'J': 0.76, 'l_amf': 'F'}})
+# Initialize n_mmp_mat file with the states m = -3 to m = 0 occupied for spin up
+# spin down is initialized with 0 by default, since no n_mmp_mat file is provided
+fm.set_nmmpmat('Nd-1', orbital=3, spin=1, state_occupations=[1,1,1,1,0,0,0])
+new_xmltree, add_files = fm.modify_xmlfile('/path/to/original/inp.xml')
+print(add_files['n_mmp_mat'])
+```
+
+:::{note}
+The `n_mmp_mat` file is a simple text file with no knowledge of which density matrix block corresponds to which
+LDA+U procedure. They are read in the same order as they appear in the `inp.xml`. For this reason the `n_mmp_mat`
+file can become invalid if one adds/removes a LDA+U procedure to the `inp.xml` after the `n_mmp_mat` file was
+initialized. Therefore any modifications to the `n_mmp_mat` file should be done after adding/removing or modifying the LDA+U configuration.
+:::
