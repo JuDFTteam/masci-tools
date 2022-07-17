@@ -945,6 +945,12 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
 
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_simple_tag('soc', {'theta': 0.1, 'phi': 0.2, 'l_soc': True})
+
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_simple_tag()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -972,6 +978,44 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
 
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_text('kpoint', [[1,2,3], [4,5,6]])
+
+        .. usage-example::
+            :title: Setting one value
+            :description: If only one value for the text is given all elements are set ot the same value
+                          in this case only one list of three coordinates is set
+
+            fm.set_text('kpoint', [4,4,4])
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_text('q', '1 1 1')
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.set_text('q', '1 1 1', contains='spinSpiral')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.set_text('valenceConfig',
+                        '(1s1/2)',
+                        contains='species',
+                        filters={
+                            'species': {
+                                './lo/@n': {'>': 4}
+                        }})
+
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_text()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -997,6 +1041,37 @@ class FleurXMLModifier:
         Kwargs:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_first_text('kpoint', [1,2,3])
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_first_text('valenceConfig', '(1s1/2)')
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.set_first_text('valenceConfig', '(1s1/2)', contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.set_first_text('valenceConfig',
+                             '(1s1/2)',
+                             contains='species',
+                             filters={
+                                 'species': {
+                                     './lo/@n': {'>': 4}
+                             }})
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_text()` to
         the list of tasks that will be done on the xmltree.
@@ -1026,6 +1101,37 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_attrib_value('itmax', 180)
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_attrib_value('radius', 1.05)
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.set_attrib_value('radius', 1.05, contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.set_attrib_value('spinUp',
+                                1,
+                                contains='species',
+                                filters={
+                                    'species': {
+                                        'atomicNumber': {'>': 30}
+                                }})
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_attrib_value()` to
         the list of tasks that will be done on the xmltree.
@@ -1060,6 +1166,37 @@ class FleurXMLModifier:
             :param not_contains: str, this string has to NOT be in the final path
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_first_attrib_value('itmax', 180)
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_first_attrib_value('radius', 1.05)
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.set_first_attrib_value('radius', 1.05, contains='species')
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.set_first_attrib_value('spinUp',
+                                      1,
+                                      contains='species',
+                                      filters={
+                                          'species': {
+                                              'atomicNumber': {'>': 30}
+                                      }})
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_first_attrib_value()` to
         the list of tasks that will be done on the xmltree.
