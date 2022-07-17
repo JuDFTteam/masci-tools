@@ -256,7 +256,7 @@ def delete_att(xmltree: XMLLike,
 
         fm.delete_att('alpha',
                       contains='nocoParams',
-                      not_contains='species'
+                      not_contains='species',
                       filters={
                         'atomGroup': {
                             'species': {'not-contains': 'Fe'}

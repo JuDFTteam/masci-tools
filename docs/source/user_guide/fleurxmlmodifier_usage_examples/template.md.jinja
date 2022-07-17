@@ -18,11 +18,11 @@ kernelspec:
 %load_ext masci_tools
 ```
 
-```{contents}
-
-```
-
 # {{ title }}
+
+```{contents} Examples
+:local:
+```
 
 {% for example in examples %}
 ## {{ example.title }}
@@ -46,16 +46,18 @@ from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
 fm = FleurXMLModifier()
 {{ example.code }}
-new_xmltree = fm.modify_xmlfile(xmltree, validate_changes=False)
+new_xmltree, additional_files = fm.modify_xmlfile(xmltree, validate_changes=False)
 ```
 
 {% if not example.error %}
+Changes in the ``inp.xml`` file
 ```{code-cell} ipython3
 :tags: [remove-input, hide-output]
 from masci_tools.util.ipython import xml_diff
 xml_diff(xmltree, new_xmltree)
 ```
 
+Conplete Modified ``inp.xml`` file
 ```{code-cell} ipython3
 :tags: [remove-input, hide-output]
 new_xmltree
