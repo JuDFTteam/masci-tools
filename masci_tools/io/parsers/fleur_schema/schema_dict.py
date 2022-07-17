@@ -344,6 +344,39 @@ class SchemaDict(LockableDict):
 
         return path_list
 
+    def _find_attrib_via_tag_name(self,
+                                  attrib_name: str,
+                                  tag_name: str,
+                                  tag_func: Callable[..., str],
+                                  *args: Any,
+                                  contains: str | Iterable[str] | None = None,
+                                  not_contains: str | Iterable[str] | None = None,
+                                  **kwargs: Any) -> str:
+        """
+        Find the path to an attribute by first finding the tag on which it sits
+        Then return the concatenated path
+
+        :param attrib_name: name of the attribute
+        :param tag_name: name of the tag
+        :param tag_func: function to use to find the tag path (e.g. self.tag_xpath)
+
+        Args and Kwargs are passed on to the ``tag_func``, ``contains`` and ``not_contains`` kwargs
+        are additionally passed to the :py:meth:`tag_info()` method
+
+        :returns: path to the attribute on the given tag if the attribute is allowed to be on the tag
+        """
+
+        tag_xpath = tag_func(tag_name, *args, contains=contains, not_contains=not_contains, **kwargs)
+
+        tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains, **kwargs)
+
+        if attrib_name not in tag_info['attribs']:
+            raise NoPathFound(f'No attribute {attrib_name} found at tag {tag_name}')
+        original_case = tag_info['attribs'].original_case[attrib_name]
+        if tag_xpath.endswith('/'):
+            return f'{tag_xpath}@{original_case}'
+        return f'{tag_xpath}/@{original_case}'
+
     def tag_xpath(self,
                   name: str,
                   contains: str | Iterable[str] | None = None,
@@ -440,18 +473,11 @@ class SchemaDict(LockableDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(
-                tag_name,
-                contains=contains,
-                not_contains=not_contains,
-            )
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-            original_case = tag_info['attribs'].original_case[name]
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.tag_xpath,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
@@ -498,18 +524,12 @@ class SchemaDict(LockableDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-
-            original_case = tag_info['attribs'].original_case[name]
-
-            if tag_xpath.endswith('/'):
-                return f'{tag_xpath}@{original_case}'
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.relative_tag_xpath,
+                                                  root_tag,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
@@ -999,18 +1019,11 @@ class OutputSchemaDict(SchemaDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.iteration_tag_xpath(tag_name, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(
-                tag_name,
-                contains=contains,
-                not_contains=not_contains,
-            )
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-            original_case = tag_info['attribs'].original_case[name]
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.iteration_tag_xpath,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [
             entry for entry in self._attrib_entries
@@ -1068,21 +1081,12 @@ class OutputSchemaDict(SchemaDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.relative_iteration_tag_xpath(tag_name,
-                                                          root_tag,
-                                                          contains=contains,
-                                                          not_contains=not_contains)
-
-            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-
-            original_case = tag_info['attribs'].original_case[name]
-
-            if tag_xpath.endswith('/'):
-                return f'{tag_xpath}@{original_case}'
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.relative_iteration_tag_xpath,
+                                                  root_tag,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [
             entry for entry in self._attrib_entries
