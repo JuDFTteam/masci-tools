@@ -209,7 +209,7 @@ def _render_templates(template_folder: Path, usage_examples: dict[str, list[Usag
             output_folder.mkdir()
 
         with open(output_folder / f'{name}.md', 'w', encoding='utf-8') as file:
-            file.write(template.render(examples=examples, title=f'``{name}``',reference=name))
+            file.write(template.render(examples=examples, title=f'``{name}``', reference=name))
             logger.info('Rendered Usage example to "%s".', os.fspath(template_folder / f'{name}.md'))
 
 
