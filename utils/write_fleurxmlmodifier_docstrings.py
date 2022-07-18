@@ -27,7 +27,7 @@ def get_method_docstring(name, docstring, module):
 
     additional_lines = [
         'This registration method does not modify the file immediately '
-        f'but only appendsa :py:func:`~masci_tools.util.xml.{module}.{name}()` to',
+        f'but only appends a :py:func:`~masci_tools.util.xml.{module}.{name}()` to',
         'the list of tasks that will be done on the xmltree.', ''
     ]
     if lines[-1]:

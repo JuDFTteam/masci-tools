@@ -1050,11 +1050,25 @@ def set_species(xmltree: XMLLike,
         fm.set_species('all-Pt', {'mtSphere' : {'radius' : 2.7},
                                   'lo': {'l': 0, 'n': 6, 'type': 'SCLO'},})
 
+    Example species. All these attributes tags can be modified.
+    Additional keys can for example be found in the FLEUR documentation flapw.de
 
-    ``mtSphere``, ``atomicCutoffs``,
-    ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
-    ``special`` keys are supported. To find possible
-    keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+    .. code-block:: xml
+
+      <species name="Fe-1" element="Fe" atomicNumber="26">
+         <mtSphere radius="2.20000000" gridPoints="787" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="10" lnonsphr="6"/>
+	     <electronConfig>
+            <coreConfig>[Ne]</coreConfig>
+            <valenceConfig>(3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d3/2)" spinUp="2.00000000" spinDown="1.00000000"/>
+            <stateOccupation state="(3d5/2)" spinUp="3.00000000" spinDown=".00000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <lo type="SCLO" l="0" n="3" eDeriv="0"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
