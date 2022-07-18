@@ -19,7 +19,8 @@ attribute from the right place in the given etree
 from __future__ import annotations
 
 from masci_tools.io.parsers import fleur_schema
-from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, eval_xpath, process_xpath_argument
+from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, process_xpath_argument
+from masci_tools.util.xml.common_functions import eval_xpath_all
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.typing import XPathLike, XMLLike
 from lxml import etree
@@ -97,7 +98,7 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
     complex_xpath = process_xpath_argument(attrib_xpath, complex_xpath, filters)
     check_complex_xpath(node, attrib_xpath, complex_xpath)
 
-    stringattribute: list[str] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+    stringattribute = eval_xpath_all(node, complex_xpath, str, logger=logger)
 
     if len(stringattribute) == 0:
         if logger is None:
@@ -166,8 +167,7 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
     complex_xpath = process_xpath_argument(tag_xpath, complex_xpath, filters)
     check_complex_xpath(node, tag_xpath, complex_xpath)
 
-    stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
-                                       list_return=True)  #type:ignore
+    stringtext = eval_xpath_all(node, add_tag(complex_xpath, 'text()'), str, logger=logger)
 
     for text in stringtext.copy():
         if text.strip() == '':
@@ -294,10 +294,7 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
 
     for attrib in attrib_list:
 
-        stringattribute: list[str] = eval_xpath(node,
-                                                add_tag(complex_xpath, f'@{attrib}'),
-                                                logger=logger,
-                                                list_return=True)  #type:ignore
+        stringattribute = eval_xpath_all(node, add_tag(complex_xpath, f'@{attrib}'), str, logger=logger)
 
         if len(stringattribute) == 0:
             if logger is None:
@@ -326,8 +323,7 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
     if parse_text:
 
         _, name = split_off_tag(tag_xpath)
-        stringtext: list[str] = eval_xpath(node, add_tag(complex_xpath, 'text()'), logger=logger,
-                                           list_return=True)  #type:ignore
+        stringtext = eval_xpath_all(node, add_tag(complex_xpath, 'text()'), str, logger=logger)
 
         for textval in stringtext.copy():
             if textval.strip() == '':
@@ -360,7 +356,7 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
                 logger.error('Conflicting key %s: Key is already in the output dictionary', tag)
             out_dict[tag] = []
 
-        sub_nodes: list[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+        sub_nodes = eval_xpath_all(node, complex_xpath, etree._Element, logger=logger)
         for sub_node in sub_nodes:
             for tag in tags:
                 if tag_exists(sub_node, schema_dict, tag):
@@ -531,7 +527,7 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
             'exist or it has no attributes', name)
     attrib_list = sorted(list(attribs.original_case.values()))
 
-    elems: list[etree._Element] = eval_xpath(node, complex_xpath, logger=logger, list_return=True)  #type:ignore
+    elems = eval_xpath_all(node, complex_xpath, etree._Element, logger=logger)
 
     out_dict: dict[str, Any] = {}
     for attrib in attrib_list:
@@ -616,7 +612,7 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
     tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters, strict=True)
 
-    tags: list[etree._Element] = eval_xpath(node, tag_xpath_builder, logger=logger, list_return=True)  #type:ignore
+    tags = eval_xpath_all(node, tag_xpath_builder, etree._Element, logger=logger)
     return any(attrib_name in tag.attrib for tag in tags)
 
 
@@ -732,7 +728,10 @@ def eval_simple_xpath(node: XMLLike | etree.XPathElementEvaluator,
     tag_xpath = _select_tag_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath_builder = XPathBuilder(tag_xpath, strict=True, filters=filters)
 
-    return eval_xpath(node, tag_xpath_builder, logger=logger, list_return=list_return)  #type: ignore[return-value]
+    res = eval_xpath_all(node, tag_xpath_builder, etree._Element, logger=logger)
+    if not list_return and len(res) == 1:
+        return res[0]
+    return res
 
 
 def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.InputSchemaDict,
@@ -796,7 +795,7 @@ def reverse_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_schema.Inpu
             tag_xpath = schema_dict.tag_xpath(tag)
         except Exception as err:
             raise ValueError(f'Cannot determine place of included tag {tag}') from err
-        included_tag_res: list[etree._Element] = eval_xpath(root, tag_xpath, list_return=True)  #type:ignore
+        included_tag_res = eval_xpath_all(root, tag_xpath, etree._Element)
 
         if len(included_tag_res) != 1:
             raise ValueError(f'Cannot determine place of included tag {tag}')
@@ -834,7 +833,7 @@ def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_s
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
     if not tag_exists(xmltree, schema_dict, 'relaxation') and \
-       len(eval_xpath(xmltree, '//xi:include[href=$file]', namespaces=INCLUDE_NSMAP, file='relax.xml', list_return=True)) == 0: #type:ignore
+       len(eval_xpath_all(xmltree, '//xi:include[href=$file]', etree._Element, namespaces=INCLUDE_NSMAP, file='relax.xml')) == 0:
         root = xmltree.getroot()
         root.append(_get_xinclude_elem('relax.xml'))
 

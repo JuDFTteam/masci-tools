@@ -27,7 +27,7 @@ from contextlib import _GeneratorContextManager, contextmanager
 
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.typing import XMLFileLike, XMLLike
-from masci_tools.util.xml.common_functions import normalize_xmllike
+from masci_tools.util.xml.common_functions import eval_xpath_one, normalize_xmllike
 
 __all__ = ('load_inpxml', 'load_outxml', 'FleurXMLContext', 'get_constants', 'load_outxml_and_check_for_broken_xml',
            '_EvalContext')
@@ -46,7 +46,6 @@ def load_inpxml(inpxmlfile: XMLFileLike,
     :returns: parsed xmltree of the inpxmlfile and the schema dictionary
               for the corresponding input version
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur_schema import InputSchemaDict
 
     xml_parse_func: Callable = etree.parse
@@ -88,13 +87,7 @@ def load_inpxml(inpxmlfile: XMLFileLike,
             logger.error('No XML tree generated. Check that the given file exists')
         raise ValueError('No XML tree generated. Check that the given file exists')
 
-    version = eval_xpath(xmltree, '//@fleurInputVersion')
-    if not version:
-        if logger is not None:
-            logger.error('Failed to extract inputVersion')
-        raise ValueError('Failed to extract inputVersion')
-    version = str(version)
-
+    version = eval_xpath_one(xmltree, '//@fleurInputVersion', str)
     if logger is not None:
         logger.info('Got Fleur input file with file version %s', version)
 
@@ -136,7 +129,6 @@ def load_outxml_and_check_for_broken_xml(
     :returns: parsed xmltree of the outxmlfile and the schema dictionary
               for the corresponding output version and bool indicating whether the outxml is broken
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
     from masci_tools.io.parsers.fleur_schema import OutputSchemaDict
 
     xml_parse_func: Callable = etree.parse
@@ -191,15 +183,9 @@ def load_outxml_and_check_for_broken_xml(
             logger.error('No XML tree generated. Check that the given file exists')
         raise ValueError('No XML tree generated. Check that the given file exists')
 
-    out_version = eval_xpath(xmltree, '//@fleurOutputVersion')
-    if not out_version:
-        if logger is not None:
-            logger.error('Failed to extract outputVersion')
-        raise ValueError('Failed to extract outputVersion')
-    out_version = str(out_version)
-
+    out_version = eval_xpath_one(xmltree, '//@fleurOutputVersion', str)
     if out_version == '0.27':
-        program_version = str(eval_xpath(xmltree, '//programVersion/@version'))
+        program_version = eval_xpath_one(xmltree, '//programVersion/@version', str)
         if program_version == 'fleur 32':
             #Max5 release (before bugfix)
             out_version = '0.33'
@@ -239,10 +225,7 @@ def load_outxml_and_check_for_broken_xml(
                              program_version)
             raise ValueError(f"Unknown fleur version: File-version '{out_version}' Program-version '{program_version}'")
     else:
-        inp_version: str = eval_xpath(xmltree, '//@fleurInputVersion')  #type:ignore
-        if not inp_version:
-            raise ValueError('Failed to extract inputVersion')
-        inp_version = str(inp_version)
+        inp_version = eval_xpath_one(xmltree, '//@fleurInputVersion', str)
 
     schema_dict = OutputSchemaDict.fromVersion(out_version, inp_version=inp_version, logger=logger)
 

@@ -701,7 +701,7 @@ def clone_species(xmltree: XMLLike,
     :returns xmltree: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath_one
     import copy
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
@@ -713,10 +713,7 @@ def clone_species(xmltree: XMLLike,
     xpath_species = schema_dict.tag_xpath('species')
     xpath_species = f'{xpath_species}[@name = "{species_name}"]'
 
-    old_species: etree._Element = eval_xpath(xmltree, xpath_species, list_return=True)  #type:ignore
-    if len(old_species) != 1:
-        raise ValueError('Failed to retrieve species to clone')
-    old_species = old_species[0]
+    old_species = eval_xpath_one(xmltree, xpath_species, etree._Element)
 
     parent = old_species.getparent()
     if parent is None:
