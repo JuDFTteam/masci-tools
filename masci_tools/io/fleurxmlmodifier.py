@@ -479,15 +479,40 @@ class FleurXMLModifier:
 
         **changes** is a python dictionary containing dictionaries that specify attributes
         to be set inside the certain specie. For example, if one wants to set a MT radius it
-        can be done via::
+        can be done via
 
-            changes = {'mtSphere' : {'radius' : 2.2}}
+        .. usage-example::
 
-        Another example::
+            fm.set_species('Fe-1', {'mtSphere' : {'radius' : 2.7}})
 
-            'changes': {'special': {'socscale': 0.0}}
+        .. usage-example::
+            :title: Adding child elements
+            :description: The `changes` dictionary is not limited to setting attributes
+                          Child elements can also be created. Notice here that if multiple
+                          elements of a given name are allowed all previously existing elements
+                          are deleted and replaced with the ones specified in `changes`
 
-        that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
+            fm.set_species('Fe-1', {'ldaU' : {'l' : 3, 'U': 4.0, 'J': 0.5, 'l_amf': True},
+                                    'lo': [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                           {'l': 1, 'n': 6, 'type': 'SCLO'}]})
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` as the first argument applies the changes
+                          to all species
+
+            fm.set_species('all', {'mtSphere' : {'radius' : 2.7}})
+
+        .. usage-example::
+            :title: Modifying a subset of species
+            :description: Providing `'all-<search string>'` as the first argument applies the changes
+                          to all species which contain the search string in it's name
+
+            fm.set_species('all-Pt', {'mtSphere' : {'radius' : 2.7},
+                                      'lo': {'l': 0, 'n': 6, 'type': 'SCLO'},})
+
+
+        ``mtSphere``, ``atomicCutoffs``,
         ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
@@ -950,6 +975,41 @@ class FleurXMLModifier:
         .. usage-example::
 
             fm.set_simple_tag('soc', {'theta': 0.1, 'phi': 0.2, 'l_soc': True})
+
+        .. usage-example::
+            :title: Tag selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                     {'l': 1, 'n': 6, 'type': 'SCLO'}])
+
+        .. usage-example::
+            :title: Tag selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+            fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                     {'l': 1, 'n': 6, 'type': 'SCLO'}],
+                              contains='species')
+
+        .. usage-example::
+            :title: Nested creation
+            :description: With `create_parents=True` if the parents of the tag are missing they are
+                          created
+
+            fm.set_simple_tag('realAxis', {'ne': 1300, 'ellow': -1.0, 'elup': 1.0}, create_parents=True)
+
+        .. usage-example::
+            :title: Added filters
+            :description: The filters argument allows to be more specific
+
+            fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                     {'l': 1, 'n': 6, 'type': 'SCLO'}],
+                              contains='species',
+                              filters={
+                                 'species': {
+                                     'atomicNumber': {'>': 30}
+                             }})
 
         This registration method does not modify the file immediately but only appendsa :py:func:`~masci_tools.util.xml.xml_setters_names.set_simple_tag()` to
         the list of tasks that will be done on the xmltree.
