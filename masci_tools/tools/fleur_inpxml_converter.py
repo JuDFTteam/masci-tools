@@ -24,7 +24,7 @@ from masci_tools.util.schema_dict_util import evaluate_attribute, tag_exists
 from masci_tools.util.typing import XMLLike, FileLike
 from masci_tools.util.xml.xml_setters_basic import xml_delete_tag, xml_delete_att, xml_create_tag, _reorder_tags, xml_set_attrib_value_no_create
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
-from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath
+from masci_tools.util.xml.common_functions import split_off_attrib, split_off_tag, eval_xpath_all
 from masci_tools.cmdline.parameters.slice import ListElement
 from masci_tools.cmdline.utils import echo
 
@@ -741,12 +741,12 @@ def _xml_create_tag_with_parents(xmltree: XMLLike, xpath: str, node: etree._Elem
     :param node: node to create
     """
 
-    parent_nodes = eval_xpath(xmltree, xpath, list_return=True)
+    parent_nodes = eval_xpath_all(xmltree, xpath, etree._Element)
     to_create = []
     while not parent_nodes:
         parent_path, parent_name = split_off_tag(xpath)
         to_create.append((parent_path, parent_name))
-        parent_nodes = eval_xpath(xmltree, parent_path, list_return=True)
+        parent_nodes = eval_xpath_all(xmltree, parent_path, etree._Element)
 
     for parent_path, name in reversed(to_create):
         xml_create_tag(xmltree, parent_path, name)
@@ -763,7 +763,7 @@ def _xml_delete_attribute_with_warnings(xmltree: XMLLike, xpath: str, name: str,
     :param name: name of the attribute
     :param warning: str of the warning to show in case there are nodes that are removed
     """
-    values = eval_xpath(xmltree, f'{xpath}/@{name}', list_return=True)
+    values = eval_xpath_all(xmltree, f'{xpath}/@{name}')
     if values:
         if warning:
             echo.echo_warning(warning)
@@ -778,7 +778,7 @@ def _xml_delete_tag_with_warnings(xmltree: XMLLike, xpath: str, warning: str = '
     :param xpath: xpath of the node
     :param warning: str of the warning to show in case there are nodes that are removed
     """
-    nodes = eval_xpath(xmltree, xpath, list_return=True)
+    nodes = eval_xpath_all(xmltree, xpath, etree._Element)
     if nodes:
         if warning:
             echo.echo_warning(warning)
@@ -832,12 +832,12 @@ def convert_inpxml(xmltree: etree._ElementTree, schema_dict: InputSchemaDict, to
     #Collect the nodes to be moved
     move_tags: list[list[etree._Element]] = []
     for action in conversion['tag']['move']:
-        move_tags.append(eval_xpath(xmltree, action.old_path, list_return=True))  #type: ignore
+        move_tags.append(eval_xpath_all(xmltree, action.old_path, etree._Element))
 
     #Collect the attributes to be moved
     move_attribs = []
     for action in conversion['attrib']['move']:
-        move_attribs.append(eval_xpath(xmltree, f'{action.old_path}/@{action.old_name}', list_return=True))
+        move_attribs.append(eval_xpath_all(xmltree, f'{action.old_path}/@{action.old_name}'))
 
     for action in conversion['tag']['remove']:
         _xml_delete_tag_with_warnings(xmltree, action.path, warning=action.warning)
@@ -851,7 +851,7 @@ def convert_inpxml(xmltree: etree._ElementTree, schema_dict: InputSchemaDict, to
         else:
             path = action.old_path
 
-        if eval_xpath(xmltree, path, list_return=True):
+        if eval_xpath_all(xmltree, path, etree._Element):
             xml_delete_tag(xmltree, path)
 
         for node in nodes:
@@ -872,16 +872,16 @@ def convert_inpxml(xmltree: etree._ElementTree, schema_dict: InputSchemaDict, to
         else:
             path = action.old_path
 
-        if eval_xpath(xmltree, f'{path}/@{action.old_name}', list_return=True):
+        if eval_xpath_all(xmltree, f'{path}/@{action.old_name}'):
             xml_delete_att(xmltree, path, action.old_name)
         if values:
-            nodes: list[etree._Element] = eval_xpath(xmltree, action.new_path, list_return=True)  #type: ignore
+            nodes = eval_xpath_all(xmltree, action.new_path, etree._Element)
             if nodes:
                 xml_set_attrib_value_no_create(xmltree, action.new_path, action.new_name, values)
 
     for action in conversion['attrib']['create']:
         if action.element is not None:
-            nodes: list[etree._Element] = eval_xpath(xmltree, action.path, list_return=True)  #type: ignore
+            nodes = eval_xpath_all(xmltree, action.path, etree._Element)
             if nodes:
                 xml_set_attrib_value_no_create(xmltree, action.path, action.name, action.element)
 
