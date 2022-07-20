@@ -52,26 +52,26 @@ class CaseInsensitiveDict(LockableDict[S, T_co]):
         self._upper = upper
         super().__init__(*args, recursive=recursive, **kwargs)
 
-    def _norm_key(self, key: object) -> object:
+    def _norm_key(self, key: _S) -> _S:
         if isinstance(key, str):
             if self._upper:
-                return key.upper()
-            return key.lower()
+                return cast(_S, key.upper())
+            return cast(_S, key.lower())
         return key
 
     #Here we modify the methods needed to make the lookups case insensitive
     #Since we use UserDict these methods should be enough to modify all behaviour
     def __delitem__(self, key: S) -> None:
-        super().__delitem__(cast(S, self._norm_key(key)))
+        super().__delitem__(self._norm_key(key))
 
     def __setitem__(self, key: S, value: T_co | LockableDict[S, T_co] | LockableList[T_co]) -> None:
-        super().__setitem__(cast(S, self._norm_key(key)), value)
+        super().__setitem__(self._norm_key(key), value)
 
     def __getitem__(self, key: S) -> T_co:
-        return cast(T_co, super().__getitem__(cast(S, self._norm_key(key))))
+        return cast(T_co, super().__getitem__(self._norm_key(key)))
 
     def __contains__(self, key: object) -> bool:
-        return super().__contains__(cast(S, self._norm_key(key)))
+        return super().__contains__(self._norm_key(key))
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}({super().__repr__()})'
@@ -93,8 +93,8 @@ class CaseInsensitiveFrozenSet(FrozenSet[T_co]):
 
     def __new__(cls, iterable: Iterable[T_co] | None = None, upper: bool = False) -> CaseInsensitiveFrozenSet[T_co]:
         if iterable is not None:
-            return super().__new__(cls, [key.lower() for key in iterable])  #type: ignore
-        return super().__new__(cls, [])  #type: ignore
+            return super().__new__(cls, [cls.__norm_key(key, upper=upper) for key in iterable])  #type: ignore[misc]
+        return super().__new__(cls, [])
 
     def __init__(self, iterable: Iterable[T_co] | None = None, upper: bool = False) -> None:
         self._upper = upper
@@ -104,24 +104,27 @@ class CaseInsensitiveFrozenSet(FrozenSet[T_co]):
             self.original_case = CaseInsensitiveDict(upper=self._upper)
         super().__init__()
 
-    def _get_new_original_case(self, *iterables: Iterable[object]) -> CaseInsensitiveDict[T_co, T_co]:
-        new_dict: CaseInsensitiveDict[T_co, T_co] = CaseInsensitiveDict(upper=self._upper)
+    def _get_new_original_case(self, *iterables: Iterable[_S]) -> CaseInsensitiveDict[_S, _S]:
+        new_dict: CaseInsensitiveDict[_S, _S] = CaseInsensitiveDict(upper=self._upper)
         for iterable in iterables:
             for key in iterable:
                 if key not in new_dict:
-                    key = cast(T_co, key)
                     if isinstance(iterable, self.__class__):
-                        new_dict[key] = iterable.original_case[key]
+                        new_dict[key] = iterable.original_case[key]  #type: ignore[attr-defined]
                     else:
                         new_dict[key] = key
         new_dict.freeze()
         return new_dict
 
-    def _norm_key(self, key: object) -> object:
+    def _norm_key(self, key: _S) -> _S:
+        return self.__norm_key(key)
+
+    @staticmethod
+    def __norm_key(key: _S, upper: bool = False) -> _S:
         if isinstance(key, str):
-            if self._upper:
-                return key.upper()
-            return key.lower()
+            if upper:
+                return cast(_S, key.upper())
+            return cast(_S, key.lower())
         return key
 
     def __contains__(self, key: object) -> bool:
@@ -160,27 +163,27 @@ class CaseInsensitiveFrozenSet(FrozenSet[T_co]):
             yield self.original_case[item]
 
     def difference(self, *others: Iterable[object]) -> CaseInsensitiveFrozenSet[T_co]:
-        new_frozenset = super().difference(*[{cast(T_co, self._norm_key(key)) for key in other} for other in others])
+        new_frozenset = super().difference(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
     def symmetric_difference(self, other: Iterable[T_co]) -> CaseInsensitiveFrozenSet[T_co]:
-        new_frozenset = super().symmetric_difference({cast(T_co, self._norm_key(key)) for key in other})
+        new_frozenset = super().symmetric_difference({self._norm_key(key) for key in other})
         new_case_dict = self._get_new_original_case(self.original_case.values(), other)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
-    def union(self, *others: Iterable[_S]) -> CaseInsensitiveFrozenSet[T_co]:
-        new_frozenset = super().union(*[{cast(T_co, self._norm_key(key)) for key in other} for other in others])
+    def union(self, *others: Iterable[_S]) -> CaseInsensitiveFrozenSet[T_co | _S]:
+        new_frozenset = super().union(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
     def intersection(self, *others: Iterable[object]) -> CaseInsensitiveFrozenSet[T_co]:
-        new_frozenset = super().intersection(*[{cast(T_co, self._norm_key(key)) for key in other} for other in others])
+        new_frozenset = super().intersection(*[{self._norm_key(key) for key in other} for other in others])
         new_case_dict = self._get_new_original_case(self.original_case.values(), *others)
         return self.__class__({new_case_dict[key] for key in new_frozenset}, upper=self._upper)
 
     def isdisjoint(self, other: Iterable[T_co]) -> bool:
-        return super().isdisjoint({cast(T_co, self._norm_key(key)) for key in other})
+        return super().isdisjoint({self._norm_key(key) for key in other})
 
     def issubset(self, other: Iterable[object]) -> bool:
         return super().issubset({self._norm_key(key) for key in other})
