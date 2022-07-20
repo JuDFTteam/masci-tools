@@ -117,7 +117,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T_co]):
         return new_dict
 
     def _norm_key(self, key: _S) -> _S:
-        return self.__norm_key(key)
+        return self.__norm_key(key, upper=self._upper)
 
     @staticmethod
     def __norm_key(key: _S, upper: bool = False) -> _S:
