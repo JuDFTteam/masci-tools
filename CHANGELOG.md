@@ -6,6 +6,9 @@
 ### Added
 - Added XPath evaluation functions with runtime tpye checking of the results of the expressions [[#181]](https://github.com/JuDFTteam/masci-tools/pull/181)
 
+### Bugfixes
+- Add clearer error message if `None` is passed to the `convert_to_xml` functions. This would happen for example using the `set_inpchanges` function with `{'minDistance': None}` [[#182]](https://github.com/JuDFTteam/masci-tools/pull/182)
+
 ## v.0.11.3
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.2...v0.11.3)
 

@@ -119,8 +119,7 @@ def eval_xpath_create(xmltree: XMLLike,
                       base_xpath: str,
                       create_parents: bool = False,
                       occurrences: int | Iterable[int] | None = None,
-                      number_nodes: int = 1,
-                      list_return: bool = False) -> list[etree._Element]:
+                      number_nodes: int = 1) -> list[etree._Element]:
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -155,9 +154,6 @@ def eval_xpath_create(xmltree: XMLLike,
                                              number_nodes=number_nodes,
                                              occurrences=occurrences)
         nodes = eval_xpath_all(xmltree, xpath, etree._Element)
-
-    if len(nodes) == 1 and not list_return:
-        nodes = nodes[0]  #type:ignore
 
     return nodes
 
@@ -200,7 +196,6 @@ def xml_set_attrib_value(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
-
     _, tag_name = split_off_tag(base_xpath)
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
@@ -219,8 +214,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
                                   base_xpath,
                                   create_parents=True,
                                   occurrences=occurrences,
-                                  number_nodes=n_nodes,
-                                  list_return=True)
+                                  number_nodes=n_nodes)
     else:
         nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
@@ -311,8 +305,7 @@ def xml_set_text(xmltree: XMLLike,
                                   base_xpath,
                                   create_parents=True,
                                   occurrences=occurrences,
-                                  number_nodes=n_nodes,
-                                  list_return=True)
+                                  number_nodes=n_nodes)
     else:
         nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
@@ -567,7 +560,6 @@ def xml_set_simple_tag(xmltree: XMLLike,
 
         #eval and ggf. create tag
         eval_xpath_create(xmltree, schema_dict, tag_xpath, tag_base_xpath, create_parents=create_parents)
-
         for attrib, value in changes.items():
             xml_set_attrib_value(xmltree, schema_dict, tag_xpath, tag_base_xpath, attrib, value)
 
