@@ -19,8 +19,10 @@ attribute from the right place in the given etree
 from __future__ import annotations
 
 from masci_tools.io.parsers import fleur_schema
-from masci_tools.util.xml.common_functions import add_tag, check_complex_xpath, process_xpath_argument
-from masci_tools.util.xml.common_functions import eval_xpath_all
+from masci_tools.util.xml.common_functions import add_tag, split_off_tag, split_off_attrib
+from masci_tools.util.xml.common_functions import check_complex_xpath, process_xpath_argument
+from masci_tools.util.xml.common_functions import eval_xpath_all, get_xml_attribute
+from masci_tools.util.xml.converters import convert_from_xml
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.typing import XPathLike, XMLLike
 from lxml import etree
@@ -89,8 +91,6 @@ def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: list or single value, converted in convert_xml_attribute
     """
-    from masci_tools.util.xml.converters import convert_from_xml
-
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
@@ -158,8 +158,6 @@ def evaluate_text(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: list or single value, converted in convert_xml_text
     """
-    from masci_tools.util.xml.converters import convert_from_xml
-
     list_return = kwargs.pop('list_return', False)
     optional = kwargs.pop('optional', False)
 
@@ -237,9 +235,6 @@ def evaluate_tag(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import split_off_tag
-    from masci_tools.util.xml.converters import convert_from_xml
-
     only_required = kwargs.pop('only_required', False)
     strict_missing_error = kwargs.pop('strict_missing_error', False)
     ignore = kwargs.pop('ignore', None)
@@ -481,9 +476,6 @@ def evaluate_parent_tag(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: dict, with attribute values converted via convert_xml_attribute
     """
-    from masci_tools.util.xml.common_functions import get_xml_attribute
-    from masci_tools.util.xml.converters import convert_from_xml
-
     strict_missing_error = kwargs.pop('strict_missing_error', False)
     list_return = kwargs.pop('list_return', False)
     only_required = kwargs.pop('only_required', False)
@@ -606,8 +598,6 @@ def attrib_exists(node: XMLLike | etree.XPathElementEvaluator,
 
     :returns: bool, True if any tag with the attribute exists
     """
-    from masci_tools.util.xml.common_functions import split_off_attrib
-
     attrib_xpath = _select_attrib_xpath(node, schema_dict, name, iteration_path=iteration_path, **kwargs)
     tag_xpath, attrib_name = split_off_attrib(attrib_xpath)
     tag_xpath_builder = XPathBuilder(tag_xpath, filters=filters, strict=True)

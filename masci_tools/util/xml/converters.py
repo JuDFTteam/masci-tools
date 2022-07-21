@@ -410,6 +410,11 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
     if not isinstance(value, (list, np.ndarray)):
         value = [value]
 
+    if any(val is None for val in value):
+        if logger is not None:
+            logger.error("Could not convert '%s' to text. All values have to be not None", value)
+        raise ValueError(f"Could not convert '{value}' to text. All values have to be not None")
+
     converted_value: str
     converted_list = []
     exceptions: list[Exception] = []

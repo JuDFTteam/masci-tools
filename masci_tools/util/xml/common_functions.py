@@ -19,7 +19,7 @@ from lxml import etree
 import warnings
 import copy
 import logging
-from typing import Any, TypeVar, cast, Type, overload
+from typing import Any, TypeVar, cast, overload
 
 from .xpathbuilder import FilterType, XPathBuilder
 
