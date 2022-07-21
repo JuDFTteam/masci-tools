@@ -193,6 +193,7 @@ def xml_set_attrib_value(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_basic import xml_set_attrib_value_no_create
     from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
+    from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
     _, tag_name = split_off_tag(base_xpath)
@@ -203,8 +204,8 @@ def xml_set_attrib_value(xmltree: XMLLike,
                          f'Allowed attributes are: {sorted(attribs.original_case.values())}')
     name = attribs.original_case[name]
 
-    converted_value, _ = convert_to_xml(value, schema_dict, name, text=False, list_return=True)
-    n_nodes = len(converted_value)
+    converted_value, _ = convert_to_xml(value, schema_dict, name, text=False)
+    n_nodes = len(converted_value) if is_sequence(converted_value) else 1
 
     if create:
         nodes = eval_xpath_create(xmltree,
@@ -288,13 +289,14 @@ def xml_set_text(xmltree: XMLLike,
     from masci_tools.util.xml.xml_setters_basic import xml_set_text_no_create
     from masci_tools.util.xml.converters import convert_to_xml
     from masci_tools.util.xml.common_functions import check_complex_xpath, split_off_tag
+    from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
     _, tag_name = split_off_tag(base_xpath)
 
-    converted_text, _ = convert_to_xml(text, schema_dict, tag_name, text=True, list_return=True)
-    n_nodes = len(converted_text)
+    converted_text, _ = convert_to_xml(text, schema_dict, tag_name, text=True)
+    n_nodes = len(converted_text) if is_sequence(converted_text) else 1
 
     if create:
         nodes = eval_xpath_create(xmltree,
