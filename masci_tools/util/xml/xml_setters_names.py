@@ -1420,3 +1420,60 @@ def set_kpath_max4(xmltree: XMLLike,
                           }})
 
     return xmltree
+
+
+def set_kpointpath(xmltree,
+                   schema_dict,
+                   path=None,
+                   nkpts=None,
+                   density=None,
+                   name=None,
+                   switch=False,
+                   overwrite=False,
+                   special_points=None):
+    """
+    Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+
+    The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+    :param nkpts: int number of kpoints in the path
+    :param density: float number of kpoints per Angstroem
+    :param name: Name of the created kpoint list. If not given a name is generated
+    :param switch: bool if True the kpoint list is direclty set as the used set
+    :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+    :param special_points: dict mapping names to coordinates for special points to use
+
+    :returns: xmltree with a created kpoint path
+    """
+    from masci_tools.util.xml.xml_getters import get_cell
+    from ase.dft.kpoints import bandpath
+    import numpy as np
+
+    cell, pbc = get_cell(xmltree, schema_dict)
+    if not all(pbc):
+        #Set unit cell dimension to 0 for non-periodic direction
+        cell[2:, 2:] = 0.0
+
+    kptpath = bandpath(path, cell, npoints=nkpts, density=density, special_points=special_points)
+
+    special_points = kptpath.special_points
+
+    labels = {}
+    for label, special_kpoint in special_points.items():
+        for index, kpoint in enumerate(kptpath.kpts):
+            if sum(abs(np.array(special_kpoint) - np.array(kpoint))).max() < 1e-12:
+                labels[index] = label
+    weights = np.ones(len(kptpath.kpts))
+
+    return set_kpointlist(xmltree,
+                          schema_dict,
+                          kptpath.kpts,
+                          weights,
+                          name=name,
+                          special_labels=labels,
+                          switch=switch,
+                          overwrite=overwrite,
+                          kpoint_type='path')

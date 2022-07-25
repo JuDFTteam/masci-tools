@@ -38,7 +38,7 @@ dependencies = [
             'PyYAML',
             'typing-extensions',
             'tabulate',
-            'ase' #Should be removed once io/cif2inp_ase.py is removed
+            'ase'
         ]
 
 [project.optional-dependencies]
@@ -117,7 +117,8 @@ module = [
     'lxml.builder',
     'IPython.*',
     'pandas',
-    'scipy'
+    'scipy',
+    'ase.*'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
