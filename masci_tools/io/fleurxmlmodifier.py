@@ -277,6 +277,7 @@ class FleurXMLModifier:
         outside_actions = {
             'set_inpchanges': self.set_inpchanges,
             'shift_value': self.shift_value,
+            'set_xcfunctional': self.set_xcfunctional,
             'set_species': self.set_species,
             'set_species_label': self.set_species_label,
             'clone_species': self.clone_species,
@@ -310,6 +311,8 @@ class FleurXMLModifier:
             'set_kpath': self.set_kpath,
             'set_kpointlist': self.set_kpointlist,
             'switch_kpointset': self.switch_kpointset,
+            'set_kpointpath': self.set_kpointpath,
+            'set_kpointmesh': self.set_kpointmesh
         }
         return outside_actions
 
@@ -1222,18 +1225,80 @@ class FleurXMLModifier:
 
     def set_kpath(self, *args: Any, **kwargs: Any) -> None:
         """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
         the list of tasks that will be done on the xmltree.
 
-        Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
+        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
 
-        .. warning::
-            This method is only supported for input versions before the Max5 release
+        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
 
-        :param kpath: a dictionary with kpoint name as key and k point coordinate as value
-        :param count: number of k-points
-        :param gamma: bool that controls if the gamma-point should be included
-                      in the k-point mesh
+        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+        :param nkpts: int number of kpoints in the path
+        :param density: float number of kpoints per Angstroem
+        :param name: Name of the created kpoint list. If not given a name is generated
+        :param switch: bool if True the kpoint list is direclty set as the used set
+        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+        :param special_points: dict mapping names to coordinates for special points to use
         """
         self._validate_arguments('set_kpath', args, kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))
+
+    def set_kpointpath(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        the list of tasks that will be done on the xmltree.
+
+        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+
+        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+
+        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+        :param nkpts: int number of kpoints in the path
+        :param density: float number of kpoints per Angstroem
+        :param name: Name of the created kpoint list. If not given a name is generated
+        :param switch: bool if True the kpoint list is direclty set as the used set
+        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+        :param special_points: dict mapping names to coordinates for special points to use
+        """
+        self._validate_arguments('set_kpointpath', args, kwargs)
+        self._tasks.append(ModifierTask('set_kpointpath', args, kwargs))
+
+    def set_kpointmesh(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        the list of tasks that will be done on the xmltree.
+
+        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+
+        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+
+        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+        :param nkpts: int number of kpoints in the path
+        :param density: float number of kpoints per Angstroem
+        :param name: Name of the created kpoint list. If not given a name is generated
+        :param switch: bool if True the kpoint list is direclty set as the used set
+        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+        :param special_points: dict mapping names to coordinates for special points to use
+        """
+        self._validate_arguments('set_kpointmesh', args, kwargs)
+        self._tasks.append(ModifierTask('set_kpointmesh', args, kwargs))
+
+    def set_xcfunctional(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        the list of tasks that will be done on the xmltree.
+
+        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+
+        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+
+        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+        :param nkpts: int number of kpoints in the path
+        :param density: float number of kpoints per Angstroem
+        :param name: Name of the created kpoint list. If not given a name is generated
+        :param switch: bool if True the kpoint list is direclty set as the used set
+        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+        :param special_points: dict mapping names to coordinates for special points to use
+        """
+        self._validate_arguments('set_xcfunctional', args, kwargs)
+        self._tasks.append(ModifierTask('set_xcfunctional', args, kwargs))
