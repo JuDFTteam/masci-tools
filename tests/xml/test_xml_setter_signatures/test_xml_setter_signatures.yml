@@ -307,6 +307,44 @@ schema_dict:
     - false
   - - overwrite
     - false
+  set_kpointmesh:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - mesh
+    - null
+  - - name
+    - null
+  - - use_symmetries
+    - true
+  - - switch
+    - false
+  - - overwrite
+    - false
+  - - shift
+    - null
+  - - time_reversal
+    - true
+  set_kpointpath:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - path
+    - null
+  - - nkpts
+    - null
+  - - density
+    - null
+  - - name
+    - null
+  - - switch
+    - false
+  - - overwrite
+    - false
+  - - special_points
+    - null
   set_nkpts:
   - - xmltree
     - null
@@ -376,6 +414,17 @@ schema_dict:
     - false
   - - kwargs
     - null
+  set_xcfunctional:
+  - - xmltree
+    - null
+  - - schema_dict
+    - null
+  - - xc_functional
+    - null
+  - - xc_functional_options
+    - null
+  - - libxc
+    - false
   shift_value:
   - - xmltree
     - null
