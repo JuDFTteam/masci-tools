@@ -344,8 +344,7 @@ def set_attrib_value(xmltree: XMLLike,
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
     if name == 'xcFunctional':
-        name = 'name'
-        kwargs.setdefault('exclude', []).append('other')
+        return set_xcfunctional(xmltree, schema_dict, value)
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(base_xpath)
@@ -1061,7 +1060,8 @@ def set_inpchanges(xmltree: XMLLike,
 
         #Special alias for xcFunctional since name is not a very telling attribute name
         if key == 'xcFunctional':
-            key = 'name'
+            set_xcfunctional(xmltree, schema_dict, change_value, libxc=isinstance(change_value, dict))
+            continue
 
         if key not in schema_dict['attrib_types'] and key not in schema_dict['text_tags']:
             raise ValueError(f"You try to set the key:'{key}' to : '{change_value}', but the key is unknown"
@@ -1080,6 +1080,55 @@ def set_inpchanges(xmltree: XMLLike,
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
 
     return xmltree
+
+
+def set_xcfunctional(xmltree: XMLLike,
+                     schema_dict: fleur_schema.SchemaDict,
+                     xc_functional: str | dict[str, int | str],
+                     xc_functional_options: dict[str, Any] | None = None,
+                     libxc: bool = False) -> XMLLike:
+    """
+    Set the Exchange Correlation potential tag
+
+    Setting a inbuilt XC functional
+    .. code-block:: python
+
+        set_xcfunctional(xmltree, schema_dict, 'vwn')
+
+    Setting a LibXC XC functional
+    .. code-block:: python
+
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
+
+    :param xmltree: XML tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
+                          specifies either the name or id for LibXC functionals for the keys
+                          `'exchange', 'correlation', 'etot_exchange' and 'etot_correlation'`
+    :param xc_functional_options: dict with further general changes to the `xcFunctional` tag
+    :param libxc: bool if True the functional is a LibXC functional
+
+    :returns: an xmltree with modified xcFunctional tag
+    """
+
+    if not libxc and isinstance(xc_functional, dict):
+        raise ValueError('For non LibXC functionals please only provide the name as a string')
+    if libxc and not isinstance(xc_functional, dict):
+        raise ValueError('For LibXC functionals please only the names as a a dict of either names or IDs')
+
+    changes = {'name': xc_functional if not libxc else 'LibXC'}
+    if isinstance(xc_functional, dict):
+        if all(isinstance(v, int) for v in xc_functional.values()):
+            changes['libxcid'] = xc_functional
+        elif all(isinstance(v, str) for v in xc_functional.values()):
+            changes['libxcname'] = xc_functional
+        else:
+            raise ValueError('For non LibXC functionals provide the used functionals either as IDs or names not mixed')
+
+    if xc_functional_options:
+        changes = {**changes, **xc_functional_options}
+
+    return set_complex_tag(xmltree, schema_dict, 'xcFunctional', changes)
 
 
 @schema_dict_version_dispatch(output_schema=False)

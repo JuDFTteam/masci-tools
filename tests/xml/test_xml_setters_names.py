@@ -2885,3 +2885,64 @@ def test_set_kpointlist_max4_overwrite_kpointcount(load_inpxml):
         '1.0000000000', '2.0000000000'
     ]
     assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/@count') == '2'
+
+
+def test_set_xcfunctional(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, 'TEST')
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+
+
+def test_set_xcfunctional_libxc(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, {'exchange': 'TEST_EXCHANGE', 'correlation': 'TEST_CORRELATION'}, libxc=True)
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'LibXC'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCName/@exchange') == 'TEST_EXCHANGE'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCName/@correlation') == 'TEST_CORRELATION'
+
+
+def test_set_xcfunctional_libxc_id(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, {'exchange': 100, 'correlation': 999}, libxc=True)
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'LibXC'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCID/@exchange') == '100'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCID/@correlation') == '999'
+
+
+def test_set_xcfunctional_options(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree,
+                     schema_dict,
+                     'TEST',
+                     xc_functional_options={
+                         'relativisticCorrections': True,
+                         'xcParams': {
+                             'igrd': 600
+                         }
+                     })
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@relativisticCorrections') == 'T'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/xcParams/@igrd') == '600'
+
+
+def test_set_xcfunctional_error(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, 'TEST', libxc=True)
+
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 100, 'correlation': 999})
