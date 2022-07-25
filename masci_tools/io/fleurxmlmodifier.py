@@ -1225,20 +1225,18 @@ class FleurXMLModifier:
 
     def set_kpath(self, *args: Any, **kwargs: Any) -> None:
         """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
         the list of tasks that will be done on the xmltree.
 
-        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+        Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
 
-        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+        .. warning::
+            This method is only supported for input versions before the Max5 release
 
-        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
-        :param nkpts: int number of kpoints in the path
-        :param density: float number of kpoints per Angstroem
-        :param name: Name of the created kpoint list. If not given a name is generated
-        :param switch: bool if True the kpoint list is direclty set as the used set
-        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
-        :param special_points: dict mapping names to coordinates for special points to use
+        :param kpath: a dictionary with kpoint name as key and k point coordinate as value
+        :param count: number of k-points
+        :param gamma: bool that controls if the gamma-point should be included
+                      in the k-point mesh
         """
         self._validate_arguments('set_kpath', args, kwargs)
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))
@@ -1265,40 +1263,47 @@ class FleurXMLModifier:
 
     def set_kpointmesh(self, *args: Any, **kwargs: Any) -> None:
         """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointmesh()` to
         the list of tasks that will be done on the xmltree.
 
-        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+        Create a kpoint mesh using spglib
 
-        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+        for details see :py:func:`~spglib.get_stabilized_reciprocal_mesh`
 
-        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
-        :param nkpts: int number of kpoints in the path
-        :param density: float number of kpoints per Angstroem
+        :param mesh: list-like woth three elements, giving the size of the kpoint set in each direction
+        :param use_symmetry: bool if True the available symmetry operations in the inp.xml will be used
+                             to reduce the kpoint set otherwise only the identity matrix is used
         :param name: Name of the created kpoint list. If not given a name is generated
         :param switch: bool if True the kpoint list is direclty set as the used set
         :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
-        :param special_points: dict mapping names to coordinates for special points to use
+        :param shift: shift the center of the kpint set
+        :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
         """
         self._validate_arguments('set_kpointmesh', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointmesh', args, kwargs))
 
     def set_xcfunctional(self, *args: Any, **kwargs: Any) -> None:
         """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_xcfunctional()` to
         the list of tasks that will be done on the xmltree.
 
-        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+        Set the Exchange Correlation potential tag
 
-        The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+        Setting a inbuilt XC functional
+        .. code-block:: python
 
-        :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
-        :param nkpts: int number of kpoints in the path
-        :param density: float number of kpoints per Angstroem
-        :param name: Name of the created kpoint list. If not given a name is generated
-        :param switch: bool if True the kpoint list is direclty set as the used set
-        :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
-        :param special_points: dict mapping names to coordinates for special points to use
+            set_xcfunctional(xmltree, schema_dict, 'vwn')
+
+        Setting a LibXC XC functional
+        .. code-block:: python
+
+            set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
+
+        :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
+                              specifies either the name or id for LibXC functionals for the keys
+                              `'exchange', 'correlation', 'etot_exchange' and 'etot_correlation'`
+        :param xc_functional_options: dict with further general changes to the `xcFunctional` tag
+        :param libxc: bool if True the functional is a LibXC functional
         """
         self._validate_arguments('set_xcfunctional', args, kwargs)
         self._tasks.append(ModifierTask('set_xcfunctional', args, kwargs))
