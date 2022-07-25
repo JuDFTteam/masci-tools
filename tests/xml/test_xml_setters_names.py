@@ -3021,3 +3021,68 @@ def test_set_kpointpath_custom_points(load_inpxml, data_regression):
         'cell': convert_to_pystd(cell),
         'pbc': pbc
     })
+
+
+def test_set_kpointmesh(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [4, 4, 4], switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_full_bz(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree,
+                   schema_dict, [2, 2, 2],
+                   name='default',
+                   overwrite=True,
+                   use_symmetries=False,
+                   time_reversal=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_shift(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, shift=[1, 1, 1], time_reversal=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_film(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [4, 4, 1], switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})

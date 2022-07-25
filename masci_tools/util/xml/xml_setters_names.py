@@ -1477,3 +1477,68 @@ def set_kpointpath(xmltree,
                           switch=switch,
                           overwrite=overwrite,
                           kpoint_type='path')
+
+
+def set_kpointmesh(xmltree,
+                   schema_dict,
+                   mesh,
+                   name=None,
+                   use_symmetries=True,
+                   switch=False,
+                   overwrite=False,
+                   shift=None,
+                   time_reversal=True):
+    """
+    Create a kpoint mesh using spglib
+
+    for details see :py:func:`~spglib.get_stabilized_reciprocal_mesh`
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param mesh: list-like woth three elements, giving the size of the kpoint set in each direction
+    :param use_symmetry: bool if True the available symmetry operations in the inp.xml will be used
+                         to reduce the kpoint set otherwise only the identity matrix is used
+    :param name: Name of the created kpoint list. If not given a name is generated
+    :param switch: bool if True the kpoint list is direclty set as the used set
+    :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+    :param shift: shift the center of the kpint set
+    :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
+
+    :returns: xmltree with a created kpoint path
+    """
+    from masci_tools.util.xml.xml_getters import get_symmetry_information, get_cell
+    from spglib import get_stabilized_reciprocal_mesh
+    import numpy as np
+
+    _, pbc = get_cell(xmltree, schema_dict)
+    if not all(pbc) and mesh[2] != 1:
+        raise ValueError('For film systems only one layer of kpoints in z is allowed')
+
+    if use_symmetries:
+        rotations, _ = get_symmetry_information(xmltree, schema_dict)
+    else:
+        rotations = [np.eye(3, dtype='intc')]
+
+    grid_mapping, grid_addresses = get_stabilized_reciprocal_mesh(mesh,
+                                                                  rotations,
+                                                                  is_shift=shift,
+                                                                  is_time_reversal=time_reversal)
+
+    if shift is None:
+        shift = np.zeros(3)
+    kpoints_indices = np.unique(grid_mapping)
+    kpoints = (grid_addresses[kpoints_indices] + shift) / mesh
+
+    weights = np.zeros_like(grid_mapping)
+    for gp in grid_mapping:
+        weights[gp] += 1
+    weights = np.array(weights[kpoints_indices])
+
+    return set_kpointlist(xmltree,
+                          schema_dict,
+                          kpoints,
+                          weights,
+                          name=name,
+                          switch=switch,
+                          overwrite=overwrite,
+                          kpoint_type='mesh')

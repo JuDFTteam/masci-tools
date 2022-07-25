@@ -38,7 +38,8 @@ dependencies = [
             'PyYAML',
             'typing-extensions',
             'tabulate',
-            'ase'
+            'ase',
+            'spglib'
         ]
 
 [project.optional-dependencies]
@@ -118,7 +119,8 @@ module = [
     'IPython.*',
     'pandas',
     'scipy',
-    'ase.*'
+    'ase.*',
+    'spglib'
 ]
 follow_imports = 'skip'
 ignore_missing_imports = true
