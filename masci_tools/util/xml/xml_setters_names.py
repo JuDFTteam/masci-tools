@@ -16,6 +16,7 @@ and as little knowledge of the concrete xpaths as possible
 from __future__ import annotations
 
 import warnings
+from collections.abc import Collection
 from typing import Any, Iterable
 try:
     from typing import Literal
@@ -1422,15 +1423,15 @@ def set_kpath_max4(xmltree: XMLLike,
     return xmltree
 
 
-def set_kpointpath(xmltree,
-                   schema_dict,
-                   path=None,
-                   nkpts=None,
-                   density=None,
-                   name=None,
-                   switch=False,
-                   overwrite=False,
-                   special_points=None):
+def set_kpointpath(xmltree: XMLLike,
+                   schema_dict: fleur_schema.SchemaDict,
+                   path: str | list[str] | None = None,
+                   nkpts: int | None = None,
+                   density: float | None = None,
+                   name: str | None = None,
+                   switch: bool = False,
+                   overwrite: bool = False,
+                   special_points: dict[str, Iterable[float]] | None = None) -> XMLLike:
     """
     Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
 
@@ -1452,17 +1453,17 @@ def set_kpointpath(xmltree,
     from ase.dft.kpoints import bandpath
     import numpy as np
 
-    cell, pbc = get_cell(xmltree, schema_dict)
+    cell, pbc = get_cell(xmltree, schema_dict)  #type: ignore[arg-type]
     if not all(pbc):
         #Set unit cell dimension to 0 for non-periodic direction
         cell[2:, 2:] = 0.0
 
     kptpath = bandpath(path, cell, npoints=nkpts, density=density, special_points=special_points)
 
-    special_points = kptpath.special_points
+    special_kpoints = kptpath.special_points
 
     labels = {}
-    for label, special_kpoint in special_points.items():
+    for label, special_kpoint in special_kpoints.items():
         for index, kpoint in enumerate(kptpath.kpts):
             if sum(abs(np.array(special_kpoint) - np.array(kpoint))).max() < 1e-12:
                 labels[index] = label
@@ -1479,15 +1480,15 @@ def set_kpointpath(xmltree,
                           kpoint_type='path')
 
 
-def set_kpointmesh(xmltree,
-                   schema_dict,
-                   mesh,
-                   name=None,
-                   use_symmetries=True,
-                   switch=False,
-                   overwrite=False,
-                   shift=None,
-                   time_reversal=True):
+def set_kpointmesh(xmltree: XMLLike,
+                   schema_dict: fleur_schema.SchemaDict,
+                   mesh: Collection[int],
+                   name: str | None = None,
+                   use_symmetries: bool = True,
+                   switch: bool = False,
+                   overwrite: bool = False,
+                   shift: Iterable[float] | None = None,
+                   time_reversal: bool = True) -> XMLLike:
     """
     Create a kpoint mesh using spglib
 
@@ -1510,12 +1511,15 @@ def set_kpointmesh(xmltree,
     from spglib import get_stabilized_reciprocal_mesh
     import numpy as np
 
-    _, pbc = get_cell(xmltree, schema_dict)
-    if not all(pbc) and mesh[2] != 1:
+    if len(mesh) != 3:
+        raise ValueError('mesh has to be a three element list')
+
+    _, pbc = get_cell(xmltree, schema_dict)  #type: ignore[arg-type]
+    if not all(pbc) and mesh[2] != 1:  #type: ignore[index]
         raise ValueError('For film systems only one layer of kpoints in z is allowed')
 
     if use_symmetries:
-        rotations, _ = get_symmetry_information(xmltree, schema_dict)
+        rotations, _ = get_symmetry_information(xmltree, schema_dict)  #type: ignore[arg-type]
     else:
         rotations = [np.eye(3, dtype='intc')]
 
