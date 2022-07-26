@@ -3,6 +3,6 @@ warnings:
   parser_errors:
   - Skipping the parsing of the XML file. Repairing was not possible.
   parser_info:
-  - Masci-Tools Fleur out.xml Parser v0.7.0
+  - Masci-Tools Fleur out.xml Parser v0.7.1
   parser_warnings:
   - The out.xml file is broken I try to repair it.

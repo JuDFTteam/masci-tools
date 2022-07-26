@@ -50,7 +50,7 @@ def get_fleur_modes(xmltree: XMLLike,
         - `noco`: Is the calculation non-collinear?
         - `soc`: Is spin-orbit coupling included?
         - `relax`: Is the calculation a structure relaxation?
-        - `gw`: Special mode for GW/Spex calculations
+        - `spex`: Special mode for GW/Spex calculations
         - `force_theorem`: Is a Force theorem calculation performed?
         - `film`: Is the structure a film system
         - `ldau`: Is LDA+U included?
@@ -66,12 +66,12 @@ def get_fleur_modes(xmltree: XMLLike,
         fleur_modes['noco'] = root.attribute('l_noco', default=False)
         fleur_modes['soc'] = root.attribute('l_soc', default=False)
         fleur_modes['relax'] = root.attribute('l_f', default=False)
-        fleur_modes['gw'] = False
+        fleur_modes['spex'] = 0
         if root.tag_exists('expertModes'):
             gw = root.attribute('gw', optional=True)
             if gw is None and schema_dict.inp_version >= (0, 34):
                 gw = root.attribute('spex', default=0)
-            fleur_modes['gw'] = gw != 0
+            fleur_modes['spex'] = gw
 
         if schema_dict.inp_version > (0, 27):
             fleur_modes['force_theorem'] = root.tag_exists('forceTheorem')
@@ -179,7 +179,7 @@ def get_nkpts_max4(xmltree: XMLLike,
     with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
         nkpts = None
-        if modes['band'] or modes['gw']:
+        if modes['band'] or modes['spex']:
             filters = {'altKPointSet': {'purpose': 'bands' if modes['band'] else 'gw'}}
             if root.tag_exists('altKPointSet', filters=filters):
                 with root.find('altKPointSet', filters=filters) as kpoints:
