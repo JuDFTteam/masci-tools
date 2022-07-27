@@ -5,7 +5,6 @@ dos: false
 film: false
 force_theorem: false
 greensf: false
-gw: false
 jspin: 1
 ldahia: false
 ldau: false
@@ -13,3 +12,4 @@ noco: false
 plot: false
 relax: false
 soc: false
+spex: 0

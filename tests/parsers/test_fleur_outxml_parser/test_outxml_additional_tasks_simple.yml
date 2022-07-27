@@ -27,7 +27,6 @@ output_dict:
     film: false
     force_theorem: false
     greensf: false
-    gw: false
     jspin: 1
     ldahia: false
     ldau: false
@@ -35,6 +34,7 @@ output_dict:
     plot: false
     relax: false
     soc: false
+    spex: 0
   gmax: 11.1
   input_file_version: '0.34'
   kmax: 3.5

@@ -86,7 +86,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     :raises KeyError: If an unknown task is encountered
     """
 
-    __parser_version__ = '0.7.0'
+    __parser_version__ = '0.7.1'
 
     logger: logging.Logger | None = logging.getLogger(__name__)
     if strict:
