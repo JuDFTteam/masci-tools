@@ -832,6 +832,20 @@ class kkrparams:
             ('CALCFORCE', [None, '%i', False, 'Calculate forces']),
             ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
             ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
+        # Bogoliubov de Gennes mode:
+            ('<USE_BDG>', [
+                None, '%l', False,
+                'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'
+            ]),
+            ('<DELTA_BDG>',
+             [None, '%f', False,
+              'Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)']),
+            ('<LAMBDA_BDG>',
+             [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)']),
+            ('<USE_E_SYMM_BDG>', [
+                None, '%l', False,
+                'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)'
+            ]),
         ])
 
         if 'params_type' in kwargs:
