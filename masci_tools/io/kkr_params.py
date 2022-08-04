@@ -833,16 +833,16 @@ class kkrparams:
             ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
             ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
         # Bogoliubov de Gennes mode:
-            ('<USE_BDG>', [
+            ('USE_BDG', [
                 None, '%l', False,
                 'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'
             ]),
-            ('<DELTA_BDG>',
+            ('DELTA_BDG',
              [None, '%f', False,
               'Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)']),
-            ('<LAMBDA_BDG>',
+            ('LAMBDA_BDG',
              [None, '%f', False, 'Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)']),
-            ('<USE_E_SYMM_BDG>', [
+            ('USE_E_SYMM_BDG', [
                 None, '%l', False,
                 'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)'
             ]),
@@ -1991,6 +1991,10 @@ class kkrparams:
 
     def _add_brackets_to_key(self, key, key_dict):
         """Put '<' and '>' around the key expect for special keys defined in `__forbid_brackets__` list."""
+
+        if self.__params_type == 'kkrimp':
+            # skip this for the parameters for KKRimp
+            return key
 
         key2 = key
         if key not in key_dict and key not in __forbid_brackets__:
