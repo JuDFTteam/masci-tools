@@ -470,6 +470,10 @@ class kkrparams:
                 None, '%l', False,
                 'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)'
             ]),
+            ('<WRITE_ALL_DENLM>', [
+                None, '%l', False,
+                'Superconductivity: Triggers writeout of all den_lm_ir files that contain the anomalous density (usually writeout is only done for atoms with lambda>0).'
+            ]),
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # misc
