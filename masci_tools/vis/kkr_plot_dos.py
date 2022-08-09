@@ -9,45 +9,69 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
+"""
+Plotting function for KKR dos from files
+"""
 from matplotlib import cm
 
 
-def dosplot(p0='./',
-            totonly=True,
-            color='',
-            label='',
-            marker='',
-            lw=2,
-            ms=5,
-            ls='-',
-            ls_ef=':',
-            lw_ef=1,
-            units='Ry',
-            noefline=False,
-            interpol=False,
-            allatoms=False,
-            onespin=False,
-            atoms=[],
-            lmdos=False,
-            lm=[],
-            nofig=False,
-            scale=1.0,
-            shift=0,
-            normalized=False,
-            xyswitch=False,
-            efcolor='',
-            return_data=False,
-            xscale=1.,
-            xshift=0.0,
-            yshift=0.0,
-            filled=False,
-            spins=2):
+def dosplot(  # pylint: disable=inconsistent-return-statements
+        p0='./',
+        totonly=True,
+        color='',
+        label='',
+        marker='',
+        lw=2,
+        ms=5,
+        ls='-',
+        ls_ef=':',
+        lw_ef=1,
+        units='Ry',
+        noefline=False,
+        interpol=False,
+        allatoms=False,
+        onespin=False,
+        atoms=None,
+        lmdos=False,
+        lm=None,
+        nofig=False,
+        scale=1.0,
+        shift=0,
+        normalized=False,
+        xyswitch=False,
+        efcolor='',
+        return_data=False,
+        xscale=1.,
+        xshift=0.0,
+        yshift=0.0,
+        filled=False,
+        spins=2):
     """ plotting routine for dos files """
     # import dependencies
     import numpy as np
     import matplotlib.pyplot as plt
     from os import listdir
     from os.path import isdir
+
+    # names for orbital mappings
+    orbnames = {
+        1: 's',
+        2: 'p_x',
+        3: 'p_y',
+        4: 'p_z',
+        5: 'd_{x^2-y^2}',
+        6: 'd_{xz}',
+        7: 'd_{z^2}',
+        8: 'd_{yz}',
+        9: 'd_{xy}',
+        10: 'f_{-3}',
+        11: 'f_{-2}',
+        12: 'f_{-1}',
+        13: 'f_{0}',
+        14: 'f_{1}',
+        15: 'f_{2}',
+        16: 'f_{3}'
+    }
 
     plt.ion()
 
@@ -60,14 +84,23 @@ def dosplot(p0='./',
     if p0[-1] != '/':
         p0 += '/'
     #if 'rel' in units: ef = float(open(p0+'potential').readlines()[3].split()[1])
-    ef = float(open(p0 + 'potential').readlines()[3].split()[1])
+    with open(p0 + 'potential', encoding='utf-8') as potfile:
+        ef = float(potfile.readlines()[3].split()[1])
     first = True
     for i in np.sort(listdir(p0)):
-        if (((i[:8] == 'dos.atom' and 'interpol' not in i) and not interpol) or
-            (interpol and i[:17] == 'dos.interpol.atom')) or ('out_ldos.atom' in i and 'out_lmdos.atom' not in i and
-                                                              not interpol) or ('out_ldos.interpol.atom' in i and
-                                                                                'out_lmdos.interpol.atom' and
-                                                                                interpol) and not isdir(p0 + i):
+        # check of file should be plotted
+        do_plot = False
+        if (i[:8] == 'dos.atom' and 'interpol' not in i) and not interpol:
+            do_plot = True
+        if interpol and i[:17] == 'dos.interpol.atom':
+            do_plot = True
+        if 'out_ldos.atom' in i and 'out_lmdos.atom' not in i and not interpol:
+            do_plot = True
+        if 'out_ldos.interpol.atom' in i and 'out_lmdos.interpol.atom' not in i and interpol:
+            do_plot = True
+
+        # now do plotting
+        if do_plot and not isdir(p0 + i):
             if lmdos:
                 i = i.replace('out_ldos.', 'out_lmdos.')
             if not onespin or 'spin' + str(spins) not in i:
@@ -77,7 +110,7 @@ def dosplot(p0='./',
                                                                               '').replace('=',
                                                                                           '').replace('m',
                                                                                                       '').split('_')[0]
-                if atoms == [] or int(iatom) in atoms:
+                if atoms is None or int(iatom) in atoms:
                     tmp = np.loadtxt(p0 + i)
                     print(p0 + i)
 
@@ -119,7 +152,7 @@ def dosplot(p0='./',
                             if not nofig and sgn == 1:
                                 plt.figure()
                             if color == '':
-                                if lm == []:
+                                if lm is None:
                                     if filled:
                                         plt.fill_between(tmp[:, 0], sgn * tmp[:, 1:])
                                     else:
@@ -127,38 +160,7 @@ def dosplot(p0='./',
                                 else:
                                     for ilm in lm:
                                         lmname = label + ' '
-                                        if ilm == 1:
-                                            lmname += 's'
-                                        if ilm == 2:
-                                            lmname += 'p_x'
-                                        if ilm == 3:
-                                            lmname += 'p_y'
-                                        if ilm == 4:
-                                            lmname += 'p_z'
-                                        if ilm == 5:
-                                            lmname += 'd_{x^2-y^2}'
-                                        if ilm == 6:
-                                            lmname += 'd_{xz}'
-                                        if ilm == 7:
-                                            lmname += 'd_{z^2}'
-                                        if ilm == 8:
-                                            lmname += 'd_{yz}'
-                                        if ilm == 9:
-                                            lmname += 'd_{xy}'
-                                        if ilm == 10:
-                                            lmname += 'f_{-3}'
-                                        if ilm == 11:
-                                            lmname += 'f_{-2}'
-                                        if ilm == 12:
-                                            lmname += 'f_{-1}'
-                                        if ilm == 13:
-                                            lmname += 'f_{0}'
-                                        if ilm == 14:
-                                            lmname += 'f_{1}'
-                                        if ilm == 15:
-                                            lmname += 'f_{2}'
-                                        if ilm == 16:
-                                            lmname += 'f_{3}'
+                                        lmname += orbnames[ilm]
                                         plt.plot(tmp[:, 0],
                                                  sgn * tmp[:, 1 + ilm],
                                                  marker + ls,
@@ -166,7 +168,7 @@ def dosplot(p0='./',
                                                  ms=ms,
                                                  label=lmname)
                             else:
-                                if lm == []:
+                                if lm is None:
                                     if filled:
                                         plt.fill_between(tmp[:, 0], sgn * tmp[:, 1:], color=color)
                                     else:
@@ -174,38 +176,7 @@ def dosplot(p0='./',
                                 else:
                                     for ilm in lm:
                                         lmname = label + ' '
-                                        if ilm == 1:
-                                            lmname += 's'
-                                        if ilm == 2:
-                                            lmname += 'p_x'
-                                        if ilm == 3:
-                                            lmname += 'p_y'
-                                        if ilm == 4:
-                                            lmname += 'p_z'
-                                        if ilm == 5:
-                                            lmname += 'd_{x^2-y^2}'
-                                        if ilm == 6:
-                                            lmname += 'd_{xz}'
-                                        if ilm == 7:
-                                            lmname += 'd_{z^2}'
-                                        if ilm == 8:
-                                            lmname += 'd_{yz}'
-                                        if ilm == 9:
-                                            lmname += 'd_{xy}'
-                                        if ilm == 10:
-                                            lmname += 'f_{-3}'
-                                        if ilm == 11:
-                                            lmname += 'f_{-2}'
-                                        if ilm == 12:
-                                            lmname += 'f_{-1}'
-                                        if ilm == 13:
-                                            lmname += 'f_{0}'
-                                        if ilm == 14:
-                                            lmname += 'f_{1}'
-                                        if ilm == 15:
-                                            lmname += 'f_{2}'
-                                        if ilm == 16:
-                                            lmname += 'f_{3}'
+                                        lmname += orbnames[ilm]
                                         plt.plot(tmp[:, 0],
                                                  sgn * tmp[:, 1 + ilm],
                                                  marker + ls,

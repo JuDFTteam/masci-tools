@@ -72,7 +72,7 @@ class Test_KkrimpParserFunctions:
         print(f'\nout_dict?\n{o}\n')
 
         assert s
-        assert m == []
+        assert not m
         data_regression.check(o)
 
     def test_parse_outfiles_full_filehandle(self, data_regression):
@@ -103,7 +103,7 @@ class Test_KkrimpParserFunctions:
         print(f'\nout_dict?\n{o}\n')
 
         assert s
-        assert m == []
+        assert not m
         data_regression.check(o)
 
     def test_parse_file_errors(self):

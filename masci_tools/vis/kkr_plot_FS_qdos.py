@@ -9,27 +9,27 @@
 # For further information please visit http://judft.de/.                      #
 #                                                                             #
 ###############################################################################
+"""
+Tool to plot a Fermi surface calculated with the qdos mode of KKR
+"""
 from matplotlib import cm
 
 
-def FSqdos2D(p0='./',
-             totonly=True,
-             s=20,
-             ls_ef=':',
-             lw_ef=1,
-             color='',
-             reload_data=False,
-             clrbar=True,
-             atoms=[],
-             ax=None,
-             nosave=False,
-             noalat=False,
-             cmap=cm.jet,
-             noplot=False,
-             return_data=False,
-             pclrmesh=False,
-             logscale=True,
-             ef=None):
+def FSqdos2D(  # pylint: disable=inconsistent-return-statements
+        p0='./',
+        s=20,
+        reload_data=False,
+        clrbar=True,
+        atoms=None,
+        ax=None,
+        nosave=False,
+        noalat=False,
+        cmap=cm.jet,
+        noplot=False,
+        return_data=False,
+        pclrmesh=False,
+        logscale=True,
+        ef=None):
     """ plotting routine for dos files """
     # import dependencies
     import numpy as np
@@ -50,7 +50,8 @@ def FSqdos2D(p0='./',
     # read EF if not given as input
     if ef is None:
         if 'potential' in listdir(p0):
-            ef = float(open(p0 + 'potential').readlines()[3].split()[1])
+            with open(p0 + 'potential', encoding='utf-8') as potfile:
+                ef = float(potfile.readlines()[3].split()[1])
         else:
             ef = 0
 
@@ -70,7 +71,7 @@ def FSqdos2D(p0='./',
             if 'qdos.' in i[:6] and not isdir(p0 + i):
                 j += 1
                 iatom = int(i.replace('qdos.', '').split('.')[0])
-                if atoms == [] or iatom in atoms:
+                if atoms is None or iatom in atoms:
                     tmp = np.loadtxt(p0 + i)
                     tmp[:, 2:5] = tmp[:, 2:5] * a0
                     print(i, iatom)
