@@ -204,7 +204,7 @@ def dosplot(  # pylint: disable=inconsistent-return-statements
     #   if lm<>[]:
     #      d = d[:,[0,1]+list(np.array(lm)+1)]
     #   d[:,1] = np.sum(d[:,2:], axis=1)
-    if lm != []:
+    if lm is not None:
         d = d[:, [0, 1] + list(np.array(lm) + 1)]
     d[:, 1] = np.sum(d[:, 2:], axis=1)
 
