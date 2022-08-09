@@ -1911,8 +1911,10 @@ def plot_bands(kpath,
         if 'limits' in kwargs:
             ylimits = kwargs['limits'].get('y', (-15, 15))
 
-        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
-        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
+        weight_max = plot_data.max(
+            'size',
+            mask_data_key='bands',
+            mask=lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1]))
 
         if scale_color:
             plot_params.set_defaults(default_type='function', cmap='Blues', limits={'color': (0, weight_max)})
@@ -1920,8 +1922,7 @@ def plot_bands(kpath,
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
 
-        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
-        plot_data.apply('size', transform)
+        plot_data.apply('size', lambda size: (markersize_min + markersize_scaling * size / weight_max)**2)
 
     lines = {'vertical': xticks, 'horizontal': e_fermi}
 
@@ -2066,11 +2067,11 @@ def plot_spinpol_bands(kpath,
         if 'limits' in kwargs:
             ylimits = kwargs['limits'].get('y', (-15, 15))
 
-        mask = lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1])
-        weight_max = plot_data.max('size', mask=mask, mask_data_key='bands')
-
-        transform = lambda size: (markersize_min + markersize_scaling * size / weight_max)**2
-        plot_data.apply('size', transform)
+        weight_max = plot_data.max(
+            'size',
+            mask_data_key='bands',
+            mask=lambda bands, ylimits=tuple(ylimits): np.logical_and(bands > ylimits[0], bands < ylimits[1]))
+        plot_data.apply('size', lambda size: (markersize_min + markersize_scaling * size / weight_max)**2)
 
     xticks, xticklabels = get_special_kpoint_ticks(special_kpoints)
     lines = {'vertical': xticks, 'horizontal': e_fermi}
