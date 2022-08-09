@@ -2974,6 +2974,7 @@ def CDF_voigt_profile(x, fwhm_g, fwhm_l, mu):
     different error functions.
     """
     from scipy.special import erf  #pylint: disable=no-name-in-module
+    raise NotImplementedError('The CDF_voigt_profile function is not implemented yet!')
 
 
 def hyp2f2(a, b, z):
@@ -2987,7 +2988,8 @@ def hyp2f2(a, b, z):
     if we mange the adjust the arguments in a way that we can use them...
     also maybe go for the special case we need first: 1,1,3/2;2;-z2
     """
-    from scipy.special import hyp0f1
+    from scipy.special import hyp0f1  #pylint: disable=no-name-in-module
+    raise NotImplementedError('The hyp2f2 function is not implemented yet!')
 
 
 def pseudo_voigt_profile(x, fwhm_g, fwhm_l, mu, mix=0.5):
