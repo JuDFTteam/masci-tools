@@ -23,7 +23,7 @@ def test_fleur_dos():
         result = runner.invoke(plot_fleur_banddos_dos, args)
 
         print(result.output)
-        assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+        assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
         assert os.path.isfile('dos_plot.png')
 
 
@@ -42,7 +42,7 @@ def test_fleur_dos_recipe():
             result = runner.invoke(plot_fleur_banddos_dos, args)
 
         print(result.output)
-        assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+        assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
         assert os.path.isfile('dos_plot.png')
 
 
@@ -60,7 +60,7 @@ def test_fleur_bands():
         result = runner.invoke(plot_fleur_banddos_bands, args)
 
         print(result.output)
-        assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+        assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
         assert os.path.isfile('bandstructure.png')
 
 
@@ -78,5 +78,5 @@ def test_fleur_bands_recipe():
         result = runner.invoke(plot_fleur_banddos_bands, args)
 
         print(result.output)
-        assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+        assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
         assert os.path.isfile('bandstructure.png')

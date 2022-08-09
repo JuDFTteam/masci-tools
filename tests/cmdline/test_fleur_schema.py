@@ -18,7 +18,7 @@ def test_validate_input_valid():
     result = runner.invoke(validate_inpxmlfile, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'validates against the schema for version 0.34' in result.output
 
 
@@ -35,7 +35,7 @@ def test_validate_input_invalid():
     result = runner.invoke(validate_inpxmlfile, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Error: Input file does not validate against the schema:' in result.output
 
 
@@ -52,7 +52,7 @@ def test_validate_output_valid():
     result = runner.invoke(validate_outxmlfile, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'validates against the schema for version 0.34' in result.output
 
 
@@ -69,7 +69,7 @@ def test_validate_output_invalid():
     result = runner.invoke(validate_outxmlfile, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Error: Output file does not validate against the schema:' in result.output
 
 
@@ -88,7 +88,7 @@ def test_add_fleur_schema_input(fake_schemas_and_test_files):
     result = runner.invoke(add_fleur_schema, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Copied Schema file to masci-tools repository' in result.output
     assert 'Created Schema dictionary for the given schema file' in result.output
     assert 'Parser finished for:' in result.output
@@ -107,7 +107,7 @@ def test_add_fleur_schema_output(fake_schemas_and_test_files):
         os.fspath(fake_schemas_and_test_files / 'inp.xml')
     ]
     result = runner.invoke(add_fleur_schema, args)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     args = [
         os.fspath(fake_schemas_and_test_files / 'FleurOutputSchema.xsd'), '--test-xml-file',
         os.fspath(fake_schemas_and_test_files / 'out.xml')
@@ -133,7 +133,7 @@ def test_add_fleur_schema_overwrite(fake_schemas_and_test_files):
         os.fspath(fake_schemas_and_test_files / 'inp.xml')
     ]
     result = runner.invoke(add_fleur_schema, args)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     args = [os.fspath(fake_schemas_and_test_files / 'FleurInputSchema.xsd')]
     result = runner.invoke(add_fleur_schema, args)
 
@@ -145,7 +145,7 @@ def test_add_fleur_schema_overwrite(fake_schemas_and_test_files):
     result = runner.invoke(add_fleur_schema, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Copied Schema file to masci-tools repository' in result.output
     assert 'Created Schema dictionary for the given schema file' in result.output
 
@@ -160,6 +160,6 @@ def test_list_versions():
     runner = CliRunner()
     result = runner.invoke(list_available_schemas)
 
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Version  Input Schema available    Output Schema available' in result.output
     assert '0.33  True                      True' in result.output
