@@ -269,8 +269,7 @@ class JSONEncoderTailoredIndent(_json.JSONEncoder):
     def default(self, o: _typing.Any) -> _typing.Any:  # pylint: disable=arguments-differ
         if isinstance(o, NoIndent):
             return self.FORMAT_SPEC.format(id(o))
-        else:
-            return super().default(o)
+        return super().default(o)
 
     def encode(self, o: _typing.Any) -> str:  # pylint: disable=arguments-differ
         from _ctypes import PyObj_FromPtr  #type: ignore[import]
@@ -325,6 +324,7 @@ class JSONEncoderDatetime2Isoformat(_json.JSONEncoder):
     def default(self, o: _typing.Any) -> _typing.Any:
         if isinstance(o, (_datetime.date, _datetime.datetime)):
             return o.isoformat()
+        return super().default(o)
 
 
 _T = _typing.TypeVar('_T')

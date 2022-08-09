@@ -2399,9 +2399,7 @@ def construct_corelevel_spectrum(coreleveldict,
                                               alpha=alpha_l,
                                               beta=beta_l))
         else:
-            print('given peakfunction type not known')
-            data_f = []
-            return
+            raise ValueError(f'Given peakfunction type not known: {peakfunction}')
 
         # sometimes we get a point to much if constructed from new mesh..
         if len(ydata_spec) < len(data_f):
