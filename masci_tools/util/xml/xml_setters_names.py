@@ -1505,6 +1505,7 @@ def set_kpointmesh(xmltree: XMLLike,
     :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
     :param shift: shift the center of the kpint set
     :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
+    :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
 
     :returns: xmltree with a created kpoint path
     """

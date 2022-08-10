@@ -1278,6 +1278,7 @@ class FleurXMLModifier:
         :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
         :param shift: shift the center of the kpint set
         :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
+        :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
         """
         self._validate_arguments('set_kpointmesh', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointmesh', args, kwargs))
