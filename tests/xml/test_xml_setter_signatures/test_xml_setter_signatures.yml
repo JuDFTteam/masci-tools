@@ -326,6 +326,8 @@ schema_dict:
     - null
   - - time_reversal
     - true
+  - - map_to_first_bz
+    - true
   set_kpointpath:
   - - xmltree
     - null
