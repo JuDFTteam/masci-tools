@@ -2885,3 +2885,241 @@ def test_set_kpointlist_max4_overwrite_kpointcount(load_inpxml):
         '1.0000000000', '2.0000000000'
     ]
     assert eval_xpath(root, '/fleurInput/calculationSetup/bzIntegration/kPointList/@count') == '2'
+
+
+def test_set_xcfunctional(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, 'TEST')
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+
+
+def test_set_xcfunctional_libxc(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, {'exchange': 'TEST_EXCHANGE', 'correlation': 'TEST_CORRELATION'}, libxc=True)
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'LibXC'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCName/@exchange') == 'TEST_EXCHANGE'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCName/@correlation') == 'TEST_CORRELATION'
+
+
+def test_set_xcfunctional_libxc_id(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree, schema_dict, {'exchange': 100, 'correlation': 999}, libxc=True)
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'LibXC'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCID/@exchange') == '100'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCID/@correlation') == '999'
+
+
+def test_set_xcfunctional_libxc_mixed(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 'TEST_EXCHANGE', 'correlation': 999}, libxc=True)
+
+
+def test_set_xcfunctional_options(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+    from masci_tools.util.xml.common_functions import eval_xpath
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    set_xcfunctional(xmltree,
+                     schema_dict,
+                     'TEST',
+                     xc_functional_options={
+                         'relativisticCorrections': True,
+                         'xcParams': {
+                             'igrd': 600
+                         }
+                     })
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/@relativisticCorrections') == 'T'
+    assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/xcParams/@igrd') == '600'
+
+
+def test_set_xcfunctional_error(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, 'TEST', libxc=True)
+
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 100, 'correlation': 999})
+
+
+def test_set_kpointpath(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointpath
+    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointpath(xmltree, schema_dict, nkpts=150, switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({
+        'kpoints': kpoints,
+        'special_kpoints': special_kpoints,
+        'weights': weights,
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
+def test_set_kpointpath_film(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointpath
+    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    set_kpointpath(xmltree, schema_dict, density=50, switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({
+        'kpoints': kpoints,
+        'special_kpoints': special_kpoints,
+        'weights': weights,
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
+def test_set_kpointpath_custom_points(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointpath
+    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointpath(xmltree,
+                   schema_dict,
+                   path='CA',
+                   nkpts=50,
+                   overwrite=True,
+                   name='default',
+                   special_points={
+                       'C': [0, 0, 0],
+                       'A': [0, 0, 0.5]
+                   })
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({
+        'kpoints': kpoints,
+        'special_kpoints': special_kpoints,
+        'weights': weights,
+        'cell': convert_to_pystd(cell),
+        'pbc': pbc
+    })
+
+
+def test_set_kpointmesh(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [4, 4, 4], switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_full_bz(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree,
+                   schema_dict, [2, 2, 2],
+                   name='default',
+                   overwrite=True,
+                   use_symmetries=False,
+                   time_reversal=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_shift(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, shift=[1, 1, 1], time_reversal=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_no_map(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, time_reversal=False, map_to_first_bz=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_film(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [4, 4, 1], switch=True)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_errors(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    with pytest.raises(ValueError):
+        set_kpointmesh(xmltree, schema_dict, [4], switch=True)
+
+    with pytest.raises(ValueError):
+        #Film system only one kpoint in z-direction
+        set_kpointmesh(xmltree, schema_dict, [4, 4, 4], switch=True)
