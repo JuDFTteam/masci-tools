@@ -3073,6 +3073,21 @@ def test_set_kpointmesh_shift(load_inpxml, data_regression):
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
+def test_set_kpointmesh_no_map(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.io.common_functions import convert_to_pystd
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
+
+    set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, time_reversal=False, map_to_first_bz=False)
+
+    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+
+    data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
 def test_set_kpointmesh_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh

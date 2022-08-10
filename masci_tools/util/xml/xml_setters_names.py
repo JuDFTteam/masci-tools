@@ -1488,7 +1488,8 @@ def set_kpointmesh(xmltree: XMLLike,
                    switch: bool = False,
                    overwrite: bool = False,
                    shift: Iterable[float] | None = None,
-                   time_reversal: bool = True) -> XMLLike:
+                   time_reversal: bool = True,
+                   map_to_first_bz: bool = True) -> XMLLike:
     """
     Create a kpoint mesh using spglib
 
@@ -1532,6 +1533,12 @@ def set_kpointmesh(xmltree: XMLLike,
         shift = np.zeros(3)
     kpoints_indices = np.unique(grid_mapping)
     kpoints = (grid_addresses[kpoints_indices] + shift) / mesh
+
+    if map_to_first_bz:
+        #This mapping to the 0,1 integral makes it equivalent
+        #to the gamma@grid kpoint generator (the same tolerances are also used for the rounding)
+        kpoints = np.where(np.abs(kpoints - np.rint(kpoints)) < 1e-8, np.rint(kpoints), kpoints)
+        kpoints = kpoints - np.floor(kpoints)
 
     weights = np.zeros_like(grid_mapping)
     for gp in grid_mapping:
