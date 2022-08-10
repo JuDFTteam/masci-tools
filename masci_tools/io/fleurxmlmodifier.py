@@ -1661,11 +1661,7 @@ class FleurXMLModifier:
         self._tasks.append(ModifierTask('set_kpath', args, kwargs))
 
     def set_kpointpath(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
-        the list of tasks that will be done on the xmltree.
-
-        Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+        """Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
 
         The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
 
@@ -1676,16 +1672,15 @@ class FleurXMLModifier:
         :param switch: bool if True the kpoint list is direclty set as the used set
         :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
         :param special_points: dict mapping names to coordinates for special points to use
+
+        This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_kpointpath', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointpath', args, kwargs))
 
     def set_kpointmesh(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointmesh()` to
-        the list of tasks that will be done on the xmltree.
-
-        Create a kpoint mesh using spglib
+        """Create a kpoint mesh using spglib
 
         for details see :py:func:`~spglib.get_stabilized_reciprocal_mesh`
 
@@ -1698,16 +1693,15 @@ class FleurXMLModifier:
         :param shift: shift the center of the kpint set
         :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
         :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
+
+        This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointmesh()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_kpointmesh', args, kwargs)
         self._tasks.append(ModifierTask('set_kpointmesh', args, kwargs))
 
     def set_xcfunctional(self, *args: Any, **kwargs: Any) -> None:
-        """
-        Appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_xcfunctional()` to
-        the list of tasks that will be done on the xmltree.
-
-        Set the Exchange Correlation potential tag
+        """Set the Exchange Correlation potential tag
 
         Setting a inbuilt XC functional
         .. code-block:: python
@@ -1724,6 +1718,9 @@ class FleurXMLModifier:
                               `'exchange', 'correlation', 'etot_exchange' and 'etot_correlation'`
         :param xc_functional_options: dict with further general changes to the `xcFunctional` tag
         :param libxc: bool if True the functional is a LibXC functional
+
+        This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_xcfunctional()` to
+        the list of tasks that will be done on the xmltree.
         """
         self._validate_arguments('set_xcfunctional', args, kwargs)
         self._tasks.append(ModifierTask('set_xcfunctional', args, kwargs))
