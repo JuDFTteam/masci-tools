@@ -2918,6 +2918,14 @@ def test_set_xcfunctional_libxc_id(load_inpxml):
     assert eval_xpath(xmltree, '/fleurInput/calculationSetup/xcFunctional/LibXCID/@correlation') == '999'
 
 
+def test_set_xcfunctional_libxc_mixed(load_inpxml):
+    from masci_tools.util.xml.xml_setters_names import set_xcfunctional
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    with pytest.raises(ValueError):
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 'TEST_EXCHANGE', 'correlation': 999}, libxc=True)
+
+
 def test_set_xcfunctional_options(load_inpxml):
     from masci_tools.util.xml.xml_setters_names import set_xcfunctional
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -3101,3 +3109,17 @@ def test_set_kpointmesh_film(load_inpxml, data_regression):
     kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
+
+
+def test_set_kpointmesh_errors(load_inpxml):
+
+    from masci_tools.util.xml.xml_setters_names import set_kpointmesh
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+
+    with pytest.raises(ValueError):
+        set_kpointmesh(xmltree, schema_dict, [4], switch=True)
+
+    with pytest.raises(ValueError):
+        #Film system only one kpoint in z-direction
+        set_kpointmesh(xmltree, schema_dict, [4, 4, 4], switch=True)
