@@ -37,7 +37,7 @@ jobs:
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.0.6
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.cache/pip
         key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
@@ -82,7 +82,7 @@ jobs:
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.0.6
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.cache/pip
         key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
@@ -125,7 +125,7 @@ jobs:
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.0.6
+      uses: actions/cache@v3.0.8
       with:
         path: ~/.cache/pip
         key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml') }}
