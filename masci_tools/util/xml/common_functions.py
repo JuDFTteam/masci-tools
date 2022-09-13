@@ -39,17 +39,19 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
     root = cleared_tree.getroot()
     prev_sibling = root.getprevious()
     while prev_sibling is not None:
+        next_elem = prev_sibling.getprevious()
         if prev_sibling.tag is etree.Comment:
             root.append(prev_sibling)
             root.remove(prev_sibling)
-        prev_sibling = prev_sibling.getprevious()
+        prev_sibling = next_elem
 
     next_sibling = root.getnext()
     while next_sibling is not None:
+        next_elem = next_sibling.getnext()
         if next_sibling.tag is etree.Comment:
             root.append(next_sibling)
             root.remove(next_sibling)
-        next_sibling = next_sibling.getnext()
+        next_sibling = next_elem
 
     #find any include tags
     include_tags = eval_xpath_all(cleared_tree,
