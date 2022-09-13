@@ -15,6 +15,7 @@
 - Add clearer error message if `None` is passed to the `convert_to_xml` functions. This would happen for example using the `set_inpchanges` function with `{'minDistance': None}` [[#182]](https://github.com/JuDFTteam/masci-tools/pull/182)
 - Fixed `masci-tools fleur-schema add` with `--from-git` flag. Previously it would still check for the existence of the Schema file locally [[#184]](https://github.com/JuDFTteam/masci-tools/pull/184)
 - `get_fleur_modes`: `gw` mode renamed to `spex` and now stores the actual integer value of the attribute [[#185]](https://github.com/JuDFTteam/masci-tools/pull/185)
+- Bugfix in `clear_xml`, when multiple XML comments are present outside the root element [[#193]](https://github.com/JuDFTteam/masci-tools/pull/193)
 
 ## v.0.11.3
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.2...v0.11.3)

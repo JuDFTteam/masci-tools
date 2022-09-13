@@ -178,6 +178,25 @@ def test_clear_xml(load_inpxml):
     assert len(symmetry_tags) == 16
 
 
+def test_clear_xml_multiple_comments_outside_root(load_inpxml):
+    """
+    Test of the clear_xml function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+
+    xmltree, _ = load_inpxml('fleur/test_clear_multiple_comments.xml', absolute=False)
+    root = xmltree.getroot()
+
+    assert root.getprevious() is not None
+    assert root.getnext() is not None
+
+    cleared_tree, _ = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    assert cleared_root.getprevious() is None
+    assert cleared_root.getnext() is None
+
+
 def test_get_xml_attribute(load_inpxml, caplog):
     """
     Test of the clear_xml function
