@@ -823,7 +823,7 @@ def ensure_relaxation_xinclude(xmltree: etree._ElementTree, schema_dict: fleur_s
 
     INCLUDE_NSMAP = {'xi': 'http://www.w3.org/2001/XInclude'}
     if not tag_exists(xmltree, schema_dict, 'relaxation') and \
-       len(eval_xpath_all(xmltree, '//xi:include[href=$file]', etree._Element, namespaces=INCLUDE_NSMAP, file='relax.xml')) == 0:
+       len(eval_xpath_all(xmltree, '//xi:include[@href=$file]', etree._Element, namespaces=INCLUDE_NSMAP, file='relax.xml')) == 0:
         root = xmltree.getroot()
         root.append(_get_xinclude_elem('relax.xml'))
 
