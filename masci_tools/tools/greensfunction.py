@@ -414,20 +414,20 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     """
     group_name = _get_greensf_group_name(hdffile)
 
-    element = hdffile.get(f'/{group_name}/element-{index}')
+    element = hdffile[f'/{group_name}/element-{index}'].attrs
 
-    l = element.attrs['l'][0]
-    lp = element.attrs['lp'][0]
-    atomType = element.attrs['atomType'][0]
-    atomTypep = element.attrs['atomTypep'][0]
-    sphavg = element.attrs['l_sphavg'][0] == 1
-    onsite = element.attrs['l_onsite'][0] == 1
-    contour = element.attrs['iContour'][0]
-    kresolved = element.attrs.get('l_kresolved', [0])[0] == 1
-    atomDiff = np.array(element.attrs['atomDiff'])
+    l = element['l'][0]
+    lp = element['lp'][0]
+    atomType = element['atomType'][0]
+    atomTypep = element['atomTypep'][0]
+    sphavg = element['l_sphavg'][0] == 1
+    onsite = element['l_onsite'][0] == 1
+    contour = element['iContour'][0]
+    kresolved = element.get('l_kresolved', [0])[0] == 1
+    atomDiff = np.array(element['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
     atomDiff *= BOHR_A
-    nLO = element.attrs['numLOs'][0]
+    nLO = element['numLOs'][0]
 
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
 

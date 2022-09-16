@@ -12,12 +12,16 @@ from masci_tools.util.typing import FileLike
 
 from .greensfunction import GreensFunction, intersite_shells, intersite_shells_from_file
 from masci_tools.io.common_functions import get_pauli_matrix
+from masci_tools.util.constants import HTR_TO_EV
 
 import numpy as np
 import pandas as pd
 from scipy import constants
+from scipy.interpolate import interp1d
+from sympy.physics.wigner import gaunt
 from collections import defaultdict
 from typing import Any
+import h5py
 
 try:
     from typing import Literal
@@ -34,7 +38,7 @@ except ImportError:
 def calculate_heisenberg_jij(
     hdffileORgreensfunctions: FileLike | list[GreensFunction],
     reference_atom: int,
-    onsite_delta: np.ndarray,
+    onsite_delta: np.ndarray | None = None,
     max_shells: int | None = None,
 ) -> pd.DataFrame:
     r"""
@@ -56,6 +60,14 @@ def calculate_heisenberg_jij(
     else:
         shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
+    if onsite_delta is None:
+        if isinstance(hdffileORgreensfunctions, list):
+            raise ValueError('For calculating the Bxc from the greensf.hdf file '
+                             'The file has to be provided')
+        onsite_delta = calculate_bxc_mmp_matrix(hdffileORgreensfunctions)
+
+    delta_is_matrix = len(onsite_delta.shape) > 2
+
     jij_constants: dict[str, list[Any]] = defaultdict(list)
 
     for dist, g1, g2 in shells:
@@ -68,11 +80,17 @@ def calculate_heisenberg_jij(
         gij = g1.energy_dependence(both_contours=True, spin=1)
         gji = g2.energy_dependence(both_contours=True, spin=2)
 
-        delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
-        integral = np.einsum('zm,zijm,zjim->', weights, gij, gji)
-        jij = 0.5 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
+        if delta_is_matrix:
+            delta_i = onsite_delta[g1.atomType - 1, g1.l]
+            delta_j = onsite_delta[g1.atomTypep - 1, g1.l]
+            integral = np.einsum('zm,no,zopm,pq,zqnm->', weights, delta_i, gij, delta_j, gji)
+            jij = 0.5 * 1 / (8.0 * np.pi * 1j) * integral
+        else:
+            delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
+            integral = np.einsum('zm,zijm,zjim->', weights, gij, gji)
+            jij = 0.5 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
 
         jij_constants['R'].append(dist)
         jij_constants['R_ij_x'].append(g1.atomDiff.tolist()[0])
@@ -87,7 +105,7 @@ def calculate_heisenberg_jij(
 
 def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[GreensFunction],
                                 reference_atom: int,
-                                onsite_delta: np.ndarray,
+                                onsite_delta: np.ndarray | None = None,
                                 max_shells: int | None = None) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange tensor :math:`\mathbf{J}` from Green's functions using the formula
@@ -110,6 +128,14 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
     else:
         shells = intersite_shells_from_file(hdffileORgreensfunctions, reference_atom, max_shells=max_shells)
 
+    if onsite_delta is None:
+        if isinstance(hdffileORgreensfunctions, list):
+            raise ValueError('For calculating the Bxc from the greensf.hdf file '
+                             'The file has to be provided')
+        onsite_delta = calculate_bxc_mmp_matrix(hdffileORgreensfunctions)
+
+    delta_is_matrix = len(onsite_delta.shape) > 2
+
     jij_tensor: dict[str, list[Any]] = defaultdict(list)
 
     for dist, g1, g2 in shells:
@@ -121,7 +147,12 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         gij = g1.energy_dependence(both_contours=True)
         gji = g2.energy_dependence(both_contours=True)
 
-        delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
+        if delta_is_matrix:
+            delta_i = onsite_delta[g1.atomType - 1, g1.l]
+            delta_j = onsite_delta[g1.atomTypep - 1, g1.l]
+        else:
+            delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
+
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
         jij_tensor['R'].append(dist)
@@ -136,9 +167,13 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
 
                 sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
                 sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
-
-                integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gij, sigmaj, gji)
-                jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
+                if delta_is_matrix:
+                    integral = np.einsum('zm,no,ab,zopbcm,pq,cd,zqndam->', weights, delta_i, sigmai, gij, delta_j,
+                                         sigmaj, gji)
+                    jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * integral
+                else:
+                    integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gij, sigmaj, gji)
+                    jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
                 jij_tensor[f'J_{sigmai_str}{sigmaj_str}'].append(jij.real * 1000)  #Convert to meV
 
     return pd.DataFrame.from_dict(jij_tensor)
@@ -252,3 +287,43 @@ def calculate_hybridization(greensfunction: GreensFunction) -> np.ndarray:
     gz = greensfunction.trace_energy_dependence()
     delta = 1 / (2 * greensfunction.l + 1) * np.linalg.inv(gz)
     return delta.real
+
+
+def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> np.ndarray:
+    """
+    Calculate the Bxc potential in the basis of products of spherical harmonics
+    (Same basis as greens functions)
+
+    :param file: greensf.hdf file (atleast version 9)
+    :param radial_mesh_points: how many points are used for radial integration
+    """
+    with h5py.File(file, 'r') as hdffile:
+        if hdffile.get('meta').attrs['version'] < 9:
+            raise ValueError('The greensf.hdf file must be atleast of version 9'
+                             'to extract the Bxc from it')
+        #Read in the Bxc and radial meshes
+        bxc = np.array(hdffile.get('bxc/data'))
+        bxc = bxc[..., 0] + 1j * bxc[..., 1]
+        bxc *= HTR_TO_EV
+        log_rmesh = np.array(hdffile.get('RadialFunctions/rmsh'))
+
+    #Now calculate all the different atomtype and orbitals that could be needed
+    #Since this is relativaley cheap we can just do it for everything
+
+    bxc_mmp = np.zeros((bxc.shape[-1], 4, 7, 7))
+
+    for atomtype, (bxc_atomtype, logmesh_atomtype) in enumerate(zip(bxc, log_rmesh)):
+        rmesh = np.arange(0, max(logmesh_atomtype), max(logmesh_atomtype) / radial_mesh_points)
+        for lrep in range(4):
+            for lpot in range(2 * lrep + 1):
+                for mpot in range(-lpot, lpot + 1):
+                    lm = lpot * (lpot + 1) + mpot
+                    bxc_interpolated = interp1d(logmesh_atomtype, bxc_atomtype[lm, :], fill_value='extrapolate')
+                    bxc_integrated = np.trapz(bxc_interpolated(rmesh), rmesh)
+
+                    for m in range(2 * lrep + 1):
+                        for mp in range(2 * lrep + 1):
+                            gaunt_coeff = (-1)**mp * gaunt(lrep, lpot, lrep, -m + lrep, mpot, mp - lrep)
+                            bxc_mmp[atomtype, lrep, m, mp] += gaunt_coeff * bxc_integrated
+
+    return bxc_mmp
