@@ -83,8 +83,8 @@ def calculate_heisenberg_jij(
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
         if delta_is_matrix:
-            delta_i = onsite_delta[g1.atomType - 1, g1.l]
-            delta_j = onsite_delta[g1.atomTypep - 1, g1.l]
+            delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
             integral = np.einsum('zm,no,zopm,pq,zqnm->', weights, delta_i, gij, delta_j, gji)
             jij = 0.5 * 1 / (8.0 * np.pi * 1j) * integral
         else:
@@ -148,8 +148,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         gji = g2.energy_dependence(both_contours=True)
 
         if delta_is_matrix:
-            delta_i = onsite_delta[g1.atomType - 1, g1.l]
-            delta_j = onsite_delta[g1.atomTypep - 1, g1.l]
+            delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
         else:
             delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
 
@@ -310,7 +310,7 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> 
     #Now calculate all the different atomtype and orbitals that could be needed
     #Since this is relativaley cheap we can just do it for everything
 
-    bxc_mmp = np.zeros((bxc.shape[-1], 4, 7, 7))
+    bxc_mmp = np.zeros((bxc.shape[0], 4, 7, 7))
 
     for atomtype, (bxc_atomtype, logmesh_atomtype) in enumerate(zip(bxc, log_rmesh)):
         rmesh = np.arange(0, max(logmesh_atomtype), max(logmesh_atomtype) / radial_mesh_points)
@@ -324,6 +324,6 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> 
                     for m in range(2 * lrep + 1):
                         for mp in range(2 * lrep + 1):
                             gaunt_coeff = (-1)**mp * gaunt(lrep, lpot, lrep, -m + lrep, mpot, mp - lrep)
-                            bxc_mmp[atomtype, lrep, m, mp] += gaunt_coeff * bxc_integrated
+                            bxc_mmp[atomtype, lrep, 3 - lrep + m, 3 - lrep + mp] += gaunt_coeff * bxc_integrated
 
     return bxc_mmp
