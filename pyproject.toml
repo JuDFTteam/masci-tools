@@ -48,7 +48,7 @@ pre-commit = [
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.14',
-    'pytest~=6.0',
+    'pytest~=7.0',
     'lxml-stubs~=0.4.0',
     'types-pytz',
     'types-tabulate',
@@ -64,7 +64,7 @@ docs = [
     'sphinx-copybutton'
     ]
 testing = [
-    'pytest~=6.0',
+    'pytest~=7.0',
     'pytest-cov~=3.0', #For reading configuration from pyproject.toml
     'pytest-mpl>=0.12',
     'pytest-regressions>=1.0'
