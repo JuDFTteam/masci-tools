@@ -284,8 +284,4 @@ warnings:
   parser_info:
   - Masci-Tools Fleur inp.xml Parser v0.3.0
   - Got Fleur input file with file version 0.36
-  parser_warnings:
-  - No Input Schema available for version '0.36'; falling back to '0.35'
-  - "Input file does not validate against the schema: \nLine 2: Element 'fleurInput',\
-    \ attribute 'fleurInputVersion': [facet 'enumeration'] The value '0.36' is not\
-    \ an element of the set {'0.35'}. \n"
+  parser_warnings: []
