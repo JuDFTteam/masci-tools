@@ -11,7 +11,7 @@ from __future__ import annotations
 from masci_tools.util.typing import FileLike
 
 from .greensfunction import GreensFunction, intersite_shells, intersite_shells_from_file
-from masci_tools.io.common_functions import get_pauli_matrix
+from masci_tools.io.common_functions import get_pauli_matrix, get_spin_rotation
 from masci_tools.util.constants import HTR_TO_EV
 
 import numpy as np
@@ -83,14 +83,32 @@ def calculate_heisenberg_jij(
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
         if delta_is_matrix:
-            delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            integral = np.einsum('zm,no,zopm,pq,zqnm->', weights, delta_i, gij, delta_j, gji)
-            jij = 0.5 * 1 / (8.0 * np.pi * 1j) * integral
+            delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
+            delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
+
+            delta_i[..., 0, 0] = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 0, 0] = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 1, 1] = delta_j[..., 0, 0]
+            delta_i[..., 1, 1] = delta_i[..., 0, 0]
+
+            #Rotate into global spin frame
+            alpha, alphap = g1._angle_alpha  #pylint: disable=protected-access
+            beta, betap = g1._angle_beta  #pylint: disable=protected-access
+
+            rot_spin = get_spin_rotation(-alpha, -beta)
+            rotp_spin = get_spin_rotation(-alphap, -betap)
+
+            delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
+            delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
+
+            gdeltaij = np.einsum('zij,jk...->zik...', gij, delta_i)
+            gdeltaji = np.einsum('zij,jk...->zik...', gji, delta_j)
         else:
-            delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
-            integral = np.einsum('zm,zijm,zjim->', weights, gij, gji)
-            jij = 0.5 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
+            gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
+            gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
+
+        integral = np.einsum('zm,zijm,zjim->', weights, gdeltaij, gdeltaji)
+        jij = 0.5 * 1 / (8.0 * np.pi * 1j) * integral
 
         jij_constants['R'].append(dist)
         jij_constants['R_ij_x'].append(g1.atomDiff.tolist()[0])
@@ -148,10 +166,30 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         gji = g2.energy_dependence(both_contours=True)
 
         if delta_is_matrix:
-            delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
+            delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
+
+            delta_i[..., 0, 0] = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 0, 0] = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 1, 1] = delta_j[..., 0, 0]
+            delta_i[..., 1, 1] = delta_i[..., 0, 0]
+
+            #Rotate into global spin frame
+            alpha, alphap = g1._angle_alpha  #pylint: disable=protected-access
+            beta, betap = g1._angle_beta  #pylint: disable=protected-access
+
+            rot_spin = get_spin_rotation(-alpha, -beta)
+            rotp_spin = get_spin_rotation(-alphap, -betap)
+
+            delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
+            delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
+
+            gdeltaij = np.einsum('zij,jk...->zik...', gij, delta_i)
+            gdeltaji = np.einsum('zij,jk...->zik...', gji, delta_j)
+
         else:
-            delta_square = onsite_delta[g1.atomType - 1, g1.l] * onsite_delta[g1.atomTypep - 1, g1.l]
+            gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
+            gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
 
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
@@ -167,13 +205,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
 
                 sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
                 sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
-                if delta_is_matrix:
-                    integral = np.einsum('zm,no,ab,zopbcm,pq,cd,zqndam->', weights, delta_i, sigmai, gij, delta_j,
-                                         sigmaj, gji)
-                    jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * integral
-                else:
-                    integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gij, sigmaj, gji)
-                    jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * delta_square * integral
+
+                integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gdeltaij, sigmaj, gdeltaji)
+                jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * integral
+
                 jij_tensor[f'J_{sigmai_str}{sigmaj_str}'].append(jij.real * 1000)  #Convert to meV
 
     return pd.DataFrame.from_dict(jij_tensor)
