@@ -17,6 +17,8 @@
 - `get_fleur_modes`: `gw` mode renamed to `spex` and now stores the actual integer value of the attribute [[#185]](https://github.com/JuDFTteam/masci-tools/pull/185)
 - Bugfix in `clear_xml`, when multiple XML comments are present outside the root element [[#193]](https://github.com/JuDFTteam/masci-tools/pull/193)
 - Bugfix in `reverse_xinclude`. This would previously break when reexcluding trees already containing a `relaxation` tag and would end up with two `xi:include` tags for the `relax.xml` [[#194]](https://github.com/JuDFTteam/masci-tools/pull/194)
+- Bugfix for `FleurXMLModifier`. The `task_list` property would incorrectly enter a `kwargs` key if the modifying function in question has an explicit `**kwargs` argument
+
 
 ## v.0.11.3
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.2...v0.11.3)

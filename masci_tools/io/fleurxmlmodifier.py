@@ -186,7 +186,14 @@ class FleurXMLModifier:
         sig = signature(func)
         bound = sig.bind(*prefix, *args, **kwargs)
 
-        return {k: v for k, v in bound.arguments.items() if k not in ('xmltree', 'nmmplines', 'schema_dict')}
+        kwargs_complete = {k: v for k, v in bound.arguments.items() if k not in ('xmltree', 'nmmplines', 'schema_dict')}
+
+        #Fix if the XML modifying function has an explicit kwargs
+        if 'kwargs' in kwargs_complete:
+            kwargs_explicit = kwargs_complete.pop('kwargs')
+            kwargs_complete = {**kwargs_complete, **kwargs_explicit}
+
+        return kwargs_complete
 
     def _validate_arguments(self, name: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
         """
