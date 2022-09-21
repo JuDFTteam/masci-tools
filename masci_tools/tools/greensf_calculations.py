@@ -101,8 +101,8 @@ def calculate_heisenberg_jij(
             delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
             delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
 
-            gdeltaij = np.einsum('zij,jk...->zik...', gij, delta_i)
-            gdeltaji = np.einsum('zij,jk...->zik...', gji, delta_j)
+            gdeltaij = np.einsum('ij...,zjk...->zik...', delta_i,gij)
+            gdeltaji = np.einsum('ij...,zjk...->zik...', delta_j,gji)
         else:
             gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
             gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
@@ -184,9 +184,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
             delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
 
-            gdeltaij = np.einsum('zij,jk...->zik...', gij, delta_i)
-            gdeltaji = np.einsum('zij,jk...->zik...', gji, delta_j)
-
+            gdeltaij = np.einsum('ij...,zjk...->zik...', delta_i,gij)
+            gdeltaji = np.einsum('ij...,zjk...->zik...', delta_j,gji)
         else:
             gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
             gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
