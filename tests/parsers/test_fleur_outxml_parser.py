@@ -418,6 +418,7 @@ def test_outxml_max6_0_noco_vec(data_regression, clean_parser_log, test_file):
         'warnings': clean_parser_log(warnings),
     })
 
+
 def test_outxml_max6_1_compatibility(data_regression, clean_parser_log, test_file):
     """
     Test if Max6.1 output files are processed correctly
