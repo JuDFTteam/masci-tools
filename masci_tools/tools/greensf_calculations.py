@@ -104,8 +104,8 @@ def calculate_heisenberg_jij(
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
         else:
-            gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
-            gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
+            gdeltaij = onsite_delta[g1.atomType - 1, g1.l] * gij
+            gdeltaji = onsite_delta[g1.atomTypep - 1, g1.l] * gji
 
         integral = np.einsum('zm,zijm,zjim->', weights, gdeltaij, gdeltaji)
         jij = 0.5 * 1 / (8.0 * np.pi * 1j) * integral
@@ -187,8 +187,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
         else:
-            gdeltaij *= onsite_delta[g1.atomType - 1, g1.l]
-            gdeltaji *= onsite_delta[g1.atomTypep - 1, g1.l]
+            gdeltaij = onsite_delta[g1.atomType - 1, g1.l] * gij
+            gdeltaji = onsite_delta[g1.atomTypep - 1, g1.l] * gji
 
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
