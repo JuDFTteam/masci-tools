@@ -658,7 +658,7 @@ class MatplotlibPlotter(Plotter):
                 if cmin is not None:
                     mappable.set_clim(cmin, cmax)
 
-                cax = ax.inset_axes([1.0+(pad+0.01)*(indx+1), 0, pad, 1], transform=ax.transAxes)
+                cax = ax.inset_axes([1.0 + (pad + 0.01) * (indx + 1), 0, pad, 1], transform=ax.transAxes)
                 cbar = plt.colorbar(mappable, cax=cax, **coptions)
 
                 if indx < len(cmaps) - 1:
