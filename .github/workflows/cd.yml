@@ -112,6 +112,11 @@ jobs:
       matrix:
         python-version: ['3.10','3.9', '3.8']
         experimental: [false]
+        pytest-cmdline: ['']
+        include:
+          - python-version: '3.7'
+            experimental: false
+            pytest-cmdline: '-o addopts="--cov=masci_tools --cov=tests --cov-report xml"'
         # include:
         #   - python-version: '3.11-dev'
         #     experimental: true
@@ -144,7 +149,7 @@ jobs:
         pip install pyhull
 
     - name: Run pytest
-      run: pytest
+      run: pytest ${{ matrix.pytest-cmdline }}
 
     - name: Upload code coverage report
       run: |
