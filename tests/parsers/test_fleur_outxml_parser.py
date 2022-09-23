@@ -419,6 +419,21 @@ def test_outxml_max6_0_noco_vec(data_regression, clean_parser_log, test_file):
     })
 
 
+def test_outxml_max6_1_compatibility(data_regression, clean_parser_log, test_file):
+    """
+    Test if Max6.1 output files are processed correctly
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/Max-R6.1/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
 def test_outxml_differing_versions(data_regression, clean_parser_log, test_file):
     """
     Test if files with different input/output versions are parsed correctly

@@ -32,8 +32,8 @@ The following table shows the version compatibility of the input parser.
 
 |File Version|Compatible  |
 |--|--|
-| `0.27` - `0.35` |<span style="color:green;">Yes</span> |
-| `0.36` |<span style="color:#ffb733;">Fallback to <cite>0.35</cite></span>  |
+| `0.27` - `0.36` |<span style="color:green;">Yes</span> |
+| `0.37` |<span style="color:#ffb733;">Fallback to <cite>0.36</cite></span>  |
 
 
 ## Parser for the Fleur out.xml file
@@ -73,8 +73,8 @@ since the output version is `0.27` for all versions before this point.
 | `0.30` - `0.31` |<span style="color:#ffb733;">Yes (no XML validation)</span>  |
 | `0.32` | <span style="color:red;">No (Does not exist for any release version of fleur)</span> |
 | `0.33` |<span style="color:#ffb733;">Yes (no XML validation)</span> |
-| `0.34` - `0.35` |<span style="color:green;">`Yes</span> |
-| `0.36` -  |<span style="color:#ffb733;">Fallback to <cite>0.35</cite></span> |
+| `0.34` - `0.36` |<span style="color:green;">`Yes</span> |
+| `0.37` -  |<span style="color:#ffb733;">Fallback to <cite>0.36</cite></span> |
 
 
 ````{admonition} Using File handles

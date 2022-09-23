@@ -10,6 +10,7 @@
   - Setting XC functional explicitly + LibXC support (`set_xcfunctional`),
   - Creating a kpoint path using `ase` (`set_kpointpath`)
   - Creating a kpoint mesh with symmetry reduction using `spglib`. Should be equivalent to the `gamma@grid=nx,ny,nz` kpoint generator in `inpgen` (`set_kpointmesh`)
+- Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6.1 release of fleur (file version `0.36`) [[#196]](https://github.com/JuDFTteam/masci-tools/pull/196)
 
 ### Bugfixes
 - Add clearer error message if `None` is passed to the `convert_to_xml` functions. This would happen for example using the `set_inpchanges` function with `{'minDistance': None}` [[#182]](https://github.com/JuDFTteam/masci-tools/pull/182)

@@ -69,7 +69,7 @@ Following is the current specification of tasks
 """
 from masci_tools.util.parse_utils import Conversion
 
-__working_out_versions__ = {'0.34', '0.35'}
+__working_out_versions__ = {'0.34', '0.35', '0.36'}
 __base_version__ = '0.34'
 
 TASKS_DEFINITION = {
