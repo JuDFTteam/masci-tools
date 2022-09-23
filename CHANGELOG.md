@@ -1,7 +1,12 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
+
+Nothing here yet
+
+## v.0.12.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...v0.12.0)
 
 ### Added
 - Added XPath evaluation functions with runtime tpye checking of the results of the expressions [[#181]](https://github.com/JuDFTteam/masci-tools/pull/181)
