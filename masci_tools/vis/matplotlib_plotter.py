@@ -39,7 +39,7 @@ class MatplotlibPlotter(Plotter):
             'dpi': 100,
             'facecolor': 'w',
             'edgecolor': 'k',
-            'constrained_layout': False,
+            'constrained_layout': True,
         },
 
         # axis properties
