@@ -94,7 +94,10 @@ warnings:
     False, ''bz_integration'': ''hist'', ''greensf'': False, ''ldahia'': False}'
   parser_warnings:
   - No Output Schema available for version '0.99'; falling back to '0.36'
+  - No Input Schema available for version '0.99'; falling back to '0.36'
   - "Output file does not validate against the schema: \nLine 2: Element 'fleurOutput',\
     \ attribute 'fleurOutputVersion': [facet 'enumeration'] The value '0.99' is not\
-    \ an element of the set {'0.36'}. \nLine 168: Element 'atomsInCell': The attribute\
-    \ 'n_opc' is required but missing. \n"
+    \ an element of the set {'0.36'}. \nLine 16: Element 'fleurInput', attribute 'fleurInputVersion':\
+    \ [facet 'enumeration'] The value '0.99' is not an element of the set {'0.36'}.\
+    \ \nLine 168: Element 'atomsInCell': The attribute 'n_opc' is required but missing.\
+    \ \n"

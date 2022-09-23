@@ -13,7 +13,7 @@
    </parallelSetup>
    <startDateAndTime date="2020/12/10" time="16:53:07" zone="+0100"/>
    <!-- Now follows a dump of the inp.xml file after evaluating the Schema -->
-   <fleurInput fleurInputVersion="0.36">
+   <fleurInput fleurInputVersion="0.99">
       <comment>
          Fe fcc 2
       </comment>
