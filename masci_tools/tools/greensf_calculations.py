@@ -35,13 +35,11 @@ except ImportError:
 # - custom decompositions (e.g. e2g/t2g)
 
 
-def calculate_heisenberg_jij(
-    hdffileORgreensfunctions: FileLike | list[GreensFunction],
-    reference_atom: int,
-    onsite_delta: np.ndarray | None = None,
-    max_shells: int | None = None,
-    transform_func: Callable | None = None
-) -> pd.DataFrame:
+def calculate_heisenberg_jij(hdffileORgreensfunctions: FileLike | list[GreensFunction],
+                             reference_atom: int,
+                             onsite_delta: np.ndarray | None = None,
+                             max_shells: int | None = None,
+                             transform_func: Callable | None = None) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange constants form Green's functions using the formula
 
