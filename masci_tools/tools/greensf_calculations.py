@@ -88,13 +88,8 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions: FileLike | list[GreensFun
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
         if delta_is_matrix:
-            delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
-            delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
-
-            delta_i[..., 0, 0] = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j[..., 0, 0] = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j[..., 1, 1] = delta_j[..., 0, 0]
-            delta_i[..., 1, 1] = delta_i[..., 0, 0]
+            delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
 
             #Rotate into global spin frame
             alpha, alphap = g1._angle_alpha  #pylint: disable=protected-access
@@ -110,8 +105,8 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions: FileLike | list[GreensFun
                 delta_i = transform_func(delta_i)
                 delta_j = transform_func(delta_j)
 
-            gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
-            gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
+            gdeltaij = np.einsum('ij,zjk...->zik...', delta_i, gij)
+            gdeltaji = np.einsum('ij,zjk...->zik...', delta_j, gji)
         else:
             gdeltaij = onsite_delta[g1.atomType - 1, g1.l] * gij
             gdeltaji = onsite_delta[g1.atomTypep - 1, g1.l] * gji
