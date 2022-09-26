@@ -353,7 +353,7 @@ def calculate_hybridization(greensfunction: GreensFunction) -> np.ndarray:
     return delta.real
 
 
-def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cutoff: float | None=None) -> np.ndarray:
+def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cutoff: float | None = None) -> np.ndarray:
     """
     Calculate the Bxc potential in the basis of products of spherical harmonics
     (Same basis as greens functions)
@@ -392,5 +392,5 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cut
 
     bxc_mmp = bxc_mmp.real
     if cutoff is not None:
-        bxc_mmp[np.abs(bxc_mmp)<cutoff] = 0
+        bxc_mmp[np.abs(bxc_mmp) < cutoff] = 0
     return bxc_mmp
