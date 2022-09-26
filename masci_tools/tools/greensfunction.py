@@ -669,7 +669,7 @@ class GreensFunction:
 
         for name in self._data.keys():
             data = self._get_spin_matrix(name)
-            for m in range(2 * self.l + 1):
+            for m in range(self.lmax):
                 data[:, m, m, 0, 0] = (data[:, m, m, 0, 0] + data[:, m, m, 1, 1]) / 2
                 data[:, m, m, 1, 1] = data[:, m, m, 0, 0]
             self._set_spin_matrix(name, data)
