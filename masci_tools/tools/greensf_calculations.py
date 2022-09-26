@@ -174,8 +174,6 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         dist = round(dist, 12)
 
         if average_diagonal:
-            g1.to_local_frame()
-            g2.to_local_frame()
             g1.average_spindiagonal()
             g2.average_spindiagonal()
 
