@@ -222,13 +222,15 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         jij_tensor['Atom i'].append(f"{g1.extras['atom_label']}({g1.extras['element']})")
         jij_tensor['Atom j'].append(f"{g1.extras['atom_labelp']}({g1.extras['elementp']})")
 
+        gdeltaij = np.einsum('zm,zijbcm->', weights, gdeltaij)
+        gdeltaji = np.einsum('zm,zijbcm->', weights, gdeltaji)
         for sigmai_str in ('x', 'y', 'z'):
             for sigmaj_str in ('x', 'y', 'z'):
 
                 sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
                 sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
 
-                integral = np.einsum('zm,ab,zijbcm,cd,zjidam->', weights, sigmai, gdeltaij, sigmaj, gdeltaji)
+                integral = np.einsum('ab,ijbc,cd,jida->', weights, sigmai, gdeltaij, sigmaj, gdeltaji)
                 jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * integral
 
                 jij_tensor[f'J_{sigmai_str}{sigmaj_str}'].append(jij.real * 1000)  #Convert to meV
