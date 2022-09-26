@@ -353,7 +353,7 @@ def calculate_hybridization(greensfunction: GreensFunction) -> np.ndarray:
     return delta.real
 
 
-def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> np.ndarray:
+def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cutoff: float | None=None) -> np.ndarray:
     """
     Calculate the Bxc potential in the basis of products of spherical harmonics
     (Same basis as greens functions)
@@ -390,4 +390,7 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> 
                             gaunt_coeff = (-1)**mp * gaunt(lrep, lpot, lrep, -m + lrep, mpot, mp - lrep)
                             bxc_mmp[atomtype, lrep, 3 - lrep + m, 3 - lrep + mp] += gaunt_coeff * bxc_integrated
 
-    return bxc_mmp.real
+    bxc_mmp = bxc_mmp.real
+    if cutoff is not None:
+        bxc_mmp[np.abs(bxc_mmp)<cutoff] = 0
+    return bxc_mmp
