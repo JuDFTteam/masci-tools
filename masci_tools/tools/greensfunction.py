@@ -667,16 +667,16 @@ class GreensFunction:
         Average out ferromagnetic contributions on the local spin-diagonals
         """
 
-        alpha, alphap = self._angle_alpha
-        beta, betap = self._angle_beta
-        if not self._local_real_frame:
-            rot_real_space = get_wigner_matrix(self.l, alpha, beta)
-            rotp_real_space = get_wigner_matrix(self.lp, alphap, betap)
+        # alpha, alphap = self._angle_alpha
+        # beta, betap = self._angle_beta
+        # if not self._local_real_frame:
+        #     rot_real_space = get_wigner_matrix(self.l, alpha, beta)
+        #     rotp_real_space = get_wigner_matrix(self.lp, alphap, betap)
 
-            for name, data in self._data.items():
-                data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
-                self._data[name] = data
-            self._local_real_frame = True
+        #     for name, data in self._data.items():
+        #         data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
+        #         self._data[name] = data
+        #     self._local_real_frame = True
 
         for name in self._data.keys():
             for m in range(self.lmax):

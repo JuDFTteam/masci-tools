@@ -173,12 +173,13 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
 
         dist = round(dist, 12)
 
+        g1.to_global_frame()
+        g2.to_global_frame()
+
         if average_diagonal:
             g1.average_spindiagonal()
             g2.average_spindiagonal()
 
-        g1.to_global_frame()
-        g2.to_global_frame()
         gij = g1.energy_dependence(both_contours=True)
         gji = g2.energy_dependence(both_contours=True)
 
