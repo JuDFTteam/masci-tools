@@ -108,7 +108,7 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions: FileLike | list[GreensFun
 
             if transform_func is not None:
                 delta_i = transform_func(delta_i)
-                delta_i = transform_func(delta_i)
+                delta_j = transform_func(delta_j)
 
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
@@ -202,7 +202,7 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
 
             if transform_func is not None:
                 delta_i = transform_func(delta_i)
-                delta_i = transform_func(delta_i)
+                delta_j = transform_func(delta_j)
 
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
