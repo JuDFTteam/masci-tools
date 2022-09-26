@@ -185,10 +185,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2, 2), dtype=complex)
             delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2, 2), dtype=complex)
 
-            delta_i[..., 0, 0] = -onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j[..., 0, 0] = -onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j[..., 1, 1] = delta_j[..., 0, 0]
-            delta_i[..., 1, 1] = delta_i[..., 0, 0]
+            delta_i[..., 0, 0, 0] = -onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 0, 0, 0] = -onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 1, 1, 0] = delta_j[..., 0, 0, 0]
+            delta_i[..., 1, 1, 0] = delta_i[..., 0, 0, 0]
 
             delta_i[..., 1] = delta_i[..., 0].conj()
             delta_j[..., 1] = delta_j[..., 0].conj()
