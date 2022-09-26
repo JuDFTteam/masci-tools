@@ -134,7 +134,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
                                 reference_atom: int,
                                 onsite_delta: np.ndarray | None = None,
                                 max_shells: int | None = None,
-                                transform_func: Callable | None = None) -> pd.DataFrame:
+                                transform_func: Callable | None = None,
+                                average_diagonal: bool = False) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange tensor :math:`\mathbf{J}` from Green's functions using the formula
 
@@ -171,6 +172,12 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
     for dist, g1, g2 in shells:
 
         dist = round(dist, 12)
+
+        if average_diagonal:
+            g1.to_local_frame()
+            g2.to_local_frame()
+            g1.average_spindiagonal()
+            g2.average_spindiagonal()
 
         g1.to_global_frame()
         g2.to_global_frame()

@@ -662,6 +662,18 @@ class GreensFunction:
             data[:, :, :, 2, ...] = spin_matrix[:, :, :, 1, 0, ...]
             data[:, :, :, 3, ...] = spin_matrix[:, :, :, 0, 1, ...]
 
+    def average_spindiagonal(self) -> None:
+        """
+        Average out ferromagnetic contributions on the local spin-diagonals
+        """
+
+        for name in self._data.keys():
+            data = self._get_spin_matrix(name)
+            for m in range(2 * self.l + 1):
+                data[:, m, m, 0, 0] = (data[:, m, m, 0, 0] + data[:, m, m, 1, 1]) / 2
+                data[:, m, m, 1, 1] = data[:, m, m, 0, 0]
+            self._set_spin_matrix(name, data)
+
     def to_global_frame(self) -> None:
         """
         Rotate the Green's function into the global real space and spin space frame
