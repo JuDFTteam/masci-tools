@@ -182,13 +182,16 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             gji = transform_func(gji)
 
         if delta_is_matrix:
-            delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
-            delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
+            delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2, 2), dtype=complex)
+            delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2, 2), dtype=complex)
 
-            delta_i[..., 0, 0] = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
-            delta_j[..., 0, 0] = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_i[..., 0, 0] = -onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
+            delta_j[..., 0, 0] = -onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
             delta_j[..., 1, 1] = delta_j[..., 0, 0]
             delta_i[..., 1, 1] = delta_i[..., 0, 0]
+
+            delta_i[..., 1] = delta_i[..., 0].conj()
+            delta_j[..., 1] = delta_j[..., 0].conj()
 
             #Rotate into global spin frame
             alpha, alphap = g1._angle_alpha  #pylint: disable=protected-access
@@ -197,15 +200,15 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             rot_spin = get_spin_rotation(-alpha, -beta)
             rotp_spin = get_spin_rotation(-alphap, -betap)
 
-            delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
-            delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
+            delta_i = np.einsum('ij,xyjk...,km->xyim...', rot_spin, delta_i, rot_spin.T.conj())
+            delta_j = np.einsum('ij,xyjk...,km->xyim...', rotp_spin, delta_j, rotp_spin.T.conj())
 
             if transform_func is not None:
                 delta_i = transform_func(delta_i)
                 delta_j = transform_func(delta_j)
 
-            gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
-            gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
+            gdeltaij = np.einsum('ijabm,zjkbcm->zikacm', delta_i, gij)
+            gdeltaji = np.einsum('ijabm,zjkbcm->zikacm', delta_j, gji)
         else:
             gdeltaij = onsite_delta[g1.atomType - 1, g1.l] * gij
             gdeltaji = onsite_delta[g1.atomTypep - 1, g1.l] * gji
