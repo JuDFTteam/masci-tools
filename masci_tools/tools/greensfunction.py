@@ -680,7 +680,8 @@ class GreensFunction:
 
         for name in self._data.keys():
             for m in range(self.lmax):
-                self._data[name][:, m, m, 0] = (self._data[name][:, m, m, 0] + self._data[name][:, m, m, min(1,self.nspins-1)]) / 2
+                self._data[name][:, m, m, 0] = (self._data[name][:, m, m, 0] +
+                                                self._data[name][:, m, m, min(1, self.nspins - 1)]) / 2
                 if self.nspins > 1:
                     self._data[name][:, m, m, 1] = self._data[name][:, m, m, 0]
 
