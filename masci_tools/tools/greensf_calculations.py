@@ -364,7 +364,7 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> 
     #Now calculate all the different atomtype and orbitals that could be needed
     #Since this is relativaley cheap we can just do it for everything
 
-    bxc_mmp = np.zeros((bxc.shape[0], 4, 7, 7))
+    bxc_mmp = np.zeros((bxc.shape[0], 4, 7, 7), dtype=complex)
 
     for atomtype, (bxc_atomtype, logmesh_atomtype) in enumerate(zip(bxc, log_rmesh)):
         rmesh = np.arange(0, max(logmesh_atomtype), max(logmesh_atomtype) / radial_mesh_points)
@@ -380,4 +380,4 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000) -> 
                             gaunt_coeff = (-1)**mp * gaunt(lrep, lpot, lrep, -m + lrep, mpot, mp - lrep)
                             bxc_mmp[atomtype, lrep, 3 - lrep + m, 3 - lrep + mp] += gaunt_coeff * bxc_integrated
 
-    return bxc_mmp
+    return bxc_mmp.real
