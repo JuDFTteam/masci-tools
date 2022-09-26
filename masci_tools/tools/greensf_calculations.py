@@ -230,7 +230,7 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
                 sigmai = get_pauli_matrix(sigmai_str)  #type: ignore[arg-type]
                 sigmaj = get_pauli_matrix(sigmaj_str)  #type: ignore[arg-type]
 
-                integral = np.einsum('ab,ijbc,cd,jida->', weights, sigmai, gdeltaij, sigmaj, gdeltaji)
+                integral = np.einsum('ab,ijbc,cd,jida->', sigmai, gdeltaij, sigmaj, gdeltaji)
                 jij = 1 / 4 * 1 / (8.0 * np.pi * 1j) * integral
 
                 jij_tensor[f'J_{sigmai_str}{sigmaj_str}'].append(jij.real * 1000)  #Convert to meV
