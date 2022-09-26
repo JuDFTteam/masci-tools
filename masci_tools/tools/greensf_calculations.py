@@ -20,7 +20,7 @@ from scipy import constants
 from scipy.interpolate import interp1d
 from sympy.physics.wigner import gaunt
 from collections import defaultdict
-from typing import Any
+from typing import Any, Callable
 import h5py
 
 try:
@@ -40,6 +40,7 @@ def calculate_heisenberg_jij(
     reference_atom: int,
     onsite_delta: np.ndarray | None = None,
     max_shells: int | None = None,
+    transform_func: Callable | None = None
 ) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange constants form Green's functions using the formula
@@ -51,6 +52,8 @@ def calculate_heisenberg_jij(
     :param reference_atom: integer index of the atom to calculate the Jijs from
     :param onsite_delta: List of floats containing the onsite exchange splitting for each atom type and l-channel
     :param max_shells: optional int, if given only the first max_shells shells are constructed
+    :param transform_func: Callable, if given the green's functions (and bxc if it's a matrix) are passed to it
+                           and are expected to be returned in a compatible shape
 
     :returns: pandas DataFrame containing all the Jij constants
     """
@@ -80,6 +83,10 @@ def calculate_heisenberg_jij(
         gij = g1.energy_dependence(both_contours=True, spin=1)
         gji = g2.energy_dependence(both_contours=True, spin=2)
 
+        if transform_func is not None:
+            gij = transform_func(gij)
+            gji = transform_func(gji)
+
         weights = np.array([g1.weights, -g1.weights.conj()]).T
 
         if delta_is_matrix:
@@ -100,6 +107,10 @@ def calculate_heisenberg_jij(
 
             delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
             delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
+
+            if transform_func is not None:
+                delta_i = transform_func(delta_i)
+                delta_i = transform_func(delta_i)
 
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
@@ -124,7 +135,8 @@ def calculate_heisenberg_jij(
 def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[GreensFunction],
                                 reference_atom: int,
                                 onsite_delta: np.ndarray | None = None,
-                                max_shells: int | None = None) -> pd.DataFrame:
+                                max_shells: int | None = None,
+                                transform_func: Callable | None = None) -> pd.DataFrame:
     r"""
     Calculate the Heisenberg exchange tensor :math:`\mathbf{J}` from Green's functions using the formula
 
@@ -137,6 +149,8 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
     :param reference_atom: integer index of the atom to calculate the Jijs from
     :param onsite_delta: List of floats containing the onsite exchange splitting for each atom type and l-channel
     :param max_shells: optional int, if given only the first max_shells shells are constructed
+    :param transform_func: Callable, if given the green's functions (and bxc if it's a matrix) are passed to it
+                           and are expected to be returned in a compatible shape
 
     :returns: pandas DataFrame containing all the J_xx, J_xy, etc. constants
     """
@@ -165,6 +179,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
         gij = g1.energy_dependence(both_contours=True)
         gji = g2.energy_dependence(both_contours=True)
 
+        if transform_func is not None:
+            gij = transform_func(gij)
+            gji = transform_func(gji)
+
         if delta_is_matrix:
             delta_i = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
             delta_j = np.zeros((2 * g1.l + 1, 2 * g1.l + 1, 2, 2), dtype=complex)
@@ -183,6 +201,10 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
 
             delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
             delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
+
+            if transform_func is not None:
+                delta_i = transform_func(delta_i)
+                delta_i = transform_func(delta_i)
 
             gdeltaij = np.einsum('ijab,zjkbc...->zikac...', delta_i, gij)
             gdeltaji = np.einsum('ijab,zjkbc...->zikac...', delta_j, gji)
