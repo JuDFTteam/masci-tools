@@ -86,7 +86,7 @@ def outxml_parser(outxmlfile: XMLFileLike,
     :raises KeyError: If an unknown task is encountered
     """
 
-    __parser_version__ = '0.7.0'
+    __parser_version__ = '0.7.1'
 
     logger: logging.Logger | None = logging.getLogger(__name__)
     if strict:
@@ -248,6 +248,7 @@ def _determine_iteration_condition(iteration_to_parse: Literal['all', 'first', '
     if n_iters == 0:
         # there was no iteration found.
         # only the starting charge density could be generated
+        # Or fleur was started with -check or similar flags
         msg = 'There was no iteration found in the outfile, either just a ' \
               'starting density was generated or something went wrong.'
         if logger is None:

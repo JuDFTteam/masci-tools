@@ -48,6 +48,8 @@ class modify_potential:
         #print(mode, len(data))
 
         # read file
+        if len(data) == 0:
+            raise ValueError('file is empty in modify_potential')
         index1 = []
         index2 = []
         for i, d in enumerate(data):
@@ -55,7 +57,7 @@ class modify_potential:
                 index1.append(i)
                 if len(index1) > 1:
                     index2.append(i - 1)
-        index2.append(i)
+        index2.append(i)  # pylint: disable=undefined-loop-variable
 
         # read shapefun if old style is used
         if mode == 'shape' and len(index1) < 1:
@@ -113,7 +115,7 @@ class modify_potential:
         datanew.append(f'   {len(order)}\n')
         datanew.append('  1.000000000000E+00\n')
         datanew += tmp
-        with open(shapefun_new, 'w') as f:
+        with open(shapefun_new, 'w', encoding='utf-8') as f:
             f.writelines(datanew)
 
     def neworder_potential(self, potfile_in, potfile_out, neworder, potfile_2=None, replace_from_pot2=None):
@@ -162,14 +164,14 @@ class modify_potential:
         order = [int(i) for i in neworder]
 
         datanew = []
-        for i in range(len(order)):
+        for i, o in enumerate(order):
             # check if new position is replaced with position from old pot
             if replace_from_pot2 is not None and i in replace_from_pot2[:, 0]:
                 replace_index = replace_from_pot2[replace_from_pot2[:, 0] == i][0][1]
                 for ii in range(index12[replace_index], index22[replace_index] + 1):
                     datanew.append(data2[ii])
             else:  # otherwise take new potntial according to input list
-                for ii in range(index1[order[i]], index2[order[i]] + 1):
+                for ii in range(index1[o], index2[o] + 1):
                     datanew.append(data[ii])
 
         # write out new potential

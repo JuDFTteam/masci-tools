@@ -14,7 +14,7 @@ Common functions for converting types to and from XML files
 """
 from __future__ import annotations
 
-from typing import Iterable, Any, cast, Union
+from typing import Iterable, Any, Union
 import sys
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -410,6 +410,11 @@ def convert_to_xml_single_values(value: Any | Iterable[Any],
     if not isinstance(value, (list, np.ndarray)):
         value = [value]
 
+    if any(val is None for val in value):
+        if logger is not None:
+            logger.error("Could not convert '%s' to text. All values have to be not None", value)
+        raise ValueError(f"Could not convert '{value}' to text. All values have to be not None")
+
     converted_value: str
     converted_list = []
     exceptions: list[Exception] = []
@@ -574,20 +579,14 @@ def convert_fleur_electronconfig(econfig_element: etree._Element) -> str:
     """
     Convert electronConfig tag to eConfig string
     """
-    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath_one
     from masci_tools.util.econfig import convert_fleur_config_to_econfig
 
-    core_config = eval_xpath(econfig_element, 'coreConfig/text()')
-    valence_config = eval_xpath(econfig_element, 'valenceConfig/text()')
+    core_config = eval_xpath_one(econfig_element, 'coreConfig/text()', str)
+    valence_config = eval_xpath_one(econfig_element, 'valenceConfig/text()', str)
 
-    if not core_config:
-        core_config = ''
-
-    if not valence_config:
-        valence_config = ''
-
-    core_config_str = convert_fleur_config_to_econfig(cast(str, core_config))
-    valence_config_str = convert_fleur_config_to_econfig(cast(str, valence_config))
+    core_config_str = convert_fleur_config_to_econfig(core_config)
+    valence_config_str = convert_fleur_config_to_econfig(valence_config)
 
     return f'{core_config_str} | {valence_config_str}'
 

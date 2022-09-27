@@ -247,7 +247,7 @@ input_dict:
       - 1.0
       - 0.0
   comment: A Fleur input generator calculation with aiida
-  fleurInputVersion: '0.36'
+  fleurInputVersion: '0.99'
   forceTheorem:
     spinSpiralDispersion:
     - - 0.0
@@ -283,9 +283,9 @@ warnings:
   parser_errors: []
   parser_info:
   - Masci-Tools Fleur inp.xml Parser v0.3.0
-  - Got Fleur input file with file version 0.36
+  - Got Fleur input file with file version 0.99
   parser_warnings:
-  - No Input Schema available for version '0.36'; falling back to '0.35'
+  - No Input Schema available for version '0.99'; falling back to '0.36'
   - "Input file does not validate against the schema: \nLine 2: Element 'fleurInput',\
-    \ attribute 'fleurInputVersion': [facet 'enumeration'] The value '0.36' is not\
-    \ an element of the set {'0.35'}. \n"
+    \ attribute 'fleurInputVersion': [facet 'enumeration'] The value '0.99' is not\
+    \ an element of the set {'0.36'}. \n"

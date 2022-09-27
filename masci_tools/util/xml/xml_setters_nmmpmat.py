@@ -22,7 +22,7 @@ import numpy as np
 from masci_tools.io.parsers import fleur_schema
 from masci_tools.util.xml.xpathbuilder import XPathBuilder, FilterType
 from masci_tools.util.xml.common_functions import get_xml_attribute
-from masci_tools.util.xml.common_functions import eval_xpath
+from masci_tools.util.xml.common_functions import eval_xpath_all
 from masci_tools.util.typing import XMLLike
 
 from masci_tools.util.schema_dict_util import eval_simple_xpath, evaluate_attribute
@@ -80,7 +80,7 @@ def set_nmmpmat(xmltree: XMLLike,
     elif species_name != 'all':
         species_name_xpath.add_filter('species', {'name': species_name})
 
-    possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
+    possible_species = set(eval_xpath_all(xmltree, species_name_xpath, str))
 
     nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     if spin > nspins:
@@ -171,7 +171,7 @@ def align_nmmpmat_to_sqa(xmltree: XMLLike,
     elif species_name != 'all':
         species_name_xpath.add_filter('species', {'name': species_name})
 
-    possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
+    possible_species = set(eval_xpath_all(xmltree, species_name_xpath, str))
 
     #Extract the SQA for all atom groups
     # (if we have scond variationn SOC it will just set to the same value)
@@ -270,7 +270,7 @@ def rotate_nmmpmat(xmltree: XMLLike,
     elif species_name != 'all':
         species_name_xpath.add_filter('species', {'name': species_name})
 
-    possible_species: set[str] = set(eval_xpath(xmltree, species_name_xpath, list_return=True))  #type:ignore
+    possible_species = set(eval_xpath_all(xmltree, species_name_xpath, str))
 
     nspins = _get_number_of_spin_blocks(xmltree, schema_dict)
     ldau_order = _get_ldau_order(xmltree, schema_dict)

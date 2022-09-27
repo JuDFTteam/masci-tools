@@ -20,7 +20,7 @@ def test_generate_conversion(file_regression, remove_conversion):
     result = runner.invoke(generate_inp_conversion, ['0.31', '0.34'], input=input_string)
     print(result.output)
 
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     with open(file_path, encoding='utf-8') as f:
         content = f.read()
 
@@ -41,7 +41,7 @@ def test_convert_inpxml(tmp_path, test_file, file_regression):
          os.fspath(tmp_path / 'inp.xml')])
     print(result.output)
 
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     with open(tmp_path / 'inp.xml', encoding='utf-8') as f:
         content = f.read()
 

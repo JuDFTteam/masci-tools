@@ -22,7 +22,7 @@ from lxml import etree
 import warnings
 
 from masci_tools.util.typing import XPathLike, XMLLike
-from masci_tools.util.xml.common_functions import eval_xpath, is_valid_tag
+from masci_tools.util.xml.common_functions import eval_xpath_all, is_valid_tag
 
 
 def xml_replace_tag(xmltree: XMLLike,
@@ -50,7 +50,7 @@ def xml_replace_tag(xmltree: XMLLike,
     if not etree.iselement(element):
         element = etree.fromstring(element)  #type:ignore[arg-type]
 
-    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(root, xpath, etree._Element)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to replace found on xpath: {xpath!r}')
@@ -96,7 +96,7 @@ def xml_delete_att(xmltree: XMLLike,
     else:
         root = xmltree
 
-    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(root, xpath, etree._Element)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to delete attributes on found on xpath: {xpath!r}')
@@ -132,7 +132,7 @@ def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterab
     else:
         root = xmltree
 
-    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(root, xpath, etree._Element)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to delete found on xpath: {xpath!r}')
@@ -237,7 +237,7 @@ def xml_create_tag(xmltree: XMLLike,
     else:
         element_name = element.tag
 
-    parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+    parent_nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     if len(parent_nodes) == 0:
         raise ValueError(f"Could not create tag '{element_name}' because at least one subtag is missing. "
@@ -350,7 +350,7 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
     else:
         root = xmltree
 
-    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(root, xpath, etree._Element)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to set attribute {name} on found on xpath: {xpath!r}')
@@ -402,7 +402,7 @@ def xml_set_text_no_create(xmltree: XMLLike,
     else:
         root = xmltree
 
-    nodes: list[etree._Element] = eval_xpath(root, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(root, xpath, etree._Element)
 
     if len(nodes) == 0:
         warnings.warn(f'No nodes to set text on found on xpath: {xpath!r}')

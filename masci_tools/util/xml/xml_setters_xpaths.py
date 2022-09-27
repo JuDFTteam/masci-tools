@@ -23,7 +23,7 @@ except ImportError:
 
 from masci_tools.util.xml.xpathbuilder import XPathBuilder
 from masci_tools.util.typing import XPathLike, XMLLike
-from masci_tools.util.xml.common_functions import eval_xpath, add_tag, is_valid_tag
+from masci_tools.util.xml.common_functions import eval_xpath_all, add_tag, is_valid_tag
 from masci_tools.io.parsers import fleur_schema
 
 from lxml import etree
@@ -92,7 +92,7 @@ def xml_create_tag_schema_dict(xmltree: XMLLike,
     if not several_tags and number_nodes > 1:
         raise ValueError(f'Can not create {number_nodes} nodes of tag {element_name}: Tag only allowed once')
 
-    parent_nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+    parent_nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     if len(parent_nodes) == 0:
         if create_parents:
@@ -119,8 +119,7 @@ def eval_xpath_create(xmltree: XMLLike,
                       base_xpath: str,
                       create_parents: bool = False,
                       occurrences: int | Iterable[int] | None = None,
-                      number_nodes: int = 1,
-                      list_return: bool = False) -> list[etree._Element]:
+                      number_nodes: int = 1) -> list[etree._Element]:
     """
     Evaluates and xpath and creates tag if the result is empty
 
@@ -141,7 +140,7 @@ def eval_xpath_create(xmltree: XMLLike,
 
     check_complex_xpath(xmltree, base_xpath, xpath)
 
-    nodes: list[etree._Element] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+    nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     if len(nodes) == 0:
         parent_xpath, tag_name = split_off_tag(base_xpath)
@@ -154,10 +153,7 @@ def eval_xpath_create(xmltree: XMLLike,
                                              create_parents=create_parents,
                                              number_nodes=number_nodes,
                                              occurrences=occurrences)
-        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
-
-    if len(nodes) == 1 and not list_return:
-        nodes = nodes[0]  #type:ignore
+        nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     return nodes
 
@@ -200,7 +196,6 @@ def xml_set_attrib_value(xmltree: XMLLike,
     from masci_tools.io.common_functions import is_sequence
 
     check_complex_xpath(xmltree, base_xpath, xpath)
-
     _, tag_name = split_off_tag(base_xpath)
 
     attribs = schema_dict['tag_info'][base_xpath]['attribs']
@@ -213,16 +208,15 @@ def xml_set_attrib_value(xmltree: XMLLike,
     n_nodes = len(converted_value) if is_sequence(converted_value) else 1
 
     if create:
-        nodes: list[etree._Element] = eval_xpath_create(xmltree,
-                                                        schema_dict,
-                                                        xpath,
-                                                        base_xpath,
-                                                        create_parents=True,
-                                                        occurrences=occurrences,
-                                                        number_nodes=n_nodes,
-                                                        list_return=True)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  number_nodes=n_nodes)
     else:
-        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+        nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     if len(nodes) == 0:
         raise ValueError(f"Could not set attribute '{name}' on path '{xpath!r}' "
@@ -305,16 +299,15 @@ def xml_set_text(xmltree: XMLLike,
     n_nodes = len(converted_text) if is_sequence(converted_text) else 1
 
     if create:
-        nodes: list[etree._Element] = eval_xpath_create(xmltree,
-                                                        schema_dict,
-                                                        xpath,
-                                                        base_xpath,
-                                                        create_parents=True,
-                                                        occurrences=occurrences,
-                                                        number_nodes=n_nodes,
-                                                        list_return=True)
+        nodes = eval_xpath_create(xmltree,
+                                  schema_dict,
+                                  xpath,
+                                  base_xpath,
+                                  create_parents=True,
+                                  occurrences=occurrences,
+                                  number_nodes=n_nodes)
     else:
-        nodes = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
+        nodes = eval_xpath_all(xmltree, xpath, etree._Element)
 
     if len(nodes) == 0:
         raise ValueError(f"Could not set text on path '{xpath!r}' because at least one subtag is missing. "
@@ -411,11 +404,9 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
             xpath.append_tag(f'@{name}')
     elif not str(xpath).endswith(f'/@{name}'):
         xpath = '/@'.join([str(xpath), name])
-
-    stringattribute: list[str] = eval_xpath(xmltree, xpath, list_return=True)  #type:ignore
-
     tag_xpath, name = split_off_attrib(xpath)
 
+    stringattribute = eval_xpath_all(xmltree, xpath, str)
     if len(stringattribute) == 0:
         raise ValueError(f"No attribute values found for '{name}'. Cannot add number")
 
@@ -538,7 +529,7 @@ def xml_set_simple_tag(xmltree: XMLLike,
         if isinstance(changes, dict):
             changes = [changes]
 
-        if len(eval_xpath(xmltree, tag_xpath, list_return=True)) > 0:  #type:ignore
+        if len(eval_xpath_all(xmltree, tag_xpath, etree._Element)) > 0:
             # policy: we DELETE all existing tags, and create new ones from the given parameters.
             xml_delete_tag(xmltree, tag_xpath)
 
@@ -554,7 +545,7 @@ def xml_set_simple_tag(xmltree: XMLLike,
             for attrib, value in change.items():
                 occurrences = [
                     k * len(changes) + indx
-                    for k in range(len(eval_xpath(xmltree, tag_xpath, list_return=True)) // len(changes))  #type:ignore
+                    for k in range(len(eval_xpath_all(xmltree, tag_xpath, etree._Element)) // len(changes))
                 ]
                 xml_set_attrib_value(xmltree,
                                      schema_dict,
@@ -569,7 +560,6 @@ def xml_set_simple_tag(xmltree: XMLLike,
 
         #eval and ggf. create tag
         eval_xpath_create(xmltree, schema_dict, tag_xpath, tag_base_xpath, create_parents=create_parents)
-
         for attrib, value in changes.items():
             xml_set_attrib_value(xmltree, schema_dict, tag_xpath, tag_base_xpath, attrib, value)
 
@@ -649,7 +639,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
             xmltree = xml_set_complex_tag(xmltree, schema_dict, sub_xpath, sub_base_xpath, val, create=create)
 
         else:
-            if len(eval_xpath(xmltree, sub_xpath, list_return=True)) > 0:  #type:ignore
+            if len(eval_xpath_all(xmltree, sub_xpath, etree._Element)) > 0:
                 # policy: we DELETE all existing tags, and create new ones from the given parameters.
                 xml_delete_tag(xmltree, sub_xpath)
 
@@ -660,7 +650,7 @@ def xml_set_complex_tag(xmltree: XMLLike,
                 xml_create_tag_schema_dict(xmltree, schema_dict, xpath, base_xpath, key, create_parents=create)
 
             for indx, tagdict in enumerate(val):
-                for k in range(len(eval_xpath(xmltree, sub_xpath, list_return=True)) // len(val)):  #type:ignore
+                for k in range(len(eval_xpath_all(xmltree, sub_xpath, etree._Element)) // len(val)):
                     current_elem_xpath: XPathLike
                     if isinstance(sub_xpath, XPathBuilder):
                         current_elem_xpath = copy.deepcopy(sub_xpath)

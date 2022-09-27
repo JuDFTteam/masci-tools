@@ -33,6 +33,36 @@ def fleur_schema():
     """Commands related to the Fleur XML Schemas"""
 
 
+@fleur_schema.command('pull')
+@click.argument('branch', type=str)
+@click.option('--api-key', type=str, help='API key for access to the Iff Gitlab instance', default='')
+@click.option('--test-xml-file',
+              type=click.Path(exists=True, path_type=Path, resolve_path=True),
+              default=None,
+              help='Example xmlfile for this schema version to test the file parser against')
+@click.pass_context
+def pull_fleur_schema(ctx, branch, test_xml_file, api_key):
+    """
+    Pull the default XML schema files from the iffgit
+    and store them in the subfolder of `masci_tools/io/parsers/fleur_schema`
+    corresponding to its version number
+    """
+    ctx.invoke(add_fleur_schema,
+               schema_file='FleurInputSchema.xsd',
+               branch=branch,
+               from_git=True,
+               api_key=api_key,
+               overwrite=True,
+               test_xml_file=test_xml_file)
+    ctx.invoke(add_fleur_schema,
+               schema_file='FleurOutputSchema.xsd',
+               branch=branch,
+               from_git=True,
+               api_key=api_key,
+               overwrite=True,
+               test_xml_file=test_xml_file)
+
+
 @fleur_schema.command('add')
 @click.argument('schema-file', type=click.Path(path_type=Path, resolve_path=True))
 @click.option('--overwrite', is_flag=True, help='Overwrite any existing schema-file')
@@ -66,12 +96,12 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
             "The Fleur file schema has to be named either 'FleurInputSchema.xsd' or 'FleurOutputSchema.xsd'")
 
     tmp_dir = None
-    if not schema_file.is_file() or from_git:
-        if not schema_file.is_file():
+    if from_git or not schema_file.is_file():
+        if not from_git:
             echo.echo_warning(f'{schema_file} does not exist')
+            if not click.confirm(f'Do you want to download from the fleur git ({branch})'):
+                echo.echo_critical('Cannot add Schema file')
 
-        if not from_git and not click.confirm(f'Do you want to download from the fleur git ({branch})'):
-            echo.echo_critical('Cannot add Schema file')
         if gitlab is None:
             echo.echo_critical(
                 'Cannot download Schema file. Please install python-gitlab or the cmdline-extras requirements')
@@ -91,9 +121,9 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
                 repo_id = [repo.id for repo in g.projects.list(all=True) if repo.name == 'fleur'][0]
                 project = gl.projects.get(repo_id)
                 break
-        echo.echo_info(f'Downloading {file_name} from branch {branch} to {schema_file}')
         tmp_dir = tempfile.mkdtemp()
         schema_file = Path(tmp_dir) / file_name
+        echo.echo_info(f'Downloading {file_name} from branch {branch} to {schema_file}')
         with open(schema_file, 'wb') as f:
             project.files.raw(file_path=f'io/xml/{file_name}', ref=branch, streamed=True, action=f.write)
         echo.echo_success('Download successful')
@@ -138,9 +168,9 @@ def add_fleur_schema(schema_file, test_xml_file, overwrite, branch, api_key, fro
 
     #Make sure that construction of SchemaDicts works for this schema
     if input_schema:
-        schema_dict = InputSchemaDict.fromVersion(schema_version, no_cache=True)
+        InputSchemaDict.fromVersion(schema_version, no_cache=True)
     else:
-        schema_dict = OutputSchemaDict.fromVersion(schema_version, no_cache=True)
+        OutputSchemaDict.fromVersion(schema_version, no_cache=True)
     echo.echo_success('Created Schema dictionary for the given schema file')
 
     if test_xml_file is not None:

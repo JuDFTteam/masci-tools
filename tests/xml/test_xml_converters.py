@@ -221,3 +221,18 @@ def test_convert_to_xml_explicit_warnings(caplog, attr_value, types, results, wa
     else:
         for expected_warning in warnings:
             assert expected_warning in caplog.text
+
+
+def test_convert_to_xml_explicit_none():
+    """
+    Test of the convert_xml_attribute function
+    """
+    from masci_tools.util.xml.converters import convert_to_xml_explicit
+
+    types = [AttributeType(base_type='int', length=1), AttributeType(base_type='string', length=1)]
+
+    with pytest.raises(ValueError):
+        convert_to_xml_explicit(None, types)
+
+    with pytest.raises(ValueError):
+        convert_to_xml_explicit([None, 1, '12'], types)

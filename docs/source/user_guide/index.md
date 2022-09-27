@@ -9,5 +9,6 @@ fleur_parser
 fleurxmlmodifier
 hdf5_parser
 fleur_plots
+kkr_plots
 plotting
 ```

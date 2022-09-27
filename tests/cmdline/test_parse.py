@@ -19,7 +19,7 @@ def test_fleur_inp_file():
     result = runner.invoke(parse_inp_file, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"comment": "Si bulk"' in result.output
 
 
@@ -36,7 +36,7 @@ def test_fleur_out_file():
     result = runner.invoke(parse_out_file, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"sum_of_eigenvalues": -316.377' in result.output
 
 
@@ -53,7 +53,7 @@ def test_constants():
     result = runner.invoke(parse_constants, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"Pi": 3.141592653' in result.output
 
 
@@ -70,7 +70,7 @@ def test_fleur_modes():
     result = runner.invoke(parse_fleur_modes, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"bz_integration": "hist",' in result.output
 
 
@@ -87,7 +87,7 @@ def test_structure_data():
     result = runner.invoke(parse_structure_data, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Info: Atoms found:' in result.output
     assert 'Si Si-1 [0.6787502783660522, 0.6787502783660522, 0.6787502783660522]' in result.output
     assert 'Info: Bravais matrix:' in result.output
@@ -107,7 +107,7 @@ def test_cell():
     result = runner.invoke(parse_cell_data, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '[[0.         2.71500111 2.71500111]' in result.output
     assert 'Info: Periodic boundary conditions (True, True, True)' in result.output
 
@@ -125,7 +125,7 @@ def test_parameter_data():
     result = runner.invoke(parse_parameter_data, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"rmt": 2.17' in result.output
     assert '"xctyp": "pbe"' in result.output
 
@@ -143,7 +143,7 @@ def test_nkpts():
     result = runner.invoke(parse_nkpts, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Info: Number of k-points: 2' in result.output
 
 
@@ -160,7 +160,7 @@ def test_kpoints():
     result = runner.invoke(parse_kpoints_data, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Info: Bravais matrix:' in result.output
     assert 'Info: Periodic boundary conditions (True, True, True)' in result.output
     assert '[0.25, 0.25, 0.25]    w=2.0' in result.output
@@ -179,7 +179,7 @@ def test_symmetry():
     result = runner.invoke(parse_symmetry_information, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Rotation:' in result.output
     assert 'Translation:' in result.output
     assert '[[ 0 -1  0]' in result.output
@@ -199,7 +199,7 @@ def test_relax_info():
         result = runner.invoke(parse_relaxation_data, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"displacements": [' in result.output
     assert '0.0179807237' in result.output
 
@@ -217,14 +217,14 @@ def test_attrib():
     result = runner.invoke(parse_attrib, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Value for attribute kmax: 3.5' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'radius', '--contains', 'species', '-nc', 'Group']
     result = runner.invoke(parse_attrib, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Value for attribute radius: 2.17' in result.output
 
 
@@ -241,14 +241,14 @@ def test_text():
     result = runner.invoke(parse_text, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Text for tag kpoint: [[0.25, 0.25, 0.25], [0.25, 0.5, 0.5]]' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'relPos', '--contains', 'Group', '--not-contains', 'species']
     result = runner.invoke(parse_text, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Text for tag relPos: [[0.125, 0.125, 0.125], [-0.125, -0.125, -0.125]]' in result.output
 
 
@@ -265,14 +265,14 @@ def test_all_attribs():
     result = runner.invoke(parse_all_attribs, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"Gmax": 11.1,' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'lo', '--contains', 'species', '-nc', 'Group', '--subtags']
     result = runner.invoke(parse_all_attribs, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"SCLO"' in result.output
 
 
@@ -289,14 +289,14 @@ def test_parent_attribs():
     result = runner.invoke(parse_parent_attribs, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"default"' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'lo', '--contains', 'species', '-nc', 'Group']
     result = runner.invoke(parse_parent_attribs, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert '"Si-1",' in result.output
 
 
@@ -313,14 +313,14 @@ def test_tag_exists():
     result = runner.invoke(parse_tag_exists, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Tag kpoint: exists' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'ldau', '--contains', 'species', '-nc', 'Group']
     result = runner.invoke(parse_tag_exists, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Tag ldau: does not exist' in result.output
 
 
@@ -337,12 +337,12 @@ def test_number_nodes():
     result = runner.invoke(parse_number_nodes, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Tag kpoint: 2 times' in result.output
 
     args = [os.fspath(TEST_FILE), '--name', 'ldau', '--contains', 'species', '-nc', 'Group']
     result = runner.invoke(parse_number_nodes, args)
 
     print(result.output)
-    assert result.exception is None, 'An unexpected exception occurred: {result.exception}'
+    assert result.exception is None, f'An unexpected exception occurred: {result.exception}'
     assert 'Tag ldau: 0 times' in result.output

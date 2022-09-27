@@ -48,6 +48,91 @@ def test_eval_xpath(caplog, load_inpxml):
     assert 'There was a XpathEvalError on the xpath:' in caplog.text
 
 
+def test_eval_xpath_all(load_inpxml):
+    """
+    Test of the eval_xpath function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath_all
+
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
+    root = xmltree.getroot()
+
+    scfLoop = eval_xpath_all(root, '//scfLoop', etree._Element)
+    assert isinstance(scfLoop, list)
+    assert all(isinstance(n, etree._Element) for n in scfLoop)
+
+    include_tags = eval_xpath_all(root,
+                                  '//xi:include',
+                                  etree._Element,
+                                  namespaces={'xi': 'http://www.w3.org/2001/XInclude'})
+    assert len(include_tags) == 2
+    assert isinstance(include_tags[0], etree._Element)
+
+    with pytest.raises(TypeError):
+        eval_xpath_all(root, '//scfLoop', str)
+
+    species_z = eval_xpath_all(root, "//species[@name='Cu-1']/@atomicNumber", str)
+    assert species_z == ['29']
+
+    ldau_tags = eval_xpath_all(root, "//species[@name='Cu-1']/ldaU")
+    assert ldau_tags == []
+
+
+def test_eval_xpath_one(load_inpxml):
+    """
+    Test of the eval_xpath function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath_one
+
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
+    root = xmltree.getroot()
+
+    scfLoop = eval_xpath_one(root, '//scfLoop', etree._Element)
+    assert isinstance(scfLoop, etree._Element)
+
+    with pytest.raises(ValueError):
+        eval_xpath_one(root, '//xi:include', etree._Element, namespaces={'xi': 'http://www.w3.org/2001/XInclude'})
+
+    with pytest.raises(TypeError):
+        eval_xpath_one(root, '//scfLoop', str)
+
+    species_z = eval_xpath_one(root, "//species[@name='Cu-1']/@atomicNumber", str)
+    assert species_z == '29'
+
+    with pytest.raises(ValueError):
+        eval_xpath_one(root, "//species[@name='Cu-1']/ldaU")
+
+
+def test_eval_xpath_first(load_inpxml):
+    """
+    Test of the eval_xpath function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath_first
+
+    xmltree, _ = load_inpxml('fleur/test_clear.xml', absolute=False)
+    root = xmltree.getroot()
+
+    scfLoop = eval_xpath_first(root, '//scfLoop', etree._Element)
+    assert isinstance(scfLoop, etree._Element)
+
+    include_tag = eval_xpath_first(root,
+                                   '//xi:include',
+                                   etree._Element,
+                                   namespaces={'xi': 'http://www.w3.org/2001/XInclude'})
+
+    assert isinstance(include_tag, etree._Element)
+    assert include_tag.attrib['href'] == 'test_include.xml'
+
+    with pytest.raises(TypeError):
+        eval_xpath_first(root, '//scfLoop', str)
+
+    species_z = eval_xpath_first(root, "//species[@name='Cu-1']/@atomicNumber", str)
+    assert species_z == '29'
+
+    with pytest.raises(ValueError):
+        eval_xpath_first(root, "//species[@name='Cu-1']/ldaU")
+
+
 def test_clear_xml(load_inpxml):
     """
     Test of the clear_xml function
@@ -91,6 +176,25 @@ def test_clear_xml(load_inpxml):
 
     symmetry_tags = eval_xpath(cleared_root, '//symOp', list_return=True)
     assert len(symmetry_tags) == 16
+
+
+def test_clear_xml_multiple_comments_outside_root(load_inpxml):
+    """
+    Test of the clear_xml function
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+
+    xmltree, _ = load_inpxml('fleur/test_clear_multiple_comments.xml', absolute=False)
+    root = xmltree.getroot()
+
+    assert root.getprevious() is not None
+    assert root.getnext() is not None
+
+    cleared_tree, _ = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    assert cleared_root.getprevious() is None
+    assert cleared_root.getnext() is None
 
 
 def test_get_xml_attribute(load_inpxml, caplog):

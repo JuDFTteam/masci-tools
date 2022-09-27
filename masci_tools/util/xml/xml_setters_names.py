@@ -16,6 +16,7 @@ and as little knowledge of the concrete xpaths as possible
 from __future__ import annotations
 
 import warnings
+from collections.abc import Collection
 from typing import Any, Iterable
 try:
     from typing import Literal
@@ -344,8 +345,7 @@ def set_attrib_value(xmltree: XMLLike,
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
     if name == 'xcFunctional':
-        name = 'name'
-        kwargs.setdefault('exclude', []).append('other')
+        return set_xcfunctional(xmltree, schema_dict, value)
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
     base_xpath, name = split_off_attrib(base_xpath)
@@ -701,7 +701,7 @@ def clone_species(xmltree: XMLLike,
     :returns xmltree: xml etree of the new inp.xml
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
-    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.common_functions import eval_xpath_one
     import copy
 
     existing_names = set(evaluate_attribute(xmltree, schema_dict, 'name', contains='species', list_return=True))
@@ -713,10 +713,7 @@ def clone_species(xmltree: XMLLike,
     xpath_species = schema_dict.tag_xpath('species')
     xpath_species = f'{xpath_species}[@name = "{species_name}"]'
 
-    old_species: etree._Element = eval_xpath(xmltree, xpath_species, list_return=True)  #type:ignore
-    if len(old_species) != 1:
-        raise ValueError('Failed to retrieve species to clone')
-    old_species = old_species[0]
+    old_species = eval_xpath_one(xmltree, xpath_species, etree._Element)
 
     parent = old_species.getparent()
     if parent is None:
@@ -1064,7 +1061,8 @@ def set_inpchanges(xmltree: XMLLike,
 
         #Special alias for xcFunctional since name is not a very telling attribute name
         if key == 'xcFunctional':
-            key = 'name'
+            set_xcfunctional(xmltree, schema_dict, change_value, libxc=isinstance(change_value, dict))
+            continue
 
         if key not in schema_dict['attrib_types'] and key not in schema_dict['text_tags']:
             raise ValueError(f"You try to set the key:'{key}' to : '{change_value}', but the key is unknown"
@@ -1083,6 +1081,55 @@ def set_inpchanges(xmltree: XMLLike,
             xml_set_first_attrib_value(xmltree, schema_dict, key_xpath, key_xpath, key, change_value)
 
     return xmltree
+
+
+def set_xcfunctional(xmltree: XMLLike,
+                     schema_dict: fleur_schema.SchemaDict,
+                     xc_functional: str | dict[str, int | str],
+                     xc_functional_options: dict[str, Any] | None = None,
+                     libxc: bool = False) -> XMLLike:
+    """
+    Set the Exchange Correlation potential tag
+
+    Setting a inbuilt XC functional
+    .. code-block:: python
+
+        set_xcfunctional(xmltree, schema_dict, 'vwn')
+
+    Setting a LibXC XC functional
+    .. code-block:: python
+
+        set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
+
+    :param xmltree: XML tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
+                          specifies either the name or id for LibXC functionals for the keys
+                          `'exchange', 'correlation', 'etot_exchange' and 'etot_correlation'`
+    :param xc_functional_options: dict with further general changes to the `xcFunctional` tag
+    :param libxc: bool if True the functional is a LibXC functional
+
+    :returns: an xmltree with modified xcFunctional tag
+    """
+
+    if not libxc and isinstance(xc_functional, dict):
+        raise ValueError('For non LibXC functionals please only provide the name as a string')
+    if libxc and not isinstance(xc_functional, dict):
+        raise ValueError('For LibXC functionals please only the names as a a dict of either names or IDs')
+
+    changes = {'name': xc_functional if not libxc else 'LibXC'}
+    if isinstance(xc_functional, dict):
+        if all(isinstance(v, int) for v in xc_functional.values()):
+            changes['libxcid'] = xc_functional
+        elif all(isinstance(v, str) for v in xc_functional.values()):
+            changes['libxcname'] = xc_functional
+        else:
+            raise ValueError('For non LibXC functionals provide the used functionals either as IDs or names not mixed')
+
+    if xc_functional_options:
+        changes = {**changes, **xc_functional_options}
+
+    return set_complex_tag(xmltree, schema_dict, 'xcFunctional', changes)
 
 
 @schema_dict_version_dispatch(output_schema=False)
@@ -1374,3 +1421,136 @@ def set_kpath_max4(xmltree: XMLLike,
                           }})
 
     return xmltree
+
+
+def set_kpointpath(xmltree: XMLLike,
+                   schema_dict: fleur_schema.SchemaDict,
+                   path: str | list[str] | None = None,
+                   nkpts: int | None = None,
+                   density: float | None = None,
+                   name: str | None = None,
+                   switch: bool = False,
+                   overwrite: bool = False,
+                   special_points: dict[str, Iterable[float]] | None = None) -> XMLLike:
+    """
+    Create a kpoint list for a bandstructure calculation (using ASE kpath generation)
+
+    The path can be defined explictly (see :py:func:`~ase.dft.kpoints.bandpath`) or derived from the unit cell
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param path: str, list of str or None defines the path to interpolate (for syntax :py:func:`~ase.dft.kpoints.bandpath`)
+    :param nkpts: int number of kpoints in the path
+    :param density: float number of kpoints per Angstroem
+    :param name: Name of the created kpoint list. If not given a name is generated
+    :param switch: bool if True the kpoint list is direclty set as the used set
+    :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+    :param special_points: dict mapping names to coordinates for special points to use
+
+    :returns: xmltree with a created kpoint path
+    """
+    from masci_tools.util.xml.xml_getters import get_cell
+    from ase.dft.kpoints import bandpath
+    import numpy as np
+
+    cell, pbc = get_cell(xmltree, schema_dict)  #type: ignore[arg-type]
+    if not all(pbc):
+        #Set unit cell dimension to 0 for non-periodic direction
+        cell[2:, 2:] = 0.0
+
+    kptpath = bandpath(path, cell, npoints=nkpts, density=density, special_points=special_points)
+
+    special_kpoints = kptpath.special_points
+
+    labels = {}
+    for label, special_kpoint in special_kpoints.items():
+        for index, kpoint in enumerate(kptpath.kpts):
+            if sum(abs(np.array(special_kpoint) - np.array(kpoint))).max() < 1e-12:
+                labels[index] = label
+    weights = np.ones(len(kptpath.kpts))
+
+    return set_kpointlist(xmltree,
+                          schema_dict,
+                          kptpath.kpts,
+                          weights,
+                          name=name,
+                          special_labels=labels,
+                          switch=switch,
+                          overwrite=overwrite,
+                          kpoint_type='path')
+
+
+def set_kpointmesh(xmltree: XMLLike,
+                   schema_dict: fleur_schema.SchemaDict,
+                   mesh: Collection[int],
+                   name: str | None = None,
+                   use_symmetries: bool = True,
+                   switch: bool = False,
+                   overwrite: bool = False,
+                   shift: Iterable[float] | None = None,
+                   time_reversal: bool = True,
+                   map_to_first_bz: bool = True) -> XMLLike:
+    """
+    Create a kpoint mesh using spglib
+
+    for details see :py:func:`~spglib.get_stabilized_reciprocal_mesh`
+
+    :param xmltree: xml tree that represents inp.xml
+    :param schema_dict: InputSchemaDict containing all information about the structure of the input
+    :param mesh: list-like woth three elements, giving the size of the kpoint set in each direction
+    :param use_symmetry: bool if True the available symmetry operations in the inp.xml will be used
+                         to reduce the kpoint set otherwise only the identity matrix is used
+    :param name: Name of the created kpoint list. If not given a name is generated
+    :param switch: bool if True the kpoint list is direclty set as the used set
+    :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
+    :param shift: shift the center of the kpint set
+    :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
+    :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
+
+    :returns: xmltree with a created kpoint path
+    """
+    from masci_tools.util.xml.xml_getters import get_symmetry_information, get_cell
+    from spglib import get_stabilized_reciprocal_mesh
+    import numpy as np
+
+    if len(mesh) != 3:
+        raise ValueError('mesh has to be a three element list')
+
+    _, pbc = get_cell(xmltree, schema_dict)  #type: ignore[arg-type]
+    if not all(pbc) and mesh[2] != 1:  #type: ignore[index]
+        raise ValueError('For film systems only one layer of kpoints in z is allowed')
+
+    if use_symmetries:
+        rotations, _ = get_symmetry_information(xmltree, schema_dict)  #type: ignore[arg-type]
+    else:
+        rotations = [np.eye(3, dtype='intc')]
+
+    grid_mapping, grid_addresses = get_stabilized_reciprocal_mesh(mesh,
+                                                                  rotations,
+                                                                  is_shift=shift,
+                                                                  is_time_reversal=time_reversal)
+
+    if shift is None:
+        shift = np.zeros(3)
+    kpoints_indices = np.unique(grid_mapping)
+    kpoints = (grid_addresses[kpoints_indices] + shift) / mesh
+
+    if map_to_first_bz:
+        #This mapping to the 0,1 integral makes it equivalent
+        #to the gamma@grid kpoint generator (the same tolerances are also used for the rounding)
+        kpoints = np.where(np.abs(kpoints - np.rint(kpoints)) < 1e-8, np.rint(kpoints), kpoints)
+        kpoints = kpoints - np.floor(kpoints)
+
+    weights = np.zeros_like(grid_mapping)
+    for gp in grid_mapping:
+        weights[gp] += 1
+    weights = np.array(weights[kpoints_indices])
+
+    return set_kpointlist(xmltree,
+                          schema_dict,
+                          kpoints,
+                          weights,
+                          name=name,
+                          switch=switch,
+                          overwrite=overwrite,
+                          kpoint_type='mesh')

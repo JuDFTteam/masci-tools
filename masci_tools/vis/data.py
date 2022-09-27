@@ -371,8 +371,7 @@ class PlotData:
 
             if isinstance(source[key], pd.Series):
                 if isinstance(source, pd.DataFrame):
-                    dataframe_func = lambda x, k=key: lambda_func(x) if x.name == k else x
-                    new_source = source.apply(dataframe_func, **kwargs)
+                    new_source = source.apply(lambda x, k=key: lambda_func(x) if x.name == k else x, **kwargs)
                     if isinstance(self.data, list):
                         self.data[indx] = new_source
                     else:

@@ -95,5 +95,4 @@ def drop_values(array: _np.ndarray, *args: str, **kwargs: float) -> _np.ndarray:
         return array
     if len(masks) == 1:
         return array[tuple(masks)]
-    else:  # > 1
-        return array[_np.logical_and(*masks)]
+    return array[_np.logical_and(*masks)]

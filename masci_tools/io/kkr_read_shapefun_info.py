@@ -8,6 +8,9 @@
 # For further information on the license, see the LICENSE.txt file            #
 #                                                                             #
 ###############################################################################
+"""
+Reading of shpefun files of KKR
+"""
 
 __version__ = 0.1
 
@@ -30,7 +33,7 @@ def read_shapefun(path='.'):
     path += '/'
 
     # first read vertices file
-    with open(path + 'vertices.dat') as f:
+    with open(path + 'vertices.dat', encoding='utf-8') as f:
         out = {}
         face, face_old = -1, -1
         for line in f:
@@ -57,7 +60,7 @@ def read_shapefun(path='.'):
                     out[atm, face] = tmp
 
     # then read positions from inputcard
-    with open(path + 'inputcard') as file:
+    with open(path + 'inputcard', encoding='utf-8') as file:
         inp = file.readlines()
         # convert to uppercase
         for index, line in enumerate(inp):

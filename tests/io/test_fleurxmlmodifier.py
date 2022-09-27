@@ -247,6 +247,17 @@ def test_fleurxml_modifier_task_list_construction():
                             })]
 
 
+def test_fleurxml_modifier_task_kwargs_handling():
+    """Tests if fleurxmlmodifier can produce the task list if the XML modifier function contains
+       an explicit kwargs
+    """
+
+    fm = FleurXMLModifier()
+    fm.delete_tag('lo', contains='species')
+
+    assert fm.task_list == [('delete_tag', {'tag_name': 'lo', 'contains': 'species'})]
+
+
 @pytest.mark.parametrize('name, kwargs, expected_task', [
     ('set_inpchanges', {
         'change_dict': {

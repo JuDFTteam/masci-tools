@@ -206,7 +206,7 @@ class ChemicalElements:
 
                 # if from file,
         if filepath:
-            with open(filepath) as file:
+            with open(filepath, encoding='utf-8') as file:
                 self.__elmts = _json.load(file)
                 # in case any group keys were numeric, they will now be string. rectify that.
                 # in case user WANTS them to be string, can always use 'rename' method to turn them back.
@@ -897,10 +897,10 @@ class ChemicalElements:
         return None
 
     def union(self, other):
-        return self.__add__(other)
+        return self + other
 
     def difference(self, other):
-        return self.__sub__(other)
+        return self - other
 
     def complement(self, selected_groups: list = None):
         """Return set complement of selected groups of elmts with respect to the set of all possible elements.
@@ -970,7 +970,7 @@ class ChemicalElements:
         :param filepath: filepath
         :type filepath: str or pathlib.Path
         """
-        with open(filepath, 'w') as file:
+        with open(filepath, 'w', encoding='utf-8') as file:
             file.write(_json.dumps(self.__elmts))
 
     def _get_mendeleev_periodic_table(self):
@@ -1027,7 +1027,7 @@ class ChemicalElements:
         data.size = _masci_python_util.NoIndent(data.size)
         data = _dc.asdict(data)
 
-        with open(_filepath, 'w') as file:
+        with open(_filepath, 'w', encoding='utf-8') as file:
             file.write(_json.dumps(data, cls=_masci_python_util.JSONEncoderTailoredIndent, indent=4))
 
     def load_plotting_profile(self, filepath):
@@ -1037,7 +1037,7 @@ class ChemicalElements:
         :type filepath: str or pathlib.Path
         """
         try:
-            with open(filepath) as file:
+            with open(filepath, encoding='utf-8') as file:
                 data = _json.load(file)
         except (FileNotFoundError, _json.JSONDecodeError) as err:
             print(f'File {filepath} not found or JSON decoding -> dict failed.')

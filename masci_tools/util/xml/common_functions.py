@@ -19,7 +19,7 @@ from lxml import etree
 import warnings
 import copy
 import logging
-from typing import cast, Any
+from typing import Any, TypeVar, cast, overload
 
 from .xpathbuilder import FilterType, XPathBuilder
 
@@ -39,23 +39,25 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
     root = cleared_tree.getroot()
     prev_sibling = root.getprevious()
     while prev_sibling is not None:
+        next_elem = prev_sibling.getprevious()
         if prev_sibling.tag is etree.Comment:
             root.append(prev_sibling)
             root.remove(prev_sibling)
-        prev_sibling = prev_sibling.getprevious()
+        prev_sibling = next_elem
 
     next_sibling = root.getnext()
     while next_sibling is not None:
+        next_elem = next_sibling.getnext()
         if next_sibling.tag is etree.Comment:
             root.append(next_sibling)
             root.remove(next_sibling)
-        next_sibling = next_sibling.getnext()
+        next_sibling = next_elem
 
     #find any include tags
-    include_tags: list[etree._Element] = eval_xpath(cleared_tree,
-                                                    '//xi:include',
-                                                    namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
-                                                    list_return=True)  #type:ignore
+    include_tags = eval_xpath_all(cleared_tree,
+                                  '//xi:include',
+                                  etree._Element,
+                                  namespaces={'xi': 'http://www.w3.org/2001/XInclude'})
 
     parents = []
     known_tags = []
@@ -178,7 +180,7 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
                logger: logging.Logger | None = None,
                list_return: bool = False,
                namespaces: dict[str, str] | None = None,
-               **variables: etree._XPathObject) -> etree._XPathObject:
+               **variables: etree._XPathObject) -> Any:
     """
     Tries to evaluate an xpath expression. If it fails it logs it.
     If a absolute path is given (starting with '/') and the tag of the node
@@ -240,9 +242,12 @@ def eval_xpath(node: XMLLike | etree.XPathElementEvaluator,
     if logger is not None:
         logger.debug('XPath Result: %s', return_value)
 
+    if list_return and not isinstance(return_value, list):
+        return [return_value]
+
     if isinstance(return_value, list):
         if len(return_value) == 1 and not list_return:
-            return return_value[0]  #type:ignore
+            return return_value[0]
     return return_value
 
 
@@ -383,8 +388,8 @@ def check_complex_xpath(node: XMLLike | etree.XPathElementEvaluator, base_xpath:
     :raises ValueError: If the complex_xpath does not produce a subset of the results
                         of the base_xpath
     """
-    results_base = set(eval_xpath(node, base_xpath, list_return=True))  #type:ignore
-    results_complex = set(eval_xpath(node, complex_xpath, list_return=True))  #type:ignore
+    results_base = set(eval_xpath_all(node, base_xpath))
+    results_complex = set(eval_xpath_all(node, complex_xpath))
 
     if not results_base.issuperset(results_complex):
         raise ValueError(f"Complex xpath '{complex_xpath!r}' is not compatible with the base_xpath '{base_xpath!r}'")
@@ -461,6 +466,143 @@ def is_valid_tag(tag: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+T = TypeVar('T')
+"""Generic Type"""
+
+
+@overload
+def eval_xpath_all(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: type[T],
+                   *,
+                   logger: logging.Logger | None = ...,
+                   namespaces: dict[str, str] | None = ...,
+                   **variables: etree._XPathObject) -> list[T]:
+    ...
+
+
+@overload
+def eval_xpath_all(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: None = ...,
+                   *,
+                   logger: logging.Logger | None = ...,
+                   namespaces: dict[str, str] | None = ...,
+                   **variables: etree._XPathObject) -> list[Any]:
+    ...
+
+
+def eval_xpath_all(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: type[T] | None = None,
+                   *,
+                   logger: logging.Logger | None = None,
+                   namespaces: dict[str, str] | None = None,
+                   **variables: etree._XPathObject) -> list[T] | list[Any]:
+
+    result = eval_xpath(node, xpath, logger=logger, namespaces=namespaces, list_return=True, **variables)
+
+    if expected_type is not None and not all(isinstance(x, expected_type) for x in result):
+        all_types = {type(x) for x in result}
+        if logger is not None:
+            logger.error(f'Expected XPath results of type {expected_type!r}. Got: {all_types!r}')
+        raise TypeError(f'Expected XPath results of type {expected_type!r}. Got: {all_types!r}')
+
+    return result
+
+
+@overload
+def eval_xpath_first(node: XMLLike | etree.XPathElementEvaluator,
+                     xpath: XPathLike,
+                     expected_type: type[T],
+                     *,
+                     logger: logging.Logger | None = ...,
+                     namespaces: dict[str, str] | None = ...,
+                     **variables: etree._XPathObject) -> T:
+    ...
+
+
+@overload
+def eval_xpath_first(node: XMLLike | etree.XPathElementEvaluator,
+                     xpath: XPathLike,
+                     expected_type: None = ...,
+                     *,
+                     logger: logging.Logger | None = ...,
+                     namespaces: dict[str, str] | None = ...,
+                     **variables: etree._XPathObject) -> Any:
+    ...
+
+
+def eval_xpath_first(node: XMLLike | etree.XPathElementEvaluator,
+                     xpath: XPathLike,
+                     expected_type: type[T] | None = None,
+                     *,
+                     logger: logging.Logger | None = None,
+                     namespaces: dict[str, str] | None = None,
+                     **variables: etree._XPathObject) -> T | Any:
+
+    result = eval_xpath(node, xpath, logger=logger, namespaces=namespaces, list_return=True, **variables)
+    if len(result) == 0:
+        if logger is not None:
+            logger.error(f'Expected atleast one result. Found {len(result)}')
+        raise ValueError(f'Expected atleast one result. Found {len(result)}')
+
+    result = result[0]
+
+    if expected_type is not None and not isinstance(result, expected_type):
+        if logger is not None:
+            logger.error(f'Expected XPath results of type {expected_type!r}. Got: {type(result)}')
+        raise TypeError(f'Expected XPath results of type {expected_type!r}. Got: {type(result)}')
+
+    return result
+
+
+@overload
+def eval_xpath_one(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: type[T],
+                   *,
+                   logger: logging.Logger | None = ...,
+                   namespaces: dict[str, str] | None = ...,
+                   **variables: etree._XPathObject) -> T:
+    ...
+
+
+@overload
+def eval_xpath_one(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: None = ...,
+                   *,
+                   logger: logging.Logger | None = ...,
+                   namespaces: dict[str, str] | None = ...,
+                   **variables: etree._XPathObject) -> Any:
+    ...
+
+
+def eval_xpath_one(node: XMLLike | etree.XPathElementEvaluator,
+                   xpath: XPathLike,
+                   expected_type: type[T] | None = None,
+                   *,
+                   logger: logging.Logger | None = None,
+                   namespaces: dict[str, str] | None = None,
+                   **variables: etree._XPathObject) -> T | Any:
+
+    result = eval_xpath(node, xpath, logger=logger, namespaces=namespaces, list_return=True, **variables)
+    if len(result) != 1:
+        if logger is not None:
+            logger.error(f'Expected one result. Found {len(result)}')
+        raise ValueError(f'Expected one result. Found {len(result)}')
+
+    result = result[0]
+
+    if expected_type is not None and not isinstance(result, expected_type):
+        if logger is not None:
+            logger.error(f'Expected XPath results of type {expected_type!r}. Got: {type(result)}')
+        raise TypeError(f'Expected XPath results of type {expected_type!r}. Got: {type(result)}')
+
+    return result
 
 
 def serialize_xml_objects(args: tuple[Any, ...], kwargs: dict[str, Any]) -> tuple[tuple[Any, ...], dict[str, Any]]:

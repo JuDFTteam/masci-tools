@@ -12,6 +12,8 @@
 Tool to visualize the KKR shapefunctions
 """
 
+from typing import Optional
+
 
 def plot_shapefun(pos, out, mode):
     """
@@ -61,7 +63,7 @@ def plot_shapefun(pos, out, mode):
     return ax
 
 
-def change_zoom(ax, zoom_range, center=[0, 0, 0]):
+def change_zoom(ax, zoom_range: float, center: Optional[list] = None) -> None:
     """
   Change the zoom of a 3d plot
 
@@ -71,6 +73,8 @@ def change_zoom(ax, zoom_range, center=[0, 0, 0]):
   :param zoom_range: range to which the image is zoomed, total range from center-zoom_range to center+zoom_range
   :param center: center of the zoomed region (optional, defaults to origin)
   """
+    if center is None:
+        center = [0., 0., 0.]
     ax.set_xlim(center[0] - zoom_range, center[0] + zoom_range)
     ax.set_ylim(center[1] - zoom_range, center[1] + zoom_range)
     ax.set_zlim(center[2] - zoom_range, center[2] + zoom_range)

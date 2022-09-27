@@ -1,9 +1,31 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
 
 Nothing here yet
+
+## v.0.12.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...v0.12.0)
+
+### Added
+- Added XPath evaluation functions with runtime tpye checking of the results of the expressions [[#181]](https://github.com/JuDFTteam/masci-tools/pull/181)
+- Command `masci-tools fleur-schema pull <branch>` to update/add Fleur Schema files from the iffgit more easily [[#184]](https://github.com/JuDFTteam/masci-tools/pull/184)
+- New XML setters [[#183]](https://github.com/JuDFTteam/masci-tools/pull/183):
+  - Setting XC functional explicitly + LibXC support (`set_xcfunctional`),
+  - Creating a kpoint path using `ase` (`set_kpointpath`)
+  - Creating a kpoint mesh with symmetry reduction using `spglib`. Should be equivalent to the `gamma@grid=nx,ny,nz` kpoint generator in `inpgen` (`set_kpointmesh`)
+- Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6.1 release of fleur (file version `0.36`) [[#196]](https://github.com/JuDFTteam/masci-tools/pull/196)
+
+### Bugfixes
+- Add clearer error message if `None` is passed to the `convert_to_xml` functions. This would happen for example using the `set_inpchanges` function with `{'minDistance': None}` [[#182]](https://github.com/JuDFTteam/masci-tools/pull/182)
+- Fixed `masci-tools fleur-schema add` with `--from-git` flag. Previously it would still check for the existence of the Schema file locally [[#184]](https://github.com/JuDFTteam/masci-tools/pull/184)
+- `get_fleur_modes`: `gw` mode renamed to `spex` and now stores the actual integer value of the attribute [[#185]](https://github.com/JuDFTteam/masci-tools/pull/185)
+- Bugfix in `clear_xml`, when multiple XML comments are present outside the root element [[#193]](https://github.com/JuDFTteam/masci-tools/pull/193)
+- Bugfix in `reverse_xinclude`. This would previously break when reexcluding trees already containing a `relaxation` tag and would end up with two `xi:include` tags for the `relax.xml` [[#194]](https://github.com/JuDFTteam/masci-tools/pull/194)
+- Bugfix for `FleurXMLModifier`. The `task_list` property would incorrectly enter a `kwargs` key if the modifying function in question has an explicit `**kwargs` argument
+- Bugfix in matplotlib plots with placement of multiple colorbars (e.g. weighted spin-polarized bandstructure) [[#198]](https://github.com/JuDFTteam/masci-tools/pull/198)
+
 
 ## v.0.11.3
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.2...v0.11.3)

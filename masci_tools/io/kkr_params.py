@@ -470,6 +470,10 @@ class kkrparams:
                 None, '%l', False,
                 'Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)'
             ]),
+            ('<WRITE_ALL_DENLM>', [
+                None, '%l', False,
+                'Superconductivity: Triggers writeout of all den_lm_ir files that contain the anomalous density (usually writeout is only done for atoms with lambda>0).'
+            ]),
             ('<CUSTOM_TESTSTRING>',
              [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
             # misc
@@ -995,7 +999,7 @@ class kkrparams:
         # check if entry is numpy array and change to list automatically:
         try:
             tmpval = self.values[key].flatten().tolist()
-        except:
+        except:  # pylint: disable=bare-except
             tmpval = self.values[key]
         tmptype = type(tmpval)
 
@@ -1092,7 +1096,7 @@ class kkrparams:
         """Returns mandatory flag (True/False) for keyword 'key'"""
         return self._mandatory[key]
 
-    def get_description(self, key=None, search=None):
+    def get_description(self, key=None, search=None):  # pylint: disable=inconsistent-return-statements
         """
         Returns description of keyword 'key'
         If 'key' is None, print all descriptions of all available keywords
@@ -1451,7 +1455,7 @@ class kkrparams:
                             # workaround to fix inconsistency of XC input between host and impurity code
                             keywords[key] = self.change_XC_val_kkrimp(keywords[key])
                         repltxt = tmpfmt % (keywords[key])
-                    except:
+                    except:  # pylint: disable=bare-except
                         #print(key, tmpfmt, keywords[key])
                         repltxt = ''
                         for index, fmt in enumerate(tmpfmt):

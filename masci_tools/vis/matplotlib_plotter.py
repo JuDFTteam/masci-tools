@@ -39,7 +39,7 @@ class MatplotlibPlotter(Plotter):
             'dpi': 100,
             'facecolor': 'w',
             'edgecolor': 'k',
-            'constrained_layout': False,
+            'constrained_layout': True,
         },
 
         # axis properties
@@ -127,7 +127,7 @@ class MatplotlibPlotter(Plotter):
         },
         'colorbar': True,
         'colorbar_options': {
-            'pad': 0.1
+            'pad': 0.05
         },
         # legend properties
         'legend': False,
@@ -651,22 +651,20 @@ class MatplotlibPlotter(Plotter):
             coptions = copy.deepcopy(self['colorbar_options'])
             labelsize = coptions.pop('labelsize', None)
             label = coptions.pop('label', '')
+            pad = coptions.pop('padding', 0.05)
 
             for indx, cmap in enumerate(cmaps):
                 mappable = cm.ScalarMappable(cmap=cmap, norm=self['norm'])
                 if cmin is not None:
                     mappable.set_clim(cmin, cmax)
 
-                cbar = plt.colorbar(mappable, ax=bar_ax or ax, **coptions)
+                cax = ax.inset_axes([1.0 + (pad + 0.01) * (indx + 1), 0, pad, 1], transform=ax.transAxes)
+                cbar = plt.colorbar(mappable, cax=cax, **coptions)
 
                 if indx < len(cmaps) - 1:
                     cbar.ax.tick_params(labelsize=0)
                 elif labelsize is not None:
                     cbar.ax.tick_params(labelsize=labelsize)
-
-                if bar_ax is None:
-                    bar_ax = cbar.ax
-                    coptions['fraction'] = 0.3
 
             cbar.set_label(label)
 

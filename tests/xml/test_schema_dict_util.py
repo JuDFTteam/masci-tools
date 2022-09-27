@@ -750,3 +750,39 @@ def test_reverse_xinclude_old_file(load_inpxml):
                               namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
                               list_return=True)
     assert len(include_tags) == 0
+
+
+def test_reverse_xinclude_relaxation_tag_included(load_inpxml):
+    """
+    Test of the reverse_xinclude function reproducing the issue that the relaxation tag ends up in the right place
+    """
+    from masci_tools.util.xml.common_functions import eval_xpath, clear_xml
+    from masci_tools.util.schema_dict_util import reverse_xinclude
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/GaAsMultiUForceXML/files/inp-3.xml', absolute=False)
+
+    cleared_tree, all_include_tags = clear_xml(xmltree)
+    cleared_root = cleared_tree.getroot()
+
+    reexcluded_tree, included_trees = reverse_xinclude(cleared_tree, schema_dict, all_include_tags)
+    reexcluded_root = reexcluded_tree.getroot()
+
+    assert len(included_trees) == 1
+
+    include_tags = eval_xpath(cleared_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 0
+
+    include_tags = eval_xpath(reexcluded_root,
+                              '//xi:include',
+                              namespaces={'xi': 'http://www.w3.org/2001/XInclude'},
+                              list_return=True)
+    assert len(include_tags) == 1
+
+    tag_order = [n.tag for n in reexcluded_root]
+    assert tag_order == [
+        'comment', 'calculationSetup', 'cell', 'atomSpecies', 'atomGroups', 'output',
+        '{http://www.w3.org/2001/XInclude}include'
+    ]
