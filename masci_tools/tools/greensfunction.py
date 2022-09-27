@@ -678,7 +678,7 @@ class GreensFunction:
                 self._data[name] = data
 
         for name in self._data.keys():
-            for m in range(2*self.lmax+1):
+            for m in range(2 * self.lmax + 1):
                 self._data[name][:, m, m, 0] = (self._data[name][:, m, m, 0] +
                                                 self._data[name][:, m, m, min(1, self.nspins - 1)]) / 2
                 if self.nspins > 1:
@@ -691,7 +691,6 @@ class GreensFunction:
             for name, data in self._data.items():
                 data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
                 self._data[name] = data
-
 
     def to_global_frame(self) -> None:
         """
