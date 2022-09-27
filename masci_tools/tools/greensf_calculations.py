@@ -91,16 +91,6 @@ def calculate_heisenberg_jij(hdffileORgreensfunctions: FileLike | list[GreensFun
             delta_i = onsite_delta[g1.atomType - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
             delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
 
-            #Rotate into global spin frame
-            alpha, alphap = g1._angle_alpha  #pylint: disable=protected-access
-            beta, betap = g1._angle_beta  #pylint: disable=protected-access
-
-            rot_spin = get_spin_rotation(-alpha, -beta)
-            rotp_spin = get_spin_rotation(-alphap, -betap)
-
-            delta_i = np.einsum('ij,xyjk,km->xyim', rot_spin, delta_i, rot_spin.T.conj())
-            delta_j = np.einsum('ij,xyjk,km->xyim', rotp_spin, delta_j, rotp_spin.T.conj())
-
             if transform_func is not None:
                 delta_i = transform_func(delta_i)
                 delta_j = transform_func(delta_j)
