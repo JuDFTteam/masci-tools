@@ -37,8 +37,10 @@
 <MTWAU>: null
 <NINIT_BROYDEN_BDG>: null
 <NLBASIS>: null
+<NONCOBFIELD>: null
 <NO_MADELUNG>: null
 <NRBASIS>: null
+<PHASE_BDG>: null
 <PRINT_GIJ>: null
 <PRINT_GMAT>: null
 <PRINT_ICKECK>: null
@@ -212,6 +214,7 @@ NPRINCD: null
 NPT1: null
 NPT2: null
 NPT3: null
+NQDOSMAXPOINTS: null
 NRIGHTHO: null
 NSHELD: null
 NSIMPLEMIXFIRST: null
