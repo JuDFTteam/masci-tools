@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.7'
+__version__ = '1.8.8'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -448,6 +448,8 @@ class kkrparams:
                 None, '%f', False,
                 'Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)'
             ]),
+            ('<PHASE_BDG>',
+             [None, '%f', False, 'Superconductivity: Atom dependent phase factor for superconducting coupling.']),
             ('<MIXFAC_BDG>', [
                 None, '%f', False,
                 'Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)'
@@ -489,6 +491,7 @@ class kkrparams:
                 None, '%f', False,
                 'Renormalization factor for energy integration weights (can be used to shift the Fermi level around).'
             ]),
+            ('NQDOSMAXPOINTS', [None, '%i', False, 'Max number of q-points per batch.']),
             # array dimensions
             ('NSHELD', [None, '%i', False, 'Array dimension: number of shells (default: 300)']),
             ('IEMXD', [None, '%i', False, 'Array dimension: number of energy points (default: 101)']),
@@ -556,6 +559,8 @@ class kkrparams:
                 None, '%l', False,
                 "Run option: do not add some energy terms (coulomb, XC, eff. pot.) to total energy (former: 'NoMadel')"
             ]),
+            ('<NONCOBFIELD>', [None, '%l', False,
+                               'Run option: use non-collinear exteranl fields read from bfield.dat']),
             ('<PRINT_GIJ>',
              [None, '%l', False, "Run option: print cluster G_ij matrices to outfile (former: 'Gmatij')"]),
             ('<PRINT_GMAT>', [None, '%l', False, "Run option: print Gmat to outfile (former: 'Gmat')"]),
@@ -1256,16 +1261,23 @@ class kkrparams:
 
             #yapf: disable
             listargs = dict([
-                ['<RBASIS>', naez], ['<RBLEFT>', nlbasis], ['<RBRIGHT>', nrbasis], ['<SHAPE>', natyp],
-                ['<ZATOM>', natyp], ['<SOCSCL>', natyp], ['<SITE>', natyp], ['<CPA-CONC>', natyp],
-                ['<KAOEZL>', nlbasis], ['<KAOEZR>', nrbasis], ['XINIPOL', natyp], ['<RMTREF>', natyp],
-                ['<RMTREFL>', nlbasis], ['<RMTREFR>', nrbasis], ['<FPRADIUS>', natyp], ['BZDIVIDE', 3],
-                ['<RBLEFT>', nlbasis], ['ZPERIODL', 3], ['<RBRIGHT>', nrbasis], ['ZPERIODR', 3],
-                ['LDAU_PARA', 5], ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
-                ['<RMTCORE>', naez], ['<MTWAU>', naez], ['<RTMTWAU>',nrbasis ], ['<LFMTWAU>', nlbasis],
-                ['<MTWAL>', naez], ['<RTMTWAL>',nrbasis ], ['<LFMTWAL>', nlbasis],
-                ['<AT_SCALE_BDG>', natyp], ['<LM_SCALE_BDG>', (lmax + 1)**2],
+                ['BZDIVIDE', 3], ['ZPERIODL', 3], ['ZPERIODR', 3], ['LDAU_PARA', 5],
+                ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
             ])
+            if naez is not None:
+                for key in ['<RBASIS>',  '<RMTCORE>',  '<MTWAU>',  '<MTWAL>']:
+                    listargs[key] = naez
+            if natyp is not None:
+                for key in ['<SHAPE>', '<ZATOM>', '<SOCSCL>', '<SITE>', '<CPA-CONC>', 'XINIPOL', '<RMTREF>', '<FPRADIUS>', '<AT_SCALE_BDG>', '<PHASE_BDG>']:
+                    listargs[key] = natyp
+            if nlbasis is not None:
+                for key in ['<RBLEFT>', '<KAOEZL>', '<RMTREFL>', '<RBLEFT>', '<LFMTWAU>', '<LFMTWAL>']:
+                    listargs[key] = nlbasis
+            if nrbasis is not None:
+                for key in ['<RBRIGHT>', '<KAOEZR>', '<RMTREFR>', '<RBRIGHT>', '<RTMTWAU>', '<RTMTWAL>']:
+                    listargs[key] = nrbasis
+            if lmax is not None:
+                listargs['<LM_SCALE_BDG>'] = (lmax + 1)**2
             #yapf: enable
 
             # deal with special stuff for voronoi:
@@ -1799,7 +1811,9 @@ class kkrparams:
         rbr = self.get_value('<RBRIGHT>')
         zper_l = self.get_value('ZPERIODL')
         zper_r = self.get_value('ZPERIODR')
-        alat2ang = self.get_value('ALATBASIS') * get_aBohr2Ang()
+        alat2ang = self.get_value('ALATBASIS')
+        if alat2ang is not None:
+            alat2ang *= get_aBohr2Ang()
         if rbl is not None:
             self.set_value('<RBLEFT>', array(rbl) * alat2ang)
         if rbr is not None:
