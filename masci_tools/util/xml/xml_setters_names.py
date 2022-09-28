@@ -344,7 +344,7 @@ def set_attrib_value(xmltree: XMLLike,
 
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
-    if name == 'xcFunctional':
+    if name.lower() == 'xcfunctional':
         return set_xcfunctional(xmltree, schema_dict, value)
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
@@ -1060,7 +1060,7 @@ def set_inpchanges(xmltree: XMLLike,
     for key, change_value in changes.items():
 
         #Special alias for xcFunctional since name is not a very telling attribute name
-        if key == 'xcFunctional':
+        if key.lower() == 'xcfunctional':
             set_xcfunctional(xmltree, schema_dict, change_value, libxc=isinstance(change_value, dict))
             continue
 

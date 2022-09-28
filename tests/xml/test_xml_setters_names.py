@@ -709,6 +709,19 @@ def test_set_attrib_value_xcFunctional(load_inpxml):
 
     assert res == 'TEST'
 
+def test_set_attrib_value_xcFunctional_case_insensitive(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_attrib_value
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_attrib_value(xmltree, schema_dict, 'XCfunCtional', 'TEST')
+
+    res = eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name')
+
+    assert res == 'TEST'
+
 
 def test_set_attrib_forcetheorem_angles(load_inpxml):
     from masci_tools.util.xml.common_functions import eval_xpath
@@ -2540,6 +2553,17 @@ def test_set_inpchanges_multiple(load_inpxml):
         '/fleurInput/calculationSetup/magnetism/qss/text()') == '10.0000000000000 10.0000000000000 10.0000000000000'
     assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
     assert eval_xpath(root, '/fleurInput/calculationSetup/ldaU/@l_linMix') == 'T'
+
+def test_set_inpchanges_xcfunctional_case_insensitive(load_inpxml):
+    from masci_tools.util.xml.common_functions import eval_xpath
+    from masci_tools.util.xml.xml_setters_names import set_inpchanges
+
+    xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
+    root = xmltree.getroot()
+
+    set_inpchanges(xmltree, schema_dict, {'XCfunCtional': 'TEST', })
+
+    assert eval_xpath(root, '/fleurInput/calculationSetup/xcFunctional/@name') == 'TEST'
 
 
 def test_set_inpchanges_specification(load_inpxml):

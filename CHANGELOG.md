@@ -3,7 +3,8 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
 
-Nothing here yet
+### Bugfixes
+- Bugfix in XML setters `set_inpchanges` and `set_attrib_value`, setting the `xcFunctional` key was previously not case-insensitive in constrast with all other keys
 
 ## v.0.12.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...v0.12.0)
