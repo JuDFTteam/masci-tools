@@ -112,7 +112,7 @@ jobs:
           - python-version: '3.7'
             experimental: false
             pytest-cmdline: '-o addopts="--cov=masci_tools --cov=tests --cov-report xml"'
-          - python-version: '3.11-rc2'
+          - python-version: '3.11.0-rc.2'
             experimental: true
             pytest-cmdline: ""
       fail-fast: false
