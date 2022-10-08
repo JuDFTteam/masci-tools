@@ -141,7 +141,7 @@ jobs:
       if: ${{ matrix.experimental }}
       run: |
         sudo apt-get update
-        sudo apt-get install -y libxml2-dev libxslt-dev libhdf5-serial-dev
+        sudo apt-get install -y libxml2-dev libxslt-dev libhdf5-serial-dev libopenblas-dev
         pip install --upgrade pip setuptools wheel
         pip install --upgrade cython
         pip list
