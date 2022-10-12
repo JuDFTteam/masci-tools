@@ -3,8 +3,11 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
 
+### Improvements
+- `set_kpointmesh` now also writes out the `nx/ny/nz` attributes fro the dimensions of the kpoint mesh
 ### Bugfixes
 - Bugfix in XML setters `set_inpchanges` and `set_attrib_value`, setting the `xcFunctional` key was previously not case-insensitive in constrast with all other keys
+- Fixed crash in `get_parameter_data`. This function would previously crash if a kpoint mesh without `nx/ny/nz` attributes was used and the first point in the list was the gamma point
 
 ## v.0.12.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...v0.12.0)

@@ -866,3 +866,14 @@ def test_get_special_kpoints_output(load_outxml):
     special_points = get_special_kpoints(xmltree, schema_dict)
 
     assert special_points == [(0, 'great'), (19, 'path')]
+
+
+def test_parameter_kpt_no_mesh_attributes(load_inpxml, data_regression):
+
+    from masci_tools.util.xml.xml_getters import get_parameter_data
+
+    xmltree, schema_dict = load_inpxml('fleur/inp_kmesh_no_mesh_attrs.xml', absolute=False)
+
+    para = get_parameter_data(xmltree, schema_dict)
+
+    data_regression.check(para)

@@ -460,15 +460,15 @@ def get_parameter_data(xmltree: XMLLike,
                     if all(n is not None for n in (nx, ny, nz)):
                         parameters['kpt'] = {'div1': nx, 'div2': ny, 'div3': nz}
 
-                    #If the kpoint type is mesh, we can make a further check
-                    #whether the first kpoint is the gamma point
-                    #This indicates, whether the gamma switch was set to True
-                    #i.e. the hybrid kpoint generator is used
-                    #Only done if there are multiple kpoints
-                    #Should maybe be replaced by an explicit attribute on the kpointlist
-                    coord = kpoints.text('kpoint', filters={'kPoint': {'index': 1}})
-                    if all(abs(c) < 1e-12 for c in coord) and kpoints.number_nodes('kpoint') > 1:
-                        parameters['kpt']['gamma'] = True
+                        #If the kpoint type is mesh, we can make a further check
+                        #whether the first kpoint is the gamma point
+                        #This indicates, whether the gamma switch was set to True
+                        #i.e. the hybrid kpoint generator is used
+                        #Only done if there are multiple kpoints
+                        #Should maybe be replaced by an explicit attribute on the kpointlist
+                        coord = kpoints.text('kpoint', filters={'kPoint': {'index': 1}})
+                        if all(abs(c) < 1e-12 for c in coord) and kpoints.number_nodes('kpoint') > 1:
+                            parameters['kpt']['gamma'] = True
 
         # title
         title = root.text('comment', optional=True)

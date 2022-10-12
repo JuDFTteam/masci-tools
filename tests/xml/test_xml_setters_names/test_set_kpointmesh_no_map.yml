@@ -8,6 +8,11 @@ cell:
 - - 2.7150011134642087
   - 2.7150011134642087
   - 0.0
+inpgen-kpt:
+  div1: 3
+  div2: 3
+  div3: 3
+  gamma: true
 kpoints:
 - - 0.0
   - 0.0
