@@ -1,0 +1,1043 @@
+attributes:
+  children:
+  - - attributes:
+        below:
+        - attributes:
+            axis_label: Iteration
+            axis_label_text_font_size: 24pt
+            axis_line_width: 2
+            formatter:
+              name: BasicTickFormatter
+              type: object
+            major_label_policy:
+              name: AllLabels
+              type: object
+            major_label_text_font_size: 16pt
+            ticker:
+              attributes:
+                mantissas:
+                - 1
+                - 2
+                - 5
+              name: BasicTicker
+              type: object
+          name: LinearAxis
+          type: object
+        center:
+        - name: Grid
+          type: object
+        - attributes:
+            dimension: 1
+          name: Grid
+          type: object
+        height: 450
+        left:
+        - attributes:
+            axis_label: Total energy difference [Htr]
+            axis_label_text_font_size: 24pt
+            axis_line_width: 2
+            formatter:
+              name: LogTickFormatter
+              type: object
+            major_label_policy:
+              name: AllLabels
+              type: object
+            major_label_text_font_size: 16pt
+            ticker:
+              attributes:
+                mantissas:
+                - 1
+                - 5
+                num_minor_ticks: 10
+              name: LogTicker
+              type: object
+          name: LogAxis
+          type: object
+        renderers:
+        - attributes:
+            data_source:
+              attributes:
+                data:
+                  entries:
+                  - - iteration
+                    - array:
+                        data: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  - - distance
+                    - - 11.65084
+                      - 10.56375
+                      - 7.19384
+                      - 2.61178
+                      - 2.47353
+                      - 2.94554
+                      - 1.83641
+                      - 1.47406
+                      - 1.85421
+                      - 0.91867
+                      - 0.90019
+                      - 0.529
+                      - 0.0979
+                      - 0.10982
+                      - 0.07179
+                      - 0.02585
+                      - 0.03008
+                      - 0.00679
+                      - 0.00851
+                      - 0.00734
+                  - - energy
+                    - - -69269.46134
+                      - -69269.42108
+                      - -69269.35509
+                      - -69269.62486
+                      - -69269.51103
+                      - -69269.48863
+                      - -69269.48875
+                      - -69269.48459
+                      - -69269.47327
+                      - -69269.47249
+                      - -69269.47245
+                      - -69269.47646
+                      - -69269.47923
+                      - -69269.47932
+                      - -69269.47902
+                      - -69269.47895
+                      - -69269.47886
+                      - -69269.47876
+                      - -69269.47891
+                      - -69269.47888
+                  - - energy_diff_0
+                    - array:
+                        data: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  - - iteration_energy_0
+                    - array:
+                        data: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  type: map
+                selected:
+                  name: Selection
+                  type: object
+                selection_policy:
+                  name: UnionRenderers
+                  type: object
+              name: ColumnDataSource
+              type: object
+            glyph:
+              attributes:
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.8
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.8
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration_energy_0
+                  type: field
+                y:
+                  field: energy_diff_0
+                  type: field
+              name: Scatter
+              type: object
+            muted_glyph:
+              attributes:
+                fill_alpha:
+                  type: value
+                  value: 0.2
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.2
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.2
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration_energy_0
+                  type: field
+                y:
+                  field: energy_diff_0
+                  type: field
+              name: Scatter
+              type: object
+            name: energy_diff_0
+            nonselection_glyph:
+              attributes:
+                fill_alpha:
+                  type: value
+                  value: 0.1
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.1
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.1
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration_energy_0
+                  type: field
+                y:
+                  field: energy_diff_0
+                  type: field
+              name: Scatter
+              type: object
+            view:
+              attributes:
+                filter:
+                  name: AllIndices
+                  type: object
+              name: CDSView
+              type: object
+          name: GlyphRenderer
+          type: object
+        right:
+        - attributes:
+            click_policy: hide
+            items:
+            - attributes:
+                label:
+                  type: value
+                  value: delta total energy
+              name: LegendItem
+              type: object
+            label_text_font_size: 14pt
+          name: Legend
+          type: object
+        title:
+          attributes:
+            text: Total energy difference over scf-Iterations
+          name: Title
+          type: object
+        toolbar:
+          attributes:
+            tools:
+            - name: SaveTool
+              type: object
+          name: Toolbar
+          type: object
+        width: 800
+        x_range:
+          name: DataRange1d
+          type: object
+        x_scale:
+          name: LinearScale
+          type: object
+        y_range:
+          name: DataRange1d
+          type: object
+        y_scale:
+          name: LogScale
+          type: object
+      name: Figure
+      type: object
+    - 0
+    - 0
+  - - attributes:
+        below:
+        - attributes:
+            axis_label: Iteration
+            axis_label_text_font_size: 24pt
+            axis_line_width: 2
+            formatter:
+              name: BasicTickFormatter
+              type: object
+            major_label_policy:
+              name: AllLabels
+              type: object
+            major_label_text_font_size: 16pt
+            ticker:
+              attributes:
+                mantissas:
+                - 1
+                - 2
+                - 5
+              name: BasicTicker
+              type: object
+          name: LinearAxis
+          type: object
+        center:
+        - name: Grid
+          type: object
+        - attributes:
+            dimension: 1
+          name: Grid
+          type: object
+        height: 450
+        left:
+        - attributes:
+            axis_label: Distance [me/bohr^3]
+            axis_label_text_font_size: 24pt
+            axis_line_width: 2
+            formatter:
+              name: LogTickFormatter
+              type: object
+            major_label_policy:
+              name: AllLabels
+              type: object
+            major_label_text_font_size: 16pt
+            ticker:
+              attributes:
+                mantissas:
+                - 1
+                - 5
+                num_minor_ticks: 10
+              name: LogTicker
+              type: object
+          name: LogAxis
+          type: object
+        renderers:
+        - attributes:
+            data_source:
+              attributes:
+                data:
+                  entries:
+                  - - iteration
+                    - array:
+                        data: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  - - distance
+                    - - 11.65084
+                      - 10.56375
+                      - 7.19384
+                      - 2.61178
+                      - 2.47353
+                      - 2.94554
+                      - 1.83641
+                      - 1.47406
+                      - 1.85421
+                      - 0.91867
+                      - 0.90019
+                      - 0.529
+                      - 0.0979
+                      - 0.10982
+                      - 0.07179
+                      - 0.02585
+                      - 0.03008
+                      - 0.00679
+                      - 0.00851
+                      - 0.00734
+                  - - energy
+                    - - -69269.46134
+                      - -69269.42108
+                      - -69269.35509
+                      - -69269.62486
+                      - -69269.51103
+                      - -69269.48863
+                      - -69269.48875
+                      - -69269.48459
+                      - -69269.47327
+                      - -69269.47249
+                      - -69269.47245
+                      - -69269.47646
+                      - -69269.47923
+                      - -69269.47932
+                      - -69269.47902
+                      - -69269.47895
+                      - -69269.47886
+                      - -69269.47876
+                      - -69269.47891
+                      - -69269.47888
+                  - - energy_diff_0
+                    - array:
+                        data: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  - - iteration_energy_0
+                    - array:
+                        data: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+                        type: bytes
+                      dtype: float64
+                      order: little
+                      shape:
+                      - 20
+                      type: ndarray
+                  type: map
+                selected:
+                  name: Selection
+                  type: object
+                selection_policy:
+                  name: UnionRenderers
+                  type: object
+              name: ColumnDataSource
+              type: object
+            glyph:
+              attributes:
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.8
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.8
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration
+                  type: field
+                y:
+                  field: distance
+                  type: field
+              name: Scatter
+              type: object
+            muted_glyph:
+              attributes:
+                fill_alpha:
+                  type: value
+                  value: 0.2
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.2
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.2
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration
+                  type: field
+                y:
+                  field: distance
+                  type: field
+              name: Scatter
+              type: object
+            name: distance
+            nonselection_glyph:
+              attributes:
+                fill_alpha:
+                  type: value
+                  value: 0.1
+                fill_color:
+                  type: value
+                  value: darkred
+                hatch_alpha:
+                  type: value
+                  value: 0.1
+                hatch_color:
+                  type: value
+                  value: darkred
+                line_alpha:
+                  type: value
+                  value: 0.1
+                line_color:
+                  type: value
+                  value: darkred
+                marker:
+                  type: value
+                  value: square
+                size:
+                  type: value
+                  value: 12
+                x:
+                  field: iteration
+                  type: field
+                y:
+                  field: distance
+                  type: field
+              name: Scatter
+              type: object
+            view:
+              attributes:
+                filter:
+                  name: AllIndices
+                  type: object
+              name: CDSView
+              type: object
+          name: GlyphRenderer
+          type: object
+        right:
+        - attributes:
+            click_policy: hide
+            items:
+            - attributes:
+                label:
+                  type: value
+                  value: distance
+              name: LegendItem
+              type: object
+            label_text_font_size: 14pt
+          name: Legend
+          type: object
+        title:
+          attributes:
+            text: Convergence (log)
+          name: Title
+          type: object
+        toolbar:
+          attributes:
+            tools:
+            - name: SaveTool
+              type: object
+          name: Toolbar
+          type: object
+        width: 800
+        x_range:
+          name: DataRange1d
+          type: object
+        x_scale:
+          name: LinearScale
+          type: object
+        y_range:
+          name: DataRange1d
+          type: object
+        y_scale:
+          name: LogScale
+          type: object
+      name: Figure
+      type: object
+    - 1
+    - 0
+  toolbar:
+    attributes:
+      tools:
+      - attributes:
+          tools:
+          - name: PanTool
+            type: object
+          - name: PanTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - attributes:
+              overlay:
+                attributes:
+                  fill_alpha: 0.5
+                  fill_color: lightgrey
+                  level: overlay
+                  line_alpha: 1.0
+                  line_color: black
+                  line_dash:
+                  - 4
+                  - 4
+                  line_width: 2
+                  syncable: false
+                  visible: false
+                  xs_units: canvas
+                  ys_units: canvas
+                name: PolyAnnotation
+                type: object
+              renderers: auto
+            name: PolySelectTool
+            type: object
+          - attributes:
+              overlay:
+                attributes:
+                  fill_alpha: 0.5
+                  fill_color: lightgrey
+                  level: overlay
+                  line_alpha: 1.0
+                  line_color: black
+                  line_dash:
+                  - 4
+                  - 4
+                  line_width: 2
+                  syncable: false
+                  visible: false
+                  xs_units: canvas
+                  ys_units: canvas
+                name: PolyAnnotation
+                type: object
+              renderers: auto
+            name: PolySelectTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - attributes:
+              renderers: auto
+            name: TapTool
+            type: object
+          - attributes:
+              renderers: auto
+            name: TapTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: WheelZoomTool
+            type: object
+          - name: WheelZoomTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - attributes:
+              overlay:
+                attributes:
+                  bottom_units: canvas
+                  fill_alpha: 0.5
+                  fill_color: lightgrey
+                  left_units: canvas
+                  level: overlay
+                  line_alpha: 1.0
+                  line_color: black
+                  line_dash:
+                  - 4
+                  - 4
+                  line_width: 2
+                  right_units: canvas
+                  syncable: false
+                  top_units: canvas
+                  visible: false
+                name: BoxAnnotation
+                type: object
+            name: BoxZoomTool
+            type: object
+          - attributes:
+              overlay:
+                attributes:
+                  bottom_units: canvas
+                  fill_alpha: 0.5
+                  fill_color: lightgrey
+                  left_units: canvas
+                  level: overlay
+                  line_alpha: 1.0
+                  line_color: black
+                  line_dash:
+                  - 4
+                  - 4
+                  line_width: 2
+                  right_units: canvas
+                  syncable: false
+                  top_units: canvas
+                  visible: false
+                name: BoxAnnotation
+                type: object
+            name: BoxZoomTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: RedoTool
+            type: object
+          - name: RedoTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: UndoTool
+            type: object
+          - name: UndoTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: ResetTool
+            type: object
+          - name: ResetTool
+            type: object
+        name: ToolProxy
+        type: object
+      - name: SaveTool
+        type: object
+      - attributes:
+          tools:
+          - name: CrosshairTool
+            type: object
+          - name: CrosshairTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: ZoomOutTool
+            type: object
+          - name: ZoomOutTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          tools:
+          - name: ZoomInTool
+            type: object
+          - name: ZoomInTool
+            type: object
+        name: ToolProxy
+        type: object
+      - attributes:
+          renderers:
+          - attributes:
+              data_source:
+                attributes:
+                  data:
+                    entries:
+                    - - iteration
+                      - array:
+                          data: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    - - distance
+                      - - 11.65084
+                        - 10.56375
+                        - 7.19384
+                        - 2.61178
+                        - 2.47353
+                        - 2.94554
+                        - 1.83641
+                        - 1.47406
+                        - 1.85421
+                        - 0.91867
+                        - 0.90019
+                        - 0.529
+                        - 0.0979
+                        - 0.10982
+                        - 0.07179
+                        - 0.02585
+                        - 0.03008
+                        - 0.00679
+                        - 0.00851
+                        - 0.00734
+                    - - energy
+                      - - -69269.46134
+                        - -69269.42108
+                        - -69269.35509
+                        - -69269.62486
+                        - -69269.51103
+                        - -69269.48863
+                        - -69269.48875
+                        - -69269.48459
+                        - -69269.47327
+                        - -69269.47249
+                        - -69269.47245
+                        - -69269.47646
+                        - -69269.47923
+                        - -69269.47932
+                        - -69269.47902
+                        - -69269.47895
+                        - -69269.47886
+                        - -69269.47876
+                        - -69269.47891
+                        - -69269.47888
+                    - - energy_diff_0
+                      - array:
+                          data: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    - - iteration_energy_0
+                      - array:
+                          data: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    type: map
+                  selected:
+                    name: Selection
+                    type: object
+                  selection_policy:
+                    name: UnionRenderers
+                    type: object
+                name: ColumnDataSource
+                type: object
+              glyph:
+                attributes:
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration_energy_0
+                    type: field
+                  y:
+                    field: energy_diff_0
+                    type: field
+                name: Line
+                type: object
+              muted_glyph:
+                attributes:
+                  line_alpha: 0.2
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration_energy_0
+                    type: field
+                  y:
+                    field: energy_diff_0
+                    type: field
+                name: Line
+                type: object
+              name: energy_diff_0
+              nonselection_glyph:
+                attributes:
+                  line_alpha: 0.1
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration_energy_0
+                    type: field
+                  y:
+                    field: energy_diff_0
+                    type: field
+                name: Line
+                type: object
+              view:
+                attributes:
+                  filter:
+                    name: AllIndices
+                    type: object
+                name: CDSView
+                type: object
+            name: GlyphRenderer
+            type: object
+          toggleable: false
+          tooltips:
+          - - Calculation id
+            - $name
+          - - Iteration
+            - '@iteration_energy_0'
+          - - Total energy difference
+            - '@energy_diff_0'
+        name: HoverTool
+        type: object
+      - attributes:
+          renderers:
+          - attributes:
+              data_source:
+                attributes:
+                  data:
+                    entries:
+                    - - iteration
+                      - array:
+                          data: AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQA==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    - - distance
+                      - - 11.65084
+                        - 10.56375
+                        - 7.19384
+                        - 2.61178
+                        - 2.47353
+                        - 2.94554
+                        - 1.83641
+                        - 1.47406
+                        - 1.85421
+                        - 0.91867
+                        - 0.90019
+                        - 0.529
+                        - 0.0979
+                        - 0.10982
+                        - 0.07179
+                        - 0.02585
+                        - 0.03008
+                        - 0.00679
+                        - 0.00851
+                        - 0.00734
+                    - - energy
+                      - - -69269.46134
+                        - -69269.42108
+                        - -69269.35509
+                        - -69269.62486
+                        - -69269.51103
+                        - -69269.48863
+                        - -69269.48875
+                        - -69269.48459
+                        - -69269.47327
+                        - -69269.47249
+                        - -69269.47245
+                        - -69269.47646
+                        - -69269.47923
+                        - -69269.47932
+                        - -69269.47902
+                        - -69269.47895
+                        - -69269.47886
+                        - -69269.47876
+                        - -69269.47891
+                        - -69269.47888
+                    - - energy_diff_0
+                      - array:
+                          data: BYasbvWcpD8w8Nx7uOSwP2tI3GPpQ9E/FAX6RJ4kvT/HuriNBvCWP2kdVU0QdR8/Q8U4fxMKcT8CZVOu8C6HP+Un1T4dj0k/8WjjiLX4BD+wG7YtymxwP4wQHm0csWY/D9b/OcyXFz9hMlUwKqkzP9L7xteeWRI/D9b/OcyXFz8tQxzr4jYaP2EyVTAqqSM/aR1VTRB1/z4AAAAAAAD4fw==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    - - iteration_energy_0
+                      - array:
+                          data: AAAAAAAA8D8AAAAAAAAAQAAAAAAAAAhAAAAAAAAAEEAAAAAAAAAUQAAAAAAAABhAAAAAAAAAHEAAAAAAAAAgQAAAAAAAACJAAAAAAAAAJEAAAAAAAAAmQAAAAAAAAChAAAAAAAAAKkAAAAAAAAAsQAAAAAAAAC5AAAAAAAAAMEAAAAAAAAAxQAAAAAAAADJAAAAAAAAAM0AAAAAAAAD4fw==
+                          type: bytes
+                        dtype: float64
+                        order: little
+                        shape:
+                        - 20
+                        type: ndarray
+                    type: map
+                  selected:
+                    name: Selection
+                    type: object
+                  selection_policy:
+                    name: UnionRenderers
+                    type: object
+                name: ColumnDataSource
+                type: object
+              glyph:
+                attributes:
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration
+                    type: field
+                  y:
+                    field: distance
+                    type: field
+                name: Line
+                type: object
+              muted_glyph:
+                attributes:
+                  line_alpha: 0.2
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration
+                    type: field
+                  y:
+                    field: distance
+                    type: field
+                name: Line
+                type: object
+              name: distance
+              nonselection_glyph:
+                attributes:
+                  line_alpha: 0.1
+                  line_color: darkred
+                  line_width: 2.0
+                  x:
+                    field: iteration
+                    type: field
+                  y:
+                    field: distance
+                    type: field
+                name: Line
+                type: object
+              view:
+                attributes:
+                  filter:
+                    name: AllIndices
+                    type: object
+                name: CDSView
+                type: object
+            name: GlyphRenderer
+            type: object
+          toggleable: false
+          tooltips:
+          - - Calculation id
+            - $name
+          - - Iteration
+            - '@iteration'
+          - - Charge distance
+            - '@distance'
+        name: HoverTool
+        type: object
+    name: Toolbar
+    type: object
+name: GridPlot
+type: object

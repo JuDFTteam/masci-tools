@@ -23,7 +23,8 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='function')
-def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_basename, previous_bokeh_results, datadir):
+def check_bokeh_plot(data_regression, clean_bokeh_json_v2, clean_bokeh_json_v3, pytestconfig, bokeh_basename,
+                     previous_bokeh_results, datadir):
 
     try:
         import bokeh
@@ -51,12 +52,16 @@ def check_bokeh_plot(data_regression, clean_bokeh_json, pytestconfig, bokeh_base
                                       f'Using the last available version {prev_version}\n'
                                       '    Use the option --add-bokeh-version to add results for this version')
 
-            from bokeh.io import curdoc
-
-            curdoc().clear()
-            curdoc().add_root(bokeh_fig)
-
-            result = clean_bokeh_json(curdoc().to_json())
+            from packaging.version import Version
+            if Version(bokeh.__version__).major >= 3:
+                from bokeh.core.serialization import Serializer
+                result = Serializer().serialize(bokeh_fig)
+                result = clean_bokeh_json_v3(result.content)
+            else:
+                from bokeh.io import curdoc
+                curdoc().clear()
+                curdoc().add_root(bokeh_fig)
+                result = clean_bokeh_json_v2(curdoc().to_json())
             result.pop('version', None)
             data_regression.check(result, basename=os.fspath(basename))
 
@@ -100,8 +105,8 @@ def fixture_previous_bokeh_results(datadir):
     return _get_previous_test_results
 
 
-@pytest.fixture(scope='function', name='clean_bokeh_json')
-def fixture_clean_bokeh_json():
+@pytest.fixture(scope='function', name='clean_bokeh_json_v2')
+def fixture_clean_bokeh_json_v2():
     """
     Make the dict form the produced json data
     suitable for data_regression
@@ -122,7 +127,7 @@ def fixture_clean_bokeh_json():
 
         :param data: dict with the json data produced for the bokeh figure
         """
-        from bokeh.util.serialization import decode_base64_dict, encode_base64_dict
+        from bokeh.util.serialization import decode_base64_dict, encode_base64_dict  #pylint: disable=no-name-in-module
         import numpy as np
 
         def get_contained_keys(dict_val):
@@ -201,6 +206,88 @@ def fixture_clean_bokeh_json():
                     data[key] = val
             elif isinstance(val, float):
                 data[key] = round(val, np_precision)
+        data = {key: val for key, val in data.items() if val not in (None, [], {})}
+
+        return data
+
+    return _clean_bokeh_json
+
+
+@pytest.fixture(scope='function', name='clean_bokeh_json_v3')
+def fixture_clean_bokeh_json_v3():
+    """
+    Make the dict form the produced json data
+    suitable for data_regression
+
+    - remove any reference to ids
+    - sort lists after types and given attributes for reproducible order
+
+    :param data: dict with the json data produced for the bokeh figure
+    """
+
+    def _clean_bokeh_json(data, np_precision=5):
+        """
+        Make the dict form the produced json data
+        suitable for data_regression
+
+        - remove any reference to ids
+        - sort lists after types and given attributes for reproducible order
+
+        :param data: dict with the json data produced for the bokeh figure
+        """
+        from bokeh.core.serialization import Buffer, Deserializer, Serializer
+        import numpy as np
+        import numbers
+
+        def _serialize_base(val, decimals=5):
+
+            if isinstance(val, (list, tuple)):
+                return [_serialize_base(x, decimals=decimals) for x in val]
+            if isinstance(val, dict):
+                return _clean_bokeh_json(val, np_precision=decimals)
+            if isinstance(val, Buffer):
+                return val.to_base64()
+            if isinstance(val, str):
+                return str(val)
+            if isinstance(val, numbers.Real) and not isinstance(val, numbers.Integral):
+                return round(float(val), decimals)
+            return val
+
+        if data.get('type') == 'ndarray':
+            array = Deserializer().deserialize(data)
+            if array.dtype.char in np.typecodes['AllFloat']:
+                array = np.around(array, decimals=np_precision)
+                data = Serializer().serialize(array).content
+        if data.get('type') == 'typed_array' and data.get('dtype') in ('float32', 'float64'):
+            array = Deserializer().deserialize(data)
+            array = np.around(array, decimals=np_precision)
+            data = Serializer().serialize(array).content
+
+        data = {key: val for key, val in data.items() if key not in ('id', 'root_ids')}
+
+        for key, val in data.items():
+            if isinstance(val, dict):
+                data[key] = _clean_bokeh_json(val, np_precision=np_precision)
+            elif isinstance(val, (list, tuple)):
+
+                for index, entry in enumerate(val):
+                    if isinstance(entry, dict):
+                        val[index] = _clean_bokeh_json(entry)
+                    elif isinstance(entry, (list, tuple)):
+                        val[index] = [
+                            _clean_bokeh_json(x) if isinstance(x, dict) else _serialize_base(x, decimals=np_precision)
+                            for x in entry
+                        ]
+                    else:
+                        val[index] = _serialize_base(entry, decimals=np_precision)
+
+                #Filter out empty dictionaries
+                while {} in val:
+                    val.remove({})
+
+                data[key] = val
+            else:
+                data[key] = _serialize_base(val, decimals=np_precision)
         data = {key: val for key, val in data.items() if val not in (None, [], {})}
 
         return data
