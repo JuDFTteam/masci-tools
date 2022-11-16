@@ -5,6 +5,7 @@
 
 ### Improvements
 - `set_kpointmesh` now also writes out the `nx/ny/nz` attributes fro the dimensions of the kpoint mesh
+- `get_structure_data`, `get_parameter_data` and `get_kpoints_data` are renamed to `get_structuredata`, `get_parameterdata` and `get_kpointsdata` to match the names of the corresponding functions in aiida-fleur. Old names are available with deprecations
 ### Bugfixes
 - Bugfix in XML setters `set_inpchanges` and `set_attrib_value`, setting the `xcFunctional` key was previously not case-insensitive in constrast with all other keys
 - Fixed crash in `get_parameter_data`. This function would previously crash if a kpoint mesh without `nx/ny/nz` attributes was used and the first point in the list was the gamma point
