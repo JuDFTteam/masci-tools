@@ -502,7 +502,8 @@ def get_parameterdata(xmltree: XMLLike,
     return parameters
 
 
-def get_structure_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+def get_structure_data(*args: Any,
+                       **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     RENAMED TO get_structuredata
     """
@@ -680,7 +681,10 @@ def get_structuredata(xmltree: XMLLike,
     return atom_data, cell, pbc
 
 
-def get_kpoints_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+def get_kpoints_data(
+    *args: Any, **kwargs: Any
+) -> tuple[list[list[float]] | dict[str, list[list[float]]], list[float] | dict[str, list[float]], np.ndarray, tuple[
+        bool, bool, bool]]:
     """
     RENAMED TO get_kpointsdata
     """
