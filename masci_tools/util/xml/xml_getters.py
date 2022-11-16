@@ -341,8 +341,16 @@ def _get_species_info(xmltree: XMLLike,
 
     return species_info
 
+def get_parameter_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    """
+    RENAMED TO get_parameterdata
+    """
+    warnings.warn('The function get_parameter_data was renamed to get_parameterdata. '
+                  'The old name is deprecated', DeprecationWarning)
+    return get_parameterdata(*args, **kwargs)
 
-def get_parameter_data(xmltree: XMLLike,
+
+def get_parameterdata(xmltree: XMLLike,
                        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                        inpgen_ready: bool = True,
                        write_ids: bool = True,
@@ -492,8 +500,15 @@ def get_parameter_data(xmltree: XMLLike,
 
     return parameters
 
+def get_structure_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    """
+    RENAMED TO get_structuredata
+    """
+    warnings.warn('The function get_structure_data was renamed to get_structuredata. '
+                  'The old name is deprecated ', DeprecationWarning)
+    return get_structuredata(*args, **kwargs)
 
-def get_structure_data(xmltree: XMLLike,
+def get_structuredata(xmltree: XMLLike,
                        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                        include_relaxations: bool = True,
                        convert_to_angstroem: bool = True,
@@ -661,9 +676,16 @@ def get_structure_data(xmltree: XMLLike,
 
     return atom_data, cell, pbc
 
+def get_kpoints_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    """
+    RENAMED TO get_kpointsdata
+    """
+    warnings.warn('The function get_kpoints_data was renamed to get_kpointsdata. '
+                  'The old name is deprecated ', DeprecationWarning)
+    return get_kpointsdata(*args, **kwargs)
 
 @schema_dict_version_dispatch(output_schema=False)
-def get_kpoints_data(
+def get_kpointsdata(
     xmltree: XMLLike,
     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
     name: str | None = None,
@@ -757,8 +779,8 @@ def get_kpoints_data(
     return kpoints_data, weights_data, cell, pbc
 
 
-@get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(
+@get_kpointsdata.register(max_version='0.31')
+def get_kpointsdata_max4(
         xmltree: XMLLike,
         schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
         name: str | None = None,
