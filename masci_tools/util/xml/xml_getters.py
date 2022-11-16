@@ -341,6 +341,7 @@ def _get_species_info(xmltree: XMLLike,
 
     return species_info
 
+
 def get_parameter_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
     """
     RENAMED TO get_parameterdata
@@ -351,12 +352,12 @@ def get_parameter_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
 
 
 def get_parameterdata(xmltree: XMLLike,
-                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                       inpgen_ready: bool = True,
-                       write_ids: bool = True,
-                       extract_econfig: bool = False,
-                       allow_special_los: bool = True,
-                       logger: Logger | None = None) -> dict[str, Any]:
+                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                      inpgen_ready: bool = True,
+                      write_ids: bool = True,
+                      extract_econfig: bool = False,
+                      allow_special_los: bool = True,
+                      logger: Logger | None = None) -> dict[str, Any]:
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -500,6 +501,7 @@ def get_parameterdata(xmltree: XMLLike,
 
     return parameters
 
+
 def get_structure_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
     """
     RENAMED TO get_structuredata
@@ -508,13 +510,14 @@ def get_structure_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
                   'The old name is deprecated ', DeprecationWarning)
     return get_structuredata(*args, **kwargs)
 
+
 def get_structuredata(xmltree: XMLLike,
-                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                       include_relaxations: bool = True,
-                       convert_to_angstroem: bool = True,
-                       normalize_kind_name: bool = True,
-                       logger: Logger | None = None,
-                       **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
+                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                      include_relaxations: bool = True,
+                      convert_to_angstroem: bool = True,
+                      normalize_kind_name: bool = True,
+                      logger: Logger | None = None,
+                      **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
@@ -676,6 +679,7 @@ def get_structuredata(xmltree: XMLLike,
 
     return atom_data, cell, pbc
 
+
 def get_kpoints_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
     """
     RENAMED TO get_kpointsdata
@@ -683,6 +687,7 @@ def get_kpoints_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
     warnings.warn('The function get_kpoints_data was renamed to get_kpointsdata. '
                   'The old name is deprecated ', DeprecationWarning)
     return get_kpointsdata(*args, **kwargs)
+
 
 @schema_dict_version_dispatch(output_schema=False)
 def get_kpointsdata(
