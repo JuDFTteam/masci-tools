@@ -104,11 +104,11 @@ in the {py:mod}`~masci_tools.util.xml.xml_getters` module. The following are ava
 - {py:func}`get_nkpts()`: Get the (for older versions approximate if not `kPointList` is
   used) number of kpoints to be used in the calculation
 - {py:func}`get_cell()`: Get the Bravais matrix of the system
-- {py:func}`get_parameter_data()`: Get the information about the calculation parameters
+- {py:func}`get_parameterdata()`: Get the information about the calculation parameters
   needed to reproduce a calculation starting from the inpgen
-- {py:func}`get_structure_data()`: Get the structure from the xml file
+- {py:func}`get_structuredata()`: Get the structure from the xml file
   (atom positions + unit cell)
-- {py:func}`get_kpoints_data()`: Get the defined kpoint sets (single/multiple)
+- {py:func}`get_kpointsdata()`: Get the defined kpoint sets (single/multiple)
   from the xml file (kpoints + weights + unit cell)
 - {py:func}`get_relaxation_information()`: Get the relaxation history and current displacements
 - {py:func}`get_symmetry_information()`: Get the symmetry operations used in the calculation

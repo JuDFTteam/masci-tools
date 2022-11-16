@@ -256,7 +256,7 @@ TASKS_DEFINITION = {
         '_conversions': [Conversion(name='convert_relax_info')],
         'parsed_relax_info': {
             'parse_type': 'xmlGetter',
-            'name': 'get_structure_data',
+            'name': 'get_structuredata',
             'kwargs': {
                 'convert_to_angstroem': False,
                 'include_relaxations': False

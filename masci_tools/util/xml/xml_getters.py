@@ -295,7 +295,7 @@ def _get_species_info(xmltree: XMLLike,
     """
     Gets the species identifiers and information.
     Used to keep species information consistent between
-    :py:func:`get_parameter_data` and :py:func:`get_structure_data`
+    :py:func:`get_parameterdata` and :py:func:`get_structuredata`
 
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version

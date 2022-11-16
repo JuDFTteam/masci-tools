@@ -2987,14 +2987,14 @@ def test_set_xcfunctional_error(load_inpxml):
 def test_set_kpointpath(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointpath
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_special_kpoints
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     set_kpointpath(xmltree, schema_dict, nkpts=150, switch=True)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
     special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
 
     data_regression.check({
@@ -3009,14 +3009,14 @@ def test_set_kpointpath(load_inpxml, data_regression):
 def test_set_kpointpath_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointpath
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_special_kpoints
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
 
     set_kpointpath(xmltree, schema_dict, density=50, switch=True)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
     special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
 
     data_regression.check({
@@ -3031,7 +3031,7 @@ def test_set_kpointpath_film(load_inpxml, data_regression):
 def test_set_kpointpath_custom_points(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointpath
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_special_kpoints
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_special_kpoints
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
@@ -3047,7 +3047,7 @@ def test_set_kpointpath_custom_points(load_inpxml, data_regression):
                        'A': [0, 0, 0.5]
                    })
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
     special_kpoints = get_special_kpoints(xmltree, schema_dict, only_used=True)
 
     data_regression.check({
@@ -3062,15 +3062,15 @@ def test_set_kpointpath_custom_points(load_inpxml, data_regression):
 def test_set_kpointmesh(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_parameterdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     set_kpointmesh(xmltree, schema_dict, [4, 4, 4], switch=True)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
-    para_kpt = get_parameter_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
+    para_kpt = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check({
         'inpgen-kpt': para_kpt['kpt'],
@@ -3084,7 +3084,7 @@ def test_set_kpointmesh(load_inpxml, data_regression):
 def test_set_kpointmesh_full_bz(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_parameterdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
@@ -3096,8 +3096,8 @@ def test_set_kpointmesh_full_bz(load_inpxml, data_regression):
                    use_symmetries=False,
                    time_reversal=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
-    para_kpt = get_parameter_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
+    para_kpt = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check({
         'inpgen-kpt': para_kpt['kpt'],
@@ -3111,15 +3111,15 @@ def test_set_kpointmesh_full_bz(load_inpxml, data_regression):
 def test_set_kpointmesh_shift(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_parameterdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, shift=[1, 1, 1], time_reversal=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
-    para_kpt = get_parameter_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
+    para_kpt = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check({
         'inpgen-kpt': para_kpt['kpt'],
@@ -3133,15 +3133,15 @@ def test_set_kpointmesh_shift(load_inpxml, data_regression):
 def test_set_kpointmesh_no_map(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_parameterdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
     set_kpointmesh(xmltree, schema_dict, [3, 3, 3], switch=True, time_reversal=False, map_to_first_bz=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
-    para_kpt = get_parameter_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
+    para_kpt = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check({
         'inpgen-kpt': para_kpt['kpt'],
@@ -3155,15 +3155,15 @@ def test_set_kpointmesh_no_map(load_inpxml, data_regression):
 def test_set_kpointmesh_film(load_inpxml, data_regression):
 
     from masci_tools.util.xml.xml_setters_names import set_kpointmesh
-    from masci_tools.util.xml.xml_getters import get_kpoints_data, get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata, get_parameterdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_INPXML_PATH, absolute=False)
 
     set_kpointmesh(xmltree, schema_dict, [4, 4, 1], switch=True)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
-    para_kpt = get_parameter_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
+    para_kpt = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check({
         'inpgen-kpt': para_kpt['kpt'],

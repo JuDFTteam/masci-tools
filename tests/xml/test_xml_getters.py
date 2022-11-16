@@ -95,11 +95,11 @@ def test_get_symmetry_information(load_inpxml, inpxmlfilepath):
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
-def test_get_structure_data(load_inpxml, inpxmlfilepath):
+def test_get_structuredata(load_inpxml, inpxmlfilepath):
     """
     Test that get_cell works for all input files
     """
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.io.common_functions import AtomSiteProperties
     import numpy as np
@@ -110,9 +110,9 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
     species_names = evaluate_attribute(xmltree, schema_dict, 'name', contains='species')
     if any('(' in name for name in species_names):
         with pytest.warns(UserWarning):
-            atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+            atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
     else:
-        atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+        atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     assert isinstance(atoms, list)
     assert len(atoms) != 0
@@ -124,15 +124,15 @@ def test_get_structure_data(load_inpxml, inpxmlfilepath):
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
-def test_get_parameter_data(load_inpxml, inpxmlfilepath):
+def test_get_parameterdata(load_inpxml, inpxmlfilepath):
     """
     Test that get_cell works for all input files
     """
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(inpxmlfilepath)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     assert isinstance(para, dict)
     assert len(para) != 0
@@ -154,16 +154,16 @@ def test_get_fleur_modes(load_inpxml, inpxmlfilepath):
 
 
 @pytest.mark.parametrize('inpxmlfilepath', inpxmlfilelist)
-def test_get_kpoints_data(load_inpxml, inpxmlfilepath):
+def test_get_kpointsdata(load_inpxml, inpxmlfilepath):
     """
     Test that get_cell works for all input files
     """
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     import numpy as np
 
     xmltree, schema_dict = load_inpxml(inpxmlfilepath)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     assert kpoints is not None
     assert weights is not None
@@ -284,14 +284,14 @@ def test_get_symmetry_information_nonexisting(load_inpxml):
         rotations, shifts = get_symmetry_information(xmltree, schema_dict)
 
 
-def test_get_structure_film(load_inpxml, data_regression):
+def test_get_structuredata_film(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -300,14 +300,14 @@ def test_get_structure_film(load_inpxml, data_regression):
     })
 
 
-def test_get_structure_bulk(load_inpxml, data_regression):
+def test_get_structuredata_bulk(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH, absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -316,14 +316,14 @@ def test_get_structure_bulk(load_inpxml, data_regression):
     })
 
 
-def test_get_structure_no_relaxed(load_inpxml, data_regression):
+def test_get_structuredata_no_relaxed(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH, absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict, include_relaxations=False)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict, include_relaxations=False)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -332,14 +332,14 @@ def test_get_structure_no_relaxed(load_inpxml, data_regression):
     })
 
 
-def test_get_structure_relaxed(load_inpxml, data_regression):
+def test_get_structuredata_relaxed(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_WITH_RELAX_INPXML_PATH, absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -348,14 +348,14 @@ def test_get_structure_relaxed(load_inpxml, data_regression):
     })
 
 
-def test_get_structure_output(load_outxml, data_regression):
+def test_get_structuredata_output(load_outxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -364,15 +364,15 @@ def test_get_structure_output(load_outxml, data_regression):
     })
 
 
-def test_get_structure_norm_kinds(load_inpxml, data_regression):
+def test_get_structuredata_norm_kinds(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH, absolute=False)
 
     with pytest.warns(UserWarning):
-        atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+        atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -414,252 +414,252 @@ def test_fleur_modes_output(load_outxml, data_regression):
     data_regression.check(modes)
 
 
-def test_parameter_film(load_inpxml, data_regression):
+def test_get_parameterdata_film(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_bulk(load_inpxml, data_regression):
+def test_get_parameterdata_bulk(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_econfig_extraction(load_inpxml, data_regression):
+def test_get_parameterdata_econfig_extraction(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict, extract_econfig=True)
+    para = get_parameterdata(xmltree, schema_dict, extract_econfig=True)
 
     data_regression.check(para)
 
 
-def test_parameter_econfig_extraction_not_inpgen_ready(load_inpxml, data_regression):
+def test_get_parameterdata_econfig_extraction_not_inpgen_ready(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict, extract_econfig=True, inpgen_ready=False)
+    para = get_parameterdata(xmltree, schema_dict, extract_econfig=True, inpgen_ready=False)
 
     data_regression.check(para)
 
 
-def test_parameter_norm_kinds(load_inpxml, data_regression):
+def test_get_parameterdata_norm_kinds(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_NON_STANDARD_KIND_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_mesh_specification(load_inpxml, data_regression):
+def test_get_parameterdata_mesh_specification(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_KPT_MESH_SPECIFICATION_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_special_los(load_inpxml, data_regression):
+def test_get_parameterdata_special_los(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_special_los_not_allowed(load_inpxml, data_regression):
+def test_get_parameterdata_special_los_not_allowed(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml('fleur/inp_special_los.xml', absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict, allow_special_los=False)
+    para = get_parameterdata(xmltree, schema_dict, allow_special_los=False)
 
     data_regression.check(para)
 
 
-def test_parameter_kpoint_with_gamma(load_inpxml, data_regression):
+def test_get_parameterdata_kpoint_with_gamma(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
     node = xmltree.xpath('//kPointListSelection')[0]
     node.set('listName', 'third-set')
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_parameter_output(load_outxml, data_regression):
+def test_get_parameterdata_output(load_outxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
 
-def test_kpoints_film(load_inpxml, data_regression):
+def test_get_kpointsdata_film(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_FILM_INPXML_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_bulk(load_inpxml, data_regression):
+def test_get_kpointsdata_bulk(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_BULK_INPXML_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_single_kpoint(load_inpxml, data_regression):
+def test_get_kpointsdata_single_kpoint(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_SINGLE_KPOINT_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_multiple_sets(load_inpxml, data_regression):
+def test_get_kpointsdata_multiple_sets(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_multiple_sets_selection(load_inpxml, data_regression):
+def test_get_kpointsdata_multiple_sets_selection(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, name='default')
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, name='default')
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_multiple_sets_selection_index(load_inpxml, data_regression):
+def test_get_kpointsdata_multiple_sets_selection_index(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, index=0)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, index=0)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_multiple_sets_selection_used(load_inpxml, data_regression):
+def test_get_kpointsdata_multiple_sets_selection_used(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MULTIPLE_KPOINT_SETS_PATH, absolute=False)
 
     #Conflicting arguments
     with pytest.raises(ValueError):
-        kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, index=0, only_used=True)
+        kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, index=0, only_used=True)
     with pytest.raises(ValueError):
-        kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, name='default', only_used=True)
+        kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, name='default', only_used=True)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_output(load_outxml, data_regression):
+def test_get_kpointsdata_output(load_outxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_outxml('fleur/Max-R5/SiLOXML/files/out.xml', absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_output_max4(load_outxml, data_regression):
+def test_get_kpointsdata_output_max4(load_outxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     with pytest.warns(UserWarning):
         xmltree, schema_dict = load_outxml('fleur/old_versions/Max4_test_out.xml', absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_kpoints_max4(load_inpxml, data_regression):
+def test_get_kpointsdata_max4(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH, absolute=False)
 
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict)
 
     data_regression.check({'kpoints': kpoints, 'weights': weights, 'cell': convert_to_pystd(cell), 'pbc': pbc})
 
 
-def test_parameter_max4(load_inpxml, data_regression):
+def test_get_parameterdata_max4(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH, absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)
 
@@ -675,14 +675,14 @@ def test_fleur_modes_max4(load_inpxml, data_regression):
     data_regression.check(modes)
 
 
-def test_get_structure_max4(load_inpxml, data_regression):
+def test_get_structuredata_max4(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
     from masci_tools.io.common_functions import convert_to_pystd
 
     xmltree, schema_dict = load_inpxml(TEST_MAX4_INPXML_PATH, absolute=False)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     data_regression.check({
         'atoms': convert_to_pystd([dict(atom._asdict()) for atom in atoms]),
@@ -868,12 +868,12 @@ def test_get_special_kpoints_output(load_outxml):
     assert special_points == [(0, 'great'), (19, 'path')]
 
 
-def test_parameter_kpt_no_mesh_attributes(load_inpxml, data_regression):
+def test_get_parameterdata_kpt_no_mesh_attributes(load_inpxml, data_regression):
 
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = load_inpxml('fleur/inp_kmesh_no_mesh_attrs.xml', absolute=False)
 
-    para = get_parameter_data(xmltree, schema_dict)
+    para = get_parameterdata(xmltree, schema_dict)
 
     data_regression.check(para)

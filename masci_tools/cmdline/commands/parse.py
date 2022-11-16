@@ -103,11 +103,11 @@ def parse_structure_data(xml_file):
     """
     Parse the structure information in the given Fleur xml file
     """
-    from masci_tools.util.xml.xml_getters import get_structure_data
+    from masci_tools.util.xml.xml_getters import get_structuredata
 
     xmltree, schema_dict = _load_xml_file(xml_file)
 
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     echo.echo_info('Atoms found:')
     echo.echo_formatted_list(atoms, ['symbol', 'kind', 'position'])
@@ -139,11 +139,11 @@ def parse_parameter_data(xml_file):
     """
     Parse the calculation parameters of the given xml file
     """
-    from masci_tools.util.xml.xml_getters import get_parameter_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata
 
     xmltree, schema_dict = _load_xml_file(xml_file)
 
-    params = get_parameter_data(xmltree, schema_dict)
+    params = get_parameterdata(xmltree, schema_dict)
 
     echo.echo_info('LAPW parameters:')
     echo.echo_dictionary(params)
@@ -169,10 +169,10 @@ def parse_kpoints_data(xml_file):
     """
     Parse the used kpoints from the given xml-file
     """
-    from masci_tools.util.xml.xml_getters import get_kpoints_data
+    from masci_tools.util.xml.xml_getters import get_kpointsdata
 
     xmltree, schema_dict = _load_xml_file(xml_file)
-    kpoints, weights, cell, pbc = get_kpoints_data(xmltree, schema_dict, only_used=True)
+    kpoints, weights, cell, pbc = get_kpointsdata(xmltree, schema_dict, only_used=True)
 
     echo.echo_info('Bravais matrix:')
     echo.echo(str(cell))
