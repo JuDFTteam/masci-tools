@@ -29,7 +29,8 @@ except ImportError:
     from typing_extensions import Literal  #type: ignore
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
-from masci_tools.util.xml.common_functions import clear_xml
+from masci_tools.util.xml.xml_setters_names import set_attrib_value
+from masci_tools.util.xml.common_functions import clear_xml, eval_xpath_one
 from masci_tools.util.schema_dict_util import ensure_relaxation_xinclude
 from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
@@ -217,7 +218,8 @@ class FleurXMLModifier:
                             xmltree: etree._ElementTree,
                             nmmp_lines: list[str] | None,
                             modification_tasks: list[ModifierTask],
-                            validate_changes: bool = True) -> tuple[etree._ElementTree, list[str] | None]:
+                            validate_changes: bool = True,
+                            adjust_version_for_dev_version: bool = True) -> tuple[etree._ElementTree, list[str] | None]:
         """
         Applies given modifications to the fleurinp lxml tree.
         It also checks if a new lxml tree is validated against schema.
@@ -228,6 +230,10 @@ class FleurXMLModifier:
         :param modification_tasks: a list of modification tuples
         :param validate_changes: bool optional (default True), if True after all tasks are performed
                                  both the xmltree and nmmp_lines are checked for consistency
+        :param adjust_version_for_dev_version: bool optional (default True), if True and the schema_dict
+                                               and file version differ, e.g. a development version is used
+                                               the version is temporarily modified to swallow the validation
+                                               error that would occur
 
         :returns: a modified lxml tree and a modified n_mmp_mat file
         """
@@ -235,6 +241,9 @@ class FleurXMLModifier:
 
         xmltree, schema_dict = load_inpxml(xmltree)
         xmltree, _ = clear_xml(xmltree)
+
+        file_version = eval_xpath_one(xmltree, '//@fleurInputVersion', str)
+        is_dev_version = schema_dict['inp_version'] != file_version
 
         for task in modification_tasks:
             if task.name in cls.xpath_functions:
@@ -253,7 +262,12 @@ class FleurXMLModifier:
                 raise ValueError(f'Unknown task {task.name}')
 
         if validate_changes:
-            schema_dict.validate(xmltree, header='Changes were not valid')
+            if is_dev_version and adjust_version_for_dev_version:
+                set_attrib_value(xmltree, schema_dict, 'fleurinputversion', schema_dict['inp_version'])
+                schema_dict.validate(xmltree, header='Changes were not valid')
+                set_attrib_value(xmltree, schema_dict, 'fleurinputversion', file_version)
+            else:
+                schema_dict.validate(xmltree, header='Changes were not valid')
             try:
                 validate_nmmpmat(xmltree, nmmp_lines, schema_dict)
             except ValueError as exc:
@@ -349,7 +363,8 @@ class FleurXMLModifier:
     def modify_xmlfile(self,
                        original_inpxmlfile: XMLFileLike,
                        original_nmmp_file: FileLike | list[str] | None = None,
-                       validate_changes: bool = True) -> tuple[etree._ElementTree, dict[str, str]]:
+                       validate_changes: bool = True,
+                       adjust_version_for_dev_version: bool = True) -> tuple[etree._ElementTree, dict[str, str]]:
         """
         Applies the registered modifications to a given inputfile
 
@@ -375,10 +390,12 @@ class FleurXMLModifier:
         else:
             original_nmmp_lines = None
 
-        new_xmltree, new_nmmp_lines = self.apply_modifications(original_xmltree,
-                                                               original_nmmp_lines,
-                                                               self._tasks,
-                                                               validate_changes=validate_changes)
+        new_xmltree, new_nmmp_lines = self.apply_modifications(
+            original_xmltree,
+            original_nmmp_lines,
+            self._tasks,
+            validate_changes=validate_changes,
+            adjust_version_for_dev_version=adjust_version_for_dev_version)
 
         ensure_relaxation_xinclude(new_xmltree, schema_dict)
         etree.indent(new_xmltree)
