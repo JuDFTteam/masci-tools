@@ -6,6 +6,7 @@ from masci_tools.io.fleurxmlmodifier import FleurXMLModifier, ModifierTask
 from lxml import etree
 
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
+TEST_INPXML_NEWER_PATH = 'fleur/input_newer_version.xml'
 TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
 TEST_NMMPMAT_PATH = 'fleur/input_nmmpmat.txt'
 
@@ -494,3 +495,21 @@ def test_fleurxmlmodifier_included_files(file_regression, test_file):
 
     assert len(add_files) == 0
     file_regression.check(etree.tostring(xmltree, encoding='unicode', pretty_print=True), extension='.xml')
+
+
+def test_fleurxml_modifier_modify_xmlfile_dev_version(test_file):
+    """Tests if fleurinp_modifier with various modifications on species"""
+
+    fm = FleurXMLModifier()
+    fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
+
+    #Should run without error, since by default the
+    #dev version is supported, only a warning is expected
+    with pytest.warns(UserWarning):
+        xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_NEWER_PATH))
+
+    assert xmltree is not None
+    assert len(add_files) == 0
+    with pytest.warns(UserWarning):
+        with pytest.raises(ValueError):
+            fm.modify_xmlfile(test_file(TEST_INPXML_NEWER_PATH), adjust_version_for_dev_version=False)
