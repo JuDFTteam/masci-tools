@@ -472,16 +472,16 @@ def test_read_inpgen_file_comments(datadir, data_regression):
 
 def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
     """
-    Test that the get_parameter_data and get_structure_data methods produces the right inpgen input
+    Test that the get_parameterdata and get_structuredata methods produces the right inpgen input
     to produce the right roundtrip
     """
     from masci_tools.io.fleur_inpgen import write_inpgen_file
-    from masci_tools.util.xml.xml_getters import get_parameter_data, get_structure_data
+    from masci_tools.util.xml.xml_getters import get_parameterdata, get_structuredata
 
     xmltree, schema_dict = load_inpxml('fleur/Max-R5/SiLOXML/files/inp.xml', absolute=False)
 
-    params = get_parameter_data(xmltree, schema_dict)
-    atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+    params = get_parameterdata(xmltree, schema_dict)
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
 
     with tempfile.TemporaryFile('w+') as tmp:
 
