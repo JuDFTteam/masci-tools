@@ -1,7 +1,12 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
+
+Nothing here yet
+
+## v.0.13.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...v0.13.0)
 
 ### Improvements
 - `set_kpointmesh` now also writes out the `nx/ny/nz` attributes fro the dimensions of the kpoint mesh
