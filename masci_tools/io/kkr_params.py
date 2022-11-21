@@ -826,6 +826,8 @@ class kkrparams:
                 None, '%i', False,
                 'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).'
             ]),
+            ('TOL_ALAT_CHECK',
+             [None, '%e', False, 'Consistency check: tolerance for alat comparison (defaults to 1e-12 if not set).']),
             #code options
             ('RUNFLAG', [None, '%s', False, 'Running and test options: e.g. lmdos, GBULKtomemory, LDA+U, SIMULASA']),
             ('TESTFLAG', [None, '%s', False, 'Running and test options: e.g. tmatnew, noscatteringmoment']),
