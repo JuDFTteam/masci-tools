@@ -1,9 +1,20 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
 
 Nothing here yet
+
+## v.0.13.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...v0.13.0)
+
+### Improvements
+- `set_kpointmesh` now also writes out the `nx/ny/nz` attributes fro the dimensions of the kpoint mesh
+- `get_structure_data`, `get_parameter_data` and `get_kpoints_data` are renamed to `get_structuredata`, `get_parameterdata` and `get_kpointsdata` to match the names of the corresponding functions in aiida-fleur. Old names are available with deprecations [[#208]](https://github.com/JuDFTteam/masci-tools/pull/208)
+- `FleurXMLModifier` now supports changes to input files with not yet available Fleur schemas, if the changes are compatible with the last available file schema [[#209]](https://github.com/JuDFTteam/masci-tools/pull/209)
+### Bugfixes
+- Bugfix in XML setters `set_inpchanges` and `set_attrib_value`, setting the `xcFunctional` key was previously not case-insensitive in constrast with all other keys
+- Fixed crash in `get_parameter_data`. This function would previously crash if a kpoint mesh without `nx/ny/nz` attributes was used and the first point in the list was the gamma point
 
 ## v.0.12.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.11.3...v0.12.0)

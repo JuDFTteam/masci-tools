@@ -307,6 +307,8 @@ schema_dict:
     - false
   - - overwrite
     - false
+  - - additional_attributes
+    - null
   set_kpointmesh:
   - - xmltree
     - null

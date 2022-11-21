@@ -344,7 +344,7 @@ def set_attrib_value(xmltree: XMLLike,
 
     #Special case for xcFunctional
     #(Also implemented here to not confuse users since it would only work in set_inpchanges otherwise)
-    if name == 'xcFunctional':
+    if name.lower() == 'xcfunctional':
         return set_xcfunctional(xmltree, schema_dict, value)
 
     base_xpath = schema_dict.attrib_xpath(name, **kwargs)
@@ -1060,7 +1060,7 @@ def set_inpchanges(xmltree: XMLLike,
     for key, change_value in changes.items():
 
         #Special alias for xcFunctional since name is not a very telling attribute name
-        if key == 'xcFunctional':
+        if key.lower() == 'xcfunctional':
             set_xcfunctional(xmltree, schema_dict, change_value, libxc=isinstance(change_value, dict))
             continue
 
@@ -1141,7 +1141,8 @@ def set_kpointlist(xmltree: XMLLike,
                    kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
                    special_labels: dict[int, str] | None = None,
                    switch: bool = False,
-                   overwrite: bool = False) -> XMLLike:
+                   overwrite: bool = False,
+                   additional_attributes: dict[str, Any] | None = None) -> XMLLike:
     """
     Explicitly create a kPointList from the given kpoints and weights. This routine will add the
     specified kPointList with the given name.
@@ -1180,6 +1181,9 @@ def set_kpointlist(xmltree: XMLLike,
     if special_labels is None:
         special_labels = {}
 
+    if additional_attributes is None:
+        additional_attributes = {}
+
     existing_labels = evaluate_attribute(xmltree, schema_dict, 'name', contains='kPointList', list_return=True)
 
     if name is None:
@@ -1198,7 +1202,8 @@ def set_kpointlist(xmltree: XMLLike,
                                    for indx, (kpoint, weight) in enumerate(zip(kpoints, weights))),
                                  name=name,
                                  count=nkpts,
-                                 type=kpoint_type)
+                                 type=kpoint_type,
+                                 **additional_attributes)
 
     xmltree = create_tag(xmltree, schema_dict, new_kpointset)
     if switch:
@@ -1216,7 +1221,8 @@ def set_kpointlist_max4(xmltree: XMLLike,
                         kpoint_type: Literal['path', 'mesh', 'tria', 'tria-bulk', 'spex-mesh'] = 'path',
                         special_labels: dict[int, str] | None = None,
                         switch: bool = False,
-                        overwrite: bool = False) -> XMLLike:
+                        overwrite: bool = False,
+                        additional_attributes: dict[str, Any] | None = None) -> XMLLike:
     """
     Explicitly create a kPointList from the given kpoints and weights. This
     routine is specific to input versions Max4 and before and will replace any
@@ -1241,6 +1247,9 @@ def set_kpointlist_max4(xmltree: XMLLike,
 
     nkpts = len(kpoints)
 
+    if additional_attributes is None:
+        additional_attributes = {}
+
     bzintegration_tag: etree._Element = eval_simple_xpath(xmltree, schema_dict, 'bzIntegration')  #type:ignore
 
     for child in bzintegration_tag.iterchildren():
@@ -1252,7 +1261,8 @@ def set_kpointlist_max4(xmltree: XMLLike,
     new_kpointset = E.kpointlist(*(E.kpoint(kpoint, weight=weight) for kpoint, weight in zip(kpoints, weights)),
                                  posscale=1,
                                  weightscale=1,
-                                 count=nkpts)
+                                 count=nkpts,
+                                 **additional_attributes)
 
     xmltree = create_tag(xmltree, schema_dict, new_kpointset, not_contains='altKPoint')
 
@@ -1545,6 +1555,7 @@ def set_kpointmesh(xmltree: XMLLike,
     for gp in grid_mapping:
         weights[gp] += 1
     weights = np.array(weights[kpoints_indices])
+    mesh_attrs = dict(zip(('nx', 'ny', 'nz'), mesh))
 
     return set_kpointlist(xmltree,
                           schema_dict,
@@ -1553,4 +1564,5 @@ def set_kpointmesh(xmltree: XMLLike,
                           name=name,
                           switch=switch,
                           overwrite=overwrite,
-                          kpoint_type='mesh')
+                          kpoint_type='mesh',
+                          additional_attributes=mesh_attrs)

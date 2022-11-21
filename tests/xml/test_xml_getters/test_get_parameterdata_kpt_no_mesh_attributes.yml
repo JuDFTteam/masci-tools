@@ -1,0 +1,27 @@
+atom0:
+  dx: 0.013
+  element: Cu
+  id: '29.1'
+  jri: 935
+  lmax: 12
+  lnonsph: 8
+  rmt: 2.2
+atom1:
+  dx: 0.013
+  element: Cu
+  id: '29.2'
+  jri: 935
+  lmax: 12
+  lnonsph: 8
+  rmt: 2.2
+comp:
+  ctail: true
+  frcor: false
+  gmax: 15.0
+  gmaxxc: 10.0
+  jspins: 1
+  kcrel: 0
+  kmax: 3.5
+exco:
+  xctyp: pz
+title: FLEUR in

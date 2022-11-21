@@ -295,7 +295,7 @@ def _get_species_info(xmltree: XMLLike,
     """
     Gets the species identifiers and information.
     Used to keep species information consistent between
-    :py:func:`get_parameter_data` and :py:func:`get_structure_data`
+    :py:func:`get_parameterdata` and :py:func:`get_structuredata`
 
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
@@ -342,13 +342,22 @@ def _get_species_info(xmltree: XMLLike,
     return species_info
 
 
-def get_parameter_data(xmltree: XMLLike,
-                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                       inpgen_ready: bool = True,
-                       write_ids: bool = True,
-                       extract_econfig: bool = False,
-                       allow_special_los: bool = True,
-                       logger: Logger | None = None) -> dict[str, Any]:
+def get_parameter_data(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    """
+    RENAMED TO get_parameterdata
+    """
+    warnings.warn('The function get_parameter_data was renamed to get_parameterdata. '
+                  'The old name is deprecated', DeprecationWarning)
+    return get_parameterdata(*args, **kwargs)
+
+
+def get_parameterdata(xmltree: XMLLike,
+                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                      inpgen_ready: bool = True,
+                      write_ids: bool = True,
+                      extract_econfig: bool = False,
+                      allow_special_los: bool = True,
+                      logger: Logger | None = None) -> dict[str, Any]:
     """
     This routine returns an python dictionary produced from the inp.xml
     file, which contains all the parameters needed to setup a new inp.xml from a inpgen
@@ -460,15 +469,15 @@ def get_parameter_data(xmltree: XMLLike,
                     if all(n is not None for n in (nx, ny, nz)):
                         parameters['kpt'] = {'div1': nx, 'div2': ny, 'div3': nz}
 
-                    #If the kpoint type is mesh, we can make a further check
-                    #whether the first kpoint is the gamma point
-                    #This indicates, whether the gamma switch was set to True
-                    #i.e. the hybrid kpoint generator is used
-                    #Only done if there are multiple kpoints
-                    #Should maybe be replaced by an explicit attribute on the kpointlist
-                    coord = kpoints.text('kpoint', filters={'kPoint': {'index': 1}})
-                    if all(abs(c) < 1e-12 for c in coord) and kpoints.number_nodes('kpoint') > 1:
-                        parameters['kpt']['gamma'] = True
+                        #If the kpoint type is mesh, we can make a further check
+                        #whether the first kpoint is the gamma point
+                        #This indicates, whether the gamma switch was set to True
+                        #i.e. the hybrid kpoint generator is used
+                        #Only done if there are multiple kpoints
+                        #Should maybe be replaced by an explicit attribute on the kpointlist
+                        coord = kpoints.text('kpoint', filters={'kPoint': {'index': 1}})
+                        if all(abs(c) < 1e-12 for c in coord) and kpoints.number_nodes('kpoint') > 1:
+                            parameters['kpt']['gamma'] = True
 
         # title
         title = root.text('comment', optional=True)
@@ -493,13 +502,23 @@ def get_parameter_data(xmltree: XMLLike,
     return parameters
 
 
-def get_structure_data(xmltree: XMLLike,
-                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                       include_relaxations: bool = True,
-                       convert_to_angstroem: bool = True,
-                       normalize_kind_name: bool = True,
-                       logger: Logger | None = None,
+def get_structure_data(*args: Any,
                        **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
+    """
+    RENAMED TO get_structuredata
+    """
+    warnings.warn('The function get_structure_data was renamed to get_structuredata. '
+                  'The old name is deprecated ', DeprecationWarning)
+    return get_structuredata(*args, **kwargs)
+
+
+def get_structuredata(xmltree: XMLLike,
+                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+                      include_relaxations: bool = True,
+                      convert_to_angstroem: bool = True,
+                      normalize_kind_name: bool = True,
+                      logger: Logger | None = None,
+                      **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
@@ -662,8 +681,20 @@ def get_structure_data(xmltree: XMLLike,
     return atom_data, cell, pbc
 
 
-@schema_dict_version_dispatch(output_schema=False)
 def get_kpoints_data(
+    *args: Any, **kwargs: Any
+) -> tuple[list[list[float]] | dict[str, list[list[float]]], list[float] | dict[str, list[float]], np.ndarray, tuple[
+        bool, bool, bool]]:
+    """
+    RENAMED TO get_kpointsdata
+    """
+    warnings.warn('The function get_kpoints_data was renamed to get_kpointsdata. '
+                  'The old name is deprecated ', DeprecationWarning)
+    return get_kpointsdata(*args, **kwargs)
+
+
+@schema_dict_version_dispatch(output_schema=False)
+def get_kpointsdata(
     xmltree: XMLLike,
     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
     name: str | None = None,
@@ -757,8 +788,8 @@ def get_kpoints_data(
     return kpoints_data, weights_data, cell, pbc
 
 
-@get_kpoints_data.register(max_version='0.31')
-def get_kpoints_data_max4(
+@get_kpointsdata.register(max_version='0.31')
+def get_kpointsdata_max4(
         xmltree: XMLLike,
         schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
         name: str | None = None,

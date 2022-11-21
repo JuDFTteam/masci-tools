@@ -6,6 +6,12 @@
 .. currentmodule:: masci_tools.io.parsers.fleur_schema
 ```
 
+:::{note}
+A more detailed walkthrough of the important design decisions concerning the implementation
+Fleur XML parsers and IO capabilities can be found in this
+[document](https://python-fleur-xml-design.readthedocs.io/en/latest/)
+:::
+
 Each input and output file for Fleur has a correspong XML-Schema, where the structure
 of these files are defined.
 

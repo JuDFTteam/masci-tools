@@ -587,7 +587,7 @@ def bokeh_spinpol_dos(energy_grid,
         x_pos = 50
         length = 70
         pad = 30
-        height = p.plot_height - 100
+        height = p.height - 100
         alpha = 0.5
 
         p.add_layout(
@@ -1319,7 +1319,6 @@ def periodic_table_plot(
             legendlabel = Label(x=x_pos,
                                 y=y_pos_label,
                                 text=label,
-                                render_mode='canvas',
                                 border_line_color='black',
                                 border_line_alpha=0.0,
                                 background_fill_color=None,
@@ -1574,8 +1573,8 @@ def plot_convergence(iteration,
                              tooltips=[('Calculation id', '$name'), ('Iteration', '@{x}'),
                                        ('Total energy difference', '@{y}')],
                              figure_kwargs={
-                                 'plot_width': 800,
-                                 'plot_height': 450,
+                                 'width': 800,
+                                 'height': 450,
                                  'y_axis_type': 'log',
                                  'x_axis_type': 'linear',
                              },
@@ -1672,7 +1671,7 @@ def plot_convergence_results_m(iterations,
     :param nodes: list of node uuids or pks important for links
     :param saveas1: str, optional default='t_energy_convergence', save first figure as
     :param saveas2: str, optional default='distance_convergence', save second figure as
-    :param figure_kwargs: dict, optional default={'plot_width': 600, 'plot_height': 450}, gets parsed
+    :param figure_kwargs: dict, optional default={'width': 600, 'height': 450}, gets parsed
                           to bokeh_line
     :param kwargs: further key-word arguments for bokeh_line
 
