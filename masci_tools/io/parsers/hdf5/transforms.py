@@ -708,6 +708,7 @@ def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
     :returns: dataset with new entries containing the sums over entries matching the given pattern
     """
     from collections.abc import Iterable
+    import re
 
     if not isinstance(dataset, dict):
         raise ValueError('add_partial_sums_fixed only available for dict datasets')
@@ -720,7 +721,7 @@ def add_partial_sums_fixed(dataset, patterns, replace_entries=None):
 
     transformed = dataset.copy()
     for pattern, replace_entry in zip(patterns, replace_entries):
-        entries = [key for key in transformed.keys() if pattern in key]
+        entries = [key for key in transformed.keys() if re.match(pattern, key)]
 
         transformed[replace_entry] = sum_over_dict_entries(dataset, overwrite_dict=True, entries=entries)
 
@@ -771,7 +772,7 @@ def shift_by_attribute(dataset, attribute_value, negative=False):
 
 
 @hdf5_transformation(attribute_needed=True)
-def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, replace_entries=None):
+def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, replace_format=None):
     """
     Add entries to the dataset dict (Only available for dict datasets) with sums
     over entries containing a given pattern formatted with a attribute_value
@@ -783,10 +784,13 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, r
     :param attribute_value: value to multiply by (attribute value passed in from `_transform_dataset`)
     :param pattern_format: callable returning a formatted string
                            This will be called with every entry in the attribute_value list
-    :param replace_entries: list of str under which to enter the entries back
+    :param replace_format: callable returning a formatted string
+                           This will be called with every entry in the attribute_value list
 
     :returns: dataset with new entries containing the sums over entries matching the given pattern
     """
+    import re
+
     if isinstance(attribute_value, h5py.Dataset):
         attribute_value = np.array(attribute_value)
 
@@ -798,9 +802,17 @@ def add_partial_sums(dataset, attribute_value, pattern_format, make_set=False, r
 
     if make_set:
         attribute_value = set(attribute_value)
-    sum_patterns = [
-        pattern_format(val) for val in attribute_value if any(pattern_format(val) in key for key in dataset.keys())
-    ]
+
+    sum_patterns = []
+    replace_entries = None
+    if replace_format is not None:
+        replace_entries = []
+
+    for val in attribute_value:
+        if any(re.match(pattern_format(val), key) for key in dataset.keys()):
+            sum_patterns.append(pattern_format(val))
+            if replace_format is not None:
+                replace_entries.append(replace_format(val))
 
     return add_partial_sums_fixed(dataset, sum_patterns, replace_entries=replace_entries)
 

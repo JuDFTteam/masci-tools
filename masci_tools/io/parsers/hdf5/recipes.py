@@ -79,12 +79,16 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
 
     if group == 'Local':
         atom_prefix = 'MT:'
+        weight_atom_terminator = '[spdf]'
     elif group == 'jDOS':
         atom_prefix = 'jDOS:'
+        weight_atom_terminator = '[spdf]'
     elif group == 'Orbcomp':
         atom_prefix = 'ORB:'
+        weight_atom_terminator = ','
     elif group == 'MCD':
         atom_prefix = 'At'
+        weight_atom_terminator = 'NC'
     else:
         raise ValueError(f'Unknown group: {group}')
 
@@ -97,8 +101,11 @@ def dos_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD']) -> HDF5
                     Transformation(name='get_all_child_datasets', kwargs={'ignore': 'energyGrid'}),
                     AttribTransformation(name='add_partial_sums',
                                          attrib_name='atoms_groups',
-                                         args=(f'{atom_prefix}{{}}'.format,),
-                                         kwargs={'make_set': True}),
+                                         args=(f'{atom_prefix}{{}}{weight_atom_terminator}'.format,),
+                                         kwargs={
+                                             'make_set': True,
+                                             'replace_format': f'{atom_prefix}{{}}'.format
+                                         }),
                     Transformation(name='multiply_scalar', args=(1.0 / HTR_TO_EV,)),
                     Transformation(
                         name='split_array',
@@ -179,12 +186,16 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
 
     if group == 'Local':
         atom_prefix = 'MT:'
+        weight_atom_terminator = '[spdf]'
     elif group == 'jDOS':
         atom_prefix = 'jDOS:'
+        weight_atom_terminator = '[spdf]'
     elif group == 'Orbcomp':
         atom_prefix = 'ORB:'
+        weight_atom_terminator = ','
     elif group == 'MCD':
         atom_prefix = 'At'
+        weight_atom_terminator = 'NC'
     else:
         raise ValueError(f'Unknown group: {group}')
 
@@ -311,8 +322,11 @@ def bands_recipe_format(group: Literal['Local', 'jDOS', 'Orbcomp', 'MCD'], simpl
             Transformation(name='get_all_child_datasets', kwargs={'ignore': ['eigenvalues', 'kpts']}),
             AttribTransformation(name='add_partial_sums',
                                  attrib_name='atoms_groups',
-                                 args=(f'{atom_prefix}{{}}'.format,),
-                                 kwargs={'make_set': True}),
+                                 args=(f'{atom_prefix}{{}}{weight_atom_terminator}'.format,),
+                                 kwargs={
+                                     'make_set': True,
+                                     'replace_format': f'{atom_prefix}{{}}'.format
+                                 }),
             Transformation(name='split_array', kwargs={'suffixes': ['up', 'down']}),
             Transformation(name='flatten_array')
         ],
