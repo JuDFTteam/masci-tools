@@ -3,7 +3,12 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
 
-Nothing here yet
+### Bugfixes
+- Serveral fixes for Fleur DOS plots [[#212]](https://github.com/JuDFTteam/masci-tools/pull/212):
+  - Fixed wrong summation of atom weights for files containing 10 or more atomtypes
+  - Fixed crashes using a custom weight not conforming to the naming scheme of weights in the `banddos.hdf`
+  - Fixed specification of parameters by DOS label not working if the spin suffix is omitted
+
 
 ## v.0.13.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...v0.13.0)
