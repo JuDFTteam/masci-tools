@@ -480,9 +480,11 @@ def _dos_order(key):
     if '_up' in key:
         key = key.split('_up')[0]
         spin = 0
-    else:
+    elif '_down' in key:
         key = key.split('_down')[0]
         spin = 1
+    else:
+        raise ValueError('Invalid key')
 
     general = ('Total', 'INT', 'Sym')
     orbital_order = ('', 's', 'p', 'd', 'f')
@@ -503,7 +505,7 @@ def _dos_order(key):
             return (spin, len(general) + index, tail, '')
         return (spin, len(general) + index, float('inf'), tail)
 
-    return None
+    return (spin, -1, -1, key)
 
 
 def _generate_dos_labels(dosdata, attributes, spinpol, latex=True, only_spin=None):
