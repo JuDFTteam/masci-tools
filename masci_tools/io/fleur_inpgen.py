@@ -67,7 +67,7 @@ class AtomDictProperties(TypedDict, total=False):
     """
     position: list[float] | tuple[float, float, float] | np.ndarray
     kind_name: str
-    magnetic_moment: Literal['up'] | Literal['down'] | float | list[float] | None
+    magnetic_moment: Literal['up', 'down'] | float | list[float] | None
 
 
 class Kinds(TypedDict, total=False):
