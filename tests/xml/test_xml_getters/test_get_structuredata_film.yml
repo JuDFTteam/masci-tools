@@ -1,11 +1,19 @@
 atoms:
 - kind: Fe-1
+  magnetic_moment:
+  - 4.0
+  - 0.0
+  - 3.1795866169001593e-09
   position:
   - 0.0
   - 0.0
   - -0.5272854045997698
   symbol: Fe
 - kind: Pt-1
+  magnetic_moment:
+  - 1.0
+  - 0.0
+  - 7.948966542250398e-10
   position:
   - 1.4026317445650973
   - 1.983620783415224

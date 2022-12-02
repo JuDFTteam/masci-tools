@@ -3,6 +3,10 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
 
+### Improvements
+- `write/read_fleur_inpgen` now supports the magnetic moment definitions in the inpgen input file introduced in MaX-6.1 (also the `scf` namelist) [[#213]](https://github.com/JuDFTteam/masci-tools/pull/213)
+- `get_structuredata` also reads out the magnetic moments [[#213]](https://github.com/JuDFTteam/masci-tools/pull/213)
+
 ### Bugfixes
 - Serveral fixes for Fleur DOS plots [[#212]](https://github.com/JuDFTteam/masci-tools/pull/212):
   - Fixed wrong summation of atom weights for files containing 10 or more atomtypes
