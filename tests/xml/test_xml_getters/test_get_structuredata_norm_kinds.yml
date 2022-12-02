@@ -1,35 +1,41 @@
 atoms:
 - kind: Neodymium (Nd)-1
+  magnetic_moment: null
   position:
   - 0.0
   - 0.0
   - 0.0
   symbol: Nd
 - kind: Cobalt (Co)-1
+  magnetic_moment: null
   position:
   - 2.5084144513147795
   - -1.448235138232681
   - 0.0
   symbol: Co
 - kind: Cobalt (Co)-1
+  magnetic_moment: null
   position:
   - -2.5084144513147795
   - 1.448235138232681
   - 0.0
   symbol: Co
 - kind: Cobalt (Co)-1
+  magnetic_moment: null
   position:
   - 2.5086653178465643
   - 0.0
   - 1.9708227534890188
   symbol: Co
 - kind: Cobalt (Co)-1
+  magnetic_moment: null
   position:
   - 1.2543326589232822
   - 2.172569964345456
   - 1.9708227534890188
   symbol: Co
 - kind: Cobalt (Co)-1
+  magnetic_moment: null
   position:
   - -1.2543326589232822
   - 2.172569964345456
