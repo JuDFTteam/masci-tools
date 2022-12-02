@@ -19,8 +19,8 @@ import numpy as np
 import os
 import copy
 import warnings
-from typing import Iterable, Sequence, Any, cast
 import numbers
+from typing import Iterable, Sequence, Any, cast
 try:
     from typing import TypedDict, Literal
 except ImportError:
@@ -89,6 +89,7 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
                       input_params: dict[str, Any] | None = None,
                       significant_figures_cell: int = 9,
                       significant_figures_positions: int = 10,
+                      significant_figures_magnetic_moments: int = 4,
                       convert_from_angstroem: bool = True) -> str | None:
     """Write an input file for the fleur inputgenerator 'inpgen' from given inputs
 
@@ -330,8 +331,10 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
         if site.magnetic_moment is not None:
             if isinstance(site.magnetic_moment, list):
                 magmom_str = ' '.join(
-                    [f'{value:18.{significant_figures_positions}f}' for value in site.magnetic_moment])
+                    [f'{value:18.{significant_figures_magnetic_moments}f}' for value in site.magnetic_moment])
                 atom_str = f'{atom_str} : {magmom_str}'
+            elif isinstance(site.magnetic_moment, float):
+                atom_str = f'{atom_str} : {site.magnetic_moment:18.{significant_figures_magnetic_moments}f}'
             else:
                 atom_str = f'{atom_str} : {site.magnetic_moment}'
         atom_str += '\n'

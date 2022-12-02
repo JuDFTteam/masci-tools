@@ -25,7 +25,7 @@ from lxml import etree
 import warnings
 import numpy as np
 from logging import Logger
-from typing import Any
+from typing import Any, cast
 
 from .xpathbuilder import FilterType
 
@@ -291,7 +291,7 @@ def get_cell(xmltree: XMLLike,
 
 def _get_species_info(xmltree: XMLLike,
                       schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                      logger: Logger | None = None) -> dict[str, dict[str, str]]:
+                      logger: Logger | None = None) -> dict[str, dict[str, str | float | None]]:
     """
     Gets the species identifiers and information.
     Used to keep species information consistent between
@@ -307,22 +307,33 @@ def _get_species_info(xmltree: XMLLike,
     """
     import re
 
+    bmu: list[float | None] = []
     with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
         names = root.attribute('name', contains='species', list_return=True)
         elements = root.attribute('element', contains='species', list_return=True)
 
+        if root.attribute('jspins') == 2:
+            for species in root.iter('species'):
+                mom: float | None = 0.0
+                for state in species.iter('stateoccupation'):
+                    mom += state.attribute('spinup') - state.attribute('spindown')
+                bmu.append(mom)
+        else:
+            bmu = [None] * len(names)
+
     if len(names) != len(elements):
         raise ValueError(
             f'Failed to read in species names and elements. Got {len(names)} names and {len(elements)} elements')
 
-    species_info: dict[str, dict[str, str]] = {}
-    for name, element in zip(names, elements):
+    species_info: dict[str, dict[str, str | float | None]] = {}
+    for name, element, mom in zip(names, elements, bmu):
         #Check if the species name has a numerical id at the end (separated by - or .)
         #And add all of them first
         species_info[name] = {}
         species_info[name]['element'] = element
         species_info[name]['normed_name'] = name
+        species_info[name]['magnetic_moment'] = mom
         match = re.fullmatch(r'(.+[\-\.])([1-9]+)', name)
         if match:
             species_info[name]['id'] = match.group(2)
@@ -331,13 +342,13 @@ def _get_species_info(xmltree: XMLLike,
         if 'id' not in info:
             element = info['element']
             #Find the smallest id which is free
-            used_ids = {
-                int(val['id']) for name, val in species_info.items() if 'id' in val and val['element'] == element
-            }
+            #yapf: disable
+            used_ids = {int(val['id']) for name, val in species_info.items() if 'id' in val and val['element'] == element } #type: ignore[arg-type]
+            #yapf: enable
             possible_ids = range(1, max(used_ids, default=0) + 2)
             info['id'] = str(min(set(possible_ids) - set(used_ids)))
             #Just append the id to the normed name
-            info['normed_name'] += f"-{info['id']}"
+            info['normed_name'] += f"-{info['id']}"  #type: ignore[operator]
 
     return species_info
 
@@ -517,6 +528,7 @@ def get_structuredata(xmltree: XMLLike,
                       include_relaxations: bool = True,
                       convert_to_angstroem: bool = True,
                       normalize_kind_name: bool = True,
+                      extract_magnetic_moments: bool = True,
                       logger: Logger | None = None,
                       **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
@@ -548,6 +560,8 @@ def get_structuredata(xmltree: XMLLike,
                                 the resulting positions correspond to the relaxed structure
     :param logger: logger object for logging warnings, errors
     :param convert_to_angstroem: bool if True the bravais matrix is converted to angstroem
+    :param extract_magnetic_moments: bool, if True (default) the magnetic moments are also extracted and put
+                                     onto the `atom_data` output
 
     :returns: tuple containing the structure information
 
@@ -661,7 +675,19 @@ def get_structuredata(xmltree: XMLLike,
                     atom_positions[pos_indx] = list(np.array(atom_positions[pos_indx]) + np.array(site_displace))
 
             group_species = group.attribute('species')
-            element = species_info[group_species]['element']
+            mag_mom: None | float | list[float] = None
+            if extract_magnetic_moments:
+                mag_mom = species_info[group_species]['magnetic_moment']  #type: ignore[assignment]
+                if mag_mom is not None and root.attribute('l_noco', default=False):
+                    alpha = group.attribute('alpha', contains='noco')
+                    beta = group.attribute('beta', contains='noco')
+
+                    mag_mom = [
+                        mag_mom * np.sin(beta) * np.cos(alpha), mag_mom * np.sin(beta) * np.sin(alpha),
+                        mag_mom * np.cos(beta)
+                    ]
+
+            element = cast(str, species_info[group_species]['element'])
             if normalize_kind_name:
                 normed_name = species_info[group_species]['normed_name']
                 if normed_name != group_species:
@@ -676,7 +702,8 @@ def get_structuredata(xmltree: XMLLike,
                     group_species = normed_name
 
             atom_data.extend(
-                AtomSiteProperties(position=pos, symbol=element, kind=group_species) for pos in atom_positions)
+                AtomSiteProperties(position=pos, symbol=element, kind=group_species, magnetic_moment=mag_mom)
+                for pos in atom_positions)
 
     return atom_data, cell, pbc
 

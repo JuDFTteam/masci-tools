@@ -613,3 +613,45 @@ def test_get_parameter_write_inpgen_roundtrip(file_regression, load_inpxml):
         content = tmp.read()
 
     file_regression.check(content)
+
+
+def test_mag_mom_list_write_inpgen_roundtrip(file_regression, load_inpxml):
+    """
+    Test that the get_structuredata methods produces the right inpgen input with noco angles
+    to produce the right roundtrip
+    """
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+    from masci_tools.util.xml.xml_getters import get_structuredata
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R5/Fe_bctXML/files/inp.xml', absolute=False)
+
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
+
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, atoms, file=tmp)
+        tmp.seek(0)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
+def test_mag_mom_float_write_inpgen_roundtrip(file_regression, load_inpxml):
+    """
+    Test that the get_structuredata methods produces the right inpgen input with collinear setup
+    to produce the right roundtrip
+    """
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+    from masci_tools.util.xml.xml_getters import get_structuredata
+
+    xmltree, schema_dict = load_inpxml('fleur/Max-R6/inp_NiO.xml', absolute=False)
+
+    atoms, cell, pbc = get_structuredata(xmltree, schema_dict)
+
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, atoms, file=tmp)
+        tmp.seek(0)
+        content = tmp.read()
+
+    file_regression.check(content)
