@@ -31,6 +31,84 @@ def test_write_inpgen_file_defaults_dict(file_regression):
     file_regression.check(content)
 
 
+def test_write_inpgen_file_magmom_str(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    sites = [{
+        'position': (0.0, 0.0, 0.0),
+        'kind_name': 'Si',
+        'magnetic_moment': 'up'
+    }, {
+        'position': (1.3575, 1.3575, 1.3575),
+        'kind_name': 'Si',
+        'magnetic_moment': 'down'
+    }]
+
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, sites, kinds, file=tmp)
+        tmp.seek(0)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
+def test_write_inpgen_file_magmom_float(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    sites = [{
+        'position': (0.0, 0.0, 0.0),
+        'kind_name': 'Si',
+        'magnetic_moment': 1
+    }, {
+        'position': (1.3575, 1.3575, 1.3575),
+        'kind_name': 'Si',
+        'magnetic_moment': 2
+    }]
+
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, sites, kinds, file=tmp)
+        tmp.seek(0)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
+def test_write_inpgen_file_magmom_list(file_regression):
+
+    from masci_tools.io.fleur_inpgen import write_inpgen_file
+
+    param = 5.43
+    cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
+    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    sites = [{
+        'position': (0.0, 0.0, 0.0),
+        'kind_name': 'Si',
+        'magnetic_moment': [1, 2, 3]
+    }, {
+        'position': (1.3575, 1.3575, 1.3575),
+        'kind_name': 'Si',
+        'magnetic_moment': [4, 5, 6]
+    }]
+
+    with tempfile.TemporaryFile('w+') as tmp:
+
+        write_inpgen_file(cell, sites, kinds, file=tmp)
+        tmp.seek(0)
+        content = tmp.read()
+
+    file_regression.check(content)
+
+
 def test_write_inpgen_file_defaults_dict_filename(file_regression):
 
     from masci_tools.io.fleur_inpgen import write_inpgen_file
@@ -459,6 +537,51 @@ def test_read_inpgen_file_comments(datadir, data_regression):
     from masci_tools.io.fleur_inpgen import read_inpgen_file
 
     TESTFILE = datadir / 'inpgen_file_with_comments.txt'
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_magmom_str(datadir, data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = datadir / 'test_write_inpgen_file_magmom_str.txt'
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_magmom_float(datadir, data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = datadir / 'test_write_inpgen_file_magmom_float.txt'
+
+    cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
+
+    data_regression.check({
+        'cell': convert_to_pystd(cell),
+        'atom_sites': [tuple(convert_to_pystd(site)) for site in atom_sites],
+        'pbc': pbc,
+        'params': convert_to_pystd(input_params)
+    })
+
+
+def test_read_inpgen_file_magmom_list(datadir, data_regression):
+    from masci_tools.io.fleur_inpgen import read_inpgen_file
+
+    TESTFILE = datadir / 'test_write_inpgen_file_magmom_list.txt'
 
     cell, atom_sites, pbc, input_params = read_inpgen_file(TESTFILE)
 

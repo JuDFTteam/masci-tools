@@ -20,10 +20,11 @@ import os
 import copy
 import warnings
 from typing import Iterable, Sequence, Any, cast
+import numbers
 try:
-    from typing import TypedDict
+    from typing import TypedDict, Literal
 except ImportError:
-    from typing_extensions import TypedDict
+    from typing_extensions import TypedDict, Literal  #type: ignore[assignment]
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.typing import FileLike
@@ -65,6 +66,7 @@ class AtomDictProperties(TypedDict, total=False):
     """
     position: list[float] | tuple[float, float, float] | np.ndarray
     kind_name: str
+    magnetic_moment: Literal['up'] | Literal['down'] | float | list[float] | None
 
 
 class Kinds(TypedDict, total=False):
@@ -162,9 +164,18 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
         symbols = [[kind['symbols'][0]] for site in atom_sites for kind in kinds if kind['name'] == site['kind_name']]
         if any(len(symbol) == 0 for symbol in symbols):
             raise ValueError('Failed getting symbols for all kinds. Check that all needed kinds are given')
+
+        magnetic_moments = [s.get('magnetic_moment') for s in atom_sites]
+
+        #yapf: disable
+        magnetic_moments = [list(m) if not isinstance(m, (numbers.Real, str, type(None))) else m for m in magnetic_moments] #type: ignore[arg-type]
+        #yapf: enable
+
         atom_sites = [
-            AtomSiteProperties(position=list(site['position']), symbol=kind[0], kind=site['kind_name'])
-            for site, kind in zip(atom_sites, symbols)
+            AtomSiteProperties(position=list(site['position']),
+                               symbol=kind[0],
+                               kind=site['kind_name'],
+                               magnetic_moment=mag) for site, kind, mag in zip(atom_sites, symbols, magnetic_moments)
         ]
 
     elif any(not isinstance(site, AtomSiteProperties) for site in atom_sites):
@@ -174,7 +185,6 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
 
     #Workaround: cast(Sequence[AtomsiteProperties], atom_sites) does not work for some reason
     atom_sites = [cast(AtomSiteProperties, site) for site in atom_sites]
-
     ##########################################
     ############# INPUT CHECK ################
     ##########################################
@@ -302,22 +312,30 @@ def write_inpgen_file(cell: np.ndarray | list[list[float]],
             vector_rel[2] = vector_rel[2] * scaling_pos
         position_str = ' '.join([f'{value:18.{significant_figures_positions}f}' for value in vector_rel])
 
+        label = ''
         if site.symbol != site.kind:  # This is an important fact, if user renames it becomes a new atomtype or species!
-            label = ''
             try:
                 # Kind names can be more then numbers now, this might need to be reworked
                 head = site.kind.rstrip('0123456789')
                 kind_namet = int(site.kind[len(head):])
-                #if int(kind_name[len(head)]) > 4:
-                #    raise InputValidationError('New specie name/label should start with a digit smaller than 4')
             except ValueError:
                 warnings.warn(f'Warning: Kind name {site.kind} will be ignored and not used to set a charge number.')
             else:
                 atomic_number_name = f'{atomic_number}.{kind_namet}'
                 label = str(kind_namet)
-            atom_positions_text.append(f'    {atomic_number_name:>7} {position_str} {label}\n')
-        else:
-            atom_positions_text.append(f'    {atomic_number_name:>7} {position_str}\n')
+
+        atom_str = f'    {atomic_number_name:>7} {position_str} {label}'.rstrip()
+
+        if site.magnetic_moment is not None:
+            if isinstance(site.magnetic_moment, list):
+                magmom_str = ' '.join(
+                    [f'{value:18.{significant_figures_positions}f}' for value in site.magnetic_moment])
+                atom_str = f'{atom_str} : {magmom_str}'
+            else:
+                atom_str = f'{atom_str} : {site.magnetic_moment}'
+        atom_str += '\n'
+        atom_positions_text.append(atom_str)
+
     # TODO check format
     # we write it later, since we do not know what natoms is before the loop...
     atom_positions_str = f'    {natoms:3}\n' + ''.join(atom_positions_text)
@@ -602,9 +620,31 @@ def read_inpgen_file(
         else:
             kind_name = element
 
-        if len(atom_info) == 5:
-            kind_name = atom_info[4]
+        additional_info = ' '.join(atom_info[4:])
 
-        atom_sites.append(AtomSiteProperties(position=list(pos), symbol=element, kind=kind_name))
+        custom_kind, _, magmom_str = additional_info.partition(':')
+        custom_kind = custom_kind.strip()
+        if custom_kind:
+            kind_name = custom_kind
+
+        magmom_str = magmom_str.strip()
+        magmom: Literal['up', 'down'] | float | list[float] | None = None
+        if magmom_str:
+            if magmom_str in (
+                    'up',
+                    'down',
+            ):
+                magmom = magmom_str  #type: ignore[assignment]
+            else:
+                magmom_list = magmom_str.split()
+                if len(magmom_list) == 1:
+                    magmom = float(magmom_list[0])
+                elif len(magmom_list) == 3:
+                    magmom = [float(val) for val in magmom_list]
+                else:
+                    raise ValueError(f'Invalid magnetic moment specification: {magmom_str}')
+
+        atom_sites.append(AtomSiteProperties(position=list(pos), symbol=element, kind=kind_name,
+                                             magnetic_moment=magmom))
 
     return cell, atom_sites, pbc, input_params

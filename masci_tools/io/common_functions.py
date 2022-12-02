@@ -652,6 +652,7 @@ class AtomSiteProperties(NamedTuple):
     position: list[float]  #TODO could be made generic with VectorType
     symbol: str
     kind: str
+    magnetic_moment: Literal['up'] | Literal['down'] | float | list[float] | None = None
 
 
 def get_wigner_matrix(l: int, alpha: float, beta: float, gamma: float = 0.0, inverse: bool = False) -> np.ndarray:
