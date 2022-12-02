@@ -24,7 +24,7 @@ import numbers
 try:
     from typing import TypedDict, Literal
 except ImportError:
-    from typing_extensions import TypedDict, Literal  #type: ignore[assignment]
+    from typing_extensions import TypedDict, Literal  #type: ignore[misc]
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.typing import FileLike
