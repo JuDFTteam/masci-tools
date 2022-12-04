@@ -39,7 +39,7 @@ __all__ = ('write_inpgen_file', 'read_inpgen_file', 'AtomDictProperties', 'Kinds
 # Inpgen file structure, order is important
 POSSIBLE_NAMELISTS = [
     'title', 'input', 'lattice', 'gen', 'shift', 'factor', 'qss', 'soc', 'atom', 'comp', 'exco', 'expert', 'film',
-    'kpt', 'end'
+    'kpt', 'scf', 'end'
 ]
 POSSIBLE_PARAMS: dict[str, list[str]] = {
     'input': ['film', 'cartesian', 'cal_symm', 'checkinp', 'symor', 'oldfleur'],
