@@ -63,6 +63,10 @@ def test_pymatgen_converter_cif(file_regression, test_file):
         with open('inpgen.in', encoding='utf-8') as file:
             content = file.read()
 
+    #Protect against negative zeros
+    #The other tests do nothing with the numbers so negative zeros 'should'
+    #not appear
+    content.replace('-0.000000000', ' 0.000000000')
     file_regression.check(content, basename='test_convert_inpgen_cif')
 
 
