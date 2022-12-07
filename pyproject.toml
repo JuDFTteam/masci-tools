@@ -74,7 +74,9 @@ bokeh-plots = [
     'bokeh'
     ]
 cmdline-extras = [
-    'python-gitlab'
+    'python-gitlab',
+    'pymatgen-io-fleur~=0.4,>=0.4.1',
+    #'ase-fleur' #Not yet available on pypi
     ]
 dev = [
     'bumpver'

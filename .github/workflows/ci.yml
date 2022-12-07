@@ -148,7 +148,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        pip install -e .[testing,bokeh-plots]
+        pip install -e .[testing,bokeh-plots,cmdline-extras]
         pip install pyhull
 
     - name: Run pytest
