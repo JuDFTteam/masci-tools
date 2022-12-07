@@ -4,7 +4,7 @@
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
 
 ### Added
-- Command `masci-tools convert-inpgen` to transform common structure formats, e.g. `cif` into inpgen files. Uses `ase` or `pymatgen` with the corresponding fleur plugins `ase-fleur` and `pymatgen-io-fleur` (install additional dependencies `cmdline-extras`)[[#214]](https://github.com/JuDFTteam/masci-tools/pull/214)
+- Command `masci-tools convert-inpgen` to transform common structure formats, e.g. `cif` into inpgen files. Uses `ase` or `pymatgen` with the corresponding fleur plugins `ase-fleur` and `pymatgen-io-fleur` (install additional dependencies `cmdline-extras`)[[#215]](https://github.com/JuDFTteam/masci-tools/pull/215)
 
 ### Improvements
 - `write/read_fleur_inpgen` now supports the magnetic moment definitions in the inpgen input file introduced in MaX-6.1 (also the `scf` namelist) [[#213]](https://github.com/JuDFTteam/masci-tools/pull/213)
