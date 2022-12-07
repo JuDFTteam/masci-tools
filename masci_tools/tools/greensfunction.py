@@ -1232,7 +1232,7 @@ def intersite_shell_indices(elements: list[GreensfElement],
     distances = [round(np.linalg.norm(elem.atomDiff), 12) for elem in elements]
 
     #sort the elements according to shells
-    index_sorted = sorted(range(len(elements)), key=lambda k: distances[k]) #type:ignore[arg-type,return-value]
+    index_sorted = sorted(range(len(elements)), key=lambda k: distances[k])  #type:ignore[arg-type,return-value]
     elements_sorted = [elements[index] for index in index_sorted]
     jij_pairs: list[tuple[np.floating[Any], list[tuple[int, int]]]] = []
     num_shells = 0
