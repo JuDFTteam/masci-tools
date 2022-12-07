@@ -22,10 +22,10 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
-try:
+if sys.version_info >= (3, 8):
     from typing import Literal
-except ImportError:
-    from typing_extensions import Literal  #type:ignore[misc]
+else:
+    from typing_extensions import Literal
 import numpy as np
 from collections.abc import Sequence
 from masci_tools.util.typing import FileLike

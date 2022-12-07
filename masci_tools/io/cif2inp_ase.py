@@ -14,6 +14,11 @@
 Independent utility script to convert cif file formats to input for the inpgen code
 Usage: `python cif2inp_ase.py <filename.cif>`
 """
+import warnings
+
+warnings.warn(
+    'The cif2inp_ase.py script is deprecated. Use the command'
+    'masci-tools convert-inpgen <filename.cif> <out-filename> --converter ase', DeprecationWarning)
 
 import sys
 import ase.io
