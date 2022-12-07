@@ -44,7 +44,7 @@ dependencies = [
 
 [project.optional-dependencies]
 pre-commit = [
-    'mypy==0.971',
+    'mypy==0.991',
     'pre-commit>=2.6.0',
     'yapf>=0.30.0',
     'pylint~=2.14',

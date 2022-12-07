@@ -20,10 +20,10 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
-try:
+if sys.version_info >= (3, 8):
     from typing import Literal
-except ImportError:
-    from typing_extensions import Literal  #type: ignore[misc]
+else:
+    from typing_extensions import Literal
 from lxml import etree
 import logging
 from masci_tools.io.parsers import fleur_schema

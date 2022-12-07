@@ -29,8 +29,10 @@ if TYPE_CHECKING:
 
 S = TypeVar('S')
 """ Type variable for the key type of the dictionary """
-T = TypeVar('T')
+T_co = TypeVar('T_co', covariant=True)
 """ Type variable for the value type of the dictionary """
+T = TypeVar('T')
+""" Type variable for the value type of the list """
 
 
 @contextmanager
@@ -54,7 +56,7 @@ def LockContainer(lock_object: LockableList[Any] | LockableDict[Any, Any]) -> It
         lock_object._unfreeze()  #pylint: disable=protected-access
 
 
-class LockableDict(UserDict, Generic[S, T]):
+class LockableDict(UserDict, Generic[S, T_co]):
     """
     Subclass of UserDict, which can prevent modifications to itself.
     Raises `RuntimeError` if modification is attempted.
@@ -73,7 +75,7 @@ class LockableDict(UserDict, Generic[S, T]):
 
     """
 
-    def __init__(self, *args: dict[S, T], recursive: bool = True, **kwargs: T) -> None:
+    def __init__(self, *args: dict[S, T_co], recursive: bool = True, **kwargs: T_co) -> None:
         self._locked = False
         self._recursive = recursive
         super().__init__(*args, **kwargs)
@@ -93,7 +95,7 @@ class LockableDict(UserDict, Generic[S, T]):
         self.__check_lock()
         super().__delitem__(key)
 
-    def __setitem__(self, key: S, value: T | LockableDict[S, T] | LockableList[T]) -> None:
+    def __setitem__(self, key: S, value: T_co | LockableDict[S, T_co] | LockableList[T_co]) -> None:
         self.__check_lock()
         if isinstance(value, list):
             super().__setitem__(key, LockableList(value, recursive=self._recursive))
@@ -122,17 +124,17 @@ class LockableDict(UserDict, Generic[S, T]):
 
         self._locked = False
 
-    def get_unlocked(self) -> dict[S, T]:
+    def get_unlocked(self) -> dict[S, T_co]:
         """
         Get copy of object with builtin lists and dicts
         """
         if self._recursive:
-            ret_dict: dict[S, T] = {}
+            ret_dict: dict[S, T_co] = {}
             for key, value in self.items():
                 if isinstance(value, LockableDict):
-                    ret_dict[key] = cast(T, value.get_unlocked())
+                    ret_dict[key] = cast(T_co, value.get_unlocked())
                 elif isinstance(value, LockableList):
-                    ret_dict[key] = cast(T, value.get_unlocked())
+                    ret_dict[key] = cast(T_co, value.get_unlocked())
                 else:
                     ret_dict[key] = value
         else:

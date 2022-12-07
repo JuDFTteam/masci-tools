@@ -20,11 +20,12 @@ import os
 import copy
 import warnings
 import numbers
+import sys
 from typing import Iterable, Sequence, Any, cast
-try:
-    from typing import TypedDict, Literal
-except ImportError:
-    from typing_extensions import TypedDict, Literal  #type: ignore[misc]
+if sys.version_info >= (3, 8):
+    from typing import Literal, TypedDict
+else:
+    from typing_extensions import Literal, TypedDict
 
 from masci_tools.util.constants import PERIODIC_TABLE_ELEMENTS, BOHR_A
 from masci_tools.util.typing import FileLike
