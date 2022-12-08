@@ -30,7 +30,7 @@ except ImportError:
 
 from masci_tools.util.xml.collect_xml_setters import XPATH_SETTERS, SCHEMA_DICT_SETTERS, NMMPMAT_SETTERS
 from masci_tools.util.xml.xml_setters_names import set_attrib_value
-from masci_tools.util.xml.common_functions import clear_xml, eval_xpath_one
+from masci_tools.util.xml.common_functions import clear_xml, eval_xpath_one, get_inpgen_comments, readd_inpgen_comments
 from masci_tools.util.schema_dict_util import ensure_relaxation_xinclude
 from masci_tools.io.fleur_xml import load_inpxml
 from masci_tools.util.typing import XMLFileLike, FileLike
@@ -364,7 +364,8 @@ class FleurXMLModifier:
                        original_inpxmlfile: XMLFileLike,
                        original_nmmp_file: FileLike | list[str] | None = None,
                        validate_changes: bool = True,
-                       adjust_version_for_dev_version: bool = True) -> tuple[etree._ElementTree, dict[str, str]]:
+                       adjust_version_for_dev_version: bool = True,
+                       keep_inpgen_comments: bool = True) -> tuple[etree._ElementTree, dict[str, str]]:
         """
         Applies the registered modifications to a given inputfile
 
@@ -378,6 +379,7 @@ class FleurXMLModifier:
         :returns: a modified xmltree and if existent a modified density matrix file
         """
         original_xmltree, schema_dict = load_inpxml(original_inpxmlfile)
+        comments = get_inpgen_comments(original_xmltree)
 
         if original_nmmp_file is not None:
             if isinstance(original_nmmp_file, str) and not Path(original_nmmp_file).is_file():
@@ -398,6 +400,10 @@ class FleurXMLModifier:
             adjust_version_for_dev_version=adjust_version_for_dev_version)
 
         ensure_relaxation_xinclude(new_xmltree, schema_dict)
+
+        if keep_inpgen_comments:
+            readd_inpgen_comments(new_xmltree, comments)
+
         etree.indent(new_xmltree)
 
         additional_files = {}
