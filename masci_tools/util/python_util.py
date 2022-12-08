@@ -272,7 +272,7 @@ class JSONEncoderTailoredIndent(_json.JSONEncoder):
         return super().default(o)
 
     def encode(self, o: _typing.Any) -> str:  # pylint: disable=arguments-differ
-        from _ctypes import PyObj_FromPtr  #type: ignore[import]
+        from _ctypes import PyObj_FromPtr  #type: ignore[attr-defined]
 
         format_spec = self.FORMAT_SPEC  # Local var to expedite access.
         json_repr = super().encode(o)  # Default JSON.

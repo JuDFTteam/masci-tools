@@ -22,10 +22,10 @@ if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:
     from typing_extensions import TypeAlias
-try:
+if sys.version_info >= (3, 8):
     from typing import Literal
-except ImportError:
-    from typing_extensions import Literal  #type:ignore[misc]
+else:
+    from typing_extensions import Literal
 import numpy as np
 from collections.abc import Sequence
 from masci_tools.util.typing import FileLike
@@ -652,6 +652,7 @@ class AtomSiteProperties(NamedTuple):
     position: list[float]  #TODO could be made generic with VectorType
     symbol: str
     kind: str
+    magnetic_moment: Literal['up', 'down'] | float | list[float] | None = None
 
 
 def get_wigner_matrix(l: int, alpha: float, beta: float, gamma: float = 0.0, inverse: bool = False) -> np.ndarray:

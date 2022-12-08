@@ -1,17 +1,20 @@
 atoms:
 - kind: O-1
+  magnetic_moment: null
   position:
   - 0.0
   - 0.28194015712293097
   - 0.0
   symbol: O
 - kind: H-1
+  magnetic_moment: null
   position:
   - -0.6969647140293769
   - -0.34985939129261007
   - 0.0
   symbol: H
 - kind: H-1
+  magnetic_moment: null
   position:
   - 0.6969647140293769
   - -0.34985939129261007

@@ -8,6 +8,7 @@ from lxml import etree
 TEST_INPXML_PATH = 'fleur/Max-R5/FePt_film_SSFT_LO/files/inp2.xml'
 TEST_INPXML_NEWER_PATH = 'fleur/input_newer_version.xml'
 TEST_INPXML_LDAU_PATH = 'fleur/Max-R5/GaAsMultiUForceXML/files/inp.xml'
+TEST_INPXML_COMMENT_PATH = 'fleur/Max-R6/inp_NiO.xml'
 TEST_NMMPMAT_PATH = 'fleur/input_nmmpmat.txt'
 
 
@@ -513,3 +514,15 @@ def test_fleurxml_modifier_modify_xmlfile_dev_version(test_file):
     with pytest.warns(UserWarning):
         with pytest.raises(ValueError):
             fm.modify_xmlfile(test_file(TEST_INPXML_NEWER_PATH), adjust_version_for_dev_version=False)
+
+
+def test_fleurxml_modifier_include_inpgen_comments(test_file, file_regression):
+    """Tests if fleurinp_modifier keeps the inpgen comments correctly"""
+
+    fm = FleurXMLModifier()
+    fm.set_inpchanges({'dos': True, 'Kmax': 3.9})
+
+    xmltree, add_files = fm.modify_xmlfile(test_file(TEST_INPXML_COMMENT_PATH))
+
+    assert len(add_files) == 0
+    file_regression.check(etree.tostring(xmltree, encoding='unicode', pretty_print=True), extension='.xml')

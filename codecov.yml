@@ -26,5 +26,5 @@ comment:
   require_changes: no
 
 ignore:
-  - "masci_tools/util/kkr_rms_tracker.py"
-  - "masci_tools/util/modifypotential.py"
+  - "masci_tools/tools/kkr_rms_tracker.py"
+  - "masci_tools/tools/modifypotential.py"

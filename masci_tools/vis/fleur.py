@@ -441,9 +441,9 @@ def _process_dos_kwargs(ordered_keys, backend=None, **kwargs):
 
     params = get_plotter(backend)
     #TODO: This should be replaced with key.removesuffix() on python 3.9+
-    ordered_keys_without_spin = [key[:len('_up') + 1] if key.endswith('_up') else key for key in ordered_keys]
+    ordered_keys_without_spin = [key[:-len('_up')] if key.endswith('_up') else key for key in ordered_keys]
     ordered_keys_without_spin = [
-        key[:len('_down') + 1] if key.endswith('_down') else key for key in ordered_keys_without_spin
+        key[:-len('_down')] if key.endswith('_down') else key for key in ordered_keys_without_spin
     ]
 
     for key, value in kwargs.items():
@@ -480,9 +480,11 @@ def _dos_order(key):
     if '_up' in key:
         key = key.split('_up')[0]
         spin = 0
-    else:
+    elif '_down' in key:
         key = key.split('_down')[0]
         spin = 1
+    else:
+        raise ValueError('Invalid key')
 
     general = ('Total', 'INT', 'Sym')
     orbital_order = ('', 's', 'p', 'd', 'f')
@@ -503,7 +505,7 @@ def _dos_order(key):
             return (spin, len(general) + index, tail, '')
         return (spin, len(general) + index, float('inf'), tail)
 
-    return None
+    return (spin, -1, -1, key)
 
 
 def _generate_dos_labels(dosdata, attributes, spinpol, latex=True, only_spin=None):

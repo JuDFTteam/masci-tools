@@ -437,7 +437,7 @@ def xml_add_number_to_attrib(xmltree: XMLLike,
     if 'float' in types or 'float_expression' in types:
         new_values = values
     elif 'int' in types:
-        if any(not value.is_integer() for value in values):
+        if any(isinstance(value, float) and not value.is_integer() for value in values):
             raise ValueError('You are trying to write a float to an integer attribute')
         new_values = [int(value) for value in values]
 

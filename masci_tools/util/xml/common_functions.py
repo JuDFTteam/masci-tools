@@ -105,6 +105,52 @@ def clear_xml(tree: etree._ElementTree) -> tuple[etree._ElementTree, set[str]]:
     return cleared_tree, all_included_tags
 
 
+def get_inpgen_comments(xmltree: etree._ElementTree) -> list[etree._Element]:
+    """
+    Get the XML comment element appended after the root of the inp.xml file
+
+    These contain at the moment the inpgen command line and the content of the
+    inpgen file
+
+    :param xmltree: representation of the inp.xml
+
+    :returns: list of XML comments, which appear after the fleurInput tag
+    """
+
+    root = xmltree.getroot()
+
+    comments = []
+    next_sibling = root.getnext()
+    while next_sibling is not None:
+        next_elem = next_sibling.getnext()
+        if next_sibling.tag is etree.Comment:
+            comments.append(next_sibling)
+        next_sibling = next_elem
+
+    return comments
+
+
+def readd_inpgen_comments(xmltree: etree._ElementTree, comments: list[etree._Element]) -> etree._ElementTree:
+    """
+    Add the given comments after the fleurInput tag of the inp.xml
+
+    These contain at the moment the inpgen command line and the content of the
+    inpgen file
+
+    :param xmltree: representation of the inp.xml
+    :param comments: list of XML comments
+    """
+
+    root = xmltree.getroot()
+
+    for comment in comments:
+        if not comment.tag is etree.Comment:
+            raise ValueError(f'Invalid tag type. Only Comments allowed. Got: {comment.tag}')
+        root.addnext(comment)
+
+    return xmltree
+
+
 def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
     """
     DEPRECATED ALIAS: Moved to masci_tools.util.schema_dict_util

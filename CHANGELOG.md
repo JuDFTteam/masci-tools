@@ -1,9 +1,28 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.14.0...develop)
 
 Nothing here yet
+
+## v.0.14.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...v0.14.0)
+
+### Added
+- Command `masci-tools convert-inpgen` to transform common structure formats, e.g. `cif` into inpgen files. Uses `ase` or `pymatgen` with the corresponding fleur plugins `ase-fleur` and `pymatgen-io-fleur` (install additional dependencies `cmdline-extras`)[[#215]](https://github.com/JuDFTteam/masci-tools/pull/215)
+- Functions `get_inpgen_comments` and `readd_inpgen_comments` to keep the comments of the inp.xml file containing the inpgen commandline and file content through functions using `clear_xml`
+
+### Improvements
+- `write/read_fleur_inpgen` now supports the magnetic moment definitions in the inpgen input file introduced in MaX-6.1 (also the `scf` namelist) [[#213]](https://github.com/JuDFTteam/masci-tools/pull/213)
+- `get_structuredata` also reads out the magnetic moments [[#213]](https://github.com/JuDFTteam/masci-tools/pull/213)
+- `FleurXMLModifier.modify_xmlfile` now keeps the inpgen comments by default (controlled by option `keep_inpgen_comments`)
+
+### Bugfixes
+- Serveral fixes for Fleur DOS plots [[#212]](https://github.com/JuDFTteam/masci-tools/pull/212):
+  - Fixed wrong summation of atom weights for files containing 10 or more atomtypes
+  - Fixed crashes using a custom weight not conforming to the naming scheme of weights in the `banddos.hdf`
+  - Fixed specification of parameters by DOS label not working if the spin suffix is omitted
+
 
 ## v.0.13.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.12.0...v0.13.0)

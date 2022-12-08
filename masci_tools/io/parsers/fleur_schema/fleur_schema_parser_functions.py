@@ -19,10 +19,10 @@ from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict, CaseInse
 from functools import wraps
 from typing import Callable, NamedTuple, Any, overload
 from lxml import etree
-try:
+if sys.version_info >= (3, 8):
     from typing import Literal, TypedDict
-except ImportError:
-    from typing_extensions import Literal, TypedDict  #type: ignore[misc]
+else:
+    from typing_extensions import Literal, TypedDict
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
 else:

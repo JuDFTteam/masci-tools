@@ -717,6 +717,33 @@ def test_plot_spinpol_dos_param_change_by_label_omit_spin():
     return gcf()
 
 
+@pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='spinpol_dos_custom_plot_keys.png')
+def test_plot_spinpol_dos_plot_keys_and_kwargs_custom_weight():
+    from masci_tools.io.parsers.hdf5 import HDF5Reader
+    from masci_tools.io.parsers.hdf5.recipes import FleurDOS
+    from masci_tools.vis.fleur import plot_fleur_dos
+
+    TEST_BANDDOS_FILE = os.path.join(HDFTEST_DIR, 'banddos_spinpol_dos.hdf')
+
+    with HDF5Reader(TEST_BANDDOS_FILE) as h5reader:
+        data, attributes = h5reader.read(recipe=FleurDOS)
+
+    gcf().clear()
+
+    data['Custom_up'] = data['MT:1f_up'] * 0.5
+    data['Custom_down'] = data['MT:1f_down'] * 0.5
+
+    plot_fleur_dos(data,
+                   attributes,
+                   show=False,
+                   color={'Custom': 'red'},
+                   linestyle={'Custom': '--'},
+                   area_alpha=0.3,
+                   plot_keys=['Custom'])
+
+    return gcf()
+
+
 @pytest.mark.mpl_image_compare(baseline_dir=MPL_BASELINE_DIR, filename='bands_weighted_log_scale_colorbar.png')
 def test_plot_bands_weighted_log_scale_colorbar_mpl():
     from masci_tools.io.parsers.hdf5 import HDF5Reader
