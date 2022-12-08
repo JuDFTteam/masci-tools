@@ -229,6 +229,9 @@
     <xi:fallback/>
   </xi:include>
 </fleurInput>
+<!-- Initial (original) inpgen commandline (only for documentation purposes):
+    inpgen -f inp
+-->
 <!-- Initial (original) inpgen input (only for documentation purposes):
 NiO bct uc (AFM1)
 &input film=f /

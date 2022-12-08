@@ -3,7 +3,8 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.14.0...develop)
 
-Nothing here yet
+### Bugfixes
+- Fixed order of added comments in `readd_inpgen_comments`. Previously they would end up in reverse order
 
 ## v.0.14.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...v0.14.0)
