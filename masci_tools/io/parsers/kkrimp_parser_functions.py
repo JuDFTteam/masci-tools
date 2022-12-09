@@ -319,7 +319,7 @@ class KkrimpParserFunctions:
 
     ### end helper functions ###
 
-    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False):
+    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False, timings=False):
         """
         Main parser function for kkrimp, read information from files in file_dict and fills out_dict
         :param out_dict: dictionary that is filled with parsed output of the KKRimp calculation
@@ -343,6 +343,10 @@ class KkrimpParserFunctions:
         msg_list = []
         files = file_dict
 
+        if timings:
+            import time
+            timings = [time.time()]
+            print('start parser')
         try:
             code_version, compile_options, serial_number = get_version_info(files['out_log'])
             tmp_dict = {}
@@ -355,6 +359,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 1', timings[-1]-timings[-2])
 
         tmp_dict = {}  # used to group convergence info (rms, rms per atom, charge neutrality)
         # also initialize convegence_group where all info stored for all iterations is kept
@@ -379,6 +387,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 2', timings[-1]-timings[-2])
 
         try:
             nspin = self._get_nspin(files['out_log'])
@@ -392,6 +404,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         tmp_dict = {}  # used to group magnetism info (spin and orbital moments)
         try:
@@ -406,6 +422,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             if nspin > 1 and newsosol:
@@ -423,6 +443,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         # add orbital moments to magnetis group in parser output
         try:
@@ -439,6 +463,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             result = self._get_EF_potfile(files['out_pot'])
@@ -449,6 +477,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             result = self._get_Etot(files['out_log'])
@@ -462,6 +494,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             result = find_warnings(files['outfile'])
@@ -474,6 +510,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             result = self._extract_timings(files['out_timing'])
@@ -484,6 +524,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             esp_at, etot_at = self._get_energies_atom(files['out_enersp_at'], files['out_enertot_at'], natom)
@@ -496,6 +540,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             result_WS, result_tot, result_C = get_charges_per_atom(files['out_log'])
@@ -514,6 +562,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             econt = self._get_econt_info(files['out_log'])
@@ -530,6 +582,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             ncore, emax, lmax, descr_max = get_core_states(files['out_pot'])
@@ -544,6 +600,10 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         try:
             niter, nitermax, converged, nmax_reached, mixinfo = self._get_scfinfo(files['out_log'])
@@ -561,9 +621,17 @@ class KkrimpParserFunctions:
             msg_list.append(msg)
             if debug:
                 traceback.print_exc()
+                
+        if timings:
+            timings += [time.time()]
+            print('parser 3', timings[-1]-timings[-2])
 
         #convert numpy arrays to standard python lists
         out_dict = convert_to_pystd(out_dict)
+        
+        if timings:
+            timings += [time.time()]
+            print('parser total', timings[-1]-timings[0])
 
         # return output with error messages if there are any
         return len(msg_list) == 0, msg_list, out_dict

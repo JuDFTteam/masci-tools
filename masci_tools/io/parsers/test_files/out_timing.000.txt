@@ -1,0 +1,1805 @@
+# serial: JuKKR_v3.1-2088-gca706b6_intel_20221207160948
+ PRECONDITIONING_start                        1.35539996623993     
+ read potential                              7.360000163316727E-002
+ time until scf starts                        1.43309998512268     
+ gref->gmat                                  1.460000034421682E-002
+ gonsite->density                            0.181600004434586     
+ gref->gmat                                  2.600000053644180E-002
+ gonsite->density                            0.527100026607513     
+ MPI comm : charge density                   1.260000001639128E-002
+ energyloop                                   2.05189990997314     
+ energy loop                                  2.05189990997314     
+ time after energy loop                      0.637300014495850     
+ Iteration number 001                         2.68950009346008     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.500000000000000     
+ gref->gmat                                  9.300000034272671E-003
+ gonsite->density                            0.463499993085861     
+ MPI comm : charge density                   1.150000002235174E-002
+ energyloop                                   1.64859998226166     
+ energy loop                                  1.64859998226166     
+ time after energy loop                      0.638400018215179     
+ Iteration number 002                         2.28710007667542     
+ gref->gmat                                  6.899999920278788E-003
+ gonsite->density                            0.493499994277954     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.476399987936020     
+ MPI comm : charge density                   1.319999992847443E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65970003604889     
+ time after energy loop                      0.639599978923798     
+ Iteration number 003                         2.30240011215210     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.497500002384186     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.469199985265732     
+ MPI comm : charge density                   1.300000026822090E-002
+ energyloop                                   1.66050004959106     
+ energy loop                                  1.66069996356964     
+ time after energy loop                      0.638199985027313     
+ Iteration number 004                         2.29900002479553     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.497500002384186     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.473100006580353     
+ MPI comm : charge density                   1.310000009834766E-002
+ energyloop                                   1.66030001640320     
+ energy loop                                  1.66030001640320     
+ time after energy loop                      0.647700011730194     
+ Iteration number 005                         2.30819988250732     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.498499989509583     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.469900012016296     
+ MPI comm : charge density                   1.130000036209822E-002
+ energyloop                                   1.67110002040863     
+ energy loop                                  1.67120003700256     
+ time after energy loop                      0.641200006008148     
+ Iteration number 006                         2.31250000000000     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.497999995946884     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.470699995756149     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65699994564056     
+ energy loop                                  1.65699994564056     
+ time after energy loop                      0.650099992752075     
+ Iteration number 007                         2.30710005760193     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.494700014591217     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.476399987936020     
+ MPI comm : charge density                   1.070000045001507E-002
+ energyloop                                   1.65799999237061     
+ energy loop                                  1.65799999237061     
+ time after energy loop                      0.643800020217896     
+ Iteration number 008                         2.30200004577637     
+ gref->gmat                                  7.000000216066837E-003
+ gonsite->density                            0.491699993610382     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.475100010633469     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65799999237061     
+ energy loop                                  1.65799999237061     
+ time after energy loop                      0.646899998188019     
+ Iteration number 009                         2.30500006675720     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.495499998331070     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.473800003528595     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65540003776550     
+ energy loop                                  1.65540003776550     
+ time after energy loop                      0.646700024604797     
+ Iteration number 010                         2.30220007896423     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.496300011873245     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65919995307922     
+ energy loop                                  1.65919995307922     
+ time after energy loop                      0.647000014781952     
+ Iteration number 011                         2.30629992485046     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.500299990177155     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.471599996089935     
+ MPI comm : charge density                   1.070000045001507E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66159999370575     
+ time after energy loop                      0.647300004959106     
+ Iteration number 012                         2.30900001525879     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.507700026035309     
+ gref->gmat                                  9.300000034272671E-003
+ gonsite->density                            0.467900007963181     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65950000286102     
+ energy loop                                  1.65950000286102     
+ time after energy loop                      0.645900011062622     
+ Iteration number 013                         2.30539989471436     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.500299990177155     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.470800012350082     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65869998931885     
+ time after energy loop                      0.644800007343292     
+ Iteration number 014                         2.30360007286072     
+ gref->gmat                                  7.100000046193600E-003
+ gonsite->density                            0.502499997615814     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.471399992704391     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66120004653931     
+ time after energy loop                      0.646799981594086     
+ Iteration number 015                         2.30800008773804     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.494899988174438     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.479999989271164     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66330003738403     
+ energy loop                                  1.66359996795654     
+ time after energy loop                      0.646099984645844     
+ Iteration number 016                         2.30970001220703     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.497299998998642     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.474900007247925     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65929996967316     
+ energy loop                                  1.65929996967316     
+ time after energy loop                      0.646600008010864     
+ Iteration number 017                         2.30609989166260     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.497900009155273     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.475899994373322     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66369998455048     
+ energy loop                                  1.66380000114441     
+ time after energy loop                      0.646200001239777     
+ Iteration number 018                         2.30999994277954     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.503000020980835     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.470699995756149     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65929996967316     
+ energy loop                                  1.65929996967316     
+ time after energy loop                      0.644900023937225     
+ Iteration number 019                         2.30450010299683     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.500800013542175     
+ gref->gmat                                  9.200000204145908E-003
+ gonsite->density                            0.468600004911423     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65639996528625     
+ energy loop                                  1.65649998188019     
+ time after energy loop                      0.646099984645844     
+ Iteration number 020                         2.30259990692139     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.496600002050400     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.478599995374680     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65740001201630     
+ energy loop                                  1.65740001201630     
+ time after energy loop                      0.646000027656555     
+ Iteration number 021                         2.30380010604858     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.497999995946884     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474200010299683     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65859997272491     
+ energy loop                                  1.65859997272491     
+ time after energy loop                      0.644400000572205     
+ Iteration number 022                         2.30299997329712     
+ gref->gmat                                  7.199999876320362E-003
+ gonsite->density                            0.499599993228912     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.472499996423721     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65760004520416     
+ energy loop                                  1.65760004520416     
+ time after energy loop                      0.645600020885468     
+ Iteration number 023                         2.30340003967285     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.493200004100800     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.477299988269806     
+ MPI comm : charge density                   1.119999960064888E-002
+ energyloop                                   1.65880000591278     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.648000001907349     
+ Iteration number 024                         2.30690002441406     
+ gref->gmat                                  7.100000046193600E-003
+ gonsite->density                            0.497399985790253     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474500000476837     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66040003299713     
+ energy loop                                  1.66050004959106     
+ time after energy loop                      0.644900023937225     
+ Iteration number 025                         2.30539989471436     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.514900028705597     
+ gref->gmat                                  9.700000286102295E-003
+ gonsite->density                            0.466300010681152     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66449999809265     
+ energy loop                                  1.66460001468658     
+ time after energy loop                      0.644699990749359     
+ Iteration number 026                         2.30929994583130     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.498100012540817     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.473699986934662     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66139996051788     
+ energy loop                                  1.66149997711182     
+ time after energy loop                      0.644900023937225     
+ Iteration number 027                         2.30649995803833     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.500699996948242     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.474400013685226     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66139996051788     
+ energy loop                                  1.66149997711182     
+ time after energy loop                      0.644900023937225     
+ Iteration number 028                         2.30640006065369     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.501100003719330     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.474799990653992     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66310000419617     
+ energy loop                                  1.66320002079010     
+ time after energy loop                      0.644900023937225     
+ Iteration number 029                         2.30809998512268     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.502799987792969     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.468800008296967     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66190004348755     
+ energy loop                                  1.66190004348755     
+ time after energy loop                      0.646300017833710     
+ Iteration number 030                         2.30830001831055     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.508599996566772     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.469799995422363     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66040003299713     
+ energy loop                                  1.66050004959106     
+ time after energy loop                      0.651899993419647     
+ Iteration number 031                         2.31250000000000     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.500899970531464     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472499996423721     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65999996662140     
+ energy loop                                  1.65999996662140     
+ time after energy loop                      0.647700011730194     
+ Iteration number 032                         2.30780005455017     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.503600001335144     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474299997091293     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66410005092621     
+ energy loop                                  1.66410005092621     
+ time after energy loop                      0.644599974155426     
+ Iteration number 033                         2.30890011787415     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.473300009965897     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65869998931885     
+ time after energy loop                      0.647199988365173     
+ Iteration number 034                         2.30590009689331     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.502099990844727     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.470699995756149     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66040003299713     
+ energy loop                                  1.66050004959106     
+ time after energy loop                      0.646899998188019     
+ Iteration number 035                         2.30739998817444     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.503300011157990     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472600013017654     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66120004653931     
+ time after energy loop                      0.647800028324127     
+ Iteration number 036                         2.30909991264343     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.500299990177155     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.471799999475479     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65999996662140     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.646499991416931     
+ Iteration number 037                         2.30660009384155     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.494500011205673     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.481999993324280     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66260004043579     
+ energy loop                                  1.66270005702972     
+ time after energy loop                      0.647700011730194     
+ Iteration number 038                         2.31040000915527     
+ gref->gmat                                  7.100000046193600E-003
+ gonsite->density                            0.518000006675720     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.461899995803833     
+ MPI comm : charge density                   1.140000019222498E-002
+ energyloop                                   1.66649997234344     
+ energy loop                                  1.66649997234344     
+ time after energy loop                      0.647899985313416     
+ Iteration number 039                         2.31469988822937     
+ gref->gmat                                  7.100000046193600E-003
+ gonsite->density                            0.500699996948242     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472999989986420     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66460001468658     
+ energy loop                                  1.66460001468658     
+ time after energy loop                      0.645099997520447     
+ Iteration number 040                         2.30990004539490     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.496199995279312     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.476900011301041     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65980005264282     
+ energy loop                                  1.65980005264282     
+ time after energy loop                      0.647700011730194     
+ Iteration number 041                         2.30769991874695     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501600027084351     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.470200002193451     
+ MPI comm : charge density                   1.070000045001507E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.646200001239777     
+ Iteration number 042                         2.30760002136230     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.501100003719330     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.472499996423721     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.644200026988983     
+ Iteration number 043                         2.30539989471436     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501200020313263     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.471899986267090     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65830004215240     
+ energy loop                                  1.65840005874634     
+ time after energy loop                      0.646099984645844     
+ Iteration number 044                         2.30460000038147     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.498199999332428     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472200006246567     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65810000896454     
+ energy loop                                  1.65810000896454     
+ time after energy loop                      0.644800007343292     
+ Iteration number 045                         2.30299997329712     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.494500011205673     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.476700007915497     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66129994392395     
+ energy loop                                  1.66149997711182     
+ time after energy loop                      0.645799994468689     
+ Iteration number 046                         2.30730009078979     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.499099999666214     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.476900011301041     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66480004787445     
+ energy loop                                  1.66489994525909     
+ time after energy loop                      0.646200001239777     
+ Iteration number 047                         2.31150007247925     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.497599989175797     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66390001773834     
+ energy loop                                  1.66400003433228     
+ time after energy loop                      0.645399987697601     
+ Iteration number 048                         2.30940008163452     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.497399985790253     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.475600004196167     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66159999370575     
+ energy loop                                  1.66159999370575     
+ time after energy loop                      0.645799994468689     
+ Iteration number 049                         2.30749988555908     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.502399981021881     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.472299993038177     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66509997844696     
+ energy loop                                  1.66509997844696     
+ time after energy loop                      0.646700024604797     
+ Iteration number 050                         2.31200003623962     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.497099995613098     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.480500012636185     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66240000724792     
+ time after energy loop                      0.644999980926514     
+ Iteration number 051                         2.30739998817444     
+ gref->gmat                                  7.199999876320362E-003
+ gonsite->density                            0.517400026321411     
+ gref->gmat                                  9.300000034272671E-003
+ gonsite->density                            0.461499989032745     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66180002689362     
+ energy loop                                  1.66229999065399     
+ time after energy loop                      0.645600020885468     
+ Iteration number 052                         2.30789995193481     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.495499998331070     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474400013685226     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66030001640320     
+ energy loop                                  1.66040003299713     
+ time after energy loop                      0.644500017166138     
+ Iteration number 053                         2.30500006675720     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.496699988842010     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.476900011301041     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66120004653931     
+ time after energy loop                      0.645399987697601     
+ Iteration number 054                         2.30669999122620     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.499399989843369     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474500000476837     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65939998626709     
+ energy loop                                  1.65950000286102     
+ time after energy loop                      0.643499970436096     
+ Iteration number 055                         2.30310010910034     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.495299994945526     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.479099988937378     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66009998321533     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.646600008010864     
+ Iteration number 056                         2.30679988861084     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.507000029087067     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.468400001525879     
+ MPI comm : charge density                   1.240000035613775E-002
+ energyloop                                   1.66320002079010     
+ energy loop                                  1.66330003738403     
+ time after energy loop                      0.662400007247925     
+ Iteration number 057                         2.32570004463196     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.504499971866608     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.468699991703033     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65799999237061     
+ energy loop                                  1.65810000896454     
+ time after energy loop                      0.645900011062622     
+ Iteration number 058                         2.30399990081787     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.497999995946884     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.473699986934662     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66470003128052     
+ energy loop                                  1.66470003128052     
+ time after energy loop                      0.646799981594086     
+ Iteration number 059                         2.31170010566711     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.498400002717972     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474900007247925     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65999996662140     
+ energy loop                                  1.65999996662140     
+ time after energy loop                      0.647300004959106     
+ Iteration number 060                         2.30730009078979     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.500699996948242     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.473500013351440     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66180002689362     
+ energy loop                                  1.66180002689362     
+ time after energy loop                      0.644699990749359     
+ Iteration number 061                         2.30669999122620     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.501800000667572     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.471700012683868     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.644299983978271     
+ Iteration number 062                         2.30570006370544     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.500899970531464     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66349995136261     
+ energy loop                                  1.66349995136261     
+ time after energy loop                      0.645500004291534     
+ Iteration number 063                         2.30920004844666     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.498199999332428     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.480699986219406     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66250002384186     
+ time after energy loop                      0.645500004291534     
+ Iteration number 064                         2.30800008773804     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.511900007724762     
+ gref->gmat                                  9.100000374019146E-003
+ gonsite->density                            0.469099998474121     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66219997406006     
+ energy loop                                  1.66219997406006     
+ time after energy loop                      0.646700024604797     
+ Iteration number 065                         2.30890011787415     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.500899970531464     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.473500013351440     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66129994392395     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.645699977874756     
+ Iteration number 066                         2.30719995498657     
+ gref->gmat                                  7.199999876320362E-003
+ gonsite->density                            0.499599993228912     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.473800003528595     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66100001335144     
+ time after energy loop                      0.646499991416931     
+ Iteration number 067                         2.30749988555908     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.500199973583221     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.476900011301041     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66040003299713     
+ energy loop                                  1.66040003299713     
+ time after energy loop                      0.646700024604797     
+ Iteration number 068                         2.30719995498657     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.503000020980835     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.470699995756149     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65999996662140     
+ energy loop                                  1.65999996662140     
+ time after energy loop                      0.646899998188019     
+ Iteration number 069                         2.30710005760193     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.501600027084351     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.471500009298325     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66359996795654     
+ energy loop                                  1.66369998455048     
+ time after energy loop                      0.647400021553040     
+ Iteration number 070                         2.31110000610352     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.501800000667572     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472799986600876     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66069996356964     
+ energy loop                                  1.66069996356964     
+ time after energy loop                      0.648800015449524     
+ Iteration number 071                         2.30970001220703     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.496899992227554     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.474200010299683     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66149997711182     
+ energy loop                                  1.66159999370575     
+ time after energy loop                      0.646399974822998     
+ Iteration number 072                         2.30809998512268     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.498400002717972     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.473199993371964     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66499996185303     
+ energy loop                                  1.66509997844696     
+ time after energy loop                      0.646000027656555     
+ Iteration number 073                         2.31110000610352     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.496100008487701     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.476099997758865     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66299998760223     
+ energy loop                                  1.66310000419617     
+ time after energy loop                      0.645200014114380     
+ Iteration number 074                         2.30839991569519     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472999989986420     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66019999980927     
+ energy loop                                  1.66019999980927     
+ time after energy loop                      0.645299971103668     
+ Iteration number 075                         2.30550003051758     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.498699992895126     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.478599995374680     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66310000419617     
+ energy loop                                  1.66320002079010     
+ time after energy loop                      0.647800028324127     
+ Iteration number 076                         2.31100010871887     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501100003719330     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.478799998760223     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66429996490479     
+ energy loop                                  1.66429996490479     
+ time after energy loop                      0.644299983978271     
+ Iteration number 077                         2.30870008468628     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.518999993801117     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.461699992418289     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66489994525909     
+ energy loop                                  1.66509997844696     
+ time after energy loop                      0.647400021553040     
+ Iteration number 078                         2.31259989738464     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.500999987125397     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.471799999475479     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65880000591278     
+ energy loop                                  1.65880000591278     
+ time after energy loop                      0.646600008010864     
+ Iteration number 079                         2.30570006370544     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.501200020313263     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.471500009298325     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.646600008010864     
+ Iteration number 080                         2.30780005455017     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.500599980354309     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474099993705750     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66009998321533     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.645799994468689     
+ Iteration number 081                         2.30599999427795     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.497999995946884     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472099989652634     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66209995746613     
+ energy loop                                  1.66219997406006     
+ time after energy loop                      0.647000014781952     
+ Iteration number 082                         2.30929994583130     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.497299998998642     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.475899994373322     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65929996967316     
+ energy loop                                  1.65970003604889     
+ time after energy loop                      0.664900004863739     
+ Iteration number 083                         2.32459998130798     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.496600002050400     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66110002994537     
+ energy loop                                  1.66120004653931     
+ time after energy loop                      0.646099984645844     
+ Iteration number 084                         2.30739998817444     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.496499985456467     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.478700011968613     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66330003738403     
+ energy loop                                  1.66340005397797     
+ time after energy loop                      0.645299971103668     
+ Iteration number 085                         2.30879998207092     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.496800005435944     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.474900007247925     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65929996967316     
+ energy loop                                  1.65939998626709     
+ time after energy loop                      0.645299971103668     
+ Iteration number 086                         2.30469989776611     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.501699984073639     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.474400013685226     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66380000114441     
+ energy loop                                  1.66380000114441     
+ time after energy loop                      0.646000027656555     
+ Iteration number 087                         2.30990004539490     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.490200012922287     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.475800007581711     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66050004959106     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.646000027656555     
+ Iteration number 088                         2.30669999122620     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.497000008821487     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.477699995040894     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66019999980927     
+ energy loop                                  1.66030001640320     
+ time after energy loop                      0.651000022888184     
+ Iteration number 089                         2.31139993667603     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.502200007438660     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.474999994039536     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66579997539520     
+ energy loop                                  1.66579997539520     
+ time after energy loop                      0.647199988365173     
+ Iteration number 090                         2.31310009956360     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.512799978256226     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.463499993085861     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65799999237061     
+ energy loop                                  1.65799999237061     
+ time after energy loop                      0.646600008010864     
+ Iteration number 091                         2.30460000038147     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.500500023365021     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.469799995422363     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65980005264282     
+ time after energy loop                      0.648500025272369     
+ Iteration number 092                         2.30830001831055     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.500500023365021     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.473699986934662     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66009998321533     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.649800002574921     
+ Iteration number 093                         2.30999994277954     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.496699988842010     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.477800011634827     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66250002384186     
+ time after energy loop                      0.648599982261658     
+ Iteration number 094                         2.31130003929138     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.502900004386902     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.470600008964539     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66079998016357     
+ energy loop                                  1.66079998016357     
+ time after energy loop                      0.646200001239777     
+ Iteration number 095                         2.30699992179871     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.496199995279312     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.477200001478195     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66079998016357     
+ energy loop                                  1.66079998016357     
+ time after energy loop                      0.648000001907349     
+ Iteration number 096                         2.30890011787415     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.498800009489059     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.472299993038177     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66129994392395     
+ time after energy loop                      0.645399987697601     
+ Iteration number 097                         2.30679988861084     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501699984073639     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.470400005578995     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65989995002747     
+ energy loop                                  1.65999996662140     
+ time after energy loop                      0.648100018501282     
+ Iteration number 098                         2.30809998512268     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.494199991226196     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.478300005197525     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66499996185303     
+ energy loop                                  1.66509997844696     
+ time after energy loop                      0.647599995136261     
+ Iteration number 099                         2.31270003318787     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.502300024032593     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.474900007247925     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66240000724792     
+ time after energy loop                      0.646799981594086     
+ Iteration number 100                         2.30929994583130     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.501800000667572     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.470400005578995     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66040003299713     
+ energy loop                                  1.66040003299713     
+ time after energy loop                      0.645799994468689     
+ Iteration number 101                         2.30629992485046     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.497500002384186     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474000006914139     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66149997711182     
+ energy loop                                  1.66170001029968     
+ time after energy loop                      0.646499991416931     
+ Iteration number 102                         2.30830001831055     
+ gref->gmat                                  7.199999876320362E-003
+ gonsite->density                            0.500199973583221     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.481700003147125     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66330003738403     
+ energy loop                                  1.66340005397797     
+ time after energy loop                      0.647099971771240     
+ Iteration number 103                         2.31049990653992     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501299977302551     
+ gref->gmat                                  9.399999864399433E-003
+ gonsite->density                            0.464700013399124     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66089999675751     
+ time after energy loop                      0.648299992084503     
+ Iteration number 104                         2.30929994583130     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66009998321533     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.645900011062622     
+ Iteration number 105                         2.30609989166260     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.497799992561340     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.476799994707108     
+ MPI comm : charge density                   1.109999977052212E-002
+ energyloop                                   1.65939998626709     
+ energy loop                                  1.65950000286102     
+ time after energy loop                      0.649399995803833     
+ Iteration number 106                         2.30890011787415     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.497200012207031     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.476700007915497     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65789997577667     
+ energy loop                                  1.65810000896454     
+ time after energy loop                      0.647899985313416     
+ Iteration number 107                         2.30629992485046     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.494300007820129     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.477899998426437     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66030001640320     
+ energy loop                                  1.66050004959106     
+ time after energy loop                      0.648500025272369     
+ Iteration number 108                         2.30900001525879     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.514199972152710     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.468899995088577     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66219997406006     
+ energy loop                                  1.66229999065399     
+ time after energy loop                      0.654500007629395     
+ Iteration number 109                         2.31690001487732     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501699984073639     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.474000006914139     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.647199988365173     
+ Iteration number 110                         2.30789995193481     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.495999991893768     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.474700003862381     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66190004348755     
+ energy loop                                  1.66199994087219     
+ time after energy loop                      0.648299992084503     
+ Iteration number 111                         2.31030011177063     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502300024032593     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472799986600876     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66310000419617     
+ energy loop                                  1.66310000419617     
+ time after energy loop                      0.649600028991699     
+ Iteration number 112                         2.31279993057251     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.501100003719330     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.473800003528595     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65960001945496     
+ energy loop                                  1.65960001945496     
+ time after energy loop                      0.647599995136261     
+ Iteration number 113                         2.30739998817444     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.495599985122681     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.477600008249283     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66129994392395     
+ energy loop                                  1.66170001029968     
+ time after energy loop                      0.648400008678436     
+ Iteration number 114                         2.31010007858276     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.494399994611740     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.476099997758865     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66069996356964     
+ time after energy loop                      0.648899972438812     
+ Iteration number 115                         2.30960011482239     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.508000016212463     
+ gref->gmat                                  9.100000374019146E-003
+ gonsite->density                            0.474400013685226     
+ MPI comm : charge density                   1.109999977052212E-002
+ energyloop                                   1.67209994792938     
+ energy loop                                  1.67219996452332     
+ time after energy loop                      0.654399991035461     
+ Iteration number 116                         2.32660007476807     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.499500006437302     
+ gref->gmat                                  9.300000034272671E-003
+ gonsite->density                            0.464500010013580     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66349995136261     
+ energy loop                                  1.66349995136261     
+ time after energy loop                      0.651300013065338     
+ Iteration number 117                         2.31500005722046     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.497500002384186     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.474500000476837     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.651000022888184     
+ Iteration number 118                         2.31240010261536     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.474299997091293     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65890002250671     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.649800002574921     
+ Iteration number 119                         2.30879998207092     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.498800009489059     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.476099997758865     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66079998016357     
+ energy loop                                  1.66079998016357     
+ time after energy loop                      0.648000001907349     
+ Iteration number 120                         2.30879998207092     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502399981021881     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.472299993038177     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66289997100830     
+ energy loop                                  1.66289997100830     
+ time after energy loop                      0.648500025272369     
+ Iteration number 121                         2.31159996986389     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.503099977970123     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.473399996757507     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66050004959106     
+ energy loop                                  1.66050004959106     
+ time after energy loop                      0.649699985980988     
+ Iteration number 122                         2.31030011177063     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.492500007152557     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.479499995708466     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65849995613098     
+ energy loop                                  1.65869998931885     
+ time after energy loop                      0.649299979209900     
+ Iteration number 123                         2.30839991569519     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.494500011205673     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.475100010633469     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66069996356964     
+ time after energy loop                      0.649500012397766     
+ Iteration number 124                         2.31030011177063     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.501999974250793     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.469399988651276     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66229999065399     
+ energy loop                                  1.66260004043579     
+ time after energy loop                      0.650200009346008     
+ Iteration number 125                         2.31279993057251     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.503300011157990     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.471100002527237     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66310000419617     
+ energy loop                                  1.66310000419617     
+ time after energy loop                      0.650200009346008     
+ Iteration number 126                         2.31340003013611     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.495999991893768     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.478599995374680     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65880000591278     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.650200009346008     
+ Iteration number 127                         2.30960011482239     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.503899991512299     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.471799999475479     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66470003128052     
+ energy loop                                  1.66480004787445     
+ time after energy loop                      0.648199975490570     
+ Iteration number 128                         2.31310009956360     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.495599985122681     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.481900006532669     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66540002822876     
+ energy loop                                  1.66540002822876     
+ time after energy loop                      0.649399995803833     
+ Iteration number 129                         2.31480002403259     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.500199973583221     
+ gref->gmat                                  9.300000034272671E-003
+ gonsite->density                            0.460900008678436     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66019999980927     
+ energy loop                                  1.66040003299713     
+ time after energy loop                      0.653999984264374     
+ Iteration number 130                         2.31439995765686     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501699984073639     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.470800012350082     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66320002079010     
+ energy loop                                  1.66320002079010     
+ time after energy loop                      0.652400016784668     
+ Iteration number 131                         2.31559991836548     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.501299977302551     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.471799999475479     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66009998321533     
+ energy loop                                  1.66009998321533     
+ time after energy loop                      0.649999976158142     
+ Iteration number 132                         2.31030011177063     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.501999974250793     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472000002861023     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.649600028991699     
+ Iteration number 133                         2.30859994888306     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.496300011873245     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474500000476837     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65869998931885     
+ time after energy loop                      0.649299979209900     
+ Iteration number 134                         2.30800008773804     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.510599970817566     
+ gref->gmat                                  9.200000204145908E-003
+ gonsite->density                            0.467000007629395     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66019999980927     
+ energy loop                                  1.66030001640320     
+ time after energy loop                      0.670300006866455     
+ Iteration number 135                         2.33069992065430     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.495200008153915     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65939998626709     
+ energy loop                                  1.65950000286102     
+ time after energy loop                      0.648599982261658     
+ Iteration number 136                         2.30809998512268     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.498699992895126     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.473600000143051     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66050004959106     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.650399982929230     
+ Iteration number 137                         2.31110000610352     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.502699971199036     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66209995746613     
+ energy loop                                  1.66219997406006     
+ time after energy loop                      0.646399974822998     
+ Iteration number 138                         2.30879998207092     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.500899970531464     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.472799986600876     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66279995441437     
+ energy loop                                  1.66279995441437     
+ time after energy loop                      0.648999989032745     
+ Iteration number 139                         2.31189990043640     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.490299999713898     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.476500004529953     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66100001335144     
+ time after energy loop                      0.648000001907349     
+ Iteration number 140                         2.30900001525879     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.493699997663498     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.478399991989136     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65929996967316     
+ energy loop                                  1.65929996967316     
+ time after energy loop                      0.650799989700317     
+ Iteration number 141                         2.31030011177063     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.498699992895126     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.479400008916855     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66550004482269     
+ energy loop                                  1.66550004482269     
+ time after energy loop                      0.652999997138977     
+ Iteration number 142                         2.31850004196167     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.497799992561340     
+ gref->gmat                                  9.100000374019146E-003
+ gonsite->density                            0.461499989032745     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.651400029659271     
+ Iteration number 143                         2.31209993362427     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.498299986124039     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.474799990653992     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65910005569458     
+ energy loop                                  1.65929996967316     
+ time after energy loop                      0.647899985313416     
+ Iteration number 144                         2.30719995498657     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.494500011205673     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.240000035613775E-002
+ energyloop                                   1.66030001640320     
+ energy loop                                  1.66030001640320     
+ time after energy loop                      0.648999989032745     
+ Iteration number 145                         2.30940008163452     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.498699992895126     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.474999994039536     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66110002994537     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.649800002574921     
+ Iteration number 146                         2.31110000610352     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.496199995279312     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.477499991655350     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65880000591278     
+ energy loop                                  1.65880000591278     
+ time after energy loop                      0.650600016117096     
+ Iteration number 147                         2.30960011482239     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.499700009822845     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.070000045001507E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66240000724792     
+ time after energy loop                      0.649299979209900     
+ Iteration number 148                         2.31170010566711     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.500299990177155     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472400009632111     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66100001335144     
+ time after energy loop                      0.647800028324127     
+ Iteration number 149                         2.30890011787415     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.500199973583221     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.471799999475479     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65919995307922     
+ energy loop                                  1.65929996967316     
+ time after energy loop                      0.649200022220612     
+ Iteration number 150                         2.30870008468628     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502799987792969     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.469799995422363     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66320002079010     
+ energy loop                                  1.66330003738403     
+ time after energy loop                      0.646600008010864     
+ Iteration number 151                         2.30990004539490     
+ gref->gmat                                  7.199999876320362E-003
+ gonsite->density                            0.497999995946884     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474099993705750     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66390001773834     
+ energy loop                                  1.66400003433228     
+ time after energy loop                      0.647499978542328     
+ Iteration number 152                         2.31150007247925     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.501500010490417     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.472499996423721     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.648699998855591     
+ Iteration number 153                         2.30760002136230     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.495900005102158     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.476000010967255     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66129994392395     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.654500007629395     
+ Iteration number 154                         2.31599998474121     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.497700005769730     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.481400012969971     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66320002079010     
+ energy loop                                  1.66340005397797     
+ time after energy loop                      0.648100018501282     
+ Iteration number 155                         2.31159996986389     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.495700001716614     
+ gref->gmat                                  9.100000374019146E-003
+ gonsite->density                            0.467400014400482     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65989995002747     
+ energy loop                                  1.65989995002747     
+ time after energy loop                      0.647800028324127     
+ Iteration number 156                         2.30780005455017     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.498800009489059     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65970003604889     
+ time after energy loop                      0.647199988365173     
+ Iteration number 157                         2.30739998817444     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502300024032593     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.468899995088577     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65789997577667     
+ energy loop                                  1.65799999237061     
+ time after energy loop                      0.651000022888184     
+ Iteration number 158                         2.30909991264343     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.498800009489059     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474599987268448     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65989995002747     
+ energy loop                                  1.65989995002747     
+ time after energy loop                      0.650099992752075     
+ Iteration number 159                         2.30999994277954     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.497200012207031     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.478199988603592     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65989995002747     
+ energy loop                                  1.65989995002747     
+ time after energy loop                      0.651000022888184     
+ Iteration number 160                         2.31100010871887     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.497299998998642     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.474799990653992     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66019999980927     
+ energy loop                                  1.66019999980927     
+ time after energy loop                      0.650399982929230     
+ Iteration number 161                         2.31060004234314     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501900017261505     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.473100006580353     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66159999370575     
+ energy loop                                  1.66159999370575     
+ time after energy loop                      0.649699985980988     
+ Iteration number 162                         2.31130003929138     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501200020313263     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.469599992036819     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.648899972438812     
+ Iteration number 163                         2.30999994277954     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.495799988508224     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.477600008249283     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66279995441437     
+ energy loop                                  1.66279995441437     
+ time after energy loop                      0.649699985980988     
+ Iteration number 164                         2.31259989738464     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502200007438660     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.472799986600876     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66170001029968     
+ energy loop                                  1.66170001029968     
+ time after energy loop                      0.649999976158142     
+ Iteration number 165                         2.31180000305176     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.500000000000000     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.470899999141693     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65880000591278     
+ time after energy loop                      0.651799976825714     
+ Iteration number 166                         2.31080007553101     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.499099999666214     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.475699990987778     
+ MPI comm : charge density                   1.109999977052212E-002
+ energyloop                                   1.66260004043579     
+ energy loop                                  1.66260004043579     
+ time after energy loop                      0.651499986648560     
+ Iteration number 167                         2.31410002708435     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.499799996614456     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474900007247925     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66719996929169     
+ energy loop                                  1.66729998588562     
+ time after energy loop                      0.658599972724915     
+ Iteration number 168                         2.32610011100769     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.500999987125397     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.461100012063980     
+ MPI comm : charge density                   1.119999960064888E-002
+ energyloop                                   1.66540002822876     
+ energy loop                                  1.66540002822876     
+ time after energy loop                      0.648999989032745     
+ Iteration number 169                         2.31439995765686     
+ gref->gmat                                  7.400000002235174E-003
+ gonsite->density                            0.501200020313263     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.473800003528595     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66349995136261     
+ energy loop                                  1.66359996795654     
+ time after energy loop                      0.647899985313416     
+ Iteration number 170                         2.31150007247925     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.500400006771088     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.473699986934662     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66139996051788     
+ time after energy loop                      0.652700006961823     
+ Iteration number 171                         2.31410002708435     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.500299990177155     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.472699999809265     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66069996356964     
+ energy loop                                  1.66069996356964     
+ time after energy loop                      0.657899975776672     
+ Iteration number 172                         2.31870007514954     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.498100012540817     
+ gref->gmat                                  8.799999952316284E-003
+ gonsite->density                            0.474000006914139     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65869998931885     
+ energy loop                                  1.65869998931885     
+ time after energy loop                      0.651099979877472     
+ Iteration number 173                         2.30990004539490     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.502399981021881     
+ gref->gmat                                  8.999999612569809E-003
+ gonsite->density                            0.470999985933304     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66219997406006     
+ energy loop                                  1.66229999065399     
+ time after energy loop                      0.651199996471405     
+ Iteration number 174                         2.31360006332397     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.500000000000000     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.472499996423721     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66100001335144     
+ time after energy loop                      0.649800002574921     
+ Iteration number 175                         2.31089997291565     
+ gref->gmat                                  7.899999618530273E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.468800008296967     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66120004653931     
+ energy loop                                  1.66120004653931     
+ time after energy loop                      0.654699981212616     
+ Iteration number 176                         2.31599998474121     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.501500010490417     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.472699999809265     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.649500012397766     
+ Iteration number 177                         2.31010007858276     
+ gref->gmat                                  7.000000216066837E-003
+ gonsite->density                            0.501900017261505     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.473500013351440     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66369998455048     
+ energy loop                                  1.66380000114441     
+ time after energy loop                      0.649999976158142     
+ Iteration number 178                         2.31380009651184     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.497900009155273     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.471899986267090     
+ MPI comm : charge density                   1.109999977052212E-002
+ energyloop                                   1.65980005264282     
+ energy loop                                  1.65980005264282     
+ time after energy loop                      0.649399995803833     
+ Iteration number 179                         2.30920004844666     
+ gref->gmat                                  7.300000172108412E-003
+ gonsite->density                            0.501800000667572     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.475499987602234     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66240000724792     
+ energy loop                                  1.66240000724792     
+ time after energy loop                      0.653999984264374     
+ Iteration number 180                         2.31640005111694     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.502600014209747     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.474000006914139     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66320002079010     
+ energy loop                                  1.66320002079010     
+ time after energy loop                      0.649699985980988     
+ Iteration number 181                         2.31329989433289     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.519500017166138     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.458799988031387     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65980005264282     
+ time after energy loop                      0.651199996471405     
+ Iteration number 182                         2.31110000610352     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.498299986124039     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.472099989652634     
+ MPI comm : charge density                   1.109999977052212E-002
+ energyloop                                   1.65989995002747     
+ energy loop                                  1.65989995002747     
+ time after energy loop                      0.648999989032745     
+ Iteration number 183                         2.30890011787415     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.499399989843369     
+ gref->gmat                                  8.200000040233135E-003
+ gonsite->density                            0.472699999809265     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66059994697571     
+ energy loop                                  1.66059994697571     
+ time after energy loop                      0.648599982261658     
+ Iteration number 184                         2.30940008163452     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.498600006103516     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.473500013351440     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66299998760223     
+ energy loop                                  1.66310000419617     
+ time after energy loop                      0.649699985980988     
+ Iteration number 185                         2.31279993057251     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501399993896484     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474099993705750     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65980005264282     
+ time after energy loop                      0.651199996471405     
+ Iteration number 186                         2.31100010871887     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.490299999713898     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.473300009965897     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65890002250671     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.682900011539459     
+ Iteration number 187                         2.34190011024475     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.501299977302551     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.467599987983704     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65880000591278     
+ energy loop                                  1.65890002250671     
+ time after energy loop                      0.653100013732910     
+ Iteration number 188                         2.31209993362427     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501299977302551     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.472200006246567     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65900003910065     
+ energy loop                                  1.65900003910065     
+ time after energy loop                      0.653400003910065     
+ Iteration number 189                         2.31240010261536     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.497700005769730     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.469999998807907     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66449999809265     
+ energy loop                                  1.66449999809265     
+ time after energy loop                      0.650399982929230     
+ Iteration number 190                         2.31509995460510     
+ gref->gmat                                  7.499999832361937E-003
+ gonsite->density                            0.497599989175797     
+ gref->gmat                                  8.700000122189522E-003
+ gonsite->density                            0.474999994039536     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66100001335144     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.651099979877472     
+ Iteration number 191                         2.31259989738464     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.497599989175797     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.471199989318848     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.651400029659271     
+ Iteration number 192                         2.31259989738464     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.491200000047684     
+ gref->gmat                                  8.000000379979610E-003
+ gonsite->density                            0.478700011968613     
+ MPI comm : charge density                   1.099999994039536E-002
+ energyloop                                   1.65960001945496     
+ energy loop                                  1.65960001945496     
+ time after energy loop                      0.649200022220612     
+ Iteration number 193                         2.30890011787415     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.495999991893768     
+ gref->gmat                                  8.600000292062759E-003
+ gonsite->density                            0.458799988031387     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66630005836487     
+ energy loop                                  1.66639995574951     
+ time after energy loop                      0.653299987316132     
+ Iteration number 194                         2.31970000267029     
+ gref->gmat                                  7.799999788403511E-003
+ gonsite->density                            0.516200006008148     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.460500001907349     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66089999675751     
+ energy loop                                  1.66110002994537     
+ time after energy loop                      0.648999989032745     
+ Iteration number 195                         2.31019997596741     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.500100016593933     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.472799986600876     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.65789997577667     
+ energy loop                                  1.65799999237061     
+ time after energy loop                      0.652999997138977     
+ Iteration number 196                         2.31100010871887     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.499199986457825     
+ gref->gmat                                  8.299999870359898E-003
+ gonsite->density                            0.472600013017654     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66170001029968     
+ energy loop                                  1.66170001029968     
+ time after energy loop                      0.647700011730194     
+ Iteration number 197                         2.30949997901917     
+ gref->gmat                                  7.600000128149986E-003
+ gonsite->density                            0.494300007820129     
+ gref->gmat                                  8.399999700486660E-003
+ gonsite->density                            0.473399996757507     
+ MPI comm : charge density                   1.080000028014183E-002
+ energyloop                                   1.66069996356964     
+ energy loop                                  1.66079998016357     
+ time after energy loop                      0.648199975490570     
+ Iteration number 198                         2.30920004844666     
+ gref->gmat                                  8.100000210106373E-003
+ gonsite->density                            0.500599980354309     
+ gref->gmat                                  8.899999782443047E-003
+ gonsite->density                            0.472600013017654     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65900003910065     
+ energy loop                                  1.65939998626709     
+ time after energy loop                      0.649999976158142     
+ Iteration number 199                         2.30940008163452     
+ gref->gmat                                  7.699999958276749E-003
+ gonsite->density                            0.501999974250793     
+ gref->gmat                                  8.500000461935997E-003
+ gonsite->density                            0.469399988651276     
+ MPI comm : charge density                   1.090000011026859E-002
+ energyloop                                   1.65970003604889     
+ energy loop                                  1.65989995002747     
+ time after energy loop                      0.650399982929230     
+ Iteration number 200                         2.31040000915527     
+ Total running time                           463.948486328125     

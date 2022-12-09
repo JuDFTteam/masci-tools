@@ -71,6 +71,7 @@ def get_outfile_txt(outfile):
     In case the outfile is a file handle, we just roll it back and read everything in again.
     For an ordinary file path we open the file in a context manager and then read it.
     """
+    
     if getattr(outfile, 'readlines', None) is not None:
         outfile.seek(0)
         tmptxt = outfile.readlines()
