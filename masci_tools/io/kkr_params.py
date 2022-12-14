@@ -834,7 +834,7 @@ class kkrparams:
             ('CALCFORCE', [None, '%i', False, 'Calculate forces']),
             ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
             ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
-        # Bogoliubov de Gennes mode:
+            # Bogoliubov de Gennes mode:
             ('USE_BDG', [
                 None, '%l', False,
                 'Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!'

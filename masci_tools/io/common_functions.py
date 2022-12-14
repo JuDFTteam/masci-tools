@@ -71,7 +71,7 @@ def get_outfile_txt(outfile):
     In case the outfile is a file handle, we just roll it back and read everything in again.
     For an ordinary file path we open the file in a context manager and then read it.
     """
-    
+
     if getattr(outfile, 'readlines', None) is not None:
         outfile.seek(0)
         tmptxt = outfile.readlines()
@@ -126,6 +126,12 @@ def search_string(searchkey: str, txt: Iterable[str]) -> int:
             return iline
         iline += 1
     return -1
+
+
+def search_string_generator(searchkey, txt):
+    for index, line in enumerate(txt):
+        if searchkey in line:
+            yield index, line
 
 
 def angles_to_vec(magnitude: list | np.ndarray | float, theta: list | np.ndarray | float,
