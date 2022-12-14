@@ -16,7 +16,7 @@ parser file where parse_kkr_outputfile is called
 """
 import numpy as np
 from numpy import ndarray, array, loadtxt, shape
-from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
+from masci_tools.io.common_functions import (search_string, search_string_generator, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, convert_to_pystd,
                                              get_outfile_txt)
 from masci_tools.io.common_functions import get_Ry2eV
@@ -49,10 +49,8 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=
 
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     res = []
-    while itmp >= 0:
-        itmp = search_string(searchstring, tmptxt)
+    for itmp, tmpval in search_string_generator(searchstring, tmptxt):
         if debug:
             print(('in parse_array_float (itmp, searchstring, outfile):', itmp, searchstring, outfile))
         if itmp >= 0:
@@ -144,10 +142,8 @@ def get_Etot(outfile):
 def find_warnings(outfile):
     tmptxt = get_outfile_txt(outfile)
     tmptxt_caps = [txt.upper() for txt in tmptxt]
-    itmp = 0
     res = []
-    while itmp >= 0:
-        itmp = search_string('WARNING', tmptxt_caps)
+    for itmp, tmpval in search_string_generator('WARNING', tmptxt_caps):
         if itmp >= 0:
             tmpval = tmptxt_caps.pop(itmp)
             tmpval = tmptxt.pop(itmp)
@@ -200,10 +196,8 @@ def get_single_particle_energies(outfile_000):
     returns the valence contribution of the single particle energies
     """
     tmptxt = get_outfile_txt(outfile_000)
-    itmp = 0
     res = []
-    while itmp >= 0:
-        itmp = search_string('band energy per atom', tmptxt)
+    for itmp, tmpval in search_string_generator('band energy per atom', tmptxt):
         if itmp >= 0:
             tmpval = float(tmptxt.pop(itmp).split()[-1])
             res.append(tmpval)
@@ -332,9 +326,7 @@ def get_kmeshinfo(outfile_0init, outfile_000):
     #next get kmesh_ie from output.000.txt
     tmptxt = get_outfile_txt(outfile_000)
     kmesh_ie = []
-    itmp = 0
-    while itmp >= 0:
-        itmp = search_string('KMESH =', tmptxt)
+    for itmp, tmpval in search_string_generator('KMESH =', tmptxt):
         if itmp >= 0:
             tmpval = int(tmptxt.pop(itmp).split()[-1])
             kmesh_ie.append(tmpval)
@@ -451,10 +443,8 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     Extract spin moment information from outfile and nonco_angles_out (if given)
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     result = []
-    while itmp >= 0:
-        itmp = search_string('m_spin', tmptxt)
+    for itmp, tmpval in search_string_generator('m_spin', tmptxt):
         if itmp >= 0:
             tmpline = tmptxt.pop(itmp)
             tmparray = []
@@ -480,10 +470,8 @@ def get_orbmom(outfile, natom):
     read orbmom info from outfile and return array (iteration, atom)=orbmom
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     result = []
-    while itmp >= 0:
-        itmp = search_string('m_spin', tmptxt)
+    for itmp, tmpval in search_string_generator('m_spin', tmptxt):
         if itmp >= 0:
             tmpline = tmptxt.pop(itmp)
             tmparray = []
