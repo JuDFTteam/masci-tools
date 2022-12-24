@@ -21,12 +21,13 @@ import os as _os
 import typing as _typing
 from pathlib import Path as _Path
 
-import bokeh as _bokeh
+import bokeh.plotting as _bokeh_plotting
 import deepdiff as _deepdiff
 import matplotlib as _mpl
 import matplotlib.pyplot as plt
 import mendeleev as _mendeleev
 import numpy as _np
+import pandas as _pd
 import seaborn as _sns
 
 import masci_tools.util.python_util as _masci_python_util
@@ -1174,7 +1175,7 @@ class ChemicalElements:
                            f"or equal argument of parameter 'title'.")
 
         # init output for notebook. if not notebook, this won't have any effect.
-        _bokeh.plotting.output_notebook()
+        _bokeh_plotting.output_notebook()
 
         # set up file output
         _output_mendel = _output
@@ -1185,7 +1186,7 @@ class ChemicalElements:
                 _output_mendel = _output_mendel + _output_ext
                 msg_suffix = f"Info: filepath did not end in extension '{_output_ext}'. Appended it."
             print(f'Will write HTML table plot to file {_output_mendel}. {msg_suffix}')
-            _bokeh.plotting.output_file(filename=_output_mendel)
+            _bokeh_plotting.output_file(filename=_output_mendel)
 
         # declare inner variables as arguments for mendeleev plot parameters
         _colorby_mendel, _attribute_mendel = f'{_title}_color', None
@@ -1330,7 +1331,7 @@ class ChemicalElements:
         version = _mendeleev.__version__
         version_info = tuple(int(num) for num in version.split('.'))
         if version_info < (0, 8, 0):
-            import mendeleev.plotting as _mendeleev_plotting  #pylint: disable=no-name-in-module, import-error
+            import mendeleev.plotting as _mendeleev_plotting  # pylint: disable=no-name-in-module, import-error
             _mendeleev_plotting.periodic_plot(df=ptable,
                                               attribute=_attribute_mendel,
                                               title=_title,
@@ -1342,8 +1343,22 @@ class ChemicalElements:
                                               showfblock=showfblock,
                                               long_version=long_version)
         else:
-            raise NotImplementedError(f'mendeleev version {version}: TODO: implement plotting API change '
-                                      f'"plotting" -> "vis".')
+            from mendeleev.vis.bokeh import periodic_table_bokeh
+            from mendeleev.vis.utils import create_vis_dataframe
+
+            vis_df = create_vis_dataframe()
+            ptable = _pd.merge(ptable, vis_df[['atomic_number', 'x', 'y']], on='atomic_number')
+            fig = periodic_table_bokeh(elements=ptable,
+                                       attribute=_attribute_mendel,
+                                       cmap=None,
+                                       colorby=_colorby_mendel,
+                                       decimals=3,
+                                       height=_size[1],
+                                       missing=_missing_color,
+                                       title=_title,
+                                       wide_layout=long_version,
+                                       width=_size[0])
+            _bokeh_plotting.show(fig)
         return legend_figure
 
     def _sort(self, a_dict: _typing.Dict[str, int], by_key=False):
