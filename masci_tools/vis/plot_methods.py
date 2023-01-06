@@ -453,6 +453,9 @@ def multi_scatter_plot(xdata,
         if entry.color is not None:
             correct_legend = True
             plot_kw.pop('color', None)
+        else:
+            #Prevent warning about cmap having no effect
+            plot_kw.pop('cmap', None)
 
         res = ax.scatter(entry.x, y=entry.y, s=size, c=entry.color, data=source, **plot_kw, **kwargs)
         if plot_kw.get('label', None) is not None and entry.color is not None:
@@ -1921,6 +1924,9 @@ def plot_bands(kpath,
             if 'cmap' not in kwargs:
                 #Cut off the white end of the Blues/Reds colormap
                 plot_params.set_defaults(default_type='function', sub_colormap=(0.15, 1.0))
+        else:
+            #Prevents warnings from scatter call
+            plot_params.set_defaults(default_type='function', cmap=None)
 
         plot_data.apply('size', lambda size: (markersize_min + markersize_scaling * size / weight_max)**2)
 
