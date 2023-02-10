@@ -30,7 +30,7 @@ class modify_potential:
             if shape_ver == 'new':
                 check1 = 'Shape number' in str1
             else:
-                check1 = (len(str1) == 11)
+                check1 = len(str1) == 11
         else:
             check1 = 'exc:' in str1
         return check1

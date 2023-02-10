@@ -2926,7 +2926,7 @@ def doniach_sunjic(x, scale=1.0, E_0=0, gamma=1.0, alpha=0.0):
     """
 
     arg = (E_0 - x) / gamma
-    alpha2 = (1.0 - alpha)
+    alpha2 = 1.0 - alpha
     #scale = scale/(gamma**alpha2)
     don_su = np.cos(np.pi * alpha + alpha2 * np.arctan(arg)) / (1 + arg**2)**(alpha2 / 2)
     return np.array(scale * don_su)
