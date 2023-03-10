@@ -465,7 +465,7 @@ TASKS_DEFINITION = {
             },
         }
     },
-     'magnetic_moments': {
+    'magnetic_moments': {
         '_modes': [('jspin', 2)],
         'magnetic_moments': {
             'parse_type': 'allAttribs',
