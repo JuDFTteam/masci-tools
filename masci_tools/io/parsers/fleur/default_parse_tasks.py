@@ -512,7 +512,7 @@ TASKS_DEFINITION = {
             },
             'overwrite_last': True
         },
-        'parsed_forces': {
+    'parsed_forces': {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'forceTotal'
@@ -523,7 +523,7 @@ TASKS_DEFINITION = {
             }
         }
     },
-    'charges': {
+     'charges': {
         '_conversions': [Conversion(name='calculate_total_magnetic_moment')],
         'spin_dependent_charge': {
             'parse_type': 'allAttribs',
@@ -536,7 +536,7 @@ TASKS_DEFINITION = {
                 'only_required': True
             }
         },
-        'total_charge': {
+    'total_charge': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'totalCharge',
