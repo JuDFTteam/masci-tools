@@ -465,19 +465,6 @@ TASKS_DEFINITION = {
             },
         }
     },
-    'magnetic_moments': {
-        '_modes': [('jspin', 2)],
-        'magnetic_moments': {
-            'parse_type': 'allAttribs',
-            'path_spec': {
-                'name': 'magneticMoment'
-            },
-            'base_value': 'moment',
-            'kwargs': {
-                'ignore': ['atomType'],
-            }
-        }
-    },
     'orbital_magnetic_moments': {
         '_modes': [('jspin', 2), ('soc', True)],
         'orbital_magnetic_moments': {
@@ -492,12 +479,13 @@ TASKS_DEFINITION = {
         }
     },
     'global_magnetic_moments': {
-        '_minimum_version': '0.35',
-        '_modes': [('noco', True)],
-        'magnetic_vec_moments': {
+        '_minimum_version': '0.36',
+        '_modes': [('jspins', 2)],
+        'global_magnetic_moments': {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'vec',
+                'contains': 'magneticMomentsInMTSpheres',
                 'tag_name': 'globalMagMoment'
             }
         }
