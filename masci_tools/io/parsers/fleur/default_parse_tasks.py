@@ -465,6 +465,19 @@ TASKS_DEFINITION = {
             },
         }
     },
+     'magnetic_moments': {
+        '_modes': [('jspin', 2)],
+        'magnetic_moments': {
+            'parse_type': 'allAttribs',
+            'path_spec': {
+                'name': 'magneticMoment'
+            },
+            'base_value': 'moment',
+            'kwargs': {
+                'ignore': ['atomType'],
+            }
+        }
+    },
     'orbital_magnetic_moments': {
         '_modes': [('jspin', 2), ('soc', True)],
         'orbital_magnetic_moments': {
