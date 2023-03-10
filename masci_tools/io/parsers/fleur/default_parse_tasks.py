@@ -12,21 +12,27 @@
 """
 This module contains the dictionary with all defined tasks for the outxml_parser.
 The entries in the ``TASK_DEFINITION`` dict specify how to parse specific attributes tags.
+
 This needs to be maintained if the specifications do not work for a new schema version
 because of changed attribute names for example.
+
 Each entry in the ``TASK_DEFINITION`` dict can contain a series of keys, which by default
 correspond to the keys in the output dictionary
+
 The following keys are expected in each entry:
     :param parse_type: str, defines which methods to use when extracting the information
     :param subdict: str, if present the parsed values are put into this key in the output dictionary
     :param overwrite_last: bool, if True no list is inserted and each entry overwrites the last
+
 If `parse_type` is not equal to ``xmlGetter`` the following key is required:
     :param path_spec: dict with all the arguments that should be passed to tag_xpath
                       or attrib_xpath to get the correct path
     :param kwargs: additional arguments to pass to the parsing function
+
 In the case of ``xmlGetter`` the following keys are allowed:
     :param name: name of the function in `masci_tools.util.xml.xml_getters` (required)
     :param result_names: list of str defining the keys under which to enter the outputs of the function
+
 For the allAttribs parse_type there are more keys that can appear:
     :param base_value: str, optional. If given the attribute
                        with this name will be inserted into the key from the task_definition
@@ -36,8 +42,10 @@ For the allAttribs parse_type there are more keys that can appear:
     :param flat: bool, if False the dict parsed from the tag is inserted as a dict into the correspondin key
                        if True the values will be extracted and put into the output dictionary with the
                        format {task_key}_{attribute_name}
+
 Each task entry can have additional keys to specify, when to perform the task.
 These are denoted with underscores in their names and are all optional:
+
     :param _general: bool, default False. If True the parsing is not performed for each iteration on the
                      iteration node but beforehand and on the root node
     :param _modes: list of tuples, sets conditions for the keys in fleur_modes to perform the task
@@ -45,14 +53,19 @@ These are denoted with underscores in their names and are all optional:
     :param _minimal: bool, default False, denotes task to perform when minimal_mode=True is passed to the parser
     :param _special: bool, default False, If true these tasks are not added by default and need to be added manually
     :param _conversions: list of str, gives the names of functions in fleur_outxml_conversions to perform after parsing
+
+
 The following keys are special at the moment:
     - ``fleur_modes`` specifies how to identify the type of the calculation (e.g. SOC, magnetic, lda+u)
       this is used to determine, whether additional things should be parsed
+
 Following is the current specification of tasks
+
 .. literalinclude:: ../../../../masci_tools/io/parsers/fleur/default_parse_tasks.py
    :language: python
    :lines: 70-
    :linenos:
+
 """
 from masci_tools.util.parse_utils import Conversion
 
@@ -489,17 +502,6 @@ TASKS_DEFINITION = {
             }
         }
     },
-    'vec_magn_moments': {
-        '_minimum_version': '0.36',
-        '_modes': [('jspins', 2)],
-        'magnetic_vec_moments': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'vec',
-                'tag_name': 'globalMagMoment'
-            }
-        }
-    },
     'forces': {
         '_minimal': True,
         '_modes': [('relax', True)],
@@ -512,7 +514,7 @@ TASKS_DEFINITION = {
             },
             'overwrite_last': True
         },
-    'parsed_forces': {
+        'parsed_forces': {
             'parse_type': 'allAttribs',
             'path_spec': {
                 'name': 'forceTotal'
@@ -523,7 +525,7 @@ TASKS_DEFINITION = {
             }
         }
     },
-     'charges': {
+    'charges': {
         '_conversions': [Conversion(name='calculate_total_magnetic_moment')],
         'spin_dependent_charge': {
             'parse_type': 'allAttribs',
@@ -536,7 +538,7 @@ TASKS_DEFINITION = {
                 'only_required': True
             }
         },
-    'total_charge': {
+        'total_charge': {
             'parse_type': 'singleValue',
             'path_spec': {
                 'name': 'totalCharge',
