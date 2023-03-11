@@ -49,8 +49,12 @@ output_dict:
   - 7.4784455566
   - 7.4838622476
   magnetic_vec_moments:
-  - ["0.0","0.0","1.921322941"] 
-  - ["0.0","0.0","1.9069167578"]
+- - 0.0
+  - 0.0
+  - 1.921322941
+- - 0.0
+  - 0.0
+  - 1.9069167578
   number_of_atom_types: 2
   number_of_atoms: 2
   number_of_iterations: 4
