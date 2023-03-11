@@ -502,17 +502,6 @@ TASKS_DEFINITION = {
             }
         }
     },
-    'vec_magn_moments': {
-        '_minimum_version': '0.36',
-        '_modes': [('jspin', 2)],
-        'vec_magn_moments': {
-            'parse_type': 'attrib',
-            'path_spec': {
-                'name': 'vec',
-                'tag_name': 'globalMagMoment'
-            }
-        }
-    },
     'forces': {
         '_minimal': True,
         '_modes': [('relax', True)],
