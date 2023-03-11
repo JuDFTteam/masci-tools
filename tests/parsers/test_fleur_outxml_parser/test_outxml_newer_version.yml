@@ -48,7 +48,7 @@ output_dict:
   magnetic_moments_spin_up_charge:
   - 7.4784455566
   - 7.4838622476
-   magnetic_vec_moments:
+  magnetic_vec_moments:
   - 0.0
   - 0.0 
   - 1.921322941
