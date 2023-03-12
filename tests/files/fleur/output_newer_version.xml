@@ -293,10 +293,6 @@
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9248831159"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9271597822"/>
          </magneticMomentsInMTSpheres>
-         <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5984555924" units="Htr">
             <sumOfEigenvalues                            value="    -1469.4576695994">
                <coreElectrons value="-1455.1337167156"/>
@@ -439,10 +435,6 @@
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9333985458"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9345705319"/>
          </magneticMomentsInMTSpheres>
-         <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5962068057" units="Htr">
             <sumOfEigenvalues                            value="    -1469.8876075262">
                <coreElectrons value="-1455.4152321083"/>
@@ -585,10 +577,6 @@
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9618319469"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9642032919"/>
          </magneticMomentsInMTSpheres>
-         <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5947462666" units="Htr">
             <sumOfEigenvalues                            value="    -1471.8689831309">
                <coreElectrons value="-1456.7002541020"/>
@@ -731,10 +719,6 @@
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9213229410"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9069167578"/>
          </magneticMomentsInMTSpheres>
-          <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5962312914" units="Htr">
             <sumOfEigenvalues                            value="    -1472.0599570730">
                <coreElectrons value="-1456.7494708632"/>
