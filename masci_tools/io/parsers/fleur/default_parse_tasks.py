@@ -509,7 +509,7 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'vec',
-                'tag_name': 'globalMagMoment'
+                'tag_name': 'magneticMomentsInMTSpheres/globalMagMoment'
             }
         }
     },
