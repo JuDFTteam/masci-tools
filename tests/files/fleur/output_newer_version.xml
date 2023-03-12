@@ -287,16 +287,16 @@
             <spinDependentCharge spin="2" total="24.0754597" interstitial="1.0212141" mtSpheres="23.0542457"/>
             <totalCharge value="52.0000004000"/>
          </allElectronCharges>
-          <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <magneticMomentsInMTSpheres units="muBohr">
             <magneticMoment atomType="1" moment="1.9248831159" spinUpCharge="7.4536703815" spinDownCharge="5.5287872657"/>
             <magneticMoment atomType="2" moment="1.9271597822" spinUpCharge="7.4537738701" spinDownCharge="5.5266140880"/>
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9248831159"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9271597822"/>
          </magneticMomentsInMTSpheres>
+         <orbitalMomentsInMTSpheres units="muBohr">
+            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
+            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
+         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5984555924" units="Htr">
             <sumOfEigenvalues                            value="    -1469.4576695994">
                <coreElectrons value="-1455.1337167156"/>
@@ -433,16 +433,16 @@
             <spinDependentCharge spin="2" total="24.0673954" interstitial="1.0077593" mtSpheres="23.0596360"/>
             <totalCharge value="52.0000003806"/>
          </allElectronCharges>
-         <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <magneticMomentsInMTSpheres units="muBohr">
             <magneticMoment atomType="1" moment="1.9333985458" spinUpCharge="7.4640452754" spinDownCharge="5.5306467297"/>
             <magneticMoment atomType="2" moment="1.9345705319" spinUpCharge="7.4647047409" spinDownCharge="5.5301342089"/>
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9333985458"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9345705319"/>
          </magneticMomentsInMTSpheres>
+         <orbitalMomentsInMTSpheres units="muBohr">
+            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
+            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
+         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5962068057" units="Htr">
             <sumOfEigenvalues                            value="    -1469.8876075262">
                <coreElectrons value="-1455.4152321083"/>
@@ -579,16 +579,16 @@
             <spinDependentCharge spin="2" total="24.0380759" interstitial="0.9472272" mtSpheres="23.0908487"/>
             <totalCharge value="52.0000002753"/>
          </allElectronCharges>
-         <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <magneticMomentsInMTSpheres units="muBohr">
             <magneticMoment atomType="1" moment="1.9618319469" spinUpCharge="7.5089717241" spinDownCharge="5.5471397772"/>
             <magneticMoment atomType="2" moment="1.9642032919" spinUpCharge="7.5090096430" spinDownCharge="5.5448063511"/>
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9618319469"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9642032919"/>
          </magneticMomentsInMTSpheres>
+         <orbitalMomentsInMTSpheres units="muBohr">
+            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
+            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
+         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5947462666" units="Htr">
             <sumOfEigenvalues                            value="    -1471.8689831309">
                <coreElectrons value="-1456.7002541020"/>
@@ -725,16 +725,16 @@
             <spinDependentCharge spin="2" total="24.0855272" interstitial="0.9525573" mtSpheres="23.1329699"/>
             <totalCharge value="52.0000001251"/>
          </allElectronCharges>
-          <orbitalMomentsInMTSpheres units="muBohr">
-            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
-            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
-         </orbitalMomentsInMTSpheres>
          <magneticMomentsInMTSpheres units="muBohr">
             <magneticMoment atomType="1" moment="1.9213229410" spinUpCharge="7.4784455566" spinDownCharge="5.5571226156"/>
             <magneticMoment atomType="2" moment="1.9069167578" spinUpCharge="7.4838622476" spinDownCharge="5.5769454898"/>
             <globalMagMoment atomType="1" vec="0.00000   0.00000   1.9213229410"/>
             <globalMagMoment atomType="2" vec="0.00000   0.00000   1.9069167578"/>
          </magneticMomentsInMTSpheres>
+          <orbitalMomentsInMTSpheres units="muBohr">
+            <globalMagMoment atomType="1" vec="0.00000   0.00000   0.00000"/>
+            <globalMagMoment atomType="2" vec="0.00000   0.00000   0.00000"/>
+         </orbitalMomentsInMTSpheres>
          <totalEnergy                                    value="    -2545.5962312914" units="Htr">
             <sumOfEigenvalues                            value="    -1472.0599570730">
                <coreElectrons value="-1456.7494708632"/>
