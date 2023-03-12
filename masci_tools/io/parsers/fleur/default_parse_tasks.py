@@ -502,6 +502,17 @@ TASKS_DEFINITION = {
             }
         }
     },
+    'magnetic_moment': {
+        '_minimum_version': '0.36',
+        '_modes': [('jspin', 2), ('noco', False)],
+        'magnetic_vec_moments': {
+            'parse_type': 'attrib',
+            'path_spec': {
+                'name': 'vec',
+                'tag_name': 'globalMagMoment'
+            }
+        }
+    },
     'forces': {
         '_minimal': True,
         '_modes': [('relax', True)],
