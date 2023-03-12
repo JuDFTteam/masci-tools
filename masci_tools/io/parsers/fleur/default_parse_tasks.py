@@ -511,7 +511,6 @@ TASKS_DEFINITION = {
                 'name': 'vec',
                 'contains': 'magneticMomentsIn',
                 'not_contains': 'local'
-                
             }
         }
     },
