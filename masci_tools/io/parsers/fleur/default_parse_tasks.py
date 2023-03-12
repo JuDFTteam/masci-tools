@@ -509,7 +509,9 @@ TASKS_DEFINITION = {
             'parse_type': 'attrib',
             'path_spec': {
                 'name': 'vec',
-                'contains': 'magneticMomentsIn'
+                'contains': 'magneticMomentsIn',
+                'not_contains': 'local'
+                
             }
         }
     },
