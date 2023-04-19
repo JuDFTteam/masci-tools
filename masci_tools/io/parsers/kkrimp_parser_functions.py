@@ -10,7 +10,7 @@
 #                                                                             #
 ###############################################################################
 """
-Tools for the impurity caluclation plugin and its workflows
+Tools for the impurity calculation plugin and its workflows
 """
 from numpy import array, ndarray, loadtxt
 from masci_tools.io.common_functions import search_string, get_outfile_txt, get_version_info, convert_to_pystd
@@ -21,7 +21,7 @@ from masci_tools.io.common_functions import get_Ry2eV
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '0.7'
+__version__ = '0.7.1'
 __contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo')
 
 ####################################################################################
@@ -308,8 +308,13 @@ class KkrimpParserFunctions:
         """
         esp = loadtxt(file1)
         etot = loadtxt(file2)
-        esp_at = esp[-natom:, 1]
-        etot_at = etot[-natom:, 1]
+        if natom > 1:
+            esp_at = esp[-natom:, 1]
+            etot_at = etot[-natom:, 1]
+        else:
+            esp_at = esp
+            etot_at = etot
+
         return esp_at, etot_at
 
     ### end helper functions ###
