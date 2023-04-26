@@ -114,8 +114,8 @@ jobs:
         experimental: [false]
         extra-dependencies: ['testing,bokeh-plots,cmdline-extras']
         pytest-cmdline: ['']
-        bokeh-version: ['bokeh==3.0.1']
-        mpl-version: ['matplotlib==3.5.3']
+        bokeh-version: ['bokeh==3.0.3']
+        mpl-version: ['matplotlib==3.6.3']
         add-name: ['']
         include:
           - python-version: '3.7'
