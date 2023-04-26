@@ -109,14 +109,27 @@ jobs:
         experimental: [false]
         extra-dependencies: ['testing,bokeh-plots,cmdline-extras']
         pytest-cmdline: [""]
+        bokeh-version: ['bokeh==3.0.1']
+        mpl-version: ['matplotlib==3.5.3']
+        add-name: ['']
         include:
           - python-version: '3.7'
             experimental: false
             extra-dependencies: 'testing,bokeh-plots'
             pytest-cmdline: '-o addopts="--cov=masci_tools --cov=tests --cov-report xml"'
+            bokeh-version: ['bokeh==3.0.1']
+            mpl-version: ['matplotlib==3.5.3']
+            add-name: ['']
+          - python-version: '3.10'
+            experimental: true
+            extra-dependencies: 'testing,bokeh-plots,cmdline-extras'
+            bokeh-version: ['bokeh']
+            mpl-version: ['matplotlib']
+            add-name: ['-latest-bokeh/mpl']
+
       fail-fast: false
     
-    name: tests-python-${{ matrix.python-version }}
+    name: tests-python-${{ matrix.python-version }}${{ matrix.add-name }}
     continue-on-error: ${{ matrix.experimental }}
 
     steps:
@@ -149,6 +162,8 @@ jobs:
       run: |
         pip install -e .[${{ matrix.extra-dependencies }}]
         pip install pyhull
+        pip install ${{ matrix.bokeh-version }}
+        pip install ${{ matrix.mpl-version }}
 
     - name: Run pytest
       run: pytest ${{ matrix.pytest-cmdline }}
