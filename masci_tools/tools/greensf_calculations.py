@@ -341,7 +341,9 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cut
             for lpot in range(2 * lrep + 1):
                 for mpot in range(-lpot, lpot + 1):
                     lm = lpot * (lpot + 1) + mpot
-                    bxc_interpolated = interp1d(logmesh_atomtype[:meshpoints], bxc_atomtype[lm, :meshpoints], fill_value='extrapolate')
+                    bxc_interpolated = interp1d(logmesh_atomtype[:meshpoints],
+                                                bxc_atomtype[lm, :meshpoints],
+                                                fill_value='extrapolate')
                     bxc_integrated = np.trapz(bxc_interpolated(rmesh), rmesh)
 
                     for m in range(2 * lrep + 1):
