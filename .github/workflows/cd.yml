@@ -122,15 +122,15 @@ jobs:
             experimental: false
             extra-dependencies: 'testing,bokeh-plots'
             pytest-cmdline: '-o addopts="--cov=masci_tools --cov=tests --cov-report xml"'
-            bokeh-version: ['bokeh==3.0.1']
-            mpl-version: ['matplotlib==3.5.3']
-            add-name: ['']
+            bokeh-version: 'bokeh==3.0.1'
+            mpl-version: 'matplotlib==3.5.3'
+            add-name: ''
           - python-version: '3.10'
             experimental: true
             extra-dependencies: 'testing,bokeh-plots,cmdline-extras'
-            bokeh-version: ['bokeh']
-            mpl-version: ['matplotlib']
-            add-name: ['-latest-bokeh/mpl']
+            bokeh-version: 'bokeh'
+            mpl-version: 'matplotlib'
+            add-name: '-latest-bokeh/mpl'
 
       fail-fast: false
     
