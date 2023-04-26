@@ -328,19 +328,20 @@ def calculate_bxc_mmp_matrix(file: FileLike, radial_mesh_points: int = 4000, cut
         bxc = bxc[..., 0] + 1j * bxc[..., 1]
         bxc *= HTR_TO_EV
         log_rmesh = np.array(hdffile.get('RadialFunctions/rmsh'))
+        rmesh_dimensions = np.array(hdffile.get('RadialFunctions/jri'))
 
     #Now calculate all the different atomtype and orbitals that could be needed
     #Since this is relativaley cheap we can just do it for everything
 
     bxc_mmp = np.zeros((bxc.shape[0], 4, 7, 7), dtype=complex)
 
-    for atomtype, (bxc_atomtype, logmesh_atomtype) in enumerate(zip(bxc, log_rmesh)):
+    for atomtype, (bxc_atomtype, logmesh_atomtype, meshpoints) in enumerate(zip(bxc, log_rmesh, rmesh_dimensions)):
         rmesh = np.arange(0, max(logmesh_atomtype), max(logmesh_atomtype) / radial_mesh_points)
         for lrep in range(4):
             for lpot in range(2 * lrep + 1):
                 for mpot in range(-lpot, lpot + 1):
                     lm = lpot * (lpot + 1) + mpot
-                    bxc_interpolated = interp1d(logmesh_atomtype, bxc_atomtype[lm, :], fill_value='extrapolate')
+                    bxc_interpolated = interp1d(logmesh_atomtype[:meshpoints], bxc_atomtype[lm, :meshpoints], fill_value='extrapolate')
                     bxc_integrated = np.trapz(bxc_interpolated(rmesh), rmesh)
 
                     for m in range(2 * lrep + 1):

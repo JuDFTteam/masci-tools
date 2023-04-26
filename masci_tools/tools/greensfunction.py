@@ -474,6 +474,7 @@ def _read_gf_element(file: Any, index: int) -> tuple[GreensfElement, dict[str, A
             recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO, version=version)
 
         data, attributes = h5reader.read(recipe=recipe)
+        attributes['file_version'] = version
 
     return gf_element, data, attributes
 
