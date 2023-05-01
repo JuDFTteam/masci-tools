@@ -680,7 +680,8 @@ class ChemicalElements:
             return self
 
         a_dict = {
-            data_group: elmts for data_group, elmts in elements.items()
+            data_group: elmts
+            for data_group, elmts in elements.items()
             for selection_group in selected_groups
             if data_group == selection_group
         }

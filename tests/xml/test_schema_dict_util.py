@@ -91,8 +91,12 @@ def test_evaluate_attribute(caplog, load_inpxml, load_outxml):
         evaluate_attribute(root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species')
 
     with caplog.at_level(logging.WARNING):
-        assert evaluate_attribute(
-            root, schema_dict, 'radius', FLEUR_DEFINED_CONSTANTS, not_contains='species', logger=LOGGER) is None
+        assert evaluate_attribute(root,
+                                  schema_dict,
+                                  'radius',
+                                  FLEUR_DEFINED_CONSTANTS,
+                                  not_contains='species',
+                                  logger=LOGGER) is None
     assert 'No values found for attribute radius' in caplog.text
 
 
@@ -146,8 +150,12 @@ def test_evaluate_text(caplog, load_inpxml, load_outxml):
         evaluate_text(root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, not_contains='species')
 
     with caplog.at_level(logging.WARNING):
-        assert evaluate_text(
-            root, schema_dict, 'magnetism', FLEUR_DEFINED_CONSTANTS, not_contains='species', logger=LOGGER) is None
+        assert evaluate_text(root,
+                             schema_dict,
+                             'magnetism',
+                             FLEUR_DEFINED_CONSTANTS,
+                             not_contains='species',
+                             logger=LOGGER) is None
     assert 'No text found for tag magnetism' in caplog.text
 
 

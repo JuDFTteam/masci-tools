@@ -154,9 +154,9 @@ class PlotData:
                     column_args[key] = [val] * num_sets
 
             self.columns = [
-                self._column_spec(**{key: value[index]
-                                     for key, value in column_args.items()})
-                for index in range(num_sets)
+                self._column_spec(**{
+                    key: value[index] for key, value in column_args.items()
+                }) for index in range(num_sets)
             ]
         else:
             if isinstance(self.data, list):
