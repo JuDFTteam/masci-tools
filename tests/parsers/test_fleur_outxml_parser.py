@@ -434,6 +434,36 @@ def test_outxml_max6_1_compatibility(data_regression, clean_parser_log, test_fil
     })
 
 
+def test_outxml_max6_2_compatibility(data_regression, clean_parser_log, test_file):
+    """
+    Test if Max6.2 output files are processed correctly
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/Max-R6.2/out.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
+def test_outxml_max6_2_noco_compatibility(data_regression, clean_parser_log, test_file):
+    """
+    Test if Max6.2 output files are processed correctly (noco because of magnetic moment outputs)
+    """
+
+    OUTXML_FILEPATH = test_file('fleur/Max-R6.2/out_noco.xml')
+
+    warnings = {}
+    out_dict = outxml_parser(OUTXML_FILEPATH, parser_info_out=warnings, iteration_to_parse='all')
+    data_regression.check({
+        'output_dict': out_dict,
+        'warnings': clean_parser_log(warnings),
+    })
+
+
 def test_outxml_differing_versions(data_regression, clean_parser_log, test_file):
     """
     Test if files with different input/output versions are parsed correctly
