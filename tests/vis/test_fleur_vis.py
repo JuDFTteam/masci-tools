@@ -274,7 +274,9 @@ def test_plot_bands_spinpol_separate_bands_mpl():
                              0: 'Spin Up',
                              18: 'Spin Down'
                          },
-                         **{indx: 'Green Bands' for indx in range(4, 10)}
+                         **{
+                             indx: 'Green Bands' for indx in range(4, 10)
+                         }
                      })
 
     return gcf()
@@ -302,7 +304,9 @@ def test_plot_bands_spinpol_separate_bands_bokeh(check_bokeh_plot):
                                  0: 'Spin Up',
                                  18: 'Spin Down'
                              },
-                             **{indx: 'Green Bands' for indx in range(4, 10)}
+                             **{
+                                 indx: 'Green Bands' for indx in range(4, 10)
+                             }
                          })
 
     check_bokeh_plot(p)
