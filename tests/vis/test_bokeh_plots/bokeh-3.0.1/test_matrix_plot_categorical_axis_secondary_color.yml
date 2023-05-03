@@ -58,84 +58,18 @@ attributes:
                 type: ndarray
             - - color
               - array:
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 3.67879
-                - 7.78801
-                - 10.0
-                - 7.78801
-                - 3.67879
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                dtype: object
+                  data: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
                 type: ndarray
             - - secondary_color
               - array:
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                dtype: object
+                  data: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
@@ -713,84 +647,18 @@ attributes:
                 type: ndarray
             - - color
               - array:
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 3.67879
-                - 7.78801
-                - 10.0
-                - 7.78801
-                - 3.67879
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                dtype: object
+                  data: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
                 type: ndarray
             - - secondary_color
               - array:
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                dtype: object
+                  data: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
@@ -1368,84 +1236,18 @@ attributes:
                 type: ndarray
             - - color
               - array:
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 3.67879
-                - 7.78801
-                - 10.0
-                - 7.78801
-                - 3.67879
-                - 3.29193
-                - 6.96902
-                - 8.94839
-                - 6.96902
-                - 3.29193
-                - 2.35877
-                - 4.99352
-                - 6.4118
-                - 4.99352
-                - 2.35877
-                - 1.35335
-                - 2.86505
-                - 3.67879
-                - 2.86505
-                - 1.35335
-                dtype: object
+                  data: ZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1P5BJRs7C3gJADLCPTl35E0Ch+DHmrqUZQAywj05d+RNAkElGzsLeAkAuxVVl31UKQACuZMdG4BtA9rTDX5PlIUAArmTHRuAbQC7FVWXfVQpAkdCWcyluDUAQr+sX7CYfQAAAAAAAACRAEK/rF+wmH0CR0JZzKW4NQC7FVWXfVQpAAK5kx0bgG0D2tMNfk+UhQACuZMdG4BtALsVVZd9VCkCQSUbOwt4CQAywj05d+RNAofgx5q6lGUAMsI9OXfkTQJBJRs7C3gJAZapgVFKn9T8IPZtVn+sGQJHQlnMpbg1ACD2bVZ/rBkBlqmBUUqf1Pw==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
                 type: ndarray
             - - secondary_color
               - array:
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                - -10.0
-                - -5.0
-                - 0.0
-                - 5.0
-                - 10.0
-                dtype: object
+                  data: AAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQAAAAAAAACTAAAAAAAAAFMAAAAAAAAAAAAAAAAAAABRAAAAAAAAAJEAAAAAAAAAkwAAAAAAAABTAAAAAAAAAAAAAAAAAAAAUQAAAAAAAACRAAAAAAAAAJMAAAAAAAAAUwAAAAAAAAAAAAAAAAAAAFEAAAAAAAAAkQA==
+                  type: bytes
+                dtype: float64
                 order: little
                 shape:
                 - 35
