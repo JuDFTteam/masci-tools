@@ -1,10 +1,23 @@
 # Changelog
 
 ## latest
-[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.14.0...develop)
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.15.0...develop)
+
+Nothing here yet
+
+
+## v.0.15.0
+[full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.14.0...v0.15.0)
+
+### Added
+- Added support for Python `3.11` [[#227]](https://github.com/JuDFTteam/masci-tools/pull/227)
+- Added `FleurInputSchema.xsd` and `FleurOutputSchema.xsd` for the MaX6.2 release of fleur (file version `0.37`) [[#240]](https://github.com/JuDFTteam/masci-tools/pull/240)
+- KKR parser: Added keywords for Kkrimp BdG [[#235]](https://github.com/JuDFTteam/masci-tools/pull/235)
+
 
 ### Bugfixes
 - Fixed order of added comments in `readd_inpgen_comments`. Previously they would end up in reverse order
+- Fixed extraction of global magnetic moments from `out.xml` [[#230]](https://github.com/JuDFTteam/masci-tools/pull/230)/[[#231]](https://github.com/JuDFTteam/masci-tools/pull/231)
 
 ## v.0.14.0
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.13.0...v0.14.0)
