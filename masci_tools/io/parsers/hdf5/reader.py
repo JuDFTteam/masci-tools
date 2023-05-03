@@ -121,10 +121,10 @@ class HDF5Reader:
         self._move_to_memory = move_to_memory
 
     def __enter__(self) -> HDF5Reader:
-        try:
-            self.file = h5py.File(self._original_file, 'r')
-        except NotImplementedError:
-            #This except clause catches a special case resulting from
+
+        file = self._original_file
+        if getattr(file, 'seek', None) is not None:
+            #This check catches a special case resulting from
             #the AiiDA v2 file repository. The h5py.File constructor
             #wants to determine the end of the file stream and tries
             #`os.seek` with the argument `whence=2` (i.e. read starting from the end of the stream)
@@ -135,12 +135,17 @@ class HDF5Reader:
             #if the files are not yet packed, e.g. while workflows are running :)
             #The solution below is taken out of a mailing list suggestion for this
             #exact problem
-            self._tempfile = tempfile.TemporaryFile()
-            # Copy the content of source to target in chunks
-            shutil.copyfileobj(self._original_file, self._tempfile)  #type: ignore[arg-type]
-            self._tempfile.seek(0)  # Make sure to reset the pointer to the beginning of the stream
-            self.file = h5py.File(self._tempfile, 'r')
+            try:
+                file.seek(0, 2)  #type:ignore[union-attr]
+            except NotImplementedError:
+                file.seek(0)  #type:ignore[union-attr]
+                self._tempfile = tempfile.TemporaryFile()
+                # Copy the content of source to target in chunks
+                shutil.copyfileobj(file, self._tempfile)  #type: ignore[arg-type]
+                self._tempfile.seek(0)  # Make sure to reset the pointer to the beginning of the stream
+                file = self._tempfile
 
+        self.file = h5py.File(file, 'r')
         logger.debug('Opened h5py.File with id %s', self.file.id)
         return self
 

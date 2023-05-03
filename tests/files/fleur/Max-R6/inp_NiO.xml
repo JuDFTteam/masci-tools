@@ -229,7 +229,9 @@
   <!-- We include the file relax.xml here to enable relaxations (see documentation) -->
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml"> <xi:fallback/> </xi:include>
 </fleurInput>
-
+<!-- Initial (original) inpgen commandline (only for documentation purposes):
+    inpgen -f inp
+-->
 <!-- Initial (original) inpgen input (only for documentation purposes):
 NiO bct uc (AFM1)
 &input film=f /

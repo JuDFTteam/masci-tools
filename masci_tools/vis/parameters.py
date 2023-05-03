@@ -91,12 +91,7 @@ def ensure_plotter_consistency(plotter_object: Plotter) -> Callable[[F], F]:
 
             try:
                 res = func(*args, **kwargs)
-            except Exception:
-                plotter_object.remove_added_parameters()
-                plotter_object.reset_parameters()
-                plotter_object._function_defaults = {}
-                raise  #We do not want to erase the exception only wedge in the call to reset_parameters
-            else:
+            finally:
                 plotter_object.remove_added_parameters()
                 plotter_object.reset_parameters()
                 plotter_object._function_defaults = {}

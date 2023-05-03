@@ -26,7 +26,7 @@ __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
 __contributors__ = 'Philipp Rüßmann'
-__version__ = '1.8.1'
+__version__ = '1.8.2'
 
 ####################################################################################
 
@@ -80,7 +80,7 @@ def get_rms(outfile, outfile2, debug=False):
     if debug:
         print(rms_charge)
     rms_spin = parse_array_float(
-        outfile, 'v+ - v-', [1, '=', 1],
+        outfile, '   v+ - v-', [1, '=', 1],
         ['D', 'E'])  # this should be in the line after 'average rms-error' but is only present if NSPIN==2
     if debug:
         print(rms_spin)

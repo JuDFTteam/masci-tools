@@ -151,14 +151,15 @@ def test_hdf5_reader_fileobjects(test_file):
             def seek(self, target, whence=0):
                 if whence == 2:
                     raise NotImplementedError('whence=2 not supported')
-                return self._handle(target, whence=whence)
+                return self._handle.seek(target, whence)
 
             def __getattr__(self, name):
                 return getattr(self._handle, name)
 
-        with pytest.raises(NotImplementedError):
-            with open(TEST_FILE, 'rb') as file:
-                h5py.File(FileHandleNoBackwardsSeek(file), 'r')
+        if sys.version_info <= (3, 10):
+            with pytest.raises(NotImplementedError):
+                with open(TEST_FILE, 'rb') as file:
+                    h5py.File(FileHandleNoBackwardsSeek(file), 'r')
 
         with open(TEST_FILE, 'rb') as file:
             with HDF5Reader(FileHandleNoBackwardsSeek(file)) as reader:

@@ -141,12 +141,12 @@ def readd_inpgen_comments(xmltree: etree._ElementTree, comments: list[etree._Ele
     :param comments: list of XML comments
     """
 
-    root = xmltree.getroot()
-
+    previous = xmltree.getroot()
     for comment in comments:
         if not comment.tag is etree.Comment:
             raise ValueError(f'Invalid tag type. Only Comments allowed. Got: {comment.tag}')
-        root.addnext(comment)
+        previous.addnext(comment)
+        previous = comment
 
     return xmltree
 
