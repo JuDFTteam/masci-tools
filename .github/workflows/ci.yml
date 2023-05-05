@@ -168,10 +168,8 @@ jobs:
     - name: Run pytest
       run: pytest ${{ matrix.pytest-cmdline }}
 
-    - name: Upload code coverage report
-      run: |
-        pip install codecov
-        codecov
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v3
 
     - uses: actions/upload-artifact@v3
       if: failure()
