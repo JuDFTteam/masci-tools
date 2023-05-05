@@ -622,11 +622,7 @@ class _TaskParser:
 
             if spec['parse_type'] == 'xmlGetter':
                 action = getattr(xml_getters, spec['name'])
-                action = partial(action,
-                                 context.node,
-                                 context.schema_dict,
-                                 logger=context.logger,
-                                 constants=context.constants)
+                action = partial(action, context.node, context.schema_dict, logger=context.logger)
                 args = spec.get('kwargs', {}).copy()
             else:
                 action = parse_functions[spec['parse_type']]
