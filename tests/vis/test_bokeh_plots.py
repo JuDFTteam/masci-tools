@@ -292,10 +292,13 @@ def test_convergence_defaults(check_bokeh_plot, convergence_plot_data):
     Test of convergence plot with default values
     """
     from masci_tools.vis.bokeh_plots import plot_convergence
+    from bokeh.layouts import gridplot
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    p = plot_convergence(iteration, distance, energy, show=False)
+    p1, p2 = plot_convergence(iteration, distance, energy, show=False)
+
+    p = gridplot([p1, p2], ncols=1)
 
     check_bokeh_plot(p)
 
@@ -305,18 +308,21 @@ def test_convergence_param_change(check_bokeh_plot, convergence_plot_data):
     Test of convergence plot with changed parameters
     """
     from masci_tools.vis.bokeh_plots import plot_convergence
+    from bokeh.layouts import gridplot
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    p = plot_convergence(iteration,
-                         distance,
-                         energy,
-                         show=False,
-                         color='darkred',
-                         label_fontsize='24pt',
-                         marker='square',
-                         marker_size=12,
-                         alpha=0.8)
+    p1, p2 = plot_convergence(iteration,
+                              distance,
+                              energy,
+                              show=False,
+                              color='darkred',
+                              label_fontsize='24pt',
+                              marker='square',
+                              marker_size=12,
+                              alpha=0.8)
+
+    p = gridplot([p1, p2], ncols=1)
 
     check_bokeh_plot(p)
 
@@ -326,11 +332,12 @@ def test_convergence_multi_defaults(check_bokeh_plot, convergence_plot_data):
     Test of multiple convergence plot with default values
     """
     from masci_tools.vis.bokeh_plots import plot_convergence
+    from bokeh.layouts import gridplot
 
     iteration, distance, energy = convergence_plot_data(15)
-    p = plot_convergence(iteration, distance, energy, show=False)
+    p1, p2 = plot_convergence(iteration, distance, energy, show=False)
 
-    # need to return the figure in order for mpl checks to work
+    p = gridplot([p1, p2], ncols=1)
     check_bokeh_plot(p)
 
 

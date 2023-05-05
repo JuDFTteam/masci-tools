@@ -1312,7 +1312,7 @@ def test_convergence_defaults(convergence_plot_data):
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    plot_convergence(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2)
+    plot_convergence(iteration, distance, energy, show=False, axis_energy=ax1, axis_distance=ax2)
 
     # need to return the figure in order for mpl checks to work
     return fig
@@ -1336,8 +1336,8 @@ def test_convergence_param_change(convergence_plot_data):
                      distance,
                      energy,
                      show=False,
-                     axis1=ax1,
-                     axis2=ax2,
+                     axis_energy=ax1,
+                     axis_distance=ax2,
                      linestyle='--',
                      color='darkred',
                      marker='s',
@@ -1361,7 +1361,7 @@ def test_convergence_multi_defaults(convergence_plot_data):
 
     #plot_convergence produces two figures, for testing we merge them into one
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-    plot_convergence(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2, modes=[])
+    plot_convergence(iteration, distance, energy, show=False, axis_energy=ax1, axis_distance=ax2, modes=[])
 
     # need to return the figure in order for mpl checks to work
     return fig
