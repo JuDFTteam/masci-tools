@@ -118,15 +118,6 @@ def bokeh_scatter(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
-        warnings.warn(
-            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
-            'and xdata and ydata as the first arguments', DeprecationWarning)
-        data = x
-        x = kwargs.pop('xdata', 'x')
-        y = kwargs.pop('ydata', 'y')
 
     plot_data = process_data_arguments(data=data,
                                        x=x,
@@ -186,15 +177,6 @@ def bokeh_multi_scatter(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `scatter`
     """
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
-        warnings.warn(
-            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
-            'and xdata and ydata as the first arguments', DeprecationWarning)
-        data = x
-        x = kwargs.pop('xdata', 'x')
-        y = kwargs.pop('ydata', 'y')
 
     plot_data = process_data_arguments(data=data,
                                        x=x,
@@ -271,15 +253,6 @@ def bokeh_line(x,
     Kwargs will be passed on to :py:class:`masci_tools.vis.bokeh_plotter.BokehPlotter`.
     If the arguments are not recognized they are passed on to the bokeh function `line`
     """
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(x, (dict, pd.DataFrame, ColumnDataSource)) or x is None:
-        warnings.warn(
-            'Passing the source as first argument is deprecated. Please pass in source by the keyword data'
-            'and xdata and ydata as the first arguments', DeprecationWarning)
-        data = x
-        x = kwargs.pop('xdata', 'x')
-        y = kwargs.pop('ydata', 'y')
 
     plot_data = process_data_arguments(data=data,
                                        x=x,
@@ -371,15 +344,6 @@ def bokeh_dos(energy_grid,
 
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
-        warnings.warn(
-            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
-            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
-        data = energy_grid
-        energy_grid = kwargs.pop('energy', 'energy_grid')
-        dos_data = kwargs.pop('ynames', None)
 
     if dos_data is None and data is not None:
         dos_data = set(data.keys()) - set([energy_grid] if isinstance(energy_grid, str) else energy_grid)
@@ -477,16 +441,6 @@ def bokeh_spinpol_dos(energy_grid,
     Kwargs will be passed on to :py:func:`bokeh_line()`
     """
     from bokeh.models import NumeralTickFormatter, Arrow, NormalHead
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(energy_grid, (dict, pd.DataFrame, ColumnDataSource)) or energy_grid is None:
-        warnings.warn(
-            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
-            'and energy_grid and dos_data as the first arguments', DeprecationWarning)
-        data = energy_grid
-        energy_grid = kwargs.pop('energy', 'energy_grid')
-        spin_up_data = kwargs.pop('ynames', None)
-        spin_up_data, spin_dn_data = spin_up_data[:len(spin_up_data) // 2], spin_up_data[len(spin_up_data) // 2:]
 
     if spin_up_data is None and data is not None:
         spin_up_data = {key for key in data.keys() if '_up' in key}
@@ -665,27 +619,6 @@ def bokeh_bands(kpath,
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
-    from bokeh.models import ColumnDataSource
-
-    if 'size_scaling' in kwargs:
-        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
-        markersize_scaling = kwargs.pop('size_scaling')
-
-    if 'size_min' in kwargs:
-        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
-        markersize_min = kwargs.pop('size_min')
-
-    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
-        warnings.warn(
-            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
-            'and kpath and bands as the first arguments', DeprecationWarning)
-        data = kpath
-        kpath = kwargs.pop('k_label', 'kpath')
-        bands = kwargs.pop('eigenvalues', 'eigenvalues_up')
-
-    if 'weight' in kwargs:
-        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
-        size_data = kwargs.pop('weight')
 
     plot_data = process_data_arguments(single_plot=True,
                                        data=data,
@@ -834,28 +767,6 @@ def bokeh_spinpol_bands(kpath,
     Kwargs will be passed on to :py:func:`bokeh_multi_scatter()` or :py:func:`bokeh_line()`
     """
     from bokeh.transform import linear_cmap
-    from bokeh.models import ColumnDataSource
-
-    if 'size_scaling' in kwargs:
-        warnings.warn('size_scaling is deprecated. Use markersize_scaling instead', DeprecationWarning)
-        markersize_scaling = kwargs.pop('size_scaling')
-
-    if 'size_min' in kwargs:
-        warnings.warn('size_min is deprecated. Use markersize_min instead', DeprecationWarning)
-        markersize_min = kwargs.pop('size_min')
-
-    if isinstance(kpath, (dict, pd.DataFrame, ColumnDataSource)) or kpath is None:
-        warnings.warn(
-            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
-            'and kpath and bands_up and bands_dn as the first arguments', DeprecationWarning)
-        data = kpath
-        kpath = kwargs.pop('k_label', 'kpath')
-        bands_up = kwargs.pop('eigenvalues', ['eigenvalues_up', 'eigenvalues_down'])
-        bands_up, bands_dn = bands_up[0], bands_up[1]
-
-    if 'weight' in kwargs:
-        warnings.warn('The weight argument is deprecated. Use size_data and color_data instead', DeprecationWarning)
-        size_data = kwargs.pop('weight')
 
     plot_data = process_data_arguments(data=data,
                                        kpath=kpath,
@@ -1113,59 +1024,6 @@ def periodic_table_plot(
     from bokeh.transform import dodge, linear_cmap, log_cmap
     from bokeh.sampledata.periodic_table import elements
     from bokeh.models import Label, ColorBar, OpenHead, Arrow, BasicTicker
-
-    from bokeh.models import ColumnDataSource
-
-    if isinstance(values, (dict, pd.DataFrame, ColumnDataSource)) or values is None:
-        warnings.warn(
-            'Passing the dataframe as first argument is deprecated. Please pass in source by the keyword data'
-            'and values and positions as the first arguments', DeprecationWarning)
-        data = values
-        values = kwargs.pop('display_values', [])
-        positions = kwargs.pop('display_positions', [])
-
-    if 'color_value' in kwargs:
-        warnings.warn('color_value is deprecated. Use color_data instead', DeprecationWarning)
-        color_data = kwargs.pop('color_value')
-
-    if 'outfilename' in kwargs:
-        warnings.warn('outfilename is deprecated. Use saveas instead', DeprecationWarning)
-        saveas = kwargs.pop('outfilename')
-
-    if 'bokeh_palette' in kwargs:
-        warnings.warn('bokeh_palette is deprecated. Use color_palette instead', DeprecationWarning)
-        kwargs['color_palette'] = kwargs.pop('bokeh_palette')
-
-    if 'copy_source' in kwargs:
-        warnings.warn('copy_source is deprecated. Use copy_data instead', DeprecationWarning)
-        copy_data = kwargs.pop('copy_source')
-
-    if 'legend_labels' in kwargs:
-        warnings.warn('legend_labels is deprecated. Use legend_label instead', DeprecationWarning)
-        kwargs['legend_label'] = kwargs.pop('legend_labels')
-
-    if 'color_bar_title' in kwargs:
-        warnings.warn('color_bar_title is deprecated. Use title entry in the colorbar_options argument instead',
-                      DeprecationWarning)
-        kwargs.setdefault('colorbar_options', {})['title'] = kwargs.pop('color_bar_title')
-
-    if 'value_color_range' in kwargs:
-        warnings.warn('The value_color_range argument is deprecated. Use the color key in the limits argument instead',
-                      DeprecationWarning)
-        kwargs.setdefault('limits', {})['color'] = kwargs.pop('value_color_range')
-
-    if not isinstance(blank_outsiders, str):
-        warnings.warn(
-            'The blank_outsiders argument as a list of bools is deprecated. Use min, max or both or None instead',
-            DeprecationWarning)
-        if all(blank_outsiders):
-            blank_outsiders = 'both'
-        elif blank_outsiders[0]:
-            blank_outsiders = 'min'
-        elif blank_outsiders[1]:
-            blank_outsiders = 'max'
-        else:
-            blank_outsiders = None
 
     if color_map is None:
         color_map = plasma
@@ -1611,102 +1469,6 @@ def plot_convergence(iteration,
                         **kwargs)
 
     return p1, p2
-
-
-@ensure_plotter_consistency(plot_params)
-def plot_convergence_results(iteration, distance, total_energy, *, saveas='convergence', **kwargs):
-    """
-    Plot the total energy versus the scf iteration
-    and plot the distance of the density versus iterations. Uses bokeh_line and bokeh_scatter
-
-    :param iteration: list of Int
-    :param distance: list of floats
-    :total_energy: list of floats
-    :param show: bool, if True call show
-
-    Kwargs will be passed on to :py:func:`bokeh_line()`
-
-    :returns grid: bokeh grid with figures
-    """
-    from bokeh.layouts import gridplot
-
-    warnings.warn(
-        'plot_convergence_results is deprecated. Use the more general plot_convergence instead.'
-        'It can do both single and multiple calculations natively', DeprecationWarning)
-
-    if 'show' in kwargs:
-        plot_params.set_parameters(show=kwargs.pop('show'))
-    if 'save_plots' in kwargs:
-        plot_params.set_parameters(save_plots=kwargs.pop('save_plots'))
-
-    with NestedPlotParameters(plot_params):
-        p1, p2 = plot_convergence(iteration, distance, total_energy, save_plots=False, show=False, **kwargs)
-
-    grid = gridplot([p1, p2], ncols=1)
-
-    plot_params.save_plot(grid, saveas)
-
-    return grid
-
-
-@ensure_plotter_consistency(plot_params)
-def plot_convergence_results_m(iterations,
-                               distances,
-                               total_energies,
-                               *,
-                               link=False,
-                               nodes=None,
-                               modes=None,
-                               plot_label=None,
-                               saveas='convergence',
-                               **kwargs):
-    """
-    Plot the total energy versus the scf iteration
-    and plot the distance of the density versus iterations in a bokeh grid for several SCF results.
-
-    :param distances: list of lists of floats
-    :total_energies: list of lists of floats
-    :param iterations: list of lists of Int
-    :param link: bool, optional default=False:
-    :param nodes: list of node uuids or pks important for links
-    :param saveas1: str, optional default='t_energy_convergence', save first figure as
-    :param saveas2: str, optional default='distance_convergence', save second figure as
-    :param figure_kwargs: dict, optional default={'width': 600, 'height': 450}, gets parsed
-                          to bokeh_line
-    :param kwargs: further key-word arguments for bokeh_line
-
-    :returns grid: bokeh grid with figures
-    """
-    from bokeh.layouts import gridplot
-
-    warnings.warn(
-        'plot_convergence_results_m is deprecated. Use the more general plot_convergence instead.'
-        'It can do both single and multiple calculations natively', DeprecationWarning)
-
-    if 'show' in kwargs:
-        plot_params.set_parameters(show=kwargs.pop('show'))
-    if 'save_plots' in kwargs:
-        plot_params.set_parameters(save_plots=kwargs.pop('save_plots'))
-    if plot_label is not None:
-        kwargs['legend_label'] = plot_label
-
-    if modes is None:
-        modes = []
-
-    with NestedPlotParameters(plot_params):
-        p1, p2 = plot_convergence(iterations,
-                                  distances,
-                                  total_energies,
-                                  save_plots=False,
-                                  show=False,
-                                  drop_last_iteration=any(mode == 'force' for mode in modes),
-                                  **kwargs)
-
-    grid = gridplot([p1, p2], ncols=1)
-
-    plot_params.save_plot(grid, saveas)
-
-    return grid
 
 
 @ensure_plotter_consistency(plot_params)

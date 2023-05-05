@@ -177,12 +177,6 @@ def plot_fleur_bands(bandsdata, bandsattributes, spinpol=True, only_spin=None, b
     """
     from .common import bands, spinpol_bands, PlotBackend
 
-    if 'bokeh_plot' in kwargs:
-        warnings.warn(
-            'The argument bokeh_plot is deprecated. Use the argument backend to specify'
-            'the plotting library to use', DeprecationWarning)
-        backend = 'bokeh' if kwargs.pop('bokeh_plot') else 'matplotlib'
-
     nbands = bandsattributes['nbands']
 
     if not isinstance(bandsdata, pd.DataFrame):
@@ -339,12 +333,6 @@ def plot_fleur_dos(dosdata,
     from .common import dos, spinpol_dos, PlotBackend
     import numpy as np
     from collections import Counter
-
-    if 'bokeh_plot' in kwargs:
-        warnings.warn(
-            'The argument bokeh_plot is deprecated. Use the argument backend to specify'
-            'the plotting library to use', DeprecationWarning)
-        backend = 'bokeh' if kwargs.pop('bokeh_plot') else 'matplotlib'
 
     dosdata = pd.DataFrame(data=dosdata)
 
