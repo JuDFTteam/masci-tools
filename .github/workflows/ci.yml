@@ -140,9 +140,9 @@ jobs:
       uses: actions/cache@v3.3.1
       with:
         path: ~/.cache/pip
-        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml') }}
+        key: pip-${{ matrix.python-version }}${{ matrix.add-name }}-tests-${{ hashFiles('**/pyproject.toml') }}
         restore-keys: |
-          pip-${{ matrix.python-version }}-tests
+          pip-${{ matrix.python-version }}${{ matrix.add-name }}-tests
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.6.0
@@ -176,5 +176,5 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
-        name: matplotlib-comparison-${{ matrix.python-version }}
+        name: matplotlib-comparison-${{ matrix.python-version }}${{ matrix.add-name }}
         path: mpl-results
