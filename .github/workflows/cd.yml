@@ -7,7 +7,6 @@ on:
   release:
     types: [created]
   workflow_dispatch:
-    types: ['cd']
 
 jobs:
 
