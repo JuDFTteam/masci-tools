@@ -125,7 +125,7 @@ jobs:
             extra-dependencies: 'testing,bokeh-plots,cmdline-extras'
             bokeh-version: 'bokeh'
             mpl-version: 'matplotlib'
-            add-name: '-latest-bokeh/mpl'
+            add-name: '-latest-bokeh-mpl'
 
       fail-fast: false
     
