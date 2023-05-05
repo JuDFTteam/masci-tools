@@ -4,193 +4,41 @@ name: continuous-deployment
 # will only be published to PyPi if the tests pass
 
 on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
+  release:
+    types: [created]
+  workflow_dispatch:
+    types: ['cd']
 
 jobs:
 
-  docs:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - name: docs
-            sphinx-options: '' 
-            allow-failure: false
-          - name: docs-nitpicky
-            sphinx-options: '-nW'
-            allow-failure: true
-
-    name: ${{ matrix.name }}
-    continue-on-error: ${{ matrix.allow-failure }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4.6.0
-      with:
-        python-version: '3.10'
-
-    - name: Cache python dependencies
-      id: cache-pip
-      uses: actions/cache@v3.3.1
-      with:
-        path: ~/.cache/pip
-        key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-          pip-docs-
-
-    - name: Install python dependencies
-      run: |
-        pip install -e .[docs]
-
-    - name: Install Latex compiler
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y latexmk dvipng texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-
-    - name: Build documentation
-      env:
-        READTHEDOCS: 'True'
-        SPHINXOPTS: ${{ matrix.sphinx-options }}
-      run: |
-        make -C docs html
-
-  pre-commit:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    strategy:
-      matrix:
-        include:
-          - name: pre-commit-errors
-            skip-hooks: pylint-warnings
-            allow-failure: false
-          - name: pre-commit-warnings
-            skip-hooks: pylint-errors
-            allow-failure: true
-
-    name: ${{ matrix.name }}
-    continue-on-error: ${{ matrix.allow-failure }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Cache python dependencies
-      id: cache-pip
-      uses: actions/cache@v3.3.1
-      with:
-        path: ~/.cache/pip
-        key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-          pip-pre-commit-
-
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v4.6.0
-      with:
-        python-version: 3.8
-
-    - name: Install python dependencies
-      run: |
-        pip install .[pre-commit,bokeh-plots]
-        pip freeze
-
-    - name: Run pre-commit
-      run: |
-        SKIP=${{ matrix.skip-hooks }} pre-commit run --all-files || (git status --short; git diff ; exit 1)
-
-  tests:
-
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    strategy:
-      matrix:
-        python-version: ['3.11','3.10','3.9', '3.8']
-        experimental: [false]
-        extra-dependencies: ['testing,bokeh-plots,cmdline-extras']
-        pytest-cmdline: ['']
-        bokeh-version: ['bokeh==3.0.3']
-        mpl-version: ['matplotlib==3.6.3']
-        add-name: ['']
-        include:
-          - python-version: '3.7'
-            experimental: false
-            extra-dependencies: 'testing,bokeh-plots'
-            pytest-cmdline: '-o addopts="--cov=masci_tools --cov=tests --cov-report xml"'
-            bokeh-version: 'bokeh==2.4.3'
-            mpl-version: 'matplotlib==3.5.3'
-            add-name: ''
-          - python-version: '3.10'
-            experimental: true
-            extra-dependencies: 'testing,bokeh-plots,cmdline-extras'
-            bokeh-version: 'bokeh'
-            mpl-version: 'matplotlib'
-            add-name: '-latest-bokeh/mpl'
-
-      fail-fast: false
-    
-    name: tests-python-${{ matrix.python-version }}${{ matrix.add-name }}
-    continue-on-error: ${{ matrix.experimental }}
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Cache python dependencies
-      id: cache-pip
-      uses: actions/cache@v3.3.1
-      with:
-        path: ~/.cache/pip
-        key: pip-${{ matrix.python-version }}-tests-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-          pip-${{ matrix.python-version }}-tests
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.6.0
-      with:
-        python-version: ${{ matrix.python-version }}
-
-
-    - name: Install python dependencies
-      run: |
-        pip install -e .[${{ matrix.extra-dependencies }}]
-        pip install pyhull
-        pip install ${{ matrix.bokeh-version }}
-        pip install ${{ matrix.mpl-version }}
-
-    - name: Run pytest
-      run: pytest ${{ matrix.pytest-cmdline }}
-
-    - name: Upload code coverage report
-      run: |
-        pip install codecov
-        codecov
-
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: matplotlib-comparison-${{ matrix.python-version }}
-        path: mpl-results
+  ci:
+    uses: ./.github/workflows/ci.yml
 
   publish:
     name: Publish to PyPi
-    needs: [docs, tests, pre-commit] #pylint-warnings could be added at some later point
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    needs: [ci]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.7
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4.6.0
         with:
-          python-version: 3.7
+          python-version: 3.9
       - name: Install flit
         run: |
           pip install flit~=3.4
+
+      - name: Build and Publish to TestPyPi
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          flit publish
+        env:
+          FLIT_USERNAME: __token__
+          FLIT_PASSWORD: ${{ secrets.PYPI_KEY }}
+          FLIT_INDEX_URL: https://test.pypi.org/legacy/
+
       - name: Build and Publish to PyPi
+        if: github.event_name == 'release'
         run: |
           flit publish
         env:
