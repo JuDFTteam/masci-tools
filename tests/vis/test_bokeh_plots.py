@@ -26,8 +26,7 @@ def test_bokeh_methods_imports():
     from masci_tools.vis.bokeh_plots import bokeh_bands
     from masci_tools.vis.bokeh_plots import bokeh_spinpol_bands
     from masci_tools.vis.bokeh_plots import periodic_table_plot
-    from masci_tools.vis.bokeh_plots import plot_convergence_results
-    from masci_tools.vis.bokeh_plots import plot_convergence_results_m
+    from masci_tools.vis.bokeh_plots import plot_convergence
 
 
 TEST_CHANGES = [{'marker_size': 50}, {'show': False}, {'straight_line_options': {'line_color': 'red'}}]
@@ -144,6 +143,7 @@ def test_scatter_default(check_bokeh_plot):
     check_bokeh_plot(p)
 
 
+@pytest.mark.xfail
 def test_scatter_deprecated_signature(check_bokeh_plot):
     """
     Test with default values and old signature
@@ -154,8 +154,7 @@ def test_scatter_deprecated_signature(check_bokeh_plot):
 
     source = pd.DataFrame(data={'x': x, 'y': y})
 
-    with pytest.deprecated_call():
-        p = bokeh_scatter(source, show=False)
+    p = bokeh_scatter(source, show=False)
 
     check_bokeh_plot(p)
 
@@ -242,6 +241,7 @@ def test_multi_scatter_default_no_data(check_bokeh_plot):
     check_bokeh_plot(p)
 
 
+@pytest.mark.xfail
 def test_multi_scatter_deprecated_signature(check_bokeh_plot):
     """
     Test with default values and old signature
@@ -252,8 +252,7 @@ def test_multi_scatter_deprecated_signature(check_bokeh_plot):
 
     source = pd.DataFrame(data={'x': x, 'y': y})
 
-    with pytest.deprecated_call():
-        p = bokeh_multi_scatter(source, show=False)
+    p = bokeh_multi_scatter(source, show=False)
 
     check_bokeh_plot(p)
 
@@ -272,6 +271,7 @@ def test_line_default_no_data_line(check_bokeh_plot):
     check_bokeh_plot(p)
 
 
+@pytest.mark.xfail
 def test_line_multi_deprecated_signature_line(check_bokeh_plot):
     """
     Test with default values and old signature
@@ -282,8 +282,7 @@ def test_line_multi_deprecated_signature_line(check_bokeh_plot):
 
     source = pd.DataFrame(data={'x': x, 'y': y})
 
-    with pytest.deprecated_call():
-        p = bokeh_line(source, show=False)
+    p = bokeh_line(source, show=False)
 
     check_bokeh_plot(p)
 
@@ -292,11 +291,11 @@ def test_convergence_defaults(check_bokeh_plot, convergence_plot_data):
     """
     Test of convergence plot with default values
     """
-    from masci_tools.vis.bokeh_plots import plot_convergence_results
+    from masci_tools.vis.bokeh_plots import plot_convergence
 
     iteration, distance, energy = convergence_plot_data(1)
-    with pytest.deprecated_call():
-        p = plot_convergence_results(iteration, distance, energy, show=False)
+
+    p = plot_convergence(iteration, distance, energy, show=False)
 
     check_bokeh_plot(p)
 
@@ -305,20 +304,19 @@ def test_convergence_param_change(check_bokeh_plot, convergence_plot_data):
     """
     Test of convergence plot with changed parameters
     """
-    from masci_tools.vis.bokeh_plots import plot_convergence_results
+    from masci_tools.vis.bokeh_plots import plot_convergence
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    with pytest.deprecated_call():
-        p = plot_convergence_results(iteration,
-                                     distance,
-                                     energy,
-                                     show=False,
-                                     color='darkred',
-                                     label_fontsize='24pt',
-                                     marker='square',
-                                     marker_size=12,
-                                     alpha=0.8)
+    p = plot_convergence(iteration,
+                         distance,
+                         energy,
+                         show=False,
+                         color='darkred',
+                         label_fontsize='24pt',
+                         marker='square',
+                         marker_size=12,
+                         alpha=0.8)
 
     check_bokeh_plot(p)
 
@@ -327,12 +325,10 @@ def test_convergence_multi_defaults(check_bokeh_plot, convergence_plot_data):
     """
     Test of multiple convergence plot with default values
     """
-    from masci_tools.vis.bokeh_plots import plot_convergence_results_m
+    from masci_tools.vis.bokeh_plots import plot_convergence
 
     iteration, distance, energy = convergence_plot_data(15)
-
-    with pytest.deprecated_call():
-        p = plot_convergence_results_m(iteration, distance, energy, show=False)
+    p = plot_convergence(iteration, distance, energy, show=False)
 
     # need to return the figure in order for mpl checks to work
     check_bokeh_plot(p)

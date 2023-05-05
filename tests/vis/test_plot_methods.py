@@ -36,8 +36,7 @@ def test_plot_methods_imports():
     from masci_tools.vis.plot_methods import barchart
     from masci_tools.vis.plot_methods import plot_convex_hull2d
     from masci_tools.vis.plot_methods import plot_residuen
-    from masci_tools.vis.plot_methods import plot_convergence_results
-    from masci_tools.vis.plot_methods import plot_convergence_results_m
+    from masci_tools.vis.plot_methods import plot_convergence
     from masci_tools.vis.plot_methods import plot_lattice_constant
     from masci_tools.vis.plot_methods import plot_relaxation_results
     from masci_tools.vis.plot_methods import plot_dos
@@ -342,66 +341,6 @@ def test_single_scatter_lines_param_change():
     return gcf()
 
 
-@pytest.mark.mpl_image_compare(filename='test_single_scatter_limits.png')  #Same as the normal limits test
-def test_single_scatter_limits_deprecated():
-    """
-    Scatterplot with deprecated parameter for modifying plot limits
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import single_scatterplot
-
-    x = np.linspace(-10, 10, 100)
-    y = x**2
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', limits=[(0, 10), (-100, 100)], show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_single_scatter_scale.png')  #same as the normal scale test
-def test_single_scatter_scale_deprecated():
-    """
-    Scatterplot with deprecated option for modifying axis scales
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import single_scatterplot
-
-    x = np.linspace(-10, 10, 100)
-    y = x**2
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', scale=[None, 'log'], show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_single_scatter_defaults.png')
-def test_single_scatter_deprecated_label():
-    """
-    Scatterplot with deprecated option for changing plot label
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import single_scatterplot
-
-    x = np.linspace(-10, 10, 100)
-    y = x**2
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        single_scatterplot(x, y, xlabel='X', ylabel='Y', title='Plot Test', plotlabel='Test', show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-class TestMultipleScatterPlot:
-    """
-    Test of the multiple_scatterplots function
-    """
-
-
 @pytest.mark.mpl_image_compare
 def test_multiple_scatter_defaults():
     """
@@ -591,131 +530,6 @@ def test_multiple_scatter_area():
                           linewidth={2: 5},
                           legend=True,
                           show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_scale_limits.png')  #Same as non-deprecated test
-def test_multiple_scatter_scale_limits_deprecated():
-    """
-    Scatterplot with deprecated options for setting scales and limits
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import multiple_scatterplots
-
-    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              scale=[None, 'log'],
-                              limits=[(0, 10), (0.01, 100)],
-                              show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_xticks.png')
-def test_multiple_scatter_xticks_deprecated():
-    """
-    Scatterplot with deprecated option for setting custom xticks
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import multiple_scatterplots
-
-    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              xticks=[[r'$\pi$', '4', 'TEST', r'$\Omega$', r'$\frac{{1}}{{4}}$'], [-10, 3, 3, 10, 20]],
-                              show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
-def test_multiple_scatter_plot_labels_deprecated():
-    """
-    Scatterplot with deprecated option for setting custom plot labels
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import multiple_scatterplots
-
-    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              plot_labels=['Parabola', 'Line', None, 'cosine'],
-                              legend=True,
-                              legend_options={'fontsize': 20},
-                              show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare(filename='test_multiple_scatter_legend.png')
-def test_multiple_scatter_legend_option_deprecated():
-    """
-    Scatterplot with deprecated option for setting legend parameters
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import multiple_scatterplots
-
-    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              plot_label=['Parabola', 'Line', None, 'cosine'],
-                              legend=True,
-                              legend_option={'fontsize': 20},
-                              show=False)
-    # need to return the figure in order for mpl checks to work
-    return gcf()
-
-
-@pytest.mark.mpl_image_compare
-def test_multiple_scatter_colors_deprecated():
-    """
-    Scatterplot with setting colors via deprecated option
-    """
-    import numpy as np
-    from masci_tools.vis.plot_methods import multiple_scatterplots
-
-    x = [np.linspace(-10, 10, 100)] * 4 + [np.linspace(-10, 20, 100)]
-    y = [x[0]**2, x[1] * 5 + 30, 50 * np.sin(x[2]), 50 * np.cos(x[3]), -5 * x[4] + 30]
-
-    gcf().clear()
-    with pytest.deprecated_call():
-        multiple_scatterplots(x,
-                              y,
-                              xlabel='X',
-                              ylabel='Y',
-                              title='Plot Test',
-                              colors=['darkred', 'darkblue', 'limegreen'],
-                              show=False)
     # need to return the figure in order for mpl checks to work
     return gcf()
 
@@ -1489,7 +1303,7 @@ def test_convergence_defaults(convergence_plot_data):
     """
     Test of convergence plot with default values
     """
-    from masci_tools.vis.plot_methods import plot_convergence_results
+    from masci_tools.vis.plot_methods import plot_convergence
 
     gcf().clear()
 
@@ -1498,8 +1312,7 @@ def test_convergence_defaults(convergence_plot_data):
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    with pytest.deprecated_call():
-        plot_convergence_results(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2)
+    plot_convergence(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2)
 
     # need to return the figure in order for mpl checks to work
     return fig
@@ -1510,7 +1323,7 @@ def test_convergence_param_change(convergence_plot_data):
     """
     Test of convergence plot with changed parameters
     """
-    from masci_tools.vis.plot_methods import plot_convergence_results
+    from masci_tools.vis.plot_methods import plot_convergence
 
     gcf().clear()
 
@@ -1519,18 +1332,17 @@ def test_convergence_param_change(convergence_plot_data):
 
     iteration, distance, energy = convergence_plot_data(1)
 
-    with pytest.deprecated_call():
-        plot_convergence_results(iteration,
-                                 distance,
-                                 energy,
-                                 show=False,
-                                 axis1=ax1,
-                                 axis2=ax2,
-                                 linestyle='--',
-                                 color='darkred',
-                                 marker='s',
-                                 linewidth=10,
-                                 title_fontsize=20)
+    plot_convergence(iteration,
+                     distance,
+                     energy,
+                     show=False,
+                     axis1=ax1,
+                     axis2=ax2,
+                     linestyle='--',
+                     color='darkred',
+                     marker='s',
+                     linewidth=10,
+                     title_fontsize=20)
 
     # need to return the figure in order for mpl checks to work
     return fig
@@ -1541,7 +1353,7 @@ def test_convergence_multi_defaults(convergence_plot_data):
     """
     Test of multiple convergence plot with default values
     """
-    from masci_tools.vis.plot_methods import plot_convergence_results_m
+    from masci_tools.vis.plot_methods import plot_convergence
 
     iteration, distance, energy = convergence_plot_data(15)
 
@@ -1549,9 +1361,7 @@ def test_convergence_multi_defaults(convergence_plot_data):
 
     #plot_convergence produces two figures, for testing we merge them into one
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-
-    with pytest.deprecated_call():
-        plot_convergence_results_m(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2, modes=[])
+    plot_convergence(iteration, distance, energy, show=False, axis1=ax1, axis2=ax2, modes=[])
 
     # need to return the figure in order for mpl checks to work
     return fig
