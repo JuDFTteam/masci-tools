@@ -151,40 +151,6 @@ def readd_inpgen_comments(xmltree: etree._ElementTree, comments: list[etree._Ele
     return xmltree
 
 
-def reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs):
-    """
-    DEPRECATED ALIAS: Moved to masci_tools.util.schema_dict_util
-
-    Split the xmltree back up according to the given included tags.
-    The original xmltree will be returned with the corresponding xinclude tags
-    and the included trees are returned in a dict mapping the inserted filename
-    to the extracted tree
-
-    Tags for which no known filename is known are returned under unknown-1.xml, ...
-    The following tags have known filenames:
-
-        - `relaxation`: ``relax.xml``
-        - `kPointLists`: ``kpts.xml``
-        - `symmetryOperations`: ``sym.xml``
-        - `atomSpecies`: ``species.xml``
-        - `atomGroups`: ``atoms.xml``
-
-    Additional mappings can be given in the keyword arguments
-
-    :param xmltree: an xml-tree which will be processed
-    :param schema_dict: Schema dictionary containing all the necessary information
-    :param included_tags: Iterable of str, containing the names of the tags to be excluded
-
-    :returns: xmltree with the inseerted xinclude tags and a dict mapping the filenames
-              to the excluded trees
-
-    :raises ValueError: if the tag can not be found in the given xmltree
-    """
-    from masci_tools.util.schema_dict_util import reverse_xinclude  #pylint: disable=redefined-outer-name,cyclic-import
-    warnings.warn('DEPRECATED: reverse_xinclude moved to masci_tools.util.schema_dict_util', DeprecationWarning)
-    return reverse_xinclude(xmltree, schema_dict, included_tags, **kwargs)
-
-
 def validate_xml(xmltree: etree._ElementTree,
                  schema: etree.XMLSchema,
                  error_header: str = 'File does not validate') -> None:

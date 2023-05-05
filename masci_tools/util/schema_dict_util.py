@@ -37,25 +37,6 @@ except ImportError:
     from typing_extensions import Literal  #type:ignore
 
 
-def read_constants(root: XMLLike | etree.XPathElementEvaluator,
-                   schema_dict: fleur_schema.SchemaDict,
-                   logger: Logger | None = None) -> dict[str, float]:
-    """
-    Reads in the constants defined in the inp.xml
-    and returns them combined with the predefined constants from
-    fleur as a dictionary
-
-    :param root: root of the etree of the inp.xml file
-    :param schema_dict: schema_dictionary of the version of the file to read (inp.xml or out.xml)
-    :param logger: logger object for logging warnings, errors
-
-    :return: a python dictionary with all defined constants
-    """
-    from masci_tools.io.fleur_xml import get_constants  #pylint: disable=cyclic-import
-    warnings.warn('read_constants is moved to masci_tools.io.fleur_xml', DeprecationWarning)
-    return get_constants(root, schema_dict, logger=logger)  #type: ignore[arg-type]
-
-
 def evaluate_attribute(node: XMLLike | etree.XPathElementEvaluator,
                        schema_dict: fleur_schema.SchemaDict,
                        name: str,
