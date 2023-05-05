@@ -149,32 +149,6 @@ def single_scatterplot(xdata,
     If the arguments are not recognized they are passed on to the matplotlib functions
     (`errorbar` or `fill_between`)
     """
-    #DEPRECATION WARNINGS
-    if 'plotlabel' in kwargs:
-        warnings.warn('Please use plot_label instead of plotlabel', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('plotlabel')
-
-    if 'scale' in kwargs:
-        scale = kwargs.get('scale')
-        if isinstance(scale, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            scale_new = {}
-            if scale[0] is not None:
-                scale_new['x'] = scale[0]
-            if scale[1] is not None:
-                scale_new['y'] = scale[1]
-            kwargs['scale'] = scale_new
-
-    if 'limits' in kwargs:
-        limits = kwargs.get('limits')
-        if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            limits_new = {}
-            if limits[0] is not None:
-                limits_new['x'] = limits[0]
-            if limits[1] is not None:
-                limits_new['y'] = limits[1]
-            kwargs['limits'] = limits_new
 
     plot_data = process_data_arguments(single_plot=True,
                                        data=data,
@@ -262,48 +236,6 @@ def multiple_scatterplots(xdata,
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
 
-    #DEPRECATION WARNINGS
-    if 'plot_labels' in kwargs:
-        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('plot_labels')
-
-    if 'colors' in kwargs:
-        warnings.warn('Please use color instead of colors', DeprecationWarning)
-        kwargs['color'] = kwargs.pop('colors')
-
-    if 'legend_option' in kwargs:
-        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
-        kwargs['legend_options'] = kwargs.pop('legend_option')
-
-    if 'scale' in kwargs:
-        scale = kwargs.get('scale')
-        if isinstance(scale, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            scale_new = {}
-            if scale[0] is not None:
-                scale_new['x'] = scale[0]
-            if scale[1] is not None:
-                scale_new['y'] = scale[1]
-            kwargs['scale'] = scale_new
-
-    if 'limits' in kwargs:
-        limits = kwargs.get('limits')
-        if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            limits_new = {}
-            if limits[0] is not None:
-                limits_new['x'] = limits[0]
-            if limits[1] is not None:
-                limits_new['y'] = limits[1]
-            kwargs['limits'] = limits_new
-
-    if 'xticks' in kwargs:
-        xticks = kwargs.get('xticks')
-        if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
-            kwargs['xticklabels'] = xticks[0]
-            kwargs['xticks'] = xticks[1]
-
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
     ax = plot_params.prepare_plot(title=title, xlabel=xlabel, ylabel=ylabel, axis=axis)
 
@@ -385,49 +317,6 @@ def multi_scatter_plot(xdata,
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
-
-    #DEPRECATION WARNINGS: label/plot_labels, alpha, limits, scale, legend_option, xticks
-
-    if 'label' in kwargs:
-        warnings.warn('Please use plot_label instead of label', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('label')
-
-    if 'alpha' in kwargs:
-        warnings.warn('Please use plot_alpha instead of alpha', DeprecationWarning)
-        kwargs['plot_alpha'] = kwargs.pop('alpha')
-
-    if 'legend_option' in kwargs:
-        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
-        kwargs['legend_options'] = kwargs.pop('legend_option')
-
-    if 'scale' in kwargs:
-        scale = kwargs.get('scale')
-        if isinstance(scale, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            scale_new = {}
-            if scale[0] is not None:
-                scale_new['x'] = scale[0]
-            if scale[1] is not None:
-                scale_new['y'] = scale[1]
-            kwargs['scale'] = scale_new
-
-    if 'limits' in kwargs:
-        limits = kwargs.get('limits')
-        if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            limits_new = {}
-            if limits[0] is not None:
-                limits_new['x'] = limits[0]
-            if limits[1] is not None:
-                limits_new['y'] = limits[1]
-            kwargs['limits'] = limits_new
-
-    if 'xticks' in kwargs:
-        xticks = kwargs.get('xticks')
-        if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
-            kwargs['xticklabels'] = xticks[0]
-            kwargs['xticks'] = xticks[1]
 
     plot_params.set_defaults(default_type='function', linestyle=None, area_plot=False, colorbar=False)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
@@ -767,25 +656,6 @@ def histogram(xdata,
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
 
-    if 'label' in kwargs:
-        warnings.warn('Please use plot_label instead of label', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('label')
-
-    if 'legend_option' in kwargs:
-        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
-        kwargs['legend_options'] = kwargs.pop('legend_option')
-
-    if 'limits' in kwargs:
-        limits = kwargs.get('limits')
-        if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            limits_new = {}
-            if limits[0] is not None:
-                limits_new['x'] = limits[0]
-            if limits[1] is not None:
-                limits_new['y'] = limits[1]
-            kwargs['limits'] = limits_new
-
     kwargs = plot_params.set_parameters(continue_on_error=True, set_powerlimits=not log, area_plot=False, **kwargs)
 
     if orientation == 'horizontal':
@@ -823,19 +693,6 @@ def histogram(xdata,
     if return_hist_output:
         return ax, n, bins, patches
     return ax
-
-
-# todo remove default histogramm, replace it in all code by histogramm
-def default_histogram(*args, **kwargs):
-    """
-    Create a standard looking histogram (DEPRECATED)
-    """
-
-    warnings.warn('Use histogram instead of default_histogram', DeprecationWarning)
-
-    res = histogram(*args, **kwargs)
-
-    return res
 
 
 @ensure_plotter_consistency(plot_params)
@@ -903,48 +760,6 @@ def barchart(positions,
         if len(plot_data) % 2 == 0:
             shifts += width / 2
         plot_data.shift_data('position', shifts)
-
-    #DEPRECATION WARNINGS
-    if 'plot_labels' in kwargs:
-        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('plot_labels')
-
-    if 'colors' in kwargs:
-        warnings.warn('Please use color instead of colors', DeprecationWarning)
-        kwargs['color'] = kwargs.pop('colors')
-
-    if 'legend_option' in kwargs:
-        warnings.warn('Please use legend_options instead of legend_option', DeprecationWarning)
-        kwargs['legend_options'] = kwargs.pop('legend_option')
-
-    if 'scale' in kwargs:
-        scale = kwargs.get('scale')
-        if isinstance(scale, list):
-            warnings.warn("Please provide scale as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            scale_new = {}
-            if scale[0] is not None:
-                scale_new['x'] = scale[0]
-            if scale[1] is not None:
-                scale_new['y'] = scale[1]
-            kwargs['scale'] = scale_new
-
-    if 'limits' in kwargs:
-        limits = kwargs.get('limits')
-        if isinstance(limits, list):
-            warnings.warn("Please provide limits as dict in the form {'x': value, 'y': value2}", DeprecationWarning)
-            limits_new = {}
-            if limits[0] is not None:
-                limits_new['x'] = limits[0]
-            if limits[1] is not None:
-                limits_new['y'] = limits[1]
-            kwargs['limits'] = limits_new
-
-    if 'xticks' in kwargs:
-        xticks = kwargs.get('xticks')
-        if isinstance(xticks[0], list):
-            warnings.warn('Please provide xticks and xticklabels separately as two lists', DeprecationWarning)
-            kwargs['xticklabels'] = xticks[0]
-            kwargs['xticks'] = xticks[1]
 
     plot_params.set_defaults(default_type='function', linewidth=None)
     kwargs = plot_params.set_parameters(continue_on_error=True, **kwargs)
@@ -1119,11 +934,6 @@ def plot_convex_hull2d(hull,
     Kwargs will be passed on to :py:class:`masci_tools.vis.matplotlib_plotter.MatplotlibPlotter`.
     If the arguments are not recognized they are passed on to the matplotlib functions `plot`
     """
-
-    #DEPRECATE: color_line
-    if 'color_line' in kwargs:
-        warnings.warn('Please use color instead of color_line', DeprecationWarning)
-        kwargs['color'] = kwargs.pop('colors')
 
     plot_params.set_defaults(default_type='function', color='k')
     #Define function wide custom parameters
@@ -1364,94 +1174,6 @@ def plot_convergence(iteration,
 
 
 @ensure_plotter_consistency(plot_params)
-def plot_convergence_results(iteration,
-                             distance,
-                             total_energy,
-                             *,
-                             saveas1='t_energy_convergence',
-                             axis1=None,
-                             saveas2='distance_convergence',
-                             axis2=None,
-                             **kwargs):
-    """
-    DEPRECATED
-    Plot the total energy versus the scf iteration
-    and plot the distance of the density versus iterations.
-
-    :param iteration: array for the number of iterations
-    :param distance: array of distances
-    :param total_energy: array of total energies
-    :param saveas1: str, filename for the energy convergence plot
-    :param axis1: Axes object for the energy convergence plot
-    :param saveas2: str, filename for the distance plot
-    :param axis2: Axes object for the distance plot
-
-    Other Kwargs will be passed on to all :py:func:`single_scatterplot()` calls
-    """
-
-    warnings.warn(
-        'plot_convergence_results is deprecated. Use the more general plot_convergence instead.'
-        'It can do both single and multiple calculations natively', DeprecationWarning)
-
-    return plot_convergence(iteration,
-                            distance,
-                            total_energy,
-                            saveas_energy=saveas1,
-                            saveas_distance=saveas2,
-                            axis_energy=axis1,
-                            axis_distance=axis2,
-                            **kwargs)
-
-
-@ensure_plotter_consistency(plot_params)
-def plot_convergence_results_m(iterations,
-                               distances,
-                               total_energies,
-                               *,
-                               modes,
-                               nodes=None,
-                               saveas1='t_energy_convergence',
-                               saveas2='distance_convergence',
-                               axis1=None,
-                               axis2=None,
-                               **kwargs):
-    """
-    DEPRECATED
-    Plot the total energy versus the scf iteration
-    and plot the distance of the density versus iterations.
-
-    :param iterations: array for the number of iterations
-    :param distances: array of distances
-    :param total_energies: array of total energies
-    :param modes: list of convergence modes (if 'force' is in the list the last distance is removed)
-    :param saveas1: str, filename for the energy convergence plot
-    :param axis1: Axes object for the energy convergence plot
-    :param saveas2: str, filename for the distance plot
-    :param axis2: Axes object for the distance plot
-
-    Other Kwargs will be passed on to all :py:func:`multiple_scatterplots()` calls
-    """
-
-    if 'plot_labels' in kwargs:
-        warnings.warn('Please use plot_label instead of plot_labels', DeprecationWarning)
-        kwargs['plot_label'] = kwargs.pop('plot_labels')
-
-    warnings.warn(
-        'plot_convergence_results_m is deprecated. Use the more general plot_convergence instead.'
-        'It can do both single and multiple calculations natively', DeprecationWarning)
-
-    return plot_convergence(iterations,
-                            distances,
-                            total_energies,
-                            saveas_energy=saveas1,
-                            saveas_distance=saveas2,
-                            axis_energy=axis1,
-                            axis_distance=axis2,
-                            drop_last_iteration=any(mode == 'force' for mode in modes),
-                            **kwargs)
-
-
-@ensure_plotter_consistency(plot_params)
 def plot_lattice_constant(scaling,
                           total_energy,
                           *,
@@ -1487,15 +1209,6 @@ def plot_lattice_constant(scaling,
     """
     # TODO: make box which shows fit results. (fit resuls have to be past)
 
-    if 'multi' in kwargs:
-        warnings.warn('multi is deprecated. The existence of multiple plots is automatically inferred',
-                      DeprecationWarning)
-        kwargs.pop('multi')
-
-    if 'fit_y' in kwargs:
-        warnings.warn('fit_y is deprecated. Use fit_data instead', DeprecationWarning)
-        fit_data = kwargs.pop('fit_y')
-
     plot_data = process_data_arguments(data=data,
                                        scaling=scaling,
                                        energy=total_energy,
@@ -1504,20 +1217,6 @@ def plot_lattice_constant(scaling,
 
     plot_params.single_plot = False
     plot_params.num_plots = len(plot_data)
-
-    if 'plotlables' in kwargs:
-        warnings.warn('plotlables is deprecated. Use plot_label and plot_label_fit instead', DeprecationWarning)
-        if len(plot_data) == 1:
-            kwargs['plot_label'] = kwargs['plotlables'][0]
-            kwargs['plot_label_fit'] = kwargs['plotlables'][1]
-        else:
-            plot_label = []
-            plot_label_fit = []
-            for indx in range(len(scaling)):
-                plot_label.append(kwargs['plotlables'][2 * indx])
-                plot_label_fit.append(kwargs['plotlables'][2 * indx + 1])
-            kwargs['plot_label'] = plot_label
-            kwargs['plot_label_fit'] = plot_label_fit
 
     if relative:
         if ref_const:
