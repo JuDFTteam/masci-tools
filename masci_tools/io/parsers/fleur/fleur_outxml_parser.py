@@ -683,10 +683,9 @@ class _TaskParser:
         conversions = tasks_definition.get('_conversions', [])
         for conversion in conversions:
             if not isinstance(conversion, Conversion):
-                warnings.warn(
-                    'Providing the _conversions as a list of strings is deprecated'
-                    'Use the Conversion namedtuple from masci_tools.util.parse_utils instead', DeprecationWarning)
-                conversion = Conversion(name=conversion)
+                raise ValueError(
+                    'Provide _conversions as a list of Conversion'
+                    'namedtuples from masci_tools.util.parse_utils', DeprecationWarning)
 
             action = self.conversion_functions[conversion.name]
             out_dict = action(out_dict, *conversion.args, logger=context.logger, **conversion.kwargs)

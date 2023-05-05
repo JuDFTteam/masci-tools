@@ -523,35 +523,20 @@ def get_structure_data(*args: Any,
     return get_structuredata(*args, **kwargs)
 
 
-def get_structuredata(xmltree: XMLLike,
-                      schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
-                      include_relaxations: bool = True,
-                      convert_to_angstroem: bool = True,
-                      normalize_kind_name: bool = True,
-                      extract_magnetic_moments: bool = True,
-                      logger: Logger | None = None,
-                      **kwargs: Any) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
+def get_structuredata(
+        xmltree: XMLLike,
+        schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
+        include_relaxations: bool = True,
+        convert_to_angstroem: bool = True,
+        normalize_kind_name: bool = True,
+        extract_magnetic_moments: bool = True,
+        logger: Logger | None = None) -> tuple[list[AtomSiteProperties], np.ndarray, tuple[bool, bool, bool]]:
     """
     Get the structure defined in the given fleur xml file.
 
     .. warning::
         Only the explicit definition of the Bravais matrix is supported.
         Old inputs containing the `latnam` definitions are not supported
-
-    .. warning::
-        In versions ``0.5.0`` or later the output of the atom sites was restructured
-        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_inpgen.write_inpgen_file()`)
-        The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
-        instead of the list of tuples (position, symbol)
-
-        For better compatibility this output is not default in ``0.5.0`` but instead
-        is enabled by ``site_namedtuple=True`` and a DeprecationWarning is given when
-        this argument is ``False``.
-
-    .. note::
-        In versions ``0.5.0`` or later the returned atom positions correspond to the relaxed
-        structure if a ``relaxation`` section is present in the xmltree
-
 
     :param xmltree: etree representing the fleur xml file
     :param schema_dict: schema dictionary corresponding to the file version
@@ -571,6 +556,20 @@ def get_structuredata(xmltree: XMLLike,
         2. :cell: numpy array, bravais matrix of the given system
         3. :pbc: list of booleans, determines in which directions periodic boundary conditions are applicable
 
+    .. versionchanged:: 0.5.0
+        The output of the atom sites was restructured
+        to be more interoperable with other IO functions (e.g. :py:func:`~masci_tools.io.fleur_inpgen.write_inpgen_file()`)
+        The new format returns a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
+        instead of the list of tuples (position, symbol)
+
+        For better compatibility this output is not default in ``0.5.0`` but instead
+        is enabled by ``site_namedtuple=True`` and a DeprecationWarning is given when
+        this argument is ``False``.
+
+    .. versionchanged:: 0.5.0
+        The returned atom positions correspond to the relaxed
+        structure if a ``relaxation`` section is present in the xmltree
+
     .. versionchanged:: 0.7.0
         The default for `site_namedtuple` is set to `True`
 
@@ -578,15 +577,15 @@ def get_structuredata(xmltree: XMLLike,
         The argument `site_namedtuple` was deprecated. The old output is no longer supported. If the
         argument `site_namedtuple` is passed a deprecation warning is shown
 
+    .. versionchanged:: 1.0.0
+        Removed support for passing ``site_namedtuple`` argument. All atom positions are always returned
+        as a list of :py:class:`~masci_tools.io.common_functions.AtomSiteProperties`
+
+
     """
     from masci_tools.io.common_functions import rel_to_abs, rel_to_abs_f, abs_to_rel, abs_to_rel_f
     from masci_tools.io.common_functions import find_symmetry_relation
     from masci_tools.util.constants import BOHR_A
-
-    if 'site_namedtuple' in kwargs:
-        warnings.warn(
-            'The argument site_namedtuple is deprecated and has no effect.'
-            'The output is always given in AtomSiteProperties', DeprecationWarning)
 
     cell, pbc = get_cell(xmltree, schema_dict, logger=logger, convert_to_angstroem=convert_to_angstroem)
     species_info = _get_species_info(xmltree, schema_dict, logger=None)
