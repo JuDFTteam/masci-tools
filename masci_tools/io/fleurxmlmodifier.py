@@ -137,15 +137,6 @@ class FleurXMLModifier:
             except KeyError as exc:
                 raise ValueError(f"Unknown modification method '{name}'") from exc
 
-    def _validate_signature(self, name: str, *args: Any, **kwargs: Any) -> None:
-        """
-        DEPRECATED: use `_validate_arguments` instead without unpacking args/kwargs
-        """
-        warnings.warn(
-            'The _validate_signature method is deprecated. '
-            'Please use _validate_arguments without unpacking args/kwargs instead', DeprecationWarning)
-        self._validate_arguments(name, args, kwargs)
-
     def _get_setter_function_and_prefix(self, name: str) -> tuple[Callable[[Any], Any], tuple[str, ...]]:
         """
         Get the setter function and a prefix standing in for the arguments that
@@ -432,9 +423,6 @@ class FleurXMLModifier:
                 'l_ss': True
             }
         """
-        if 'change_dict' in kwargs:
-            warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('change_dict')
         self._validate_arguments('set_inpchanges', args, kwargs)
         self._tasks.append(ModifierTask('set_inpchanges', args, kwargs))
 
@@ -458,9 +446,6 @@ class FleurXMLModifier:
 
                 changes = {'itmax' : 1, 'dVac': -0.123}
         """
-        if 'change_dict' in kwargs:
-            warnings.warn('The argument change_dict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('change_dict')
         self._validate_arguments('shift_value', args, kwargs)
         self._tasks.append(ModifierTask('shift_value', args, kwargs))
 
@@ -498,9 +483,6 @@ class FleurXMLModifier:
         ``special`` keys are supported. To find possible
         keys of the inner dictionary please refer to the FLEUR documentation flapw.de
         """
-        if 'attributedict' in kwargs:
-            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('attributedict')
         self._validate_arguments('set_species', args, kwargs)
         self._tasks.append(ModifierTask('set_species', args, kwargs))
 
@@ -516,9 +498,6 @@ class FleurXMLModifier:
         :param changes: a python dict specifying what you want to change.
         :param create: bool, if species does not exist create it and all subtags?
         """
-        if 'attributedict' in kwargs:
-            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('attributedict')
         self._validate_arguments('set_species_label', args, kwargs)
         self._tasks.append(ModifierTask('set_species_label', args, kwargs))
 
@@ -594,12 +573,6 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use attribute_name instead', DeprecationWarning)
-            kwargs['attribute_name'] = kwargs.pop('attributename')
-        if 'value_given' in kwargs:
-            warnings.warn('The argument value_given is deprecated. Use number_to_add instead', DeprecationWarning)
-            kwargs['number_to_add'] = kwargs.pop('value_given')
         self._validate_arguments('shift_value_species_label', args, kwargs)
         self._tasks.append(ModifierTask('shift_value_species_label', args, kwargs))
 
@@ -623,12 +596,6 @@ class FleurXMLModifier:
 
             'changes': {'nocoParams': {'beta': val}}
         """
-        if 'attributedict' in kwargs:
-            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('attributedict')
-        if 'create' in kwargs:
-            warnings.warn('The argument create is deprecated and is ignored.', DeprecationWarning)
-            kwargs.pop('create')
         self._validate_arguments('set_atomgroup', args, kwargs)
         self._tasks.append(ModifierTask('set_atomgroup', args, kwargs))
 
@@ -650,12 +617,6 @@ class FleurXMLModifier:
 
             'changes': {'nocoParams': {'beta': val}}
         """
-        if 'attributedict' in kwargs:
-            warnings.warn('The argument attributedict is deprecated. Use changes instead', DeprecationWarning)
-            kwargs['changes'] = kwargs.pop('attributedict')
-        if 'create' in kwargs:
-            warnings.warn('The argument create is deprecatedand is ignored.', DeprecationWarning)
-            kwargs.pop('create')
         self._validate_arguments('set_atomgroup_label', args, kwargs)
         self._tasks.append(ModifierTask('set_atomgroup_label', args, kwargs))
 
@@ -727,9 +688,6 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
-        if 'attrib_name' in kwargs:
-            warnings.warn('The argument attrib_name is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attrib_name')
         self._validate_arguments('delete_att', args, kwargs)
         self._tasks.append(ModifierTask('delete_att', args, kwargs))
 
@@ -752,9 +710,6 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
         """
-        if 'newelement' in kwargs:
-            warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
-            kwargs['element'] = kwargs.pop('newelement')
         self._validate_arguments('replace_tag', args, kwargs)
         self._tasks.append(ModifierTask('replace_tag', args, kwargs))
 
@@ -897,12 +852,6 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
-        if 'attribv' in kwargs:
-            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
-            kwargs['value'] = kwargs.pop('attribv')
         self._validate_arguments('set_attrib_value', args, kwargs)
         self._tasks.append(ModifierTask('set_attrib_value', args, kwargs))
 
@@ -932,12 +881,6 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
-        if 'attribv' in kwargs:
-            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
-            kwargs['value'] = kwargs.pop('attribv')
         self._validate_arguments('set_first_attrib_value', args, kwargs)
         self._tasks.append(ModifierTask('set_first_attrib_value', args, kwargs))
 
@@ -967,12 +910,6 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
-        if 'add_number' in kwargs:
-            warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
-            kwargs['number_to_add'] = kwargs.pop('add_number')
         self._validate_arguments('add_number_to_attrib', args, kwargs)
         self._tasks.append(ModifierTask('add_number_to_attrib', args, kwargs))
 
@@ -1001,12 +938,6 @@ class FleurXMLModifier:
             :param exclude: list of str, here specific types of attributes can be excluded
                             valid values are: settable, settable_contains, other
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
-        if 'add_number' in kwargs:
-            warnings.warn('The argument add_number is deprecated. Use number_to_add instead', DeprecationWarning)
-            kwargs['number_to_add'] = kwargs.pop('add_number')
         self._validate_arguments('add_number_to_first_attrib', args, kwargs)
         self._tasks.append(ModifierTask('add_number_to_first_attrib', args, kwargs))
 
@@ -1050,10 +981,6 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
-        if 'newelement' in kwargs:
-            warnings.warn('The argument newelement is deprecated. Use element instead', DeprecationWarning)
-            kwargs['element'] = kwargs.pop('newelement')
-
         self._validate_arguments('xml_replace_tag', args, kwargs)
         self._tasks.append(ModifierTask('xml_replace_tag', args, kwargs))
 
@@ -1083,9 +1010,6 @@ class FleurXMLModifier:
         :param occurrences: int or list of int. Which occurrence of the parent nodes to create a tag.
                             By default all nodes are used.
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
         self._validate_arguments('xml_delete_att', args, kwargs)
         self._tasks.append(ModifierTask('xml_delete_att', args, kwargs))
 
@@ -1104,12 +1028,6 @@ class FleurXMLModifier:
 
         :raises ValueError: If the lengths of attribv or occurrences do not match number of nodes
         """
-        if 'attributename' in kwargs:
-            warnings.warn('The argument attributename is deprecated. Use name instead', DeprecationWarning)
-            kwargs['name'] = kwargs.pop('attributename')
-        if 'attribv' in kwargs:
-            warnings.warn('The argument attribv is deprecated. Use value instead', DeprecationWarning)
-            kwargs['value'] = kwargs.pop('attribv')
         self._validate_arguments('xml_set_attrib_value_no_create', args, kwargs)
         self._tasks.append(ModifierTask('xml_set_attrib_value_no_create', args, kwargs))
 
