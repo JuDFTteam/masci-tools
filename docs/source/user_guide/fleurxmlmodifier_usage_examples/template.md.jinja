@@ -31,7 +31,9 @@ kernelspec:
 {{ example.description }}
 
 ```{code-cell} ipython3
-:tags: [hide-output]
+:tags: [hide-cell]
+:  code_prompt_show: "Show loading of initial XML file"
+:  code_prompt_hide: "Hide loading of initial XML file"
 
 from masci_tools.io.fleur_xml import load_inpxml
 from lxml import etree
@@ -54,6 +56,8 @@ new_xmltree, additional_files = fm.modify_xmlfile(xmltree, validate_changes=Fals
 Changes in the ``inp.xml`` file
 ```{code-cell} ipython3
 :tags: [remove-input, hide-output]
+:  code_prompt_show: "Show differences from initial XMl file"
+:  code_prompt_hide: "Hide differences from initial XMl file"
 from masci_tools.util.ipython import xml_diff
 xml_diff(xmltree, new_xmltree)
 ```
@@ -61,6 +65,8 @@ xml_diff(xmltree, new_xmltree)
 Conplete Modified ``inp.xml`` file
 ```{code-cell} ipython3
 :tags: [remove-input, hide-output]
+:  code_prompt_show: "Show complete final XMl file"
+:  code_prompt_hide: "Hide complete final XMl file"
 new_xmltree
 ```
 {% endif %}
