@@ -1668,7 +1668,7 @@ def set_xcfunctional(xmltree: XMLLike,
 
     .. usage-example::
 
-        fm.set_xcfunctional('vwn')
+        fm.set_xcfunctional('pbe')
 
 
     .. usage-example::

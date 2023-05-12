@@ -1942,7 +1942,7 @@ class FleurXMLModifier:
 
         .. usage-example::
 
-            fm.set_xcfunctional('vwn')
+            fm.set_xcfunctional('pbe')
 
 
         .. usage-example::

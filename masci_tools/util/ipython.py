@@ -53,6 +53,9 @@ def xml_diff(old: XMLLike, new: XMLLike, indent: bool = True) -> HTML:
 
     lines = list(difflib.unified_diff(old_lines, new_lines))
 
+    if not lines:
+        return ''
+
     for index, line in enumerate(lines):
         if line.startswith('@@'):
             first_block = index
