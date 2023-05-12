@@ -549,6 +549,31 @@ class FleurXMLModifier:
         :param changes: a python dict specifying what you want to change.
         :param create: bool, if species does not exist create it and all subtags?
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_species_label('222', {'mtSphere' : {'radius' : 2.7}})
+
+        .. usage-example::
+            :title: Adding child elements
+            :description: The `changes` dictionary is not limited to setting attributes
+                          Child elements can also be created. Notice here that if multiple
+                          elements of a given name are allowed all previously existing elements
+                          are deleted and replaced with the ones specified in `changes`
+
+            fm.set_species_label('222', {'ldaU' : {'l' : 3, 'U': 4.0, 'J': 0.5, 'l_amf': True},
+                                         'lo': [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                                {'l': 1, 'n': 6, 'type': 'SCLO'}]})
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` as the first argument applies the changes
+                          to all species
+
+            fm.set_species_label('all', {'mtSphere' : {'radius' : 2.7}})
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_species_label()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -568,6 +593,20 @@ class FleurXMLModifier:
         :param new_name: new name of the cloned species
         :param changes: a optional python dict specifying what you want to change.
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.clone_species('Fe-1', 'Fe-clone-1')
+
+        .. usage-example::
+            :title: Modifying the cloned species
+            :description: The `changes` dictionary is passed on to ``set_species``
+                          to modify the cloned species
+
+            fm.clone_species('Fe-1', 'Fe-clone-1', {'mtSphere' : {'radius' : 2.7}})
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.clone_species()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -585,6 +624,44 @@ class FleurXMLModifier:
         :param changes: changes to do if the species is cloned
         :param filters: Dict specifying constraints to apply on the xpath.
                         See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.switch_species('Pt-1', species='Fe-1')
+
+
+        .. usage-example::
+            :title: Specifying the number of the atromgroup
+            :description: Providing the ``position`` argument will modify the n-th
+                          atomgroup in the ``inp.xml`` file. (Indexing starts at 1)
+
+            fm.switch_species('Pt-1', position=1)
+
+        .. usage-example::
+            :title: Create a clone of the old species
+            :description: Specifying a non-existent new species name and ``clone=True``
+                          will create a clone of the old species with that name. Additionally
+                          the ``changes`` argument can then be used to apply changes to the new
+                          clone
+
+            fm.switch_species('Fe-clone-2', species='Fe-1', clone=True, changes={'mtSphere' : {'radius' : 2.7}})
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` to either ``position`` or ``species```
+                          will modify the species of all atomgroups
+
+            fm.switch_species('Fe-1', species='all')
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` to either ``position`` or ``species```
+                          will modify the species of all atomgroups
+
+            fm.switch_species('Fe-1', species='all')
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species()` to
         the list of tasks that will be done on the xmltree.
@@ -623,6 +700,35 @@ class FleurXMLModifier:
             :param contains: str, this string has to be in the final path
             :param not_contains: str, this string has to NOT be in the final path
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.shift_value_species_label('222', 'radius', 1)
+
+        .. usage-example::
+            :title: Relative shift
+            :description: Passing ``mode="rel"`` or ``mode="relative"`` will multiply
+                          the initial attribute value with the provided number instead
+                          of adding them
+
+            fm.shift_value_species_label('222', 'radius', 1.2, mode="relative")
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` as the first argument applies the changes
+                          to all species
+
+            fm.shift_value_species_label('all', 'lmax', 2)
+
+        .. usage-example::
+            :title: Modifying a subset of species
+            :description: Providing `'all-<search string>'` as the first argument applies the changes
+                          to all species which contain the search string in it's name
+
+            fm.shift_value_species_label('all-Pt', 'lmax', 2)
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value_species_label()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -651,6 +757,26 @@ class FleurXMLModifier:
 
             'changes': {'nocoParams': {'beta': val}}
 
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='Fe-1')
+
+        .. usage-example::
+            :title: Specifying the number of the atromgroup
+            :description: Providing the ``position`` argument will modify the n-th
+                          atomgroup in the ``inp.xml`` file. (Indexing starts at 1)
+
+            fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, position=1)
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` to either ``position`` or ``species```
+                          will modify all atomgroups
+
+            fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='all')
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -678,6 +804,20 @@ class FleurXMLModifier:
         can be done via::
 
             'changes': {'nocoParams': {'beta': val}}
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_atomgroup_label('222', {'nocoParams': {'beta': 1.57}})
+
+        .. usage-example::
+            :title: Modifying all species
+            :description: Providing `'all'` as the first argument applies the changes
+                          to all species
+
+            fm.set_atomgroup_label('all', {'nocoParams': {'beta': 1.57}})
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup_label()` to
         the list of tasks that will be done on the xmltree.
