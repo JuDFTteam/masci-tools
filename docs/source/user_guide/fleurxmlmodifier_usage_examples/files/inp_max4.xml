@@ -16,9 +16,7 @@
     <geometryOptimization l_f="F" forcealpha="1.00000000" forcemix="BFGS" epsdisp=".00001000" epsforce=".00001000" force_converged="0.00001" qfix="0"/>
     <ldaU l_linMix="F" mixParam=".050000" spinf="1.000000"/>
     <bzIntegration valenceElectrons="18.00000000" mode="hist" fermiSmearingEnergy=".00100000">
-      <kPointList posScale="1.00000000" weightScale="1.00000000" count="1">
-        <kPoint weight="    0.004167">   0.000000     0.000000     0.000000</kPoint>
-      </kPointList>
+      <kPointCount count="   240" gamma="F"/>
       <altKPointSet purpose="bands">
         <kPointCount count="   240" gamma="F"/>
       </altKPointSet>
@@ -97,7 +95,6 @@
     <specialOutput eonly="F" bmt="F"/>
     <magneticCircularDichroism energyLo="-10.00000000" energyUp=".00000000"/>
   </output>
-  <!-- We include the file relax.inp here to enable relaxations (see documentation) -->
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="relax.xml">
     <xi:fallback/>
   </xi:include>

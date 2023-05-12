@@ -2110,7 +2110,7 @@ def set_kpointmesh(xmltree: XMLLike,
 
     .. usage-example::
 
-        fm.set_kpointmesh([4, 4, 4], switch=True)
+        fm.set_kpointmesh([4, 4, 1], switch=True)
 
     """
     from masci_tools.util.xml.xml_getters import get_symmetry_information, get_cell

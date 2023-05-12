@@ -1887,7 +1887,7 @@ class FleurXMLModifier:
 
         .. usage-example::
 
-            fm.set_kpointmesh([4, 4, 4], switch=True)
+            fm.set_kpointmesh([4, 4, 1], switch=True)
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointmesh()` to
         the list of tasks that will be done on the xmltree.
