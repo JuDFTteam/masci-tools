@@ -1784,6 +1784,21 @@ class FleurXMLModifier:
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+            :inputfile: inp_max4.xml
+
+            fm.set_nkpts(200)
+
+
+        .. usage-example::
+            :title: Include Gamma point
+            :inputfile: inp_max4.xml
+
+            fm.set_nkpts(200, gamma=True)
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_nkpts()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -1800,6 +1815,14 @@ class FleurXMLModifier:
         :param count: number of k-points
         :param gamma: bool that controls if the gamma-point should be included
                       in the k-point mesh
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+            :inputfile: inp_max4.xml
+
+            fm.set_kpath({'Point': [0, 0, 0], 'Point2': [1, 1, 1]}, 200)
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpath()` to
         the list of tasks that will be done on the xmltree.
@@ -1819,6 +1842,24 @@ class FleurXMLModifier:
         :param switch: bool if True the kpoint list is direclty set as the used set
         :param overwrite: if True and a kpoint list of the given name already exists it will be overwritten
         :param special_points: dict mapping names to coordinates for special points to use
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_kpointpath(nkpts=50, switch=True)
+
+        .. usage-example::
+            :title: Specifying custom points
+            :description: By default the path is chosen by ASE. By providing path
+                          this can be modified
+
+            fm.set_kpointpath(path='CA',
+                              special_points={
+                                    'C': [0, 0, 0],
+                                    'A': [0, 0, 0.5]
+                              })
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointpath()` to
         the list of tasks that will be done on the xmltree.
@@ -1840,6 +1881,13 @@ class FleurXMLModifier:
         :param shift: shift the center of the kpint set
         :param time_reversal: bool if True time reversal symmetry will be used to reduce the kpoint set
         :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_kpointmesh([4, 4, 4], switch=True)
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointmesh()` to
         the list of tasks that will be done on the xmltree.

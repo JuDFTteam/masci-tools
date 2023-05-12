@@ -1876,6 +1876,21 @@ def set_nkpts(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int
                   in the k-point mesh
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+        :inputfile: inp_max4.xml
+
+        fm.set_nkpts(200)
+
+
+    .. usage-example::
+        :title: Include Gamma point
+        :inputfile: inp_max4.xml
+
+        fm.set_nkpts(200, gamma=True)
+
     """
 
     raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
@@ -1929,6 +1944,14 @@ def set_kpath(xmltree: XMLLike,
                   in the k-point mesh
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+        :inputfile: inp_max4.xml
+
+        fm.set_kpath({'Point': [0, 0, 0], 'Point2': [1, 1, 1]}, 200)
+
     """
 
     raise NotImplementedError(
@@ -2004,6 +2027,24 @@ def set_kpointpath(xmltree: XMLLike,
     :param special_points: dict mapping names to coordinates for special points to use
 
     :returns: xmltree with a created kpoint path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointpath(nkpts=50, switch=True)
+
+    .. usage-example::
+        :title: Specifying custom points
+        :description: By default the path is chosen by ASE. By providing path
+                      this can be modified
+
+        fm.set_kpointpath(path='CA',
+                          special_points={
+                                'C': [0, 0, 0],
+                                'A': [0, 0, 0.5]
+                          })
+
     """
     from masci_tools.util.xml.xml_getters import get_cell
     from ase.dft.kpoints import bandpath
@@ -2064,6 +2105,13 @@ def set_kpointmesh(xmltree: XMLLike,
     :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
 
     :returns: xmltree with a created kpoint path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointmesh([4, 4, 4], switch=True)
+
     """
     from masci_tools.util.xml.xml_getters import get_symmetry_information, get_cell
     from spglib import get_stabilized_reciprocal_mesh
