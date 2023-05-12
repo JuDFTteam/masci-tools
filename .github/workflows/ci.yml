@@ -178,3 +178,38 @@ jobs:
       with:
         name: matplotlib-comparison-${{ matrix.python-version }}${{ matrix.add-name }}
         path: mpl-results
+
+  test-minimal-fleur-io:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Cache python dependencies
+      id: cache-pip
+      uses: actions/cache@v3.3.1
+      with:
+        path: ~/.cache/pip
+        key: pip-test-minimal-fleur-io-${{ hashFiles('**/requirements_fleur_minimal.txt') }}
+        restore-keys: |
+          pip-test-minimal-fleur-io
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4.6.0
+      with:
+        python-version: 3.10
+
+    - name: Install python dependencies
+      run: |
+        pip install -r requirements_fleur_minimal.txt
+        pip install -e --no-deps .
+
+    - name: Run pytest
+      run: pytest tests/xml tests/io/test_*fleur* tests/parsers/*.py tests/util
+
+    - name: Upload code coverage report
+      run: |
+        pip install codecov
+        codecov

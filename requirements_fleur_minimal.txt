@@ -1,0 +1,6 @@
+numpy
+lxml~=4.8
+more_itertools
+spglib
+h5py
+typing-extensions
