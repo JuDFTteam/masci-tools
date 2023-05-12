@@ -204,7 +204,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -r requirements_fleur_minimal.txt
-        pip install pytest~=6.0 pytest-cov~=3.0 pytest-regressions>=1.0
+        pip install pytest~=6.0 pytest-cov~=3.0 pytest-regressions>=1.0 pytest-mpl>=0.12
         pip install --no-deps -e .
 
     - name: Run pytest
