@@ -428,6 +428,28 @@ class FleurXMLModifier:
                 'l_ss': True
             }
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_inpchanges({'itmax' : 1, 'kmax': 4.3})
+
+        .. usage-example::
+            :title: Attribute selection not unique
+            :result: Error
+            :description: If no or multiple locations could be possible an error is raised
+
+            fm.set_inpchanges({'itmax' : 1, 'theta': 1.57})
+
+        .. usage-example::
+            :title: Attribute selection
+            :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+                          in the ``path_spec`` argument
+
+            fm.set_inpchanges({'itmax' : 1, 'theta': 1.57},
+                              path_spec={'theta': {'contains': 'soc'}})
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_inpchanges()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -725,16 +747,9 @@ class FleurXMLModifier:
         .. usage-example::
             :title: Modifying all species
             :description: Providing `'all'` as the first argument applies the changes
-                          to all species
+                          to all atomgroups
 
             fm.shift_value_species_label('all', 'lmax', 2)
-
-        .. usage-example::
-            :title: Modifying a subset of species
-            :description: Providing `'all-<search string>'` as the first argument applies the changes
-                          to all species which contain the search string in it's name
-
-            fm.shift_value_species_label('all-Pt', 'lmax', 2)
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value_species_label()` to
         the list of tasks that will be done on the xmltree.
@@ -1754,6 +1769,23 @@ class FleurXMLModifier:
         :param switch: bool, if True the kPointlist will be used by Fleur when starting the next calculation
         :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
 
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                              [1,1], switch=True)
+
+        .. usage-example::
+            :title: MaX 4 compatibility
+            :description: For input files before the MaX 5 release the previous kpoint list will always
+                          be overwritten and the ``switch`` argument has no effect
+            :inputfile: inp_max4.xml
+
+            fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                              [1,1])
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_kpointlist()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -1856,6 +1888,7 @@ class FleurXMLModifier:
                           this can be modified
 
             fm.set_kpointpath(path='CA',
+                              nkpts=25,
                               special_points={
                                     'C': [0, 0, 0],
                                     'A': [0, 0, 0.5]

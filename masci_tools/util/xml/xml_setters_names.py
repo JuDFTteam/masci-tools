@@ -1215,16 +1215,10 @@ def shift_value_species_label(xmltree: XMLLike,
     .. usage-example::
         :title: Modifying all species
         :description: Providing `'all'` as the first argument applies the changes
-                      to all species
+                      to all atomgroups
 
         fm.shift_value_species_label('all', 'lmax', 2)
 
-    .. usage-example::
-        :title: Modifying a subset of species
-        :description: Providing `'all-<search string>'` as the first argument applies the changes
-                      to all species which contain the search string in it's name
-
-        fm.shift_value_species_label('all-Pt', 'lmax', 2)
 
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -1595,6 +1589,28 @@ def set_inpchanges(xmltree: XMLLike,
         }
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_inpchanges({'itmax' : 1, 'kmax': 4.3})
+
+    .. usage-example::
+        :title: Attribute selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_inpchanges({'itmax' : 1, 'theta': 1.57})
+
+    .. usage-example::
+        :title: Attribute selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+                      in the ``path_spec`` argument
+
+        fm.set_inpchanges({'itmax' : 1, 'theta': 1.57},
+                          path_spec={'theta': {'contains': 'soc'}})
+
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
     from masci_tools.util.xml.common_functions import split_off_attrib
@@ -1715,6 +1731,22 @@ def set_kpointlist(xmltree: XMLLike,
     :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                          [1,1], switch=True)
+
+    .. usage-example::
+        :title: MaX 4 compatibility
+        :description: For input files before the MaX 5 release the previous kpoint list will always
+                      be overwritten and the ``switch`` argument has no effect
+        :inputfile: inp_max4.xml
+
+        fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                          [1,1])
     """
     from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -2040,6 +2072,7 @@ def set_kpointpath(xmltree: XMLLike,
                       this can be modified
 
         fm.set_kpointpath(path='CA',
+                          nkpts=25,
                           special_points={
                                 'C': [0, 0, 0],
                                 'A': [0, 0, 0.5]
