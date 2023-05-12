@@ -227,7 +227,7 @@ def _add_condition(specification: str | Iterable[str] | None, condition: str) ->
 
 def _ensure_path_uniqueness(paths: Collection[str],
                             description: str,
-                            path_type: str | None = None,
+                            path_type: str = '',
                             **specifications: Any) -> str:
     """
     Ensure that the given iterable of paths consists of only one path
