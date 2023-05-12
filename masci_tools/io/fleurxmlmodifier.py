@@ -453,6 +453,20 @@ class FleurXMLModifier:
 
                 changes = {'itmax' : 1, 'dVac': -0.123}
 
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.shift_value({'itmax' : 5, 'mindistance': 1})
+
+        .. usage-example::
+            :title: Relative shift
+            :description: Passing ``mode="rel"`` or ``mode="relative"`` will multiply
+                          the initial attribute values with the provided number instead
+                          of adding them
+
+            fm.shift_value({'itmax' : 2, 'mindistance': 3}, mode="relative")
+
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.shift_value()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -656,13 +670,6 @@ class FleurXMLModifier:
 
             fm.switch_species('Fe-1', species='all')
 
-        .. usage-example::
-            :title: Modifying all species
-            :description: Providing `'all'` to either ``position`` or ``species```
-                          will modify the species of all atomgroups
-
-            fm.switch_species('Fe-1', species='all')
-
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.switch_species()` to
         the list of tasks that will be done on the xmltree.
         """
@@ -761,7 +768,7 @@ class FleurXMLModifier:
 
         .. usage-example::
 
-            fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='Fe-1')
+            fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='Fe-1')
 
         .. usage-example::
             :title: Specifying the number of the atromgroup
@@ -775,7 +782,7 @@ class FleurXMLModifier:
             :description: Providing `'all'` to either ``position`` or ``species```
                           will modify all atomgroups
 
-            fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='all')
+            fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='all')
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()` to
         the list of tasks that will be done on the xmltree.
@@ -810,14 +817,14 @@ class FleurXMLModifier:
 
         .. usage-example::
 
-            fm.set_atomgroup_label('222', {'nocoParams': {'beta': 1.57}})
+            fm.set_atomgroup_label('222', {'nocoParams': {'alpha': 1.57}})
 
         .. usage-example::
             :title: Modifying all species
             :description: Providing `'all'` as the first argument applies the changes
                           to all species
 
-            fm.set_atomgroup_label('all', {'nocoParams': {'beta': 1.57}})
+            fm.set_atomgroup_label('all', {'nocoParams': {'alpha': 1.57}})
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup_label()` to
         the list of tasks that will be done on the xmltree.
@@ -1843,21 +1850,24 @@ class FleurXMLModifier:
     def set_xcfunctional(self, *args: Any, **kwargs: Any) -> None:
         """Set the Exchange Correlation potential tag
 
-        Setting a inbuilt XC functional
-        .. code-block:: python
-
-            set_xcfunctional(xmltree, schema_dict, 'vwn')
-
-        Setting a LibXC XC functional
-        .. code-block:: python
-
-            set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
-
         :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
                               specifies either the name or id for LibXC functionals for the keys
                               `'exchange', 'correlation', 'etot_exchange' and 'etot_correlation'`
         :param xc_functional_options: dict with further general changes to the `xcFunctional` tag
         :param libxc: bool if True the functional is a LibXC functional
+
+
+        Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+        .. usage-example::
+
+            fm.set_xcfunctional('vwn')
+
+
+        .. usage-example::
+            :title: Setting a LibXC functional
+
+            fm.set_xcfunctional({'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
 
         This registration method does not modify the file immediately but only appends a :py:func:`~masci_tools.util.xml.xml_setters_names.set_xcfunctional()` to
         the list of tasks that will be done on the xmltree.

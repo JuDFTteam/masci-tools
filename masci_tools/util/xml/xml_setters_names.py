@@ -1288,14 +1288,14 @@ def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, 
 
     .. usage-example::
 
-        fm.set_atomgroup_label('222', {'nocoParams': {'beta': 1.57}})
+        fm.set_atomgroup_label('222', {'nocoParams': {'alpha': 1.57}})
 
     .. usage-example::
         :title: Modifying all species
         :description: Providing `'all'` as the first argument applies the changes
                       to all species
 
-        fm.set_atomgroup_label('all', {'nocoParams': {'beta': 1.57}})
+        fm.set_atomgroup_label('all', {'nocoParams': {'alpha': 1.57}})
 
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -1348,7 +1348,7 @@ def set_atomgroup(xmltree: XMLLike,
 
     .. usage-example::
 
-        fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='Fe-1')
+        fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='Fe-1')
 
     .. usage-example::
         :title: Specifying the number of the atromgroup
@@ -1362,8 +1362,7 @@ def set_atomgroup(xmltree: XMLLike,
         :description: Providing `'all'` to either ``position`` or ``species```
                       will modify all atomgroups
 
-        fm.set_atomgroup({'nocoParams': {'beta': 1.57}}, species='all')
-
+        fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='all')
 
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
@@ -1476,14 +1475,6 @@ def switch_species(xmltree: XMLLike,
 
         fm.switch_species('Fe-1', species='all')
 
-    .. usage-example::
-        :title: Modifying all species
-        :description: Providing `'all'` to either ``position`` or ``species```
-                      will modify the species of all atomgroups
-
-        fm.switch_species('Fe-1', species='all')
-
-
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
@@ -1549,6 +1540,21 @@ def shift_value(xmltree: XMLLike,
     An example of changes::
 
             changes = {'itmax' : 1, 'dVac': -0.123}
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.shift_value({'itmax' : 5, 'mindistance': 1})
+
+    .. usage-example::
+        :title: Relative shift
+        :description: Passing ``mode="rel"`` or ``mode="relative"`` will multiply
+                      the initial attribute values with the provided number instead
+                      of adding them
+
+        fm.shift_value({'itmax' : 2, 'mindistance': 3}, mode="relative")
+
     """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -1632,16 +1638,6 @@ def set_xcfunctional(xmltree: XMLLike,
     """
     Set the Exchange Correlation potential tag
 
-    Setting a inbuilt XC functional
-    .. code-block:: python
-
-        set_xcfunctional(xmltree, schema_dict, 'vwn')
-
-    Setting a LibXC XC functional
-    .. code-block:: python
-
-        set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
-
     :param xmltree: XML tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
@@ -1651,6 +1647,20 @@ def set_xcfunctional(xmltree: XMLLike,
     :param libxc: bool if True the functional is a LibXC functional
 
     :returns: an xmltree with modified xcFunctional tag
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_xcfunctional('vwn')
+
+
+    .. usage-example::
+        :title: Setting a LibXC functional
+
+        fm.set_xcfunctional({'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
+
+
     """
 
     if not libxc and isinstance(xc_functional, dict):
