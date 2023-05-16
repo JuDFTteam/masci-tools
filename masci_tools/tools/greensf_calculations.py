@@ -169,7 +169,7 @@ def calculate_heisenberg_tensor(hdffileORgreensfunctions: FileLike | list[Greens
             delta_j = onsite_delta[g1.atomTypep - 1, g1.l, 3 - g1.l:4 + g1.l, 3 - g1.l:4 + g1.l]
 
             gdeltaij = np.einsum('ij,zjk...->zik...', delta_i, gij)
-            gdeltaji = np.einsum('ij,zjk...->zik:::', delta_j, gji)
+            gdeltaji = np.einsum('ij,zjk...->zik...', delta_j, gji)
         else:
             gdeltaij = onsite_delta[g1.atomType - 1, g1.l] * gij
             gdeltaji = onsite_delta[g1.atomTypep - 1, g1.l] * gji
