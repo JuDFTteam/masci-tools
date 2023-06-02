@@ -1,9 +1,9 @@
 <AT_SCALE_BDG>: null
-<BdG_fix_starting_triplet>: null
-<BdG_force_triplet_delta0>: null
-<BdG_num_triplet_channels>: null
-<BdG_triplet_delta0>: null
-<BdG_triplet_lambdas>: null
+<BDG_FORCE_TRIPLET_DELTA0>: null
+<BDG_NUM_TRIPLET_CHANNELS>: null
+<BDG_TRIPLET_DELTA0>: null
+<BDG_TRIPLET_LAMBDAS>: null
+<BdG_FIX_STARTING_TRIPLET>: null
 <CALC_CHI_NS>: null
 <CALC_COMPLEX_BANDSTRUCTURE>: null
 <CALC_EXCHANGE_COUPLINGS>: null

@@ -481,23 +481,23 @@ class kkrparams:
                 None, '%l', False,
                 'Superconductivity: Triggers writeout of all den_lm_ir files that contain the anomalous density (usually writeout is only done for atoms with lambda>0).'
             ]),
-            ('<BdG_num_triplet_channels>', [
+            ('<BDG_NUM_TRIPLET_CHANNELS>', [
                 None, '%i', False,
                 'Superconductivity: total number of triplet pairing channels (number of lm channels times number of atoms with triplet channels), defaults to zero.'
             ]),
-            ('<BdG_fix_starting_triplet>', [
+            ('<BdG_FIX_STARTING_TRIPLET>', [
                 None, '%l', False,
                 'Superconductivity: fix triplet pairing to a constant value or update from output anomalous density.'
             ]),
-            ('<BdG_force_triplet_delta0>', [
+            ('<BDG_FORCE_TRIPLET_DELTA0>', [
                 None, '%l', False,
                 'Superconductivity: force use of Delta0 for triplet part instead of using anomalous density components (requires <BdG_triplet_delta0> input).'
             ]),
-            ('<BdG_triplet_lambdas>', [
+            ('<BDG_TRIPLET_LAMBDAS>', [
                 None, '%i %i %i %f', False,
                 'Superconductivity: (iatom, lm1, lm2, lambda) for all the triplet channels. (lm1, lm2) pair indicates the lm-component for equal-spin pairing where for example `1 1 3 1e-3` activates triplet coupling between s and pz in atom 1 with a strength of λ=1mRy (remember that Fortran starts counting at 1).'
             ]),
-            ('<BdG_triplet_delta0>', [
+            ('<BDG_TRIPLET_DELTA0>', [
                 None, '%f', False,
                 'Superconductivity: starting values for triplet pairing, only used if <BdG_force_triplet_delta0>= True.'
             ]),
@@ -1253,10 +1253,14 @@ class kkrparams:
         for key, listarg in self.__listargs.items():
             if self.values[key] is not None:
                 tmpsuccess = True
-                #print('checking', key, self.values[key], self.__listargs[key])
+                if self.verbose:
+                    print('checking', key, self.values[key], self.__listargs[key])
                 if not isinstance(self.values[key], (list, ndarray)):
                     self.values[key] = array([self.values[key]])
-                cmpdims = (listarg,)
+                if isinstance(listarg, tuple):
+                    cmpdims = listarg
+                else:
+                    cmpdims = (listarg,)
                 if key in vec3_entries:
                     cmpdims = (listarg, 3)
                     # automatically convert if naez==1 and only 1D array is given
@@ -1277,6 +1281,8 @@ class kkrparams:
     def _check_input_consistency(self, set_lists_only=False, verbose=False):
         """Check consistency of input, to be done before wrinting to inputcard"""
         from numpy import array
+
+        self.verbose = verbose  # pylint: disable=attribute-defined-outside-init
 
         # first check if all mandatory values are there
         if not set_lists_only:
@@ -1299,11 +1305,12 @@ class kkrparams:
             else:
                 nrbasis = 1
             lmax = keywords['LMAX']
+            num_triplet = keywords['<BDG_NUM_TRIPLET_CHANNELS>']
 
             #yapf: disable
             listargs = dict([
                 ['BZDIVIDE', 3], ['ZPERIODL', 3], ['ZPERIODR', 3], ['LDAU_PARA', 5],
-                ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2],
+                ['CPAINFO', 2], ['<DELTAE>', 2], ['FILES', 2], ['DECIFILES', 2]
             ])
             if naez is not None:
                 for key in ['<RBASIS>',  '<RMTCORE>',  '<MTWAU>',  '<MTWAL>']:
@@ -1319,6 +1326,9 @@ class kkrparams:
                     listargs[key] = nrbasis
             if lmax is not None:
                 listargs['<LM_SCALE_BDG>'] = (lmax + 1)**2
+            if num_triplet is not None:
+                listargs['<BDG_TRIPLET_LAMBDAS>'] = (num_triplet, 4)
+                listargs['<BDG_TRIPLET_DELTA0>'] = num_triplet
             #yapf: enable
 
             # deal with special stuff for voronoi:
@@ -1382,7 +1392,7 @@ class kkrparams:
             self.__params_type = 'voronoi'
 
         # check for inconsistencies in input before writing file
-        self._check_input_consistency(set_lists_only=no_check)
+        self._check_input_consistency(set_lists_only=no_check, verbose=verbose)
 
         #rename for easy reference
         keywords = self.values
@@ -1591,6 +1601,9 @@ class kkrparams:
                         tmpl += ' ' + ' '.join(map(str, ops))
                     tmpl += '\n'
                 elif key in self.__listargs:
+                    if verbose:
+                        print('key is in listargs', key)
+
                     # keys that have array values
                     if key in ['<RBASIS>', '<RBLEFT>',
                                '<RBRIGHT>']:  # RBASIS needs special formatting since three numbers are filled per line
@@ -1598,6 +1611,12 @@ class kkrparams:
                         for ival in range(self.__listargs[key]):
                             tmpl += (keyfmts[key] + '\n') % (self.values[key][ival][0], self.values[key][ival][1],
                                                              self.values[key][ival][2])
+                    elif key in ['<BDG_TRIPLET_LAMBDAS>']:  # 4 values per line
+                        tmpl += f'{key}\n'
+                        for ival in range(self.__listargs[key][0]):
+                            tmpl += ('  ' + keyfmts[key] +
+                                     '\n') % (self.values[key][ival][0], self.values[key][ival][1],
+                                              self.values[key][ival][2], self.values[key][ival][3])
                     elif key in ['CPAINFO', '<DELTAE>']:
                         tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1])
