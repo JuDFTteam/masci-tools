@@ -589,8 +589,9 @@ class Test_other:  # pylint: disable=missing-class-docstring
 
         l0 = [
             '<SHAPE>', 'KSHAPE', 'ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBASIS>', 'NAEZ', 'CARTESIAN', '<RBRIGHT>',
-            '<RBLEFT>', 'INTERFACE', 'BRAVAIS', 'ALATBASIS', 'ZPERIODR'
+            '<RBLEFT>', 'INTERFACE', 'BRAVAIS', 'ALATBASIS', 'ZPERIODR', 'USE_INPUT_ALAT'
         ]
+        print(p.get_dict(group='lattice'))
         assert set(p.get_dict(group='lattice').keys()) == set(l0)
 
         l0 = ['ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBRIGHT>', '<RBLEFT>', 'INTERFACE', 'ZPERIODR']

@@ -1,4 +1,9 @@
 <AT_SCALE_BDG>: null
+<BdG_fix_starting_triplet>: null
+<BdG_force_triplet_delta0>: null
+<BdG_num_triplet_channels>: null
+<BdG_triplet_delta0>: null
+<BdG_triplet_lambdas>: null
 <CALC_CHI_NS>: null
 <CALC_COMPLEX_BANDSTRUCTURE>: null
 <CALC_EXCHANGE_COUPLINGS>: null
@@ -827,6 +832,7 @@ TESTOPT:
 - fullBZ
 - DOS
 TKSEMI: null
+USE_INPUT_ALAT: null
 VCONST: 0.0
 WFAC_RENORM: null
 XINIPOL: null
