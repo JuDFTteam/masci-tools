@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.9'
+__version__ = '1.8.10'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -481,9 +481,29 @@ class kkrparams:
                 None, '%l', False,
                 'Superconductivity: Triggers writeout of all den_lm_ir files that contain the anomalous density (usually writeout is only done for atoms with lambda>0).'
             ]),
-            ('<CUSTOM_TESTSTRING>',
-             [None, '%s', False, 'Superconductivity: String input for some test options with BdG']),
+            ('<BdG_num_triplet_channels>', [
+                None, '%i', False,
+                'Superconductivity: total number of triplet pairing channels (number of lm channels times number of atoms with triplet channels), defaults to zero.'
+            ]),
+            ('<BdG_fix_starting_triplet>', [
+                None, '%l', False,
+                'Superconductivity: fix triplet pairing to a constant value or update from output anomalous density.'
+            ]),
+            ('<BdG_force_triplet_delta0>', [
+                None, '%l', False,
+                'Superconductivity: force use of Delta0 for triplet part instead of using anomalous density components (requires <BdG_triplet_delta0> input).'
+            ]),
+            ('<BdG_triplet_lambdas>', [
+                None, '%i %i %i %f', False,
+                'Superconductivity: (iatom, lm1, lm2, lambda) for all the triplet channels. (lm1, lm2) pair indicates the lm-component for equal-spin pairing where for example `1 1 3 1e-3` activates triplet coupling between s and pz in atom 1 with a strength of λ=1mRy (remember that Fortran starts counting at 1).'
+            ]),
+            ('<BdG_triplet_delta0>', [
+                None, '%f', False,
+                'Superconductivity: starting values for triplet pairing, only used if <BdG_force_triplet_delta0>= True.'
+            ]),
             # misc
+            ('<CUSTOM_TESTSTRING>',
+             [None, '%s', False, 'Superconductivity: String input for some test options (especially with BdG).']),
             ('IM_E_CIRC_MIN', [
                 None, '%f', False,
                 'Minimal imaginary part (for energy point closest to EF) in semi-circular contour (needs USE_SEMI_CIRCLE_CONTOUR to become active.'
