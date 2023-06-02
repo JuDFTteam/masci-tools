@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.8'
+__version__ = '1.8.9'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -33,6 +33,7 @@ __kkr_default_params__ = {
 }
 
 # prevent kkrparams to add brackets around these keywords automatically
+# case insensitive (converted to lower case)
 __forbid_brackets__ = ['use_input_alat']
 
 
@@ -71,6 +72,10 @@ class kkrparams:
             ('ALATBASIS', [
                 None, '%f', True,
                 'Description of lattice: Length unit in Bohr radii usually conventional lattice parameter'
+            ]),
+            ('USE_INPUT_ALAT', [
+                None, '%l', True,
+                'Description of lattice: Together with ALATBASIS, forces to use ALATBASIS instead of automatically computed lattice constant from structure'
             ]),
             ('BRAVAIS', [
                 None, '%f %f %f\n%f %f %f\n%f %f %f', True,
@@ -2017,7 +2022,7 @@ class kkrparams:
             return key
 
         key2 = key
-        if key not in key_dict and key not in __forbid_brackets__:
+        if key not in key_dict and key.lower() not in __forbid_brackets__:
             key2 = '<' + key + '>'
 
         return key2
