@@ -485,7 +485,7 @@ class kkrparams:
                 None, '%i', False,
                 'Superconductivity: total number of triplet pairing channels (number of lm channels times number of atoms with triplet channels), defaults to zero.'
             ]),
-            ('<BdG_FIX_STARTING_TRIPLET>', [
+            ('<BDG_FIX_STARTING_TRIPLET>', [
                 None, '%l', False,
                 'Superconductivity: fix triplet pairing to a constant value or update from output anomalous density.'
             ]),
@@ -500,6 +500,10 @@ class kkrparams:
             ('<BDG_TRIPLET_DELTA0>', [
                 None, '%f', False,
                 'Superconductivity: starting values for triplet pairing, only used if <BdG_force_triplet_delta0>= True.'
+            ]),
+            ('<BDG_TRIPLET_DVEC>', [
+                None, '%f', False,
+                'Superconductivity: normalized d-vector components of the different triplet channels (if not give, assume only dz to be there). Should have <BDG_NUM_TRIPLET_CHANNELS> entries.'
             ]),
             # misc
             ('<CUSTOM_TESTSTRING>',
@@ -884,6 +888,10 @@ class kkrparams:
             ]),
         ])
 
+        # make keys upper case (needed internally to equality comparison)
+        self._DEFAULT_KEYWORDS_KKR = {k.upper(): v for k, v in self._DEFAULT_KEYWORDS_KKR.items()}
+        self._DEFAULT_KEYS_KKRIMP = {k.upper(): v for k, v in self._DEFAULT_KEYS_KKRIMP.items()}
+
         if 'params_type' in kwargs:
             self.__params_type = kwargs.pop('params_type')
         else:
@@ -1254,7 +1262,7 @@ class kkrparams:
             if self.values[key] is not None:
                 tmpsuccess = True
                 if self.verbose:
-                    print('checking', key, self.values[key], self.__listargs[key])
+                    print('checking', key, self.values[key], self.__listargs[key])  # pylint: disable=unnecessary-dict-index-lookup
                 if not isinstance(self.values[key], (list, ndarray)):
                     self.values[key] = array([self.values[key]])
                 if isinstance(listarg, tuple):
@@ -1342,6 +1350,8 @@ class kkrparams:
 
         self.__special_formatting = special_formatting
         self.__listargs = listargs
+        print('listargs:', listargs)
+        print('special_formatting:', special_formatting)
 
         # ruturn after setting __special_formatting and __listargs lists
         if set_lists_only:
