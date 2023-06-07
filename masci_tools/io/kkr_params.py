@@ -502,7 +502,7 @@ class kkrparams:
                 'Superconductivity: starting values for triplet pairing, only used if <BdG_force_triplet_delta0>= True.'
             ]),
             ('<BDG_TRIPLET_DVEC>', [
-                None, '%f', False,
+                None, '%f %f %f', False,
                 'Superconductivity: normalized d-vector components of the different triplet channels (if not give, assume only dz to be there). Should have <BDG_NUM_TRIPLET_CHANNELS> entries.'
             ]),
             # misc
@@ -1336,6 +1336,7 @@ class kkrparams:
                 listargs['<LM_SCALE_BDG>'] = (lmax + 1)**2
             if num_triplet is not None:
                 listargs['<BDG_TRIPLET_LAMBDAS>'] = (num_triplet, 4)
+                listargs['<BDG_TRIPLET_DVEC>'] = (num_triplet, 3)
                 listargs['<BDG_TRIPLET_DELTA0>'] = num_triplet
             #yapf: enable
 
@@ -1627,6 +1628,11 @@ class kkrparams:
                             tmpl += ('  ' + keyfmts[key] +
                                      '\n') % (self.values[key][ival][0], self.values[key][ival][1],
                                               self.values[key][ival][2], self.values[key][ival][3])
+                    elif key in ['<BDG_TRIPLET_DVEC>']:  # 3 values per line
+                        tmpl += f'{key}\n'
+                        for ival in range(self.__listargs[key][0]):
+                            tmpl += ('  ' + keyfmts[key] + '\n') % (
+                                self.values[key][ival][0], self.values[key][ival][1], self.values[key][ival][2])
                     elif key in ['CPAINFO', '<DELTAE>']:
                         tmpl += f'{key}= '
                         tmpl += (keyfmts[key] + '\n') % (self.values[key][0], self.values[key][1])
