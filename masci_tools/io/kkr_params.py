@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.10'
+__version__ = '1.8.11'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -396,6 +396,8 @@ class kkrparams:
              [None, '%l', False, 'Self-consistency control: write out the nonco angles for all iterations']),
             ('<USE_BROYDEN_SPINMIX>',
              [None, '%l', False, 'Self-consistency control: Use Broyden mixing for nonco angles']),
+            # mixing of LDAU potential
+            ('MIXLDAU', [None, '%f', False, 'Self-consistency control: mixing factor for LDA+U potential']),
             #code options
             ('RUNOPT', [
                 None, '%s%s%s%s%s%s%s%s', False,

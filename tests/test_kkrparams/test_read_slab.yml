@@ -783,6 +783,7 @@ LDAU_PARA: null
 LINIPOL: false
 LMAX: 3
 MAX_NUM_KMESH: null
+MIXLDAU: null
 N1SEMI: null
 N2SEMI: null
 N3SEMI: null
