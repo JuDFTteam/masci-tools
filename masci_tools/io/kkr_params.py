@@ -18,8 +18,8 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.7'
-__contributors__ = 'Philipp Rüßmann'
+__version__ = '1.8.8'
+__contributors__ = 'Philipp Rüßmann, David Antognini Silva'
 
 # This defines the default parameters for KKR used in the aiida plugin:
 __kkr_default_params__ = {
@@ -828,6 +828,8 @@ class kkrparams:
             ]),
             ('TOL_ALAT_CHECK',
              [None, '%e', False, 'Consistency check: tolerance for alat comparison (defaults to 1e-12 if not set).']),
+            ('MIXLDAU_STEP',
+             [None, '%i', False, 'number of SCF steps to complete between each ldau potential mixing (stepmixldau runflag/runoption should be activated)']),
             #code options
             ('RUNFLAG', [None, '%s', False, 'Running and test options: e.g. lmdos, GBULKtomemory, LDA+U, SIMULASA']),
             ('TESTFLAG', [None, '%s', False, 'Running and test options: e.g. tmatnew, noscatteringmoment']),
