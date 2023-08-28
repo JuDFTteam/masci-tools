@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.11'
+__version__ = '1.8.12'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -314,6 +314,10 @@ class kkrparams:
                 None, '%e', False,
                 'Accuracy, Virtual atoms: For distance between scattering-centers smaller than [<TOLRDIF>], free GF is set to zero. Units are Bohr radii.'
             ]),
+            ('<TOLHS>', [None, '%e', False, 'Accuracy, Voronoi: Tolerance for half-space routine in Voronoi code.']),
+            ('<TOLVD>', [None, '%e', False, 'Accuracy, Voronoi: Tolerance for vertex distance in Voronoi code.']),
+            ('<TOLAREA>',
+             [None, '%e', False, 'Accuracy, Voronoi: Tolerance for minimal area of faces in Voronoi code.']),
             ('<RMTCORE>', [
                 None, '%f', False,
                 'Accuracy: Muffin tin radium in Bohr radii for each atom site. This sets the value of RMT used internally in the KKRcode. Needs to be smaller than the touching RMT of the cells. In particular for structure relaxations this should be kept constant.'
