@@ -23,7 +23,7 @@ The code is hosted on GitHub at
 
 The documentation is hosted on https://masci-tools.readthedocs.io.
 
-Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum Jülich (<http://judft.de>) and their AiiDA plugins for high-throughput calculations ([AiiDA-FLEUR](https://github.com/JuDFTteam/aiida-fleur), [AiiDA-KKR](https://github.com/JuDFTteam/aiida-kkr), [AiiDA-Spirit](https://github.com/JuDFTteam/aiida-spirit)).
+Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum Jülich (<http://judft.de>) and their AiiDA plugins for high-throughput calculations ([aiida-fleur](https://github.com/JuDFTteam/aiida-fleur), [aiida-kkr](https://github.com/JuDFTteam/aiida-kkr), [aiida-spirit](https://github.com/JuDFTteam/aiida-spirit)).
 
 ## Installation
 
