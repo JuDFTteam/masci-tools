@@ -14,7 +14,7 @@
 
 # masci-tools
 
-**This is a collection of tools, common things used by packages of material science.**
+Masci-tools (short for "materials science tools") is a post-processing toolkit for electronic structure calculations. The main features are I/O parsers, visualization such as bandstructure and DOS plotting, and data analysis.
 
 Feel free to contribute.
 
