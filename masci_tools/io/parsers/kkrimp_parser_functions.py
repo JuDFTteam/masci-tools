@@ -12,6 +12,7 @@
 """
 Tools for the impurity calculation plugin and its workflows
 """
+import numpy as np
 from numpy import array, ndarray, loadtxt
 from masci_tools.io.common_functions import search_string, get_outfile_txt, get_version_info, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
@@ -21,7 +22,7 @@ from masci_tools.io.common_functions import get_Ry2eV
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '0.7.1'
+__version__ = '0.8.0'
 __contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo')
 
 ####################################################################################
@@ -319,11 +320,13 @@ class KkrimpParserFunctions:
 
     ### end helper functions ###
 
-    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False):
+    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False, ignore_nan=False):
         """
         Main parser function for kkrimp, read information from files in file_dict and fills out_dict
         :param out_dict: dictionary that is filled with parsed output of the KKRimp calculation
         :param file_dict: dictionary of files that are parsed
+        :param debug: True/False to activate debug output
+        :param ignore_nan: bool replace NaN by zero with numpy's nan_to_num function
         :returns: success (bool), msg_list(list of error/warning messages of parser), out_dict (filled dict of parsed output)
         :note: file_dict should contain the following keys
 
@@ -412,6 +415,10 @@ class KkrimpParserFunctions:
                 #result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
                 spinmom_atom, spinmom_atom_vec_all_iter, spin_tot_abs = self._get_spinmom_per_atom(
                     files['out_spinmoms'], natom)
+                if ignore_nan:
+                    spinmom_atom = np.nan_to_num(spinmom_atom)
+                    spinmom_atom_vec_all_iter = np.nan_to_num(spinmom_atom_vec_all_iter)
+                    spin_tot_abs = np.nan_to_num(spin_tot_abs)
                 if len(result) > 0:
                     tmp_dict['total_abs_spin_moment'] = spin_tot_abs
                     tmp_dict['spin_moment_per_atom'] = spinmom_atom
