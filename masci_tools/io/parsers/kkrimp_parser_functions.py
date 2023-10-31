@@ -13,10 +13,9 @@
 Tools for the impurity calculation plugin and its workflows
 """
 import numpy as np
-from numpy import array, ndarray, loadtxt
+import traceback
 from masci_tools.io.common_functions import search_string, get_outfile_txt, get_version_info, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
-import traceback
 from masci_tools.io.common_functions import get_Ry2eV
 
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
@@ -59,7 +58,7 @@ class KkrimpParserFunctions:
             for ie in range(econt['Nepts']):
                 tmpline = tmptxt[itmp + 4 + ie].split()[1:]
                 tmp.append([float(tmpline[0]), float(tmpline[1]), float(tmpline[2]), float(tmpline[3])])
-            tmp = array(tmp)
+            tmp = np.array(tmp)
             econt['epts'] = tmp[:, :2]
             econt['weights'] = tmp[:, 2:]
             econt['emin'] = tmp[0, 0]
@@ -146,7 +145,6 @@ class KkrimpParserFunctions:
                   magn. moment for all atoms in the cluster for all iterations (saved in z-comp. of 3d vector)
                   total magnetic moments of all atoms for last iteration
         """
-        import numpy as np
 
         tmptxt = get_outfile_txt(file)
         itmp = 0
@@ -224,7 +222,6 @@ class KkrimpParserFunctions:
                   spinmom_at_all (array of spin moments for all atoms and iterations),
                   spinmom_at_tot (total spinmoment for the last iteration)
         """
-        import numpy as np
         from math import sqrt  #pylint: disable=no-name-in-module
 
         lines = get_outfile_txt(file)
@@ -254,7 +251,6 @@ class KkrimpParserFunctions:
         :param natom: number of atoms in impurity cluster
         :returns: orbmom_at (list), orbital moments for all atoms
         """
-        import numpy as np
 
         lines = get_outfile_txt(file)
         startline = len(lines) - natom
@@ -307,8 +303,8 @@ class KkrimpParserFunctions:
         :param file2: file containing all total energies
         :returns: esp_at (list), etot_at (list)
         """
-        esp = loadtxt(file1)
-        etot = loadtxt(file2)
+        esp = np.loadtxt(file1)
+        etot = np.loadtxt(file2)
         if natom > 1:
             esp_at = esp[-natom:, 1]
             etot_at = etot[-natom:, 1]
