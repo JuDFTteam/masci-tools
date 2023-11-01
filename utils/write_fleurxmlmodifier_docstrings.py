@@ -26,21 +26,21 @@ def get_method_docstring(name, docstring, module):
                 if all(x not in line for x in (':param xmltree:', ':param schema_dict:', ':param nmmplines:', ':returns'))]
 
     additional_lines = [
-        f'Appends a :py:func:`~masci_tools.util.xml.{module}.{name}()` to',
+        'This registration method does not modify the file immediately '
+        f'but only appends a :py:func:`~masci_tools.util.xml.{module}.{name}()` to',
         'the list of tasks that will be done on the xmltree.', ''
     ]
-    if lines[0]:
-        lines.insert(0, '')
     if lines[-1]:
         lines.append('')
 
-    for line in reversed(additional_lines):
-        lines.insert(1, line)
+    for line in additional_lines:
+        lines.append(line)
 
     while all(not line.strip() for line in lines[-2:]):
         lines.pop()
     lines = [2 * INDENT * ' ' + line if line.strip() else line.lstrip() for line in lines]
     lines[-1] = 2 * INDENT * ' '
+    lines[0] = lines[0].lstrip()
     #Two levels of indentation have to be added since the docstrings go into methods
     return '\n'.join(lines)
 

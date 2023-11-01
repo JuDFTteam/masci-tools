@@ -92,6 +92,7 @@ instance/
 # Sphinx documentation
 docs/_build/
 docs/source/_build/
+docs/source/user_guide/fleurxmlmodifier_usage_examples/examples
 
 # PyBuilder
 target/
