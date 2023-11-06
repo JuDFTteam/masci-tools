@@ -5,7 +5,7 @@ ci:
 
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
     - id: double-quote-string-fixer
       types: [python]
@@ -20,7 +20,7 @@ repos:
     - id: forbid-new-submodules
 
 - repo: https://github.com/google/yapf
-  rev: v0.33.0
+  rev: v0.40.2
   hooks:
   - id: yapf
     name: yapf
@@ -33,7 +33,7 @@ repos:
     additional_dependencies: ['toml']
 
 - repo: https://github.com/ikamensh/flynt/
-  rev: '0.78'
+  rev: '1.0.1'
   hooks:
   -   id: flynt
       args: [
@@ -42,7 +42,7 @@ repos:
       ]
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.2
+    rev: v3.15.0
     hooks:
     -   id: pyupgrade
         args: [
