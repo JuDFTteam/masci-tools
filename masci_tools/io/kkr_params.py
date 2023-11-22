@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.12'
+__version__ = '1.8.13'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -878,6 +878,8 @@ class kkrparams:
             ('CALCFORCE', [None, '%i', False, 'Calculate forces']),
             ('CALCJIJMAT', [None, '%i', False, 'Calculate Jijmatrix']),
             ('CALCORBITALMOMENT', [None, '%i', False, 'Calculate orbital moment (SOC solver only, 0/1)']),
+            ('LATTICE_RELAX',
+             [None, '%i', False, 'Lattice relaxations via U-transformation (defaults 0 which means no relaxations)']),
             # Bogoliubov de Gennes mode:
             ('USE_BDG', [
                 None, '%l', False,
