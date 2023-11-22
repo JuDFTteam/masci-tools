@@ -866,6 +866,11 @@ class kkrparams:
               'Self-consistency control: Lower limit of rms-error in potential to stop iterations.']),
             ('QBOUND_LDAU',
              [None, '%e', False, 'Self-consistency control: Lower limit of rms-error for LDA+U potential.']),
+            ('MIXLDAU_STEP',
+             [None, '%i', False, 'Self-consistency control: Number of SCF steps to complete between each LDA+U potential mixing (stepmixldau runflag/runoption should be activated).']),
+            ('MIXFAC_LDAU',
+             [None, '%f', False, 'Self-consistency control: Mixing factor for the LDAU potential.']),
+             #code options
             ('NSIMPLEMIXFIRST', [
                 None, '%i', False,
                 'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).'
