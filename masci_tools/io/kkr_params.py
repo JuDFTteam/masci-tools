@@ -18,7 +18,7 @@ from masci_tools.io.common_functions import open_general
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.8.13'
+__version__ = '1.8.14'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -869,6 +869,15 @@ class kkrparams:
             ('NSIMPLEMIXFIRST', [
                 None, '%i', False,
                 'Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3).'
+            ]),
+            ('MIXFAC', [None, '%f', False, 'Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0']),
+            ('IMIXSPIN', [
+                None, '%f', False,
+                'Self-consistency control: Linear mixing scheme for magnetic moments, 0 (derfault value) means straight mixing, 1 means Broyden mixing.'
+            ]),
+            ('SPINMIXFAC', [
+                None, '%f', False,
+                'Self-consistency control: Mixing factor used for the magnetic moments, defaults to 1.'
             ]),
             ('TOL_ALAT_CHECK',
              [None, '%e', False, 'Consistency check: tolerance for alat comparison (defaults to 1e-12 if not set).']),
