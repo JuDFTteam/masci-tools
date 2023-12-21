@@ -102,6 +102,11 @@ def test_greensfunction_radial(test_file):
     assert gf.trace_energy_dependence(spin=1).shape == (128,)
     assert gf.trace_energy_dependence(spin=1).dtype == float
 
+    assert isinstance(gf.energy_dependence(spin=1, radial=True), np.ndarray)
+    assert not np.isnan(gf.energy_dependence(spin=1, radial=True)).any()
+    assert gf.energy_dependence(spin=1, radial=True).shape == (757, 128, 5, 5)  #(jr,nz,2*l+1,2*l+1)
+    assert gf.energy_dependence(spin=1, radial=True).dtype == float
+
 
 def test_list_elements(test_file):
     """
@@ -195,6 +200,11 @@ def test_greensfunction_radial_complete_spin(test_file):
     assert isinstance(gf.trace_energy_dependence(), np.ndarray)
     assert gf.trace_energy_dependence().shape == (128, 2, 2)
     assert gf.trace_energy_dependence().dtype == float
+
+    assert isinstance(gf.energy_dependence(radial=True), np.ndarray)
+    assert not np.isnan(gf.energy_dependence(radial=True)).any()
+    assert gf.energy_dependence(radial=True).shape == (757, 128, 5, 5, 2, 2)  #(jr,nz,2*l+1,2*l+1, spin1, spin2)
+    assert gf.energy_dependence(radial=True).dtype == float
 
 
 def test_greensfunction_sphavg_full_spin_matrix(test_file):
