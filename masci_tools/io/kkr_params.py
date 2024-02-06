@@ -33,8 +33,8 @@ __kkr_default_params__ = {
 }
 
 # prevent kkrparams to add brackets around these keywords automatically
-# case insensitive (converted to lower case)
-__forbid_brackets__ = ['use_input_alat']
+# case insensitive (converted to upper case)
+__forbid_brackets__ = ['USE_INPUT_ALAT']
 
 
 class kkrparams:
@@ -1219,6 +1219,9 @@ class kkrparams:
             # workaround to fix inconsistency of XC input between host and impurity code
             if self.__params_type == 'kkrimp' and key2 == 'XC':
                 kwargs[key] = self.change_XC_val_kkrimp(val)
+            # enforce upper case for key2
+            key2 = key2.upper()
+
             default_keywords[key2][0] = val
 
         return default_keywords
@@ -2100,7 +2103,7 @@ class kkrparams:
             return key
 
         key2 = key
-        if key not in key_dict and key.lower() not in __forbid_brackets__:
+        if key.upper() not in key_dict and key.upper() not in __forbid_brackets__:
             key2 = '<' + key + '>'
 
         return key2
