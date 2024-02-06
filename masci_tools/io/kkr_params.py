@@ -439,7 +439,7 @@ class kkrparams:
                 None, '%i', False,
                 'Exchange coupling: allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)'
             ]),
-            ('EFSET',
+            ('EF_SET',
              [None, '%f', False, 'Set Fermi level (in voronoi of the jellium starting potential) to this value.']),
             # Bogoliubov de Gennes mode:
             ('<USE_BDG>', [
