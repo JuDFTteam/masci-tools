@@ -21,8 +21,8 @@ from masci_tools.io.common_functions import get_Ry2eV
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '0.8.0'
-__contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo')
+__version__ = '0.8.1'
+__contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo', 'David Antognini Silva')
 
 ####################################################################################
 
@@ -359,11 +359,14 @@ class KkrimpParserFunctions:
         # also initialize convegence_group where all info stored for all iterations is kept
         out_dict['convergence_group'] = tmp_dict
         try:
-            rms_charge, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(files['outfile'],
-                                                                                             files['out_log'],
-                                                                                             debug=debug)
+            rms_charge, rms_ldau, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(files['outfile'],
+                                                                                                       files['out_log'],
+                                                                                                       debug=debug,
+                                                                                                       is_imp_calc=True)
             tmp_dict['rms'] = rms_charge[-1]
             tmp_dict['rms_all_iterations'] = rms_charge
+            tmp_dict['rms_LDAU'] = rms_ldau[-1]
+            tmp_dict['rms_LDAU_all_iterations'] = rms_ldau
             tmp_dict['rms_per_atom'] = result_atoms_last_charge
             if len(rms_spin) > 0:
                 tmp_dict['rms_spin'] = rms_spin[-1]

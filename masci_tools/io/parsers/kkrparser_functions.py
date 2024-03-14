@@ -25,8 +25,8 @@ import traceback
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__contributors__ = 'Philipp Rüßmann'
-__version__ = '1.8.2'
+__contributors__ = 'Philipp Rüßmann, David Antognini Silva'
+__version__ = '1.8.3'
 
 ####################################################################################
 
@@ -70,7 +70,7 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=
     return res
 
 
-def get_rms(outfile, outfile2, debug=False):
+def get_rms(outfile, outfile2, debug=False, is_imp_calc=False):
     """
     Get rms error per atom (both values for charge and spin) and total (i.e. average) value
     """
@@ -79,6 +79,10 @@ def get_rms(outfile, outfile2, debug=False):
     rms_charge = parse_array_float(outfile, 'average rms-error', [2, '=', 1, 0], ['D', 'E'], debug=debug)
     if debug:
         print(rms_charge)
+    if is_imp_calc == True:
+        rms_ldau = parse_array_float(outfile, 'TOTAL RMS-ERROR for LDA+U:', [2, ':', 1, 0], debug=debug)
+        if debug:
+            print(rms_ldau)
     rms_spin = parse_array_float(
         outfile, '   v+ - v-', [1, '=', 1],
         ['D', 'E'])  # this should be in the line after 'average rms-error' but is only present if NSPIN==2
@@ -98,7 +102,10 @@ def get_rms(outfile, outfile2, debug=False):
                  niter)  # number of atoms in system, needed to take only atom resolved rms of last iteration
     if debug:
         print(natoms)
-    return rms_charge, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
+    if is_imp_calc == True:
+        return rms_charge, rms_ldau, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
+    else:
+        return rms_charge, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
 
 
 def get_noco_rms(outfile, debug=False):
