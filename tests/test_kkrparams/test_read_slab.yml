@@ -49,6 +49,7 @@
 - 8
 - 9
 - 10
+<KEEP_EPARA_1B>: null
 <LAMBDA_BDG>: null
 <LFMTWAL>: null
 <LFMTWAU>: null
@@ -751,7 +752,7 @@ DECIFILES:
 - fedeci.fp2
 DENEF_MIXSCALE: null
 EBOTSEMI: null
-EFSET: null
+EF_SET: null
 EMAX: 1.2
 EMIN: -1.2
 EMUSEMI: null

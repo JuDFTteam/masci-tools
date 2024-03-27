@@ -1,0 +1,1436 @@
+{
+  "<AT_SCALE_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Scaling factor for lambda_BdG (e.g. used to deactivate BdG coupling in some layers by setting the value to 0)"
+  ],
+  "<BDG_FIX_STARTING_TRIPLET>": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: fix triplet pairing to a constant value or update from output anomalous density."
+  ],
+  "<BDG_FORCE_TRIPLET_DELTA0>": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: force use of Delta0 for triplet part instead of using anomalous density components (requires <BdG_triplet_delta0> input)."
+  ],
+  "<BDG_NUM_TRIPLET_CHANNELS>": [
+    null,
+    "%i",
+    false,
+    "Superconductivity: total number of triplet pairing channels (number of lm channels times number of atoms with triplet channels), defaults to zero."
+  ],
+  "<BDG_TRIPLET_DELTA0>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: starting values for triplet pairing, only used if <BdG_force_triplet_delta0>= True."
+  ],
+  "<BDG_TRIPLET_DVEC>": [
+    null,
+    "%f %f %f",
+    false,
+    "Superconductivity: normalized d-vector components of the different triplet channels (if not give, assume only dz to be there). Should have <BDG_NUM_TRIPLET_CHANNELS> entries."
+  ],
+  "<BDG_TRIPLET_LAMBDAS>": [
+    null,
+    "%i %i %i %f",
+    false,
+    "Superconductivity: (iatom, lm1, lm2, lambda) for all the triplet channels. (lm1, lm2) pair indicates the lm-component for equal-spin pairing where for example `1 1 3 1e-3` activates triplet coupling between s and pz in atom 1 with a strength of \u03bb=1mRy (remember that Fortran starts counting at 1)."
+  ],
+  "<CALC_CHI_NS>": [
+    null,
+    "%l",
+    false,
+    "Run option: calculate the radially averaged anomalous density matrix and write to `den_lm_ir_ns.npy` file. Only for BdG mode."
+  ],
+  "<CALC_COMPLEX_BANDSTRUCTURE>": [
+    null,
+    "%l",
+    false,
+    "Run option: complex band structure (former: 'COMPLEX')"
+  ],
+  "<CALC_EXCHANGE_COUPLINGS>": [
+    null,
+    "%l",
+    false,
+    "Run option: calculate magnetic exchange coupling parameters (former: 'XCPL')"
+  ],
+  "<CALC_EXCHANGE_COUPLINGS_ENERGY>": [
+    null,
+    "%l",
+    false,
+    "Run option: write energy-resolved Jij-files also if npol/=0 (former: 'Jijenerg')"
+  ],
+  "<CALC_GF_EFERMI>": [
+    null,
+    "%l",
+    false,
+    "Run option: calculation of cluster Green function at E Fermi (former: 'GF-EF')"
+  ],
+  "<CALC_GMAT_LM_FULL>": [
+    null,
+    "%l",
+    false,
+    "Run option: calculate all lm-lm components of systems greens function and store to file `gflle` (former: 'lmlm-dos')"
+  ],
+  "<CALC_WRONSKIAN>": [
+    null,
+    "%l",
+    false,
+    "Run option: calculate the wronskian relations of first and second kind for the wavefunctions (see PhD Bauer pp 48)"
+  ],
+  "<CPA-CONC>": [
+    null,
+    "%f",
+    false,
+    "Chemistry, CPA mode: Takes values 0. < [<CPA-CONC>] < 1. Assigns the alloy-concentration corresponding to the atom-dependent read-in potential. Together with the variable <SITE>, <CPA-CONC> assigns the number and concentration of the atom-dependent potentials residing at each site form 1 to [NAEZ]. The sum of concentrations at each site should equal 1."
+  ],
+  "<CUSTOM_TESTSTRING>": [
+    null,
+    "%s",
+    false,
+    "Superconductivity: String input for some test options (especially with BdG)."
+  ],
+  "<DECOUPLE_SPIN_CHEBY>": [
+    null,
+    "%l",
+    false,
+    "Run option: decouple spin matrices in Chebychev solver neglecting SOC and for collinear calculations only"
+  ],
+  "<DELTAE>": [
+    null,
+    "(%f, %f)",
+    false,
+    "Accuracy, LLoyd's formula: Energy difference for derivative calculation in Lloyd's formula"
+  ],
+  "<DELTA_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)"
+  ],
+  "<DIRAC_SCALE_SPEEFOFLIGHT>": [
+    null,
+    "%l",
+    false,
+    "Run option: scale the speed of light for Dirac solver (former: 'CSCALE')"
+  ],
+  "<DISABLE_CHARGE_NEUTRALITY>": [
+    null,
+    "%l",
+    false,
+    "Run option: no charge neutrailty required: leaving Fermi level unaffected (former: 'no-neutr')"
+  ],
+  "<DISABLE_PRINT_SERIALNUMBER>": [
+    null,
+    "%l",
+    false,
+    "Run option: deactivate writing of serial number and version information to files (for backwards compatibility) (former: 'noserial')"
+  ],
+  "<DISABLE_REFERENCE_SYSTEM>": [
+    null,
+    "%l",
+    false,
+    "Run option: deactivate the tight-binding reference system (former: 'lrefsysf')"
+  ],
+  "<DISABLE_TMAT_SRATRICK>": [
+    null,
+    "%l",
+    false,
+    "Run option: deactivate SRATRICK in solver for t-matirx (former: 'nosph')"
+  ],
+  "<FIX_NONCO_ANGLES>": [
+    null,
+    "%l",
+    false,
+    "Run option: fix direction of non-collinear magnetic moments (Chebychev solver) (former: 'FIXMOM')"
+  ],
+  "<FORCE_BZ_SYMM>": [
+    null,
+    "%l",
+    false,
+    "Run option: force using symmetries of the Brillouin zone (effective only for the Chebychev solver, should not be used with SOC!)"
+  ],
+  "<FORMATTED_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write files ascii-format. only effective with some other write-options (former: 'fileverb')"
+  ],
+  "<FPRADIUS>": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Radial solver: Full potential limit per atom (in Bohr radii); at points closer to the nucleus, the potential is assumed spherical. Negative values indicate to use values from potential file. Values larger than the muffin tin indicate to use the muffin tin radius."
+  ],
+  "<IMPURITY_OPERATOR_ONLY>": [
+    null,
+    "%l",
+    false,
+    "Run option: only for `write_pkkr_operators`: disable costly recalculation of host operators (former: 'IMP_ONLY')"
+  ],
+  "<KAOEZL>": [
+    null,
+    "%i",
+    false,
+    "Chemistry, 2D mode: Controls the type of t-matrix at the lower (=left) half-crystal sites in case of embedding as these are given in the left-decimation file (i.e., changes the order compared to the one in the left-decimation file)."
+  ],
+  "<KAOEZR>": [
+    null,
+    "%i",
+    false,
+    "Chemistry, 2D mode: Controls the type of t-matrix at the upper (=right) half-crystal sites in case of embedding as these are given in the right-decimation file (i.e., changes the order compared to the one in the right-decimation file)."
+  ],
+  "<KEEP_EPARA_1B>": [
+    null,
+    "%l",
+    false,
+    "Parallelization: Deactivate switching to k-point parallelization in main1b in favor of keeping the energy parallelization (can be useful when few k-points are present which prevents us from using many ranks efficiently)."
+  ],
+  "<LAMBDA_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)"
+  ],
+  "<LFMTWAL>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in alat units for each site in the left continuation region (INTERFACE=T)."
+  ],
+  "<LFMTWAU>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in alat units for each site in the left continuation region (INTERFACE=T)."
+  ],
+  "<LLOYD>": [
+    null,
+    "%i",
+    false,
+    "Accuracy, LLoyd's formula: Set to 1 in order to use Lloyd's formula"
+  ],
+  "<LM_SCALE_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Scaling factor for lambda_BdG on some L channels (e.g. used to get more structure into BdG matrix. Defaults to 1.0)"
+  ],
+  "<MEMLEN_BROYDEN_BDG>": [
+    null,
+    "%i",
+    false,
+    "Superconductivity: Memory length of Broyden mixing (defaults to 20)"
+  ],
+  "<MIXFAC_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Mixing factor used in the mixing of the BdG Delta (defaults to 0.1)"
+  ],
+  "<MIXFAC_BDG_BRY>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Mixing factor used in the Broyden mixing of the BdG Delta (defaults to value of <MIXFAC_BDG>)"
+  ],
+  "<MODIFY_SOC_DIRAC>": [
+    null,
+    "%l",
+    false,
+    "Run option: modify SOC for Dirac solver (former: 'SOC')"
+  ],
+  "<MPI_SCHEME>": [
+    null,
+    "%i",
+    false,
+    "Parallelization scheme (defaults to 0 which means auto parallelization, 1=atom, 2=energy parallelization preferred)."
+  ],
+  "<MTWAL>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in alat units for each site. Overwritten by the findsize run option!"
+  ],
+  "<MTWAU>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in atomic units for each site. Overwritten by the findsize run option!"
+  ],
+  "<NINIT_BROYDEN_BDG>": [
+    null,
+    "%i",
+    false,
+    "Superconductivity: Number of simple mixing steps before Broyden for BdG Delta starts (defaults to 1)."
+  ],
+  "<NLBASIS>": [
+    null,
+    "%i",
+    false,
+    "Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the lower (=left) part of the slab."
+  ],
+  "<NONCOBFIELD>": [
+    null,
+    "%l",
+    false,
+    "Run option: use non-collinear exteranl fields read from bfield.dat"
+  ],
+  "<NO_MADELUNG>": [
+    null,
+    "%l",
+    false,
+    "Run option: do not add some energy terms (coulomb, XC, eff. pot.) to total energy (former: 'NoMadel')"
+  ],
+  "<NRBASIS>": [
+    null,
+    "%i",
+    false,
+    "Description of lattice, 2D mode: Number of basis sites forming the half-infinite lattice to the upper (=right) part of the slab."
+  ],
+  "<PHASE_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Atom dependent phase factor for superconducting coupling."
+  ],
+  "<PRINT_GIJ>": [
+    null,
+    "%l",
+    false,
+    "Run option: print cluster G_ij matrices to outfile (former: 'Gmatij')"
+  ],
+  "<PRINT_GMAT>": [
+    null,
+    "%l",
+    false,
+    "Run option: print Gmat to outfile (former: 'Gmat')"
+  ],
+  "<PRINT_ICKECK>": [
+    null,
+    "%l",
+    false,
+    "Run option: enable test-output of ICHECK matrix from gfmask (former: 'ICHECK')"
+  ],
+  "<PRINT_KMESH>": [
+    null,
+    "%l",
+    false,
+    "Run option: output of k-mesh (former: 'k-net')"
+  ],
+  "<PRINT_KPOINTS>": [
+    null,
+    "%l",
+    false,
+    "Run option: print k-points to outfile (former: 'BZKP')"
+  ],
+  "<PRINT_PROGRAM_FLOW>": [
+    null,
+    "%l",
+    false,
+    "Run option: monitor the program flow in some parts of the code (former: 'flow')"
+  ],
+  "<PRINT_RADIAL_MESH>": [
+    null,
+    "%l",
+    false,
+    "Run option: write mesh information to output (former: 'RMESH')"
+  ],
+  "<PRINT_REFPOT>": [
+    null,
+    "%l",
+    false,
+    "Run option: test output of refpot (former: 'REFPOT')"
+  ],
+  "<PRINT_TAU_STRUCTURE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write extensive information about k-mesh symmetrization and structure of site-diagonal tau matrices to output (former: 'TAUSTRUC')"
+  ],
+  "<PRINT_TMAT>": [
+    null,
+    "%l",
+    false,
+    "Run option: print t-matrix to outfile (former: 'tmat')"
+  ],
+  "<RBASIS>": [
+    null,
+    "%f %f %f",
+    true,
+    "Description of lattice: Positions of sites in unit cell"
+  ],
+  "<RBLEFT>": [
+    null,
+    "%f %f %f",
+    false,
+    "Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the lower (=left) part of the slab."
+  ],
+  "<RBRIGHT>": [
+    null,
+    "%f %f %f",
+    false,
+    "Description of lattice, 2D mode: Positions of sites forming the basis sites of the half-infinite lattice to the upper (=right) part of the slab."
+  ],
+  "<RELAX_SPINANGLE_DIRAC>": [
+    null,
+    "%l",
+    false,
+    "Run option: relax the spin angle in a SCF calculation [only DIRAC mode] (former: 'ITERMDIR')"
+  ],
+  "<RMTCORE>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin radium in Bohr radii for each atom site. This sets the value of RMT used internally in the KKRcode. Needs to be smaller than the touching RMT of the cells. In particular for structure relaxations this should be kept constant."
+  ],
+  "<RMTREF>": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Screening clusters: Muffin tin radius in Bohr radii for each site forming screening clusters. Negative value signals automatic calculation by the code."
+  ],
+  "<RMTREFL>": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the lower (=left) half-crystal. Negative value signals automatic calculation by the code."
+  ],
+  "<RMTREFR>": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Screening clusters 2D mode: Muffin-tin radius in Bohr radii for each site forming screening clusters in the upper (=right) half-crystal. Negative value signals automatic calculation by the code."
+  ],
+  "<RTMTWAL>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in alat units for each site in the right continuation region (INTERFACE=T)."
+  ],
+  "<RTMTWAU>": [
+    null,
+    "%f",
+    false,
+    "Accuracy: Muffin tin weight in alat units for each site in the right continuation region (INTERFACE=T)."
+  ],
+  "<SEARCH_EFERMI>": [
+    null,
+    "%l",
+    false,
+    "Run option: modify convergence parameters to scan for fermi energy only (to reach charge neutrality). (former: 'SEARCHEF')"
+  ],
+  "<SET_CHEBY_NOSOC>": [
+    null,
+    "%l",
+    false,
+    "Run option: set SOC strength to 0 for all atoms (former: 'NOSOC')"
+  ],
+  "<SET_CHEBY_NOSPEEDUP>": [
+    null,
+    "%l",
+    false,
+    "Run option: always calculate irregular solution in Chebychev solver (even if not needed) (former: 'norllsll')"
+  ],
+  "<SET_EMPTY_SYSTEM>": [
+    null,
+    "%l",
+    false,
+    "Run option: set potential and nuclear charge to zero (former: 'zeropot')"
+  ],
+  "<SET_GMAT_TO_ZERO>": [
+    null,
+    "%l",
+    false,
+    "Run option: set GMAT=0 in evaluation of density (former: 'GMAT=0')"
+  ],
+  "<SET_KMESH_LARGE>": [
+    null,
+    "%l",
+    false,
+    "Run option: set equal k-mesh (largest) for all energy points (former: 'fix mesh')"
+  ],
+  "<SET_KMESH_SMALL>": [
+    null,
+    "%l",
+    false,
+    "Run option: set equal k-mesh (smallest) for all energy points (former: 'fix4mesh')"
+  ],
+  "<SET_TMAT_NOINVERSION>": [
+    null,
+    "%l",
+    false,
+    "Run option: do not perform inversion to get msst = Delta t^-1, but msst = Delta t. (former: 'testgmat')"
+  ],
+  "<SHAPE>": [
+    null,
+    "%i",
+    false,
+    "Description of lattice, shape functions: Indexes which shape function from the shape-function file to use in which atom. Default is that each atom has its own shape function."
+  ],
+  "<SIMULATE_ASA>": [
+    null,
+    "%l",
+    false,
+    "Run option: set non-spherical potential to zero in full-potential calculation with Chebychev solver (former: 'simulasa')"
+  ],
+  "<SITE>": [
+    null,
+    "%i",
+    false,
+    "Chemistry, CPA mode: Takes values 1 < [<SITE>] < [NAEZ] Assigns the position (given by [<RBASIS>]) where the atom-dependent read-in potential is situated. E.g., if the 3rd-in-the-row potential should be positioned at the 2nd <RBASIS> vector, then the 3rd entry of the <SITE> list should have the value 2."
+  ],
+  "<SLOW_MIXING_EFERMI>": [
+    null,
+    "%l",
+    false,
+    "Run option: renormalize Fermi-energy shift by mixing factor during mixing (former: 'slow-neu')"
+  ],
+  "<SOCSCL>": [
+    null,
+    "%f",
+    false,
+    "Chemistry, Atom types: Spin-orbit coupling scaling per atom. Takes values between 0. (no spin-orbit) and 1. (full spin-orbit). Works only in combination with the Juelich spin orbit solver (runoption NEWSOSOL)"
+  ],
+  "<STOP_1A>": [
+    null,
+    "%l",
+    false,
+    "Run option: stop after main1a (former: 'STOP1A')"
+  ],
+  "<STOP_1B>": [
+    null,
+    "%l",
+    false,
+    "Run option: stop after main1b (former: 'STOP1B')"
+  ],
+  "<STOP_1C>": [
+    null,
+    "%l",
+    false,
+    "Run option: stop after main1c (former: 'STOP1C')"
+  ],
+  "<SYMMETRIZE_GMAT>": [
+    null,
+    "%l",
+    false,
+    "Run option: use symmetrization [G(k) + G(-k)]/2 in k-point loop (former: 'symG(k)')"
+  ],
+  "<SYMMETRIZE_POTENTIAL_CUBIC>": [
+    null,
+    "%l",
+    false,
+    "Run option: keep only symmetric part of potential (L=1,11,21,25,43,47). (former: 'potcubic')"
+  ],
+  "<SYMMETRIZE_POTENTIAL_MADELUNG>": [
+    null,
+    "%l",
+    false,
+    "Run option: symmetrize potential in consistency to madelung potential (former: 'potsymm')"
+  ],
+  "<TEMP_BDG>": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Smearing temperature for the calculation of the anomalous density (used to calculate Tc, defaults to 0)."
+  ],
+  "<TOLAREA>": [
+    null,
+    "%e",
+    false,
+    "Accuracy, Voronoi: Tolerance for minimal area of faces in Voronoi code."
+  ],
+  "<TOLHS>": [
+    null,
+    "%e",
+    false,
+    "Accuracy, Voronoi: Tolerance for half-space routine in Voronoi code."
+  ],
+  "<TOLRDIF>": [
+    null,
+    "%e",
+    false,
+    "Accuracy, Virtual atoms: For distance between scattering-centers smaller than [<TOLRDIF>], free GF is set to zero. Units are Bohr radii."
+  ],
+  "<TOLVD>": [
+    null,
+    "%e",
+    false,
+    "Accuracy, Voronoi: Tolerance for vertex distance in Voronoi code."
+  ],
+  "<TORQUE_OPERATOR_ONLYMT>": [
+    null,
+    "%l",
+    false,
+    "Run option: for torque operator: include only the part within the muffin tin (former: 'ONLYMT')"
+  ],
+  "<TORQUE_OPERATOR_ONLYSPH>": [
+    null,
+    "%l",
+    false,
+    "Run option: for torque operator: include only the spherically symmetric part (former: 'ONLYSPH')"
+  ],
+  "<USE_BDG>": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!"
+  ],
+  "<USE_BROYDEN_SPINMIX>": [
+    null,
+    "%l",
+    false,
+    "Self-consistency control: Use Broyden mixing for nonco angles"
+  ],
+  "<USE_CHEBYCHEV_SOLVER>": [
+    null,
+    "%l",
+    false,
+    "Run option: use the Chebychev solver (former: 'NEWSOSOL')"
+  ],
+  "<USE_COND_LB>": [
+    null,
+    "%l",
+    false,
+    "Run option: perform calculation of conductance in Landauer-B\u00fcttiker formalism (former: 'CONDUCT')"
+  ],
+  "<USE_CONT>": [
+    null,
+    "%l",
+    false,
+    "Run option: no usage of embedding points. NEMB is set to 0. (former: 'CONT')"
+  ],
+  "<USE_DECIMATION>": [
+    null,
+    "%l",
+    false,
+    "Run option: use Decimation technique for semi-infinite systems (former: 'DECIMATE')"
+  ],
+  "<USE_DECI_ONEBULK>": [
+    null,
+    "%l",
+    false,
+    "Run option: in case of decimation: use same bulk on right and left. Speeds up calculations. (former: 'ONEBULK')"
+  ],
+  "<USE_EWALD_2D>": [
+    null,
+    "%l",
+    false,
+    "Run option: use 2D ewald sum instead of 3D sum (Attention: does not work always!) (former: 'ewald2d')"
+  ],
+  "<USE_E_SYMM_BDG>": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)"
+  ],
+  "<USE_FULL_BZ>": [
+    null,
+    "%l",
+    false,
+    "Run option: use full Brillouin zone, i.e. switch off symmetries for k-space integration (former: 'fullBZ')"
+  ],
+  "<USE_LDAU>": [
+    null,
+    "%l",
+    false,
+    "Run option: use LDA+U as exchange-correlation potential (former: 'LDA+U')"
+  ],
+  "<USE_LLOYD>": [
+    null,
+    "%l",
+    false,
+    "Run option: use Lloyds formula to correct finite angular momentum cutoff (former: 'LLOYD')"
+  ],
+  "<USE_QDOS>": [
+    null,
+    "%l",
+    false,
+    "Run option: writes out qdos files for band structure calculations. (former: 'qdos')"
+  ],
+  "<USE_READCPA>": [
+    null,
+    "%l",
+    false,
+    "Run option: read cpa t-matrix from file (former: 'readcpa')"
+  ],
+  "<USE_RIGID_EFERMI>": [
+    null,
+    "%l",
+    false,
+    "Run option: keep the Fermi energy fixed during self-consistency (former: 'rigid-ef')"
+  ],
+  "<USE_SEMICORE>": [
+    null,
+    "%l",
+    false,
+    "Run option: use semicore contour (former: 'SEMICORE')"
+  ],
+  "<USE_SEMI_CIRCLE_CONTOUR>": [
+    null,
+    "%l",
+    false,
+    "Run option: use semi-circular energy contour (set number of points with NPT1)"
+  ],
+  "<USE_SPHERICAL_POTENTIAL_ONLY>": [
+    null,
+    "%l",
+    false,
+    "Run option: keeping only spherical component of potential (former: 'Vspher')"
+  ],
+  "<USE_VIRTUAL_ATOMS>": [
+    null,
+    "%l",
+    false,
+    "Run option: add virtual atoms (former: 'VIRATOMS')"
+  ],
+  "<WRITE_ALL_DENLM>": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: Triggers writeout of all den_lm_ir files that contain the anomalous density (usually writeout is only done for atoms with lambda>0)."
+  ],
+  "<WRITE_ANGLES_ALLITER>": [
+    null,
+    "%l",
+    false,
+    "Self-consistency control: write out the nonco angles for all iterations"
+  ],
+  "<WRITE_BDG_TESTS>": [
+    null,
+    "%l",
+    false,
+    "Run option: test options for Bogouliubov-deGennes (former: 'BdG_dev')"
+  ],
+  "<WRITE_COMPLEX_QDOS>": [
+    null,
+    "%l",
+    false,
+    "Run option: write complex qdos to file (former: 'compqdos')"
+  ],
+  "<WRITE_CPA_PROJECTION_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write CPA projectors to file (former: 'projfile')"
+  ],
+  "<WRITE_DECI_POT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write decimation-potential file (former: 'deci-pot')"
+  ],
+  "<WRITE_DECI_TMAT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write t-matrix to file 'decifile' (former: 'deci-out')"
+  ],
+  "<WRITE_DENSITY_ASCII>": [
+    null,
+    "%l",
+    false,
+    "Run option: write density rho2ns to file densitydn.ascii (former: 'den-asci')"
+  ],
+  "<WRITE_DOS>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out DOS files in any case (also if npol!=0) (former: 'DOS')"
+  ],
+  "<WRITE_DOS_LM>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out DOS files with decomposition into l and m components (former: 'lmdos')"
+  ],
+  "<WRITE_ENERGY_MESH>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out the energy mesh to file `emesh.scf` (former: 'EMESH')"
+  ],
+  "<WRITE_GENERALIZED_POTENTIAL>": [
+    null,
+    "%l",
+    false,
+    "Run option: write potential in general format. Usually prepares for running the VORONOI program. (former: 'GENPOT')"
+  ],
+  "<WRITE_GMAT_ASCII>": [
+    null,
+    "%l",
+    false,
+    "Run option: write GMAT to formatted file `gmat.ascii` (former: 'gmatasci')"
+  ],
+  "<WRITE_GMAT_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write GMAT to file (former: 'gmatfile')"
+  ],
+  "<WRITE_GMAT_PLAIN>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out Green function as plain text file (former: 'GPLAIN')"
+  ],
+  "<WRITE_GREEN_HOST>": [
+    null,
+    "%l",
+    false,
+    "Run option: write green function of the host to file `green_host` (former: 'WRTGREEN')"
+  ],
+  "<WRITE_GREEN_IMP>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out impurity Green function to GMATLL_GES (former: 'GREENIMP')"
+  ],
+  "<WRITE_GREF_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write GREF to file (former: 'greffile')"
+  ],
+  "<WRITE_KKRIMP_INPUT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out files for KKRimp-code (former: 'KKRFLEX')"
+  ],
+  "<WRITE_KKRSUSC_INPUT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out files for KKRsusc-code (former: 'KKRSUSC')"
+  ],
+  "<WRITE_KPTS_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write and read k-mesh to/from file `kpoints` (former: 'kptsfile')"
+  ],
+  "<WRITE_LLOYD_CDOS_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write Lloyd array to file  (former: 'wrtcdos')"
+  ],
+  "<WRITE_LLOYD_DGREF_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write Lloyd array to file  (former: 'wrtdgref')"
+  ],
+  "<WRITE_LLOYD_DTMAT_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write Lloyd array to file  (former: 'wrtdtmat')"
+  ],
+  "<WRITE_LLOYD_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write several Lloyd-arrays to files (former: 'llyfiles')"
+  ],
+  "<WRITE_LLOYD_G0TR_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write Lloyd array to file  (former: 'wrtgotr')"
+  ],
+  "<WRITE_LLOYD_TRALPHA_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write Lloyd array to file  (former: 'wrttral')"
+  ],
+  "<WRITE_MADELUNG_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write madelung summation to file 'abvmad.unformatted' instead of keeping it in memory (former: 'madelfil')"
+  ],
+  "<WRITE_PKKR_INPUT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out files for Pkkprime-code (former: 'FERMIOUT')"
+  ],
+  "<WRITE_PKKR_OPERATORS>": [
+    null,
+    "%l",
+    false,
+    "Run option: for Fermi-surface output: calculate various operators in KKR basis. (former: 'OPERATOR')"
+  ],
+  "<WRITE_POTENTIAL_TESTS>": [
+    null,
+    "%l",
+    false,
+    "Run option: write potential at different steps in main2 to different files (former: 'vintrasp' and 'vpotout')"
+  ],
+  "<WRITE_RHO2NS>": [
+    null,
+    "%l",
+    false,
+    "Run option: write array rho2ns into file out_rhoval (from main1c) and out_rhotot (from main2) (former: 'RHOVALTW' and 'RHOVALW')"
+  ],
+  "<WRITE_RHOQ_INPUT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out files needed for rhoq module (Quasiparticle interference) (former: 'rhoqtest')"
+  ],
+  "<WRITE_TB_COUPLING>": [
+    null,
+    "%l",
+    false,
+    "Run option: write couplings in tight-binging reference system to file `couplings.dat` (former: 'godfrin')"
+  ],
+  "<WRITE_TMAT_FILE>": [
+    null,
+    "%l",
+    false,
+    "Run option: write t-matix to file (former: 'tmatfile')"
+  ],
+  "<ZATOM>": [
+    null,
+    "%f",
+    true,
+    "Chemistry, Atom types: Nuclear charge per atom. Negative value signals to use value read in from the potential file."
+  ],
+  "ALATBASIS": [
+    null,
+    "%f",
+    true,
+    "Description of lattice: Length unit in Bohr radii usually conventional lattice parameter"
+  ],
+  "BRAVAIS": [
+    null,
+    "%f %f %f\n%f %f %f\n%f %f %f",
+    true,
+    "Description of lattice: Bravais vectors in units of [ALATBASIS]"
+  ],
+  "BRYMIX": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Parameter for Broyden mixing."
+  ],
+  "BZDIVIDE": [
+    null,
+    "%i %i %i",
+    false,
+    "Accuracy: Maximal Brillouin zone mesh. Should not violate symmetry (e.g cubic symmetry implies i1=i2=i3; terragonal symmetry in xy implies i1=i2; i1=i2=i3 is always safe.)"
+  ],
+  "CARTESIAN": [
+    null,
+    "%l",
+    false,
+    "Description of lattice: Interpret the basis vector coordinates as reduced (w. respect to bravais) or as cartesian (in lattice constant units)"
+  ],
+  "CPAINFO": [
+    null,
+    "%f %i",
+    false,
+    "Accuracy, CPA mode: CPA-error max. tolerance and max. number of CPA-cycle iterations."
+  ],
+  "DECIFILES": [
+    null,
+    "%s",
+    false,
+    "Filenames: Name of left and right decifiles (use \"vacuum\" name to inducate vacuum continuation)"
+  ],
+  "DENEF_MIXSCALE": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Inverse scaling factor for charge neutrality mixing, should nirmally be set to the value the denisty at EF (used only with semi-circle contour integration)."
+  ],
+  "EBOTSEMI": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Semicore energy contour: Bottom of semicore contour in Ryd."
+  ],
+  "EF_SET": [
+    null,
+    "%f",
+    false,
+    "Set Fermi level (in voronoi of the jellium starting potential) to this value."
+  ],
+  "EMAX": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Valence energy contour: Maximum value (in Ryd) for the DOS calculation Controls also [NPT2] in some cases"
+  ],
+  "EMIN": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Valence energy contour: Lower value (in Ryd) for the energy contour"
+  ],
+  "EMUSEMI": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Semicore energy contour: Top of semicore contour in Ryd."
+  ],
+  "FCM": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Factor for increased linear mixing of magnetic part of potential compared to non-magnetic part."
+  ],
+  "FILES": [
+    null,
+    "%s",
+    false,
+    "Filenames: Name of potential and shapefun file (list of two strings, empty string will set back to default of the one file that is supposed to be changed)"
+  ],
+  "FSEMICORE": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Semicore energy contour: Initial normalization factor for semicore states (approx. 1.)."
+  ],
+  "GMAX": [
+    null,
+    "%f",
+    true,
+    "Accuracy, Ewald summation for Madelung potential: Max. radius in 2*pi/[ALATBASIS] for reciprocal space Ewald sum"
+  ],
+  "HFIELD": [
+    null,
+    "%f",
+    false,
+    "External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL"
+  ],
+  "ICST": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of iterations in the radial solver"
+  ],
+  "IEMXD": [
+    null,
+    "%i",
+    false,
+    "Array dimension: number of energy points (default: 101)"
+  ],
+  "IMIX": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"
+  ],
+  "IM_E_CIRC_MIN": [
+    null,
+    "%f",
+    false,
+    "Minimal imaginary part (for energy point closest to EF) in semi-circular contour (needs USE_SEMI_CIRCLE_CONTOUR to become active."
+  ],
+  "INS": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)"
+  ],
+  "INTERFACE": [
+    null,
+    "%l",
+    false,
+    "Description of lattice, 2D mode: needs to be TRUE for 2D calculation"
+  ],
+  "IPAND": [
+    null,
+    "%i",
+    false,
+    "Array dimension: number of shapefunction panels"
+  ],
+  "IRID": [
+    null,
+    "%i",
+    false,
+    "Array dimension: number of radial points"
+  ],
+  "ITDBRY": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme."
+  ],
+  "IVSHIFT": [
+    null,
+    "%i",
+    false,
+    "External fields: Apply VCONST only on selected atom."
+  ],
+  "JIJRAD": [
+    null,
+    "%f",
+    false,
+    "Exchange coupling: Radius in alat which defines the cutoff for calcultion of Jij pairs"
+  ],
+  "JIJRADXY": [
+    null,
+    "%f",
+    false,
+    "Exchange coupling: use a cylindical cluster in which Jij pairs are searched for"
+  ],
+  "JIJSITEI": [
+    null,
+    "%i",
+    false,
+    "Exchange coupling: allow for the selection of specific sites in i in the unit cell, which should be considered in the calculation (default: all sites)"
+  ],
+  "JIJSITEJ": [
+    null,
+    "%i",
+    false,
+    "Exchange coupling: allow for the selection of specific sites in j in the unit cell, which should be considered in the calculation (default: all sites)"
+  ],
+  "KEXCOR": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)"
+  ],
+  "KPOIBZ": [
+    null,
+    "%i",
+    false,
+    "Array dimension: Max number of k-points in IBZ"
+  ],
+  "KREADLDAU": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Exchange-correlation: Takes values 0 or 1; if [KREADLDAU]=1 then read previously calculated LDA+U matrix elements from file 'ldaupot'."
+  ],
+  "KSHAPE": [
+    null,
+    "%i",
+    false,
+    "Description of lattice, shape functions: 0 for ASA ([INS]=0), 2 for full potential ([INS]=1)"
+  ],
+  "KVREL": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)"
+  ],
+  "LAMBDA_XC": [
+    null,
+    "%f",
+    false,
+    "Chemistry, Exchange-correlation: Scale the magnetic part of the xc-potential and energy. Takes values between 0. (fully suppressed magnetisc potential) and 1. (normal magnetic potential)."
+  ],
+  "LDAU_PARA": [
+    null,
+    "%i %i %f %f %f",
+    false,
+    "Chemistry, Exchange-correlation: For each atom where LDA+U should be used, the entries are: [atom type] [angular mom. to apply LDA+U] [Ueff] [Jeff] [Eref] where [atom type] is between 1...[NATYP]."
+  ],
+  "LINIPOL": [
+    null,
+    "%l",
+    false,
+    "External fields: If TRUE, triggers an external magn. field per atom in the first iteration."
+  ],
+  "LMAX": [
+    null,
+    "%i",
+    true,
+    "Accuracy: Angular momentum cutoff"
+  ],
+  "MAX_NUM_KMESH": [
+    null,
+    "%i",
+    false,
+    "Maximal number of differet k-meshes used to coarsen the BZ integration at elevated imaginary parts of the energy."
+  ],
+  "MIXLDAU": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: mixing factor for LDA+U potential"
+  ],
+  "N1SEMI": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Semicore energy contour: Number of energies in first part of semicore contour (\"going up\")."
+  ],
+  "N2SEMI": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Semicore energy contour: Number of energies in second part of semicore contour (\"going right\")."
+  ],
+  "N3SEMI": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Semicore energy contour: Number of energies in third part of semicore contour (\"going down\")."
+  ],
+  "NAEZ": [
+    null,
+    "%i",
+    true,
+    "Description of lattice: Number of sites in unit cell"
+  ],
+  "NATOMIMPD": [
+    null,
+    "%i",
+    false,
+    "Array dimension: needed for Jij"
+  ],
+  "NATYP": [
+    null,
+    "%i",
+    false,
+    "Chemistry, CPA mode: Number of atom types; CPA is triggered by setting [NATYP]>[NAEZ]."
+  ],
+  "NAT_LDAU": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Exchange-correlation: Number of atoms where LDA+U will be used"
+  ],
+  "NCHEB": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NLEFTHOS": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Screening clusters 2D mode: The vectors [<RBLEFT>] are repeated i=1,...,[NLEFTHOS] times, shifted by i*[ZPERIODL], for the later formation of screening clusters."
+  ],
+  "NMIN": [
+    null,
+    "%i",
+    false,
+    "Accuracy: Minimal number of point per shape function panel. Only used by voronoi code in shape function generation."
+  ],
+  "NPAN_EQ": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NPAN_LOG": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NPOL": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Valence energy contour: Number of Matsubara poles For DOS calculations, set [NPOL]=0"
+  ],
+  "NPOLSEMI": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Semicore energy contour: Control of height of semicore contour: Im z = (2 * [NPOLSEMI] * pi * kB * [TKSEMI] ) with kB=0.6333659E-5"
+  ],
+  "NPRINCD": [
+    null,
+    "%i",
+    false,
+    "Array dimension: number of layers in each principle layer (decimation technique)."
+  ],
+  "NPT1": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Valence energy contour: Number of energies in the 1st part of the rectangular contour (\"going up\")."
+  ],
+  "NPT2": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Valence energy contour: Number of energies in the 2nd part of the rectangular contour (\"going right\")."
+  ],
+  "NPT3": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Valence energy contour: Number of energies in the 3rd part of the rectangular contour (Fermi smearing part)."
+  ],
+  "NQDOSMAXPOINTS": [
+    null,
+    "%i",
+    false,
+    "Max number of q-points per batch."
+  ],
+  "NRIGHTHO": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Screening clusters 2D mode: The vectors [<RBRIGHT>] are repeated i=1,...,[NRIGHTHO] times, shifted by i*[ZPERIODR], for the later formation of screening clusters."
+  ],
+  "NSHELD": [
+    null,
+    "%i",
+    false,
+    "Array dimension: number of shells (default: 300)"
+  ],
+  "NSIMPLEMIXFIRST": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3)."
+  ],
+  "NSPIN": [
+    null,
+    "%i",
+    true,
+    "Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2"
+  ],
+  "NSTEPS": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF)."
+  ],
+  "POT_NS_CUTOFF": [
+    null,
+    "%f",
+    false,
+    "Accuracy: non-spherical cutoff for potential at the end of the iteration (defaults to 0.1*qbound if not set)."
+  ],
+  "QBOUND": [
+    null,
+    "%e",
+    false,
+    "Self-consistency control: Lower limit of rms-error in potential to stop iterations."
+  ],
+  "RCLUSTXY": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Screening clusters: If [RCLUSTXY] does not equal [RCLUSTZ] then cylindrical clusters are created with radius [RCLUSTXY] and height [RCLUSTZ]."
+  ],
+  "RCLUSTZ": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Screening clusters: Radius of screening clusters in units of [ALATBASIS], default is 11 Bohr radii."
+  ],
+  "RMAX": [
+    null,
+    "%f",
+    true,
+    "Accuracy, Ewald summation for Madelung potential: Max. radius in [ALATBASIS] for real space Ewald sum"
+  ],
+  "RUNOPT": [
+    null,
+    "%s%s%s%s%s%s%s%s",
+    false,
+    "Running and test options: 8-character keywords in a row without spaces between them"
+  ],
+  "R_LOG": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL"
+  ],
+  "SPINMIXALPHA": [
+    null,
+    "%e",
+    false,
+    "Self-consistency control: Broyden mixing factor for nonco angles"
+  ],
+  "SPINMIXMEMLEN": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Memory length of the Broyden spin mixing"
+  ],
+  "SPINMIXNSIMPLE": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: number of simple mixing steps before Broyden spinmixing starts ( should be >=1)."
+  ],
+  "SPINMIXQBOUND": [
+    null,
+    "%e",
+    false,
+    "Self-consistency control: threshold in degrees after which the rms of the nonco angles a assumed to not change anymore (i.e. activate fixing of all angles simultaneously)"
+  ],
+  "STRMIX": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0"
+  ],
+  "TEMPR": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Valence energy contour: Electronic temperature in K."
+  ],
+  "TESTOPT": [
+    null,
+    "%s%s%s%s%s%s%s%s\n%s%s%s%s%s%s%s%s",
+    false,
+    "Running and test options: optional 8-character keywords in a row without spaces between them plus a second row of the same."
+  ],
+  "TKSEMI": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Semicore energy contour: \"Temperature\" in K controlling height of semicore contour."
+  ],
+  "USE_INPUT_ALAT": [
+    null,
+    "%l",
+    true,
+    "Description of lattice: Together with ALATBASIS, forces to use ALATBASIS instead of automatically computed lattice constant from structure"
+  ],
+  "VCONST": [
+    null,
+    "%f",
+    false,
+    "External fields: Constant potential shift in the first iteration."
+  ],
+  "WFAC_RENORM": [
+    null,
+    "%f",
+    false,
+    "Renormalization factor for energy integration weights (can be used to shift the Fermi level around)."
+  ],
+  "XINIPOL": [
+    null,
+    "%i",
+    false,
+    "External fields: Integer multiplying the HFIELD per atom"
+  ],
+  "ZPERIODL": [
+    null,
+    "%f %f %f",
+    false,
+    "Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the lower (=left) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBLEFT> vectors are periodically repeated by the ZPERIODL vector."
+  ],
+  "ZPERIODR": [
+    null,
+    "%f %f %f",
+    false,
+    "Description of lattice, 2D mode: Lattice vector describing the periodicity perpendicular to the slab-plane for the half-infinite lattice to the upper (=right) part of the slab (plays the role of the 3rd Bravais vector for this half-infinite lattice). The <RBRIGHT> vectors are periodically repeated by the ZPERIODR vector."
+  ]
+}
