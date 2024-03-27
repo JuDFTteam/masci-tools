@@ -29,6 +29,7 @@
 <IMPURITY_OPERATOR_ONLY>: null
 <KAOEZL>: null
 <KAOEZR>: null
+<KEEP_EPARA_1B>: null
 <LAMBDA_BDG>: null
 <LFMTWAL>: null
 <LFMTWAU>: null
@@ -170,7 +171,7 @@ CPAINFO: null
 DECIFILES: null
 DENEF_MIXSCALE: null
 EBOTSEMI: null
-EFSET: null
+EF_SET: null
 EMAX: null
 EMIN: null
 EMUSEMI: null
