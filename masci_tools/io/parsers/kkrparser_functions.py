@@ -79,7 +79,7 @@ def get_rms(outfile, outfile2, debug=False, is_imp_calc=False):
     rms_charge = parse_array_float(outfile, 'average rms-error', [2, '=', 1, 0], ['D', 'E'], debug=debug)
     if debug:
         print(rms_charge)
-    if is_imp_calc == True:
+    if is_imp_calc:
         rms_ldau = parse_array_float(outfile, 'TOTAL RMS-ERROR for LDA+U:', [2, ':', 1, 0], debug=debug)
         if debug:
             print(rms_ldau)
@@ -102,10 +102,11 @@ def get_rms(outfile, outfile2, debug=False, is_imp_calc=False):
                  niter)  # number of atoms in system, needed to take only atom resolved rms of last iteration
     if debug:
         print(natoms)
-    if is_imp_calc == True:
+
+    if is_imp_calc:
         return rms_charge, rms_ldau, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
-    else:
-        return rms_charge, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
+
+    return rms_charge, rms_spin, rms_charge_atoms[-natoms:], rms_spin_atoms[-natoms:]
 
 
 def get_noco_rms(outfile, debug=False):
@@ -720,9 +721,8 @@ def parse_kkr_outputfile(out_dict,
         # also initialize convegence_group where all info stored for all iterations is kept
         out_dict['convergence_group'] = tmp_dict
         try:
-            rms_charge, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(outfile,
-                                                                                             outfile_000,
-                                                                                             debug=debug)
+            rms_charge, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(  # pylint: disable=unbalanced-tuple-unpacking
+                outfile, outfile_000, debug=debug)
             tmp_dict['rms'] = rms_charge[-1]
             tmp_dict['rms_all_iterations'] = rms_charge
             tmp_dict['rms_per_atom'] = result_atoms_last_charge
