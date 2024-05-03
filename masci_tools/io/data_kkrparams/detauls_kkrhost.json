@@ -1,4 +1,10 @@
 {
+  "EFSET": [
+    null,
+    "%f",
+    false,
+    "Voronoi: Set starting value for Fermi level (default value is ~0.4Ry). Useful to have Fermi level in right position for imp. embedding."
+  ],
   "<AT_SCALE_BDG>": [
     null,
     "%f",

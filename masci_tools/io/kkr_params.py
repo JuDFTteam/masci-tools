@@ -23,7 +23,7 @@ _DIR = pathlib.Path(__file__).parent.resolve()
 __copyright__ = ('Copyright (c), 2017, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '1.9.0'
+__version__ = '1.9.1'
 __contributors__ = 'Philipp Rüßmann'
 
 # This defines the default parameters for KKR used in the aiida plugin:
@@ -390,7 +390,10 @@ class kkrparams:
             # enforce upper case for key2
             key2 = key2.upper()
 
-            default_keywords[key2][0] = val
+            if key2 in default_keywords:
+                default_keywords[key2][0] = val
+            else:
+                print(f'Warning: {key2} not part of known keywords, ignore it.')
 
         return default_keywords
 
