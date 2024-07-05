@@ -381,6 +381,9 @@ class KkrimpParserFunctions:
                 msg_list.append(msg)
                 if debug:
                     traceback.print_exc()
+        else:
+            # Notify the other calculations that this is a doscalc and the convergence data are not present
+            tmp_dict['doscalc'] = True
 
         try:
             nspin = self._get_nspin(files['out_log'])
