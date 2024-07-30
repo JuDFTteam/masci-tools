@@ -21,8 +21,8 @@ from masci_tools.io.common_functions import get_Ry2eV
 __copyright__ = ('Copyright (c), 2018, Forschungszentrum Jülich GmbH,'
                  'IAS-1/PGI-1, Germany. All rights reserved.')
 __license__ = 'MIT license, see LICENSE.txt file'
-__version__ = '0.8.1'
-__contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo', 'David Antognini Silva')
+__version__ = '0.8.2'
+__contributors__ = ('Philipp Rüßmann', 'Fabian Bertoldo', 'David Antognini Silva', 'Raffaele Aliberti')
 
 ####################################################################################
 
@@ -316,7 +316,7 @@ class KkrimpParserFunctions:
 
     ### end helper functions ###
 
-    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False, ignore_nan=False):
+    def parse_kkrimp_outputfile(self, out_dict, file_dict, debug=False, ignore_nan=False, doscalc=False):
         """
         Main parser function for kkrimp, read information from files in file_dict and fills out_dict
         :param out_dict: dictionary that is filled with parsed output of the KKRimp calculation
@@ -358,29 +358,32 @@ class KkrimpParserFunctions:
         tmp_dict = {}  # used to group convergence info (rms, rms per atom, charge neutrality)
         # also initialize convegence_group where all info stored for all iterations is kept
         out_dict['convergence_group'] = tmp_dict
-        try:
-            rms_charge, rms_ldau, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(files['outfile'],
-                                                                                                       files['out_log'],
-                                                                                                       debug=debug,
-                                                                                                       is_imp_calc=True)
-            tmp_dict['rms'] = rms_charge[-1]
-            tmp_dict['rms_all_iterations'] = rms_charge
-            tmp_dict['rms_LDAU'] = rms_ldau[-1]
-            tmp_dict['rms_LDAU_all_iterations'] = rms_ldau
-            tmp_dict['rms_per_atom'] = result_atoms_last_charge
-            if len(rms_spin) > 0:
-                tmp_dict['rms_spin'] = rms_spin[-1]
-            else:
-                tmp_dict['rms_spin'] = None
-            tmp_dict['rms_spin_all_iterations'] = rms_spin
-            tmp_dict['rms_spin_per_atom'] = result_atoms_last_spin
-            tmp_dict['rms_unit'] = 'unitless'
-            out_dict['convergence_group'] = tmp_dict
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: rms-error'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+
+        if not doscalc:
+            try:
+                rms_charge, rms_ldau, rms_spin, result_atoms_last_charge, result_atoms_last_spin = get_rms(
+                    files['outfile'], files['out_log'], debug=debug, is_imp_calc=True)
+                tmp_dict['rms'] = rms_charge[-1]
+                tmp_dict['rms_all_iterations'] = rms_charge
+                tmp_dict['rms_LDAU'] = rms_ldau[-1]
+                tmp_dict['rms_LDAU_all_iterations'] = rms_ldau
+                tmp_dict['rms_per_atom'] = result_atoms_last_charge
+                if len(rms_spin) > 0:
+                    tmp_dict['rms_spin'] = rms_spin[-1]
+                else:
+                    tmp_dict['rms_spin'] = None
+                tmp_dict['rms_spin_all_iterations'] = rms_spin
+                tmp_dict['rms_spin_per_atom'] = result_atoms_last_spin
+                tmp_dict['rms_unit'] = 'unitless'
+                out_dict['convergence_group'] = tmp_dict
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: rms-error'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
+        else:
+            # Notify the other calculations that this is a doscalc and the convergence data are not present
+            tmp_dict['doscalc'] = True
 
         try:
             nspin = self._get_nspin(files['out_log'])
@@ -395,79 +398,80 @@ class KkrimpParserFunctions:
             if debug:
                 traceback.print_exc()
 
-        tmp_dict = {}  # used to group magnetism info (spin and orbital moments)
-        try:
-            result = self._get_magtot(files['out_log'], natom, debug=debug)
-            if len(result) > 0:
-                tmp_dict['total_spin_moment'] = result[-1]
-                out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
-                tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
-                out_dict['magnetism_group'] = tmp_dict
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: total magnetic moment'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
-
-        try:
-            if nspin > 1 and newsosol:
-                #result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
-                spinmom_atom, spinmom_atom_vec_all_iter, spin_tot_abs = self._get_spinmom_per_atom(
-                    files['out_spinmoms'], natom)
-                if ignore_nan:
-                    spinmom_atom = np.nan_to_num(spinmom_atom)
-                    spinmom_atom_vec_all_iter = np.nan_to_num(spinmom_atom_vec_all_iter)
-                    spin_tot_abs = np.nan_to_num(spin_tot_abs)
+        if not doscalc:
+            tmp_dict = {}  # used to group magnetism info (spin and orbital moments)
+            try:
+                result = self._get_magtot(files['out_log'], natom, debug=debug)
                 if len(result) > 0:
-                    tmp_dict['total_abs_spin_moment'] = spin_tot_abs
-                    tmp_dict['spin_moment_per_atom'] = spinmom_atom
-                    out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = spinmom_atom_vec_all_iter
-                    tmp_dict['spin_moment_unit'] = 'mu_Bohr'
+                    tmp_dict['total_spin_moment'] = result[-1]
+                    out_dict['convergence_group']['total_spin_moment_all_iterations'] = result
+                    tmp_dict['total_spin_moment_unit'] = 'mu_Bohr'
                     out_dict['magnetism_group'] = tmp_dict
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: spin moment per atom'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: total magnetic moment'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
-        # add orbital moments to magnetis group in parser output
-        try:
-            if nspin > 1 and newsosol:
-                orbmom_atom, orbmom_atom_all_iter = self._get_orbmom_per_atom(files['out_orbmoms'], natom)
-                if len(result) > 0:
-                    tmp_dict['total_orbital_moment'] = sum(orbmom_atom)
-                    tmp_dict['orbital_moment_per_atom'] = orbmom_atom
-                    out_dict['convergence_group']['orbital_moment_per_atom_all_iterations'] = orbmom_atom_all_iter
-                    tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
-                    out_dict['magnetism_group'] = tmp_dict
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: orbital moment'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+            try:
+                if nspin > 1 and newsosol:
+                    #result, vec, angles = get_spinmom_per_atom(outfile, natom, nonco_out_file)
+                    spinmom_atom, spinmom_atom_vec_all_iter, spin_tot_abs = self._get_spinmom_per_atom(
+                        files['out_spinmoms'], natom)
+                    if ignore_nan:
+                        spinmom_atom = np.nan_to_num(spinmom_atom)
+                        spinmom_atom_vec_all_iter = np.nan_to_num(spinmom_atom_vec_all_iter)
+                        spin_tot_abs = np.nan_to_num(spin_tot_abs)
+                    if len(result) > 0:
+                        tmp_dict['total_abs_spin_moment'] = spin_tot_abs
+                        tmp_dict['spin_moment_per_atom'] = spinmom_atom
+                        out_dict['convergence_group']['spin_moment_per_atom_all_iterations'] = spinmom_atom_vec_all_iter
+                        tmp_dict['spin_moment_unit'] = 'mu_Bohr'
+                        out_dict['magnetism_group'] = tmp_dict
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: spin moment per atom'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
-        try:
-            result = self._get_EF_potfile(files['out_pot'])
-            out_dict['fermi_energy'] = result
-            out_dict['fermi_energy_units'] = 'Ry'
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: EF'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+            # add orbital moments to magnetis group in parser output
+            try:
+                if nspin > 1 and newsosol:
+                    orbmom_atom, orbmom_atom_all_iter = self._get_orbmom_per_atom(files['out_orbmoms'], natom)
+                    if len(result) > 0:
+                        tmp_dict['total_orbital_moment'] = sum(orbmom_atom)
+                        tmp_dict['orbital_moment_per_atom'] = orbmom_atom
+                        out_dict['convergence_group']['orbital_moment_per_atom_all_iterations'] = orbmom_atom_all_iter
+                        tmp_dict['orbital_moment_unit'] = 'mu_Bohr'
+                        out_dict['magnetism_group'] = tmp_dict
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: orbital moment'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
-        try:
-            result = self._get_Etot(files['out_log'])
-            out_dict['energy'] = result[-1] * get_Ry2eV()
-            out_dict['energy_unit'] = 'eV'
-            out_dict['total_energy_Ry'] = result[-1]
-            out_dict['total_energy_Ry_unit'] = 'Rydberg'
-            out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: total energy'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+            try:
+                result = self._get_EF_potfile(files['out_pot'])
+                out_dict['fermi_energy'] = result
+                out_dict['fermi_energy_units'] = 'Ry'
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: EF'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
+
+            try:
+                result = self._get_Etot(files['out_log'])
+                out_dict['energy'] = result[-1] * get_Ry2eV()
+                out_dict['energy_unit'] = 'eV'
+                out_dict['total_energy_Ry'] = result[-1]
+                out_dict['total_energy_Ry_unit'] = 'Rydberg'
+                out_dict['convergence_group']['total_energy_Ry_all_iterations'] = result
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: total energy'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
         try:
             result = find_warnings(files['outfile'])
@@ -491,35 +495,36 @@ class KkrimpParserFunctions:
             if debug:
                 traceback.print_exc()
 
-        try:
-            esp_at, etot_at = self._get_energies_atom(files['out_enersp_at'], files['out_enertot_at'], natom)
-            out_dict['single_particle_energies'] = esp_at * get_Ry2eV()
-            out_dict['single_particle_energies_unit'] = 'eV'
-            out_dict['total_energies_atom'] = etot_at * get_Ry2eV()
-            out_dict['total_energies_atom_unit'] = 'eV'
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: single particle energies'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+        if not doscalc:
+            try:
+                esp_at, etot_at = self._get_energies_atom(files['out_enersp_at'], files['out_enertot_at'], natom)
+                out_dict['single_particle_energies'] = esp_at * get_Ry2eV()
+                out_dict['single_particle_energies_unit'] = 'eV'
+                out_dict['total_energies_atom'] = etot_at * get_Ry2eV()
+                out_dict['total_energies_atom_unit'] = 'eV'
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: single particle energies'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
-        try:
-            result_WS, result_tot, result_C = get_charges_per_atom(files['out_log'])
-            niter = len(out_dict['convergence_group']['rms_all_iterations'])
-            natyp = int(len(result_tot) / niter)
-            out_dict['total_charge_per_atom'] = result_WS[-natyp:]
-            out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
-            # this check deals with the DOS case where output is slightly different
-            if len(result_WS) == len(result_C):
-                out_dict['charge_valence_states_per_atom'] = result_WS[-natyp:] - result_C[-natyp:]
-            out_dict['total_charge_per_atom_unit'] = 'electron charge'
-            out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
-            out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: charges'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+            try:
+                result_WS, result_tot, result_C = get_charges_per_atom(files['out_log'])
+                niter = len(out_dict['convergence_group']['rms_all_iterations'])
+                natyp = int(len(result_tot) / niter)
+                out_dict['total_charge_per_atom'] = result_WS[-natyp:]
+                out_dict['charge_core_states_per_atom'] = result_C[-natyp:]
+                # this check deals with the DOS case where output is slightly different
+                if len(result_WS) == len(result_C):
+                    out_dict['charge_valence_states_per_atom'] = result_WS[-natyp:] - result_C[-natyp:]
+                out_dict['total_charge_per_atom_unit'] = 'electron charge'
+                out_dict['charge_core_states_per_atom_unit'] = 'electron charge'
+                out_dict['charge_valence_states_per_atom_unit'] = 'electron charge'
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: charges'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
         try:
             econt = self._get_econt_info(files['out_log'])
@@ -551,22 +556,23 @@ class KkrimpParserFunctions:
             if debug:
                 traceback.print_exc()
 
-        try:
-            niter, nitermax, converged, nmax_reached, mixinfo = self._get_scfinfo(files['out_log'])
-            out_dict['convergence_group']['number_of_iterations'] = niter
-            out_dict['convergence_group']['number_of_iterations_max'] = nitermax
-            out_dict['convergence_group']['calculation_converged'] = converged
-            out_dict['convergence_group']['nsteps_exhausted'] = nmax_reached
-            out_dict['convergence_group']['imix'] = mixinfo[0]
-            out_dict['convergence_group']['strmix'] = mixinfo[1]
-            out_dict['convergence_group']['qbound'] = mixinfo[2]
-            out_dict['convergence_group']['fcm'] = mixinfo[3]
-            out_dict['convergence_group']['brymix'] = mixinfo[1]
-        except:  # pylint: disable=bare-except
-            msg = 'Error parsing output of KKRimp: scfinfo'
-            msg_list.append(msg)
-            if debug:
-                traceback.print_exc()
+        if not doscalc:
+            try:
+                niter, nitermax, converged, nmax_reached, mixinfo = self._get_scfinfo(files['out_log'])
+                out_dict['convergence_group']['number_of_iterations'] = niter
+                out_dict['convergence_group']['number_of_iterations_max'] = nitermax
+                out_dict['convergence_group']['calculation_converged'] = converged
+                out_dict['convergence_group']['nsteps_exhausted'] = nmax_reached
+                out_dict['convergence_group']['imix'] = mixinfo[0]
+                out_dict['convergence_group']['strmix'] = mixinfo[1]
+                out_dict['convergence_group']['qbound'] = mixinfo[2]
+                out_dict['convergence_group']['fcm'] = mixinfo[3]
+                out_dict['convergence_group']['brymix'] = mixinfo[1]
+            except:  # pylint: disable=bare-except
+                msg = 'Error parsing output of KKRimp: scfinfo'
+                msg_list.append(msg)
+                if debug:
+                    traceback.print_exc()
 
         #convert numpy arrays to standard python lists
         out_dict = convert_to_pystd(out_dict)
