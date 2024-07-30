@@ -72,11 +72,11 @@ class kkrparams:
         """
 
         # keywords for KKRhost and voronoi (all allowed keys for inputcard)
-        with open(_DIR.joinpath('data_kkrparams/detauls_kkrhost.json'), encoding='utf8') as _f:
+        with open(_DIR.joinpath('data_kkrparams/defaults_kkrhost.json'), encoding='utf8') as _f:
             self._DEFAULT_KEYWORDS_KKR = json.load(_f)
 
         # keywords for KKRimp (all allowed settings for config file)
-        with open(_DIR.joinpath('data_kkrparams/detauls_kkrimp.json'), encoding='utf8') as _f:
+        with open(_DIR.joinpath('data_kkrparams/defaults_kkrimp.json'), encoding='utf8') as _f:
             self._DEFAULT_KEYS_KKRIMP = json.load(_f)
 
         # make keys upper case (needed internally to equality comparison)
