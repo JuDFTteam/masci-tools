@@ -8,3 +8,5 @@ The convention is the following for all keywords:
         required value (True/False),
         description (docstring for this parameter)    
     ]
+
+See `add_to_defaults.ipynb` notebook for how to add a new entry.

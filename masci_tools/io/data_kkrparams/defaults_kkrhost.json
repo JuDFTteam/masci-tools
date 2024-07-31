@@ -1,10 +1,4 @@
 {
-  "EFSET": [
-    null,
-    "%f",
-    false,
-    "Voronoi: Set starting value for Fermi level (default value is ~0.4Ry). Useful to have Fermi level in right position for imp. embedding."
-  ],
   "<AT_SCALE_BDG>": [
     null,
     "%f",
@@ -88,6 +82,12 @@
     "%l",
     false,
     "Run option: calculate the wronskian relations of first and second kind for the wavefunctions (see PhD Bauer pp 48)"
+  ],
+  "<COARSEN_KPTS>": [
+    null,
+    "%l",
+    false,
+    "Run option: activate grid coarsening for k-point integration (useful in scf calculations with many k-points)."
   ],
   "<CPA-CONC>": [
     null,
@@ -196,6 +196,54 @@
     "%l",
     false,
     "Parallelization: Deactivate switching to k-point parallelization in main1b in favor of keeping the energy parallelization (can be useful when few k-points are present which prevents us from using many ranks efficiently)."
+  ],
+  "<K_COARSEN_NUM_ITER_UPDATE>": [
+    null,
+    "%e",
+    false,
+    "K-point coarsening: update the k-coarsening every N steps (i.e. run one slow iter to update files from fine grid). Defaults to 20."
+  ],
+  "<K_COARSEN_NX>": [
+    null,
+    "%i",
+    false,
+    "K-point coarsening: neighborhood size for grid coarsening along first Bravais vector (larger nx = coarser grid). Defaults to 2."
+  ],
+  "<K_COARSEN_NY>": [
+    null,
+    "%i",
+    false,
+    "K-point coarsening: neighborhood size for grid coarsening along second Bravais vector (larger ny = coarser grid). Defaults to 2."
+  ],
+  "<K_COARSEN_Nz>": [
+    null,
+    "%i",
+    false,
+    "K-point coarsening: neighborhood size for grid coarsening along third Bravais vector (larger nz = coarser grid). Defaults to 2."
+  ],
+  "<K_COARSEN_REFINE>": [
+    null,
+    "%l",
+    false,
+    "K-point coarsening: activate refinement mode to increase the number of points where the value of the integrand is >= <k_coarsen_threshold_max>."
+  ],
+  "<K_COARSEN_THRESHOLD_MAX>": [
+    null,
+    "%e",
+    false,
+    "K-point coarsening: threshold for refinement of grid relative to max value of integrand (uses <K_COARSEN_NX> for refinement). Defaults to 1.0 which means no refinement."
+  ],
+  "<K_COARSEN_THRESHOLD_MIN>": [
+    null,
+    "%e",
+    false,
+    "K-point coarsening: threshold where . Defaults to 1e-7"
+  ],
+  "<K_COARSEN_VERBOSE>": [
+    null,
+    "%l",
+    false,
+    "K-point coarsening: activate verbose writeout."
   ],
   "<LAMBDA_BDG>": [
     null,
@@ -964,6 +1012,12 @@
     "%f",
     false,
     "Accuracy, Semicore energy contour: Bottom of semicore contour in Ryd."
+  ],
+  "EFSET": [
+    null,
+    "%f",
+    false,
+    "Voronoi: Set starting value for Fermi level (default value is ~0.4Ry). Useful to have Fermi level in right position for imp. embedding."
   ],
   "EF_SET": [
     null,

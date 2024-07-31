@@ -12,6 +12,7 @@
 <CALC_GF_EFERMI>: null
 <CALC_GMAT_LM_FULL>: null
 <CALC_WRONSKIAN>: null
+<COARSEN_KPTS>: null
 <CPA-CONC>: null
 <CUSTOM_TESTSTRING>: null
 <DECOUPLE_SPIN_CHEBY>: null
@@ -50,6 +51,14 @@
 - 9
 - 10
 <KEEP_EPARA_1B>: null
+<K_COARSEN_NUM_ITER_UPDATE>: null
+<K_COARSEN_NX>: null
+<K_COARSEN_NY>: null
+<K_COARSEN_NZ>: null
+<K_COARSEN_REFINE>: null
+<K_COARSEN_THRESHOLD_MAX>: null
+<K_COARSEN_THRESHOLD_MIN>: null
+<K_COARSEN_VERBOSE>: null
 <LAMBDA_BDG>: null
 <LFMTWAL>: null
 <LFMTWAU>: null
@@ -792,6 +801,7 @@ MIXLDAU: null
 N1SEMI: null
 N2SEMI: null
 N3SEMI: null
+NACLSD: null
 NAEZ: 80
 NATOMIMPD: null
 NATYP: 80
