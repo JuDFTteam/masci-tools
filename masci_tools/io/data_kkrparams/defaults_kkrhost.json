@@ -173,6 +173,12 @@
     false,
     "Accuracy, Radial solver: Full potential limit per atom (in Bohr radii); at points closer to the nucleus, the potential is assumed spherical. Negative values indicate to use values from potential file. Values larger than the muffin tin indicate to use the muffin tin radius."
   ],
+  "<FREEZE_LDAU>": [
+    null,
+    "%l",
+    false,
+    "Run option: Fix LDA+U potential to input/starting value and don't update it anymore."
+  ],
   "<IMPURITY_OPERATOR_ONLY>": [
     null,
     "%l",
