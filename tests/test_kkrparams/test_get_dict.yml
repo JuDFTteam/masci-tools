@@ -55,6 +55,7 @@
 <NINIT_BROYDEN_BDG>: null
 <NLBASIS>: null
 <NONCOBFIELD>: null
+<NO_CORE_DENSITY>: null
 <NO_MADELUNG>: null
 <NRBASIS>: null
 <PHASE_BDG>: null
@@ -134,6 +135,7 @@
 <WRITE_DECI_POT>: null
 <WRITE_DECI_TMAT>: null
 <WRITE_DENSITY_ASCII>: null
+<WRITE_DENVIS_INPUT>: null
 <WRITE_DOS>: null
 <WRITE_DOS_LM>: null
 <WRITE_ENERGY_MESH>: null

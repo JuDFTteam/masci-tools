@@ -341,6 +341,12 @@
     false,
     "Run option: use non-collinear exteranl fields read from bfield.dat"
   ],
+  "<NO_CORE_DENSITY>": [
+    null,
+    "%l",
+    false,
+    "Run option: do not include the core density in charge density summation (useful together with write_denvis_input)."
+  ],
   "<NO_MADELUNG>": [
     null,
     "%l",
@@ -796,6 +802,12 @@
     "%l",
     false,
     "Run option: write density rho2ns to file densitydn.ascii (former: 'den-asci')"
+  ],
+  "<WRITE_DENVIS_INPUT>": [
+    null,
+    "%l",
+    false,
+    "Run option: write out the density which can be interpolated with the denvis tool."
   ],
   "<WRITE_DOS>": [
     null,
