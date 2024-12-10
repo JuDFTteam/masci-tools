@@ -22,16 +22,16 @@ jobs:
     continue-on-error: ${{ matrix.allow-failure }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v4.6.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: pip-docs-${{ hashFiles('**/pyproject.toml') }}
@@ -72,11 +72,11 @@ jobs:
     continue-on-error: ${{ matrix.allow-failure }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: pip-pre-commit-${{ hashFiles('**/pyproject.toml') }}
@@ -84,7 +84,7 @@ jobs:
           pip-pre-commit-
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v4.6.0
+      uses: actions/setup-python@v5
       with:
         python-version: 3.8
 
@@ -137,7 +137,7 @@ jobs:
 
     - name: Cache python dependencies
       id: cache-pip
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: pip-${{ matrix.python-version }}${{ matrix.add-name }}-tests-${{ hashFiles('**/pyproject.toml') }}
@@ -145,7 +145,7 @@ jobs:
           pip-${{ matrix.python-version }}${{ matrix.add-name }}-tests
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.6.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -169,9 +169,9 @@ jobs:
       run: pytest ${{ matrix.pytest-cmdline }}
 
     - name: Upload to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: matplotlib-comparison-${{ matrix.python-version }}${{ matrix.add-name }}
