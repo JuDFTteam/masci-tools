@@ -28,7 +28,7 @@ from masci_tools.util.typing import FileLike
 
 
 @contextmanager
-def NestedPlotParameters(plotter_object: Plotter) -> Generator[None, None, None]:
+def NestedPlotParameters(plotter_object: Plotter) -> Generator[None]:
     """
     Contextmanager for nested plot function calls
     Will reset function defaults and parameters to previous

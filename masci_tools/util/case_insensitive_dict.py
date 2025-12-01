@@ -158,7 +158,7 @@ class CaseInsensitiveFrozenSet(FrozenSet[T_co]):
             return super().__ne__({self._norm_key(key) for key in other})
         return False
 
-    def __iter__(self) -> Generator[T_co, None, None]:
+    def __iter__(self) -> Generator[T_co]:
         for item in super().__iter__():
             yield self.original_case[item]
 
