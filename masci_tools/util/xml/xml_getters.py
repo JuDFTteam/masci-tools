@@ -501,6 +501,10 @@ def get_parameterdata(xmltree: XMLLike,
             'name',
             tag_name='xcFunctional',
         )
+        if exco_dict['xctyp'] == 'LibXC':
+           exchName = root.attribute('exchange', tag_name='LibXCName')
+           corrName = root.attribute('correlation', tag_name='LibXCName')
+           exco_dict['xctyp'] = 'LibXC: Exch: ' + exchName + ', Cor: ' + corrName
         parameters['exco'] = filter_out_empty_dict_entries(exco_dict)
     # &film
     # TODO

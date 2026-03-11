@@ -1,0 +1,224 @@
+{
+  "BRYMIX": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Parameter for Broyden mixing."
+  ],
+  "CALCFORCE": [
+    null,
+    "%i",
+    false,
+    "Calculate forces"
+  ],
+  "CALCJIJMAT": [
+    null,
+    "%i",
+    false,
+    "Calculate Jijmatrix"
+  ],
+  "CALCORBITALMOMENT": [
+    null,
+    "%i",
+    false,
+    "Calculate orbital moment (SOC solver only, 0/1)"
+  ],
+  "DELTA_BDG": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)"
+  ],
+  "HFIELD": [
+    null,
+    "%f %i",
+    false,
+    "External fields: Value of an external magnetic field in the first iteration. Works only with LINIPOL, XINIPOL"
+  ],
+  "ICST": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of iterations in the radial solver"
+  ],
+  "IMIX": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Mixing scheme for potential. 0 means straignt (linear) mixing, 3 means Broyden's 1st method, 4 means Broyden's 2nd method, 5 means Anderson's method"
+  ],
+  "IMIXSPIN": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Linear mixing scheme for magnetic moments, 0 (derfault value) means straight mixing, 1 means Broyden mixing."
+  ],
+  "INS": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Takes values 0 for ASA and 1 for full potential Must be 0 for Munich Dirac solver ([KREL]=2)"
+  ],
+  "ITDBRY": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: how many iterations to keep in the Broyden/Anderson mixing scheme."
+  ],
+  "KVREL": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Atom types: Relativistic treatment of valence electrons. Takes values 0 (Schroedinger), 1 (Scalar relativistic), 2 (Dirac ; works only in ASA mode)"
+  ],
+  "LAMBDA_BDG": [
+    null,
+    "%f",
+    false,
+    "Superconductivity: Electron-phonon coupling parameter in Ry (defaults to 1.0)"
+  ],
+  "LATTICE_RELAX": [
+    null,
+    "%i",
+    false,
+    "Lattice relaxations via U-transformation (defaults 0 which means no relaxations)"
+  ],
+  "MIXFAC": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Linear mixing parameter Set to 0. if [NPOL]=0"
+  ],
+  "MIXFAC_LDAU": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Mixing factor for the LDAU potential."
+  ],
+  "MIXLDAU_STEP": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Number of SCF steps to complete between each LDA+U potential mixing (stepmixldau runflag/runoption should be activated)."
+  ],
+  "NCHEB": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of Chebyshev polynomials per interval Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NCOLL": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: use nonco_angles solver (1/0)"
+  ],
+  "NPAN_EQ": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of intervals from [R_LOG] to muffin-tin radius Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NPAN_LOG": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: Number of intervals from nucleus to [R_LOG] Used in conjunction with runopt NEWSOSOL"
+  ],
+  "NPAN_LOGPANELFAC": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: division factor logpanel"
+  ],
+  "NSIMPLEMIXFIRST": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Number of simple mixing steps to do before starting more aggressive mixing scheme (only has effect for IMIX>3)."
+  ],
+  "NSPIN": [
+    null,
+    "%i",
+    false,
+    "Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2"
+  ],
+  "QBOUND": [
+    null,
+    "%e",
+    false,
+    "Self-consistency control: Lower limit of rms-error in potential to stop iterations."
+  ],
+  "QBOUND_LDAU": [
+    null,
+    "%e",
+    false,
+    "Self-consistency control: Lower limit of rms-error for LDA+U potential."
+  ],
+  "RADIUS_LOGPANELS": [
+    null,
+    "%f",
+    false,
+    "Accuracy, Radial solver: Radius up to which log-rule is used for interval width. Used in conjunction with runopt NEWSOSOL"
+  ],
+  "RADIUS_MIN": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: "
+  ],
+  "RUNFLAG": [
+    null,
+    "%s",
+    false,
+    "Running and test options: e.g. lmdos, GBULKtomemory, LDA+U, SIMULASA"
+  ],
+  "SCFSTEPS": [
+    null,
+    "%i",
+    false,
+    "Self-consistency control: Max. number of self-consistency iterations. Is reset to 1 in several cases that require only 1 iteration (DOS, Jij, write out GF)."
+  ],
+  "SPINMIXFAC": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Mixing factor used for the magnetic moments, defaults to 1."
+  ],
+  "SPINORBIT": [
+    null,
+    "%i",
+    false,
+    "Accuracy, Radial solver: use SOC solver (1/0)"
+  ],
+  "TESTFLAG": [
+    null,
+    "%s",
+    false,
+    "Running and test options: e.g. tmatnew, noscatteringmoment"
+  ],
+  "TOL_ALAT_CHECK": [
+    null,
+    "%e",
+    false,
+    "Consistency check: tolerance for alat comparison (defaults to 1e-12 if not set)."
+  ],
+  "USE_BDG": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: Activate Bogoliubov de Gennes (BdG) mode. Attention: needs Chebychev solver!"
+  ],
+  "USE_E_SYMM_BDG": [
+    null,
+    "%l",
+    false,
+    "Superconductivity: Use only the ee block in the contour integration and mirror the results for the hh block (works only for Temp_BdG=0, defaults to False)"
+  ],
+  "XC": [
+    null,
+    "%s",
+    false,
+    "Chemistry, Exchange-correlation: Type of exchange correlation potential. Takes values 0 (LDA, Moruzzi-Janak-Williams), 1 (LDA, von Barth-Hedin), 2 (LDA, Vosko-Wilk-Nussair), 3 (GGA, Perdew-Wang 91), 4 (GGA, PBE), 5 (GGA, PBEsol)"
+  ]
+}

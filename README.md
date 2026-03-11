@@ -14,7 +14,7 @@
 
 # masci-tools
 
-**This is a collection of tools, common things used by packages of material science.**
+Masci-tools (short for "materials science tools") is a post-processing toolkit for electronic structure calculations. Its well-documented Python interface simplifies I/O parsing, visualization such as bandstructure and DOS plotting, and data analysis.
 
 Feel free to contribute.
 
@@ -23,7 +23,7 @@ The code is hosted on GitHub at
 
 The documentation is hosted on https://masci-tools.readthedocs.io.
 
-Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum Jülich (see <http://judft.de>, <https://flapw.de> and <https://jukkr.fz-juelich.de> for further information on the codes) and in the context of the AiiDA plugins for the [Fleur code](https://github.com/JuDFTteam/aiida-fleur) and the [KKR code](https://github.com/JuDFTteam/aiida-kkr).
+Most functionality was developed for the use with the DFT codes developed at the Forschungszentrum Jülich (<http://judft.de>) and their AiiDA plugins for high-throughput calculations ([aiida-fleur](https://github.com/JuDFTteam/aiida-fleur), [aiida-kkr](https://github.com/JuDFTteam/aiida-kkr), [aiida-spirit](https://github.com/JuDFTteam/aiida-spirit)).
 
 ## Installation
 

@@ -42,6 +42,9 @@ convergence_group:
   number_of_iterations_max: 1
   qbound: 1.0e-07
   rms: 2.3716e-05
+  rms_LDAU: 0.0
+  rms_LDAU_all_iterations:
+  - 0.0
   rms_all_iterations:
   - 2.3716e-05
   rms_per_atom:
