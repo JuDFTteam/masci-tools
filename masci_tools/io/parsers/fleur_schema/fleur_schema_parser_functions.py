@@ -634,7 +634,7 @@ def _is_simple(elem: etree._Element) -> bool:
     for child in elem:
         child_type = _normalized_name(child.tag)
 
-        if child_type in ['attribute', 'simpleContent']:
+        if child_type in ['attribute', 'simpleContent','annotation']:
             continue
         if child_type in ['element', 'sequence', 'choice', 'all']:
             simple = False
@@ -842,7 +842,7 @@ def _get_sequence_order(xmlschema_evaluator: etree.XPathDocumentEvaluator, seque
             new_order = _get_sequence_order(xmlschema_evaluator, group[0])
             for elem in new_order:
                 elem_order.append(elem)
-        elif child_type in ['attribute', 'simpleContent', 'all']:
+        elif child_type in ['attribute', 'simpleContent', 'all','annotation']:
             continue
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
@@ -874,7 +874,7 @@ def _get_valid_tags(xmlschema_evaluator: etree.XPathDocumentEvaluator, sequence_
             new_elems = _get_valid_tags(xmlschema_evaluator, group[0])
             for elem in new_elems:
                 elems.append(elem)
-        elif child_type in ['attribute', 'simpleContent']:
+        elif child_type in ['attribute', 'simpleContent','annotation']:
             continue
         else:
             raise KeyError(f'Dont know what to do with {child_type}')
