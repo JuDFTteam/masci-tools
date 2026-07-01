@@ -302,8 +302,16 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="F" name="plot_charge" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="plot_rho" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="plot_charge" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Write total charge density to output file for visualization. Useful for analyzing charge distribution in structures.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="plot_rho" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Write exchange-correlation density to output file for visualization. Shows density used in XC functional evaluation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute default="T" name="autocomp" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>
@@ -465,7 +473,11 @@
             <xsd:documentation>Cutoff for the expansion of the core-tail into other MT spheres. Also relevant for initial charge generation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="T" name="l_core_confpot" type="FleurBool" use="optional"/>
+      <xsd:attribute default="T" name="l_core_confpot" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Use confinement potential for core (more stable but could be less accurate). Default is True.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="CellType">
@@ -585,7 +597,11 @@
             <xsd:documentation>Enable spin spiral calculation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="F" name="l_J" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="l_J" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, switch not used anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute default="F" name="swsp" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Generate spin-polarized density from unpolarized density.</xsd:documentation>
@@ -596,7 +612,11 @@
             <xsd:documentation>Flip spin directions for atoms with flipSpin flag set.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="F" name="l_onlyMtStDen" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="l_onlyMtStDen" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Calculate only muffin-tin starting density, excluding interstitial contributions (DEPRECATED).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute name="fixed_moment" type="FleurDouble" use="optional">
          <xsd:annotation>
             <xsd:documentation>Constrain the total magnetic moment to this value.</xsd:documentation>
@@ -665,9 +685,21 @@
 
 
    <xsd:complexType name="VacuumEnergyParameterType">
-      <xsd:attribute name="vacuum" type="xsd:integer" use="required"/>
-      <xsd:attribute name="spinUp" type="FleurDouble" use="required"/>
-      <xsd:attribute name="spinDown" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="vacuum" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Vacuum region index for energy parameters (1 or 2 for films with two vacuum regions).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="spinUp" type="FleurDouble" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Energy parameter for spin-up valence states in the vacuum region.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="spinDown" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Energy parameter for spin-down valence states in the vacuum region. Only used in spin-polarized calculations.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="Matrix3Type">
@@ -782,10 +814,26 @@
    </xsd:complexType>
 
    <xsd:complexType name="GFElementChoiceDiagType">
-      <xsd:attribute name="s" type="FleurBool"/>
-      <xsd:attribute name="p" type="FleurBool"/>
-      <xsd:attribute name="d" type="FleurBool"/>
-      <xsd:attribute name="f" type="FleurBool"/>
+      <xsd:attribute name="s" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Include s-orbital contributions in the Green's function calculation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="p" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Include p-orbital contributions in the Green's function calculation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="d" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Include d-orbital contributions in the Green's function calculation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="f" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Include f-orbital contributions in the Green's function calculation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="SymOpMatrixType">
@@ -899,31 +947,103 @@
       </xsd:restriction>
    </xsd:simpleType>
    <xsd:complexType name="XCLibXCIDType">
-      <xsd:attribute name="exchange"         type="xsd:integer" use="required"/>
-      <xsd:attribute name="correlation"      type="xsd:integer" use="required"/>
-      <xsd:attribute name="etot_exchange"    type="xsd:integer" use="optional"/>
-      <xsd:attribute name="etot_correlation" type="xsd:integer" use="optional"/>
+      <xsd:attribute name="exchange"         type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>LibXC functional ID for exchange energy. Integer index for available LibXC exchange functionals.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="correlation"      type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>LibXC functional ID for correlation energy. Integer index for available LibXC correlation functionals.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="etot_exchange"    type="xsd:integer" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>LibXC functional ID for exchange contribution to total energy. If not specified, uses the same as exchange.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="etot_correlation" type="xsd:integer" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>LibXC functional ID for correlation contribution to total energy. If not specified, uses the same as correlation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
    <xsd:complexType name="XCLibXCNameType">
-      <xsd:attribute name="exchange"         type="xsd:string" use="required"/>
-      <xsd:attribute name="correlation"      type="xsd:string" use="required"/>
-      <xsd:attribute name="etot_exchange"    type="xsd:string" use="optional"/>
-      <xsd:attribute name="etot_correlation" type="xsd:string" use="optional"/>
+      <xsd:attribute name="exchange"         type="xsd:string" use="required">
+         <xsd:annotation>
+            <xsd:documentation>LibXC exchange functional name (e.g., 'lda_x_pz' for Perdew-Zunger LDA exchange).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="correlation"      type="xsd:string" use="required">
+         <xsd:annotation>
+            <xsd:documentation>LibXC correlation functional name (e.g., 'lda_c_vwn' for VWN correlation).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="etot_exchange"    type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>LibXC exchange functional name for total energy evaluation. If not specified, uses the same as exchange.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="etot_correlation" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>LibXC correlation functional name for total energy evaluation. If not specified, uses the same as correlation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
    <xsd:complexType name="XCParamsType">
-      <xsd:attribute name="igrd" type="xsd:integer" use="required"/>
-      <xsd:attribute name="lwb" type="FleurBool" use="required"/>
-      <xsd:attribute name="ndvgrd" type="xsd:integer" use="required"/>
-      <xsd:attribute name="idsprs" type="xsd:integer" use="required"/>
-      <xsd:attribute name="chng" type="xsd:double" use="required"/>
+      <xsd:attribute name="igrd" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="lwb" type="FleurBool" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="ndvgrd" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="idsprs" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="chng" type="xsd:double" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="GGAPrintingType">
-      <xsd:attribute name="iggachk" type="xsd:integer" use="required"/>
-      <xsd:attribute name="idsprs0" type="xsd:integer" use="required"/>
-      <xsd:attribute name="idsprsl" type="xsd:integer" use="required"/>
-      <xsd:attribute name="idsprsi" type="xsd:integer" use="required"/>
-      <xsd:attribute name="idsprsv" type="xsd:double" use="required"/>
+      <xsd:attribute name="iggachk" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="idsprs0" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="idsprsl" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="idsprsi" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="idsprsv" type="xsd:double" use="required">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED, do not use anymore.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="AtomSpeciesType">
@@ -939,9 +1059,21 @@
    </xsd:complexType>
 
    <xsd:complexType name="ProdBasisMTType">
-     <xsd:attribute name="lcutm" type="xsd:integer" use="required"/>
-     <xsd:attribute name="lcutwf" type="xsd:integer" use="required"/>
-     <xsd:attribute name="select" type="xsd:string" use="optional" default="4 0 4 2"/>
+     <xsd:attribute name="lcutm" type="xsd:integer" use="required">
+        <xsd:annotation>
+           <xsd:documentation>Angular momentum cutoff for muffin-tin spheres in product basis.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
+     <xsd:attribute name="lcutwf" type="xsd:integer" use="required">
+        <xsd:annotation>
+           <xsd:documentation>Angular momentum cutoff for wave functions in product basis.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
+     <xsd:attribute name="select" type="xsd:string" use="optional" default="4 0 4 2">
+        <xsd:annotation>
+           <xsd:documentation>Selection parameters for product basis construction (four integers controlling basis selection). Default: '4 0 4 2' balances accuracy and efficiency.</xsd:documentation>
+         </xsd:annotation>
+     </xsd:attribute>
    </xsd:complexType>
 
    <xsd:simpleType name="ZeroToOneNumberType">
@@ -952,9 +1084,21 @@
    </xsd:simpleType>
 
    <xsd:complexType name="SpecialType">
-     <xsd:attribute name="lda" type="FleurBool" use="optional" default="F"/>
-     <xsd:attribute name="socscale" type="FleurDouble" use="optional" default="1.0"/>
-     <xsd:attribute name="nonSpinPolBasis" type="FleurBool" use="optional" default="F"/> 
+     <xsd:attribute name="lda" type="FleurBool" use="optional" default="F">
+        <xsd:annotation>
+           <xsd:documentation>Use LDA exchange-correlation for this species (overrides global XC functional selection). Useful for mixing functionals in calculations.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
+     <xsd:attribute name="socscale" type="FleurDouble" use="optional" default="1.0">
+        <xsd:annotation>
+           <xsd:documentation>Scaling factor for spin-orbit coupling strength in this species (1.0 = full coupling, 0.0 = no coupling). Default: 1.0.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
+     <xsd:attribute name="nonSpinPolBasis" type="FleurBool" use="optional" default="F">
+        <xsd:annotation>
+           <xsd:documentation>Use non-spin-polarized basis for this species even in spin-polarized calculations.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
      <xsd:attribute name="b_field_mt" type="FleurDouble" use="optional" default="0.0">
         <xsd:annotation>
            <xsd:documentation>
@@ -965,7 +1109,11 @@
            </xsd:documentation>
         </xsd:annotation>
      </xsd:attribute>
-     <xsd:attribute name="vca_charge" type="FleurDouble" use="optional" default="0.0"/>
+     <xsd:attribute name="vca_charge" type="FleurDouble" use="optional" default="0.0">
+        <xsd:annotation>
+           <xsd:documentation>Charge correction for virtual crystal approximation (VCA) for this species. Adjusts effective charge in disordered systems.</xsd:documentation>
+        </xsd:annotation>
+     </xsd:attribute>
    </xsd:complexType>
 
 
@@ -1108,19 +1256,60 @@
             <xsd:documentation>Name of the species this atom group belongs to.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="magField" type="xsd:double" use="optional"/>
-      <xsd:attribute name="vcaAddCharge" type="xsd:double" use="optional"/>
+      <xsd:attribute name="magField" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Magnetic field applied to this atom group (in Tesla or atomic units depending on context).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="vcaAddCharge" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Charge correction for virtual crystal approximation in this atom group.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="AtomPosType">
       <xsd:simpleContent>
          <xsd:extension base="FleurDouble3DVecType">
-            <xsd:attribute default=" " name="label" type="xsd:string" use="optional"/>
-            <xsd:attribute default="F" name="wannier" type="FleurBool" use="optional"/>
-            <xsd:attribute name="banddos" type="FleurBool" use="optional"/>
-            <xsd:attribute name="alpha" type="FleurDouble" use="optional"/>
-            <xsd:attribute name="beta"  type="FleurDouble" use="optional"/>
-            <xsd:attribute name="gamma" type="FleurDouble" use="optional"/>
+            <xsd:attribute default=" " name="label" type="xsd:string" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Custom label for this atom (for identification in output). Default is blank space.</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute default="F" name="wannier" type="FleurBool" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Include this atom in Wannier function generation (if Wannier calculations are enabled).</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="banddos" type="FleurBool" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Compute density of states weights (DOS) projected onto this atom.</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="alpha" type="FleurDouble" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>First Euler angle (alpha) for orbital projection frame at this atom (in radians).</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="beta"  type="FleurDouble" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Second Euler angle (beta) for orbital projection frame at this atom (in radians).</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="gamma" type="FleurDouble" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Third Euler angle (gamma) for orbital projection frame at this atom (in radians).</xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute default="F" name="alignToSpin" type="FleurBool" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>
+                     If true, aligns the orbital quantisation frame used in jDOS to the local spin quantisation axis
+                     defined by nococonv angles for this atom type. If false, manually provided alpha/beta/gamma
+                     angles are used.
+                  </xsd:documentation>
+               </xsd:annotation>
+            </xsd:attribute>
          </xsd:extension>
       </xsd:simpleContent>
    </xsd:complexType>
@@ -1360,8 +1549,16 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="phi" type="FleurDouble" use="optional" default="0.0"/>
-      <xsd:attribute name="theta" type="FleurDouble" use="optional" default="0.0"/>
+      <xsd:attribute name="phi" type="FleurDouble" use="optional" default="0.0">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: Azimuthal angle (phi) for quantization axis of U term (in radians). Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="theta" type="FleurDouble" use="optional" default="0.0">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: Polar angle (theta) for quantization axis of U term (in radians). Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute name="l_amf" type="FleurBool" use="required">
          <xsd:annotation>
             <xsd:documentation>
@@ -1383,22 +1580,62 @@
       <xsd:sequence>
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="ldaVPair" type="LdaVPairType"/>
       </xsd:sequence>
-      <xsd:attribute name="V" type="FleurDouble" use="required"/>
-      <xsd:attribute name="refAtom" type="xsd:positiveInteger" use="required"/>
-      <xsd:attribute name="refAtomL" type="xsd:nonNegativeInteger" use="required"/>
-      <xsd:attribute name="otherAtomL" type="xsd:nonNegativeInteger" use="required"/>
+      <xsd:attribute name="V" type="FleurDouble" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Potential parameter value for inter-site interaction (in eV).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="refAtom" type="xsd:positiveInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Reference atom index (1-based) for the LDAv interaction.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="refAtomL" type="xsd:nonNegativeInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Angular momentum quantum number (0=s, 1=p, 2=d, 3=f) of reference atom orbital.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="otherAtomL" type="xsd:nonNegativeInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Angular momentum quantum number of other atom orbital in the pair interaction.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="LdaVPairType">
-      <xsd:attribute name="otherAtom" type="xsd:positiveInteger" use="required"/>
-      <xsd:attribute name="shiftX" type="xsd:integer" use="required"/>
-      <xsd:attribute name="shiftY" type="xsd:integer" use="required"/>
-      <xsd:attribute name="shiftZ" type="xsd:integer" use="required"/>
+      <xsd:attribute name="otherAtom" type="xsd:positiveInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Index (1-based) of the other atom in the pair interaction.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="shiftX" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Lattice vector shift in X direction (in units of lattice vectors) to other atom.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="shiftY" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Lattice vector shift in Y direction (in units of lattice vectors) to other atom.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="shiftZ" type="xsd:integer" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Lattice vector shift in Z direction (in units of lattice vectors) to other atom.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="LdaOPCType">
-      <xsd:attribute name="l" type="xsd:nonNegativeInteger" use="required"/>
-      <xsd:attribute name="n" type="xsd:nonNegativeInteger" use="required"/>
+      <xsd:attribute name="l" type="xsd:nonNegativeInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Angular momentum quantum number (0=s, 1=p, 2=d, 3=f) for orbital potential correction.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="n" type="xsd:nonNegativeInteger" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Principal quantum number for orbital potential correction.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="LdaHubbard1Type">
@@ -1410,18 +1647,42 @@
       <xsd:attribute name="l" type="xsd:nonNegativeInteger" use="required"/>
       <xsd:attribute name="U" type="FleurDouble" use="required"/>
       <xsd:attribute name="J" type="FleurDouble" use="required"/>
-      <xsd:attribute name="phi" type="FleurDouble" use="optional" default="0.0"/>
-      <xsd:attribute name="theta" type="FleurDouble" use="optional" default="0.0"/>
+      <xsd:attribute name="phi" type="FleurDouble" use="optional" default="0.0">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: Azimuthal angle (phi) for LDAp quantization axis (in radians). Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="theta" type="FleurDouble" use="optional" default="0.0">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: Polar angle (theta) for LDAp quantization axis (in radians). Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute name="l_amf" type="FleurBool" use="required"/>
-      <xsd:attribute default="calc" name="init_occ"      type="ManualCutoffType" use="optional"/>
-      <xsd:attribute default="calc" name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
+      <xsd:attribute default="calc" name="init_occ"      type="ManualCutoffType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Initial occupation of the LDAp orbital. 'calc' means auto-calculate, or specify manually.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="calc" name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Cutoff for Kramers-Kronig integration in LDAp. 'calc' means auto-calculate.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this LDAp type (for identification in output). Default: 'default'.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="ExcType">
       <xsd:attribute name="l" type="xsd:nonNegativeInteger" use="required"/>
       <xsd:attribute name="J" type="FleurDouble" use="required"/>
-      <xsd:attribute default="calc" name="init_mom" type="ManualCutoffType" use="optional"/>
+      <xsd:attribute default="calc" name="init_mom" type="ManualCutoffType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Initial magnetic moment for excitation. 'calc' means auto-calculate.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="cFCoeffInputType">
@@ -1516,22 +1777,62 @@
          <xsd:element name="matrixElements" type="GFElementChoiceType"/>
          <xsd:element name="diagElements" type="GFElementChoiceDiagType"/>
       </xsd:choice>
-      <xsd:attribute default="T"       name="l_sphavg" type="FleurBool"/>
-      <xsd:attribute default="0"       name="nshells" type="xsd:nonNegativeInteger" use="optional"/>
-      <xsd:attribute default="calc"    name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
-      <xsd:attribute default="F"       name="k_resolved" type="FleurBool" use="optional"/>
-      <xsd:attribute default="all"     name="shellElement" type="xsd:string" use="optional"/>
-      <xsd:attribute default="T"       name="magneticShells" type="FleurBool" use="optional"/>
-      <xsd:attribute default="0"       name="startFromShell" type="xsd:nonNegativeInteger" use="optional"/>
+      <xsd:attribute default="T"       name="l_sphavg" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Perform spherical averaging of Green's function in muffin-tin spheres (default=T). Set to F for full angular momentum resolution.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0"       name="nshells" type="xsd:nonNegativeInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Number of neighbor shells to include in Green's function calculation (default=0 for automatic).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="calc"    name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Cutoff for KKR integration in Green's function calculation (default="calc" for automatic).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this Green's function calculation (for identification in output, default="default").</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F"       name="k_resolved" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Calculate k-point resolved Green's functions (default=F). Set to T for band structure analysis.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="all"     name="shellElement" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Select specific elements for shell-resolved Green's function output (default="all" for all elements, or specify element symbols).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T"       name="magneticShells" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Include magnetic character in shell-resolved Green's function output (default=T). Distinguishes spin contributions.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0"       name="startFromShell" type="xsd:nonNegativeInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Skip first N shells in Green's function calculation to focus on distant interactions (default=0).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="TorqueGFType">
       <xsd:sequence>
          <xsd:element name="greensfElements" type="GFElementChoiceType"/>
       </xsd:sequence>
-      <xsd:attribute default="calc"    name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
+      <xsd:attribute default="calc"    name="kkintgrCutoff" type="ManualKKintgrCutoffType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Cutoff for KKR integration in torque Green's function calculation (default="calc" for automatic).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this torque Green's function calculation (for identification in output, default="default").</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:simpleType name="ManualCutoffType">
@@ -1667,7 +1968,11 @@
             <xsd:documentation>Cutoff for the potential when calculating the XC functional. If 0, Gmax is used.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="0.0" name="Gmaxz" type="FleurDouble" use="optional"/>
+      <xsd:attribute default="0.0" name="Gmaxz" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Cutoff for G-vectors in the z-direction (perpendicular to film planes). Default 0.0 means use Gmax. Useful for film calculations to optimize z-direction resolution.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute default="0" name="numbands" type="NumBandsType" use="optional">
          <xsd:annotation>
             <xsd:documentation>Number of eigenvalues to calculate at each k-point. 0 means use default value.</xsd:documentation>
@@ -1766,8 +2071,16 @@
             <xsd:documentation>Construct spin-orbit operator from spin-averaged potential.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="F" name="off" type="FleurBool" use="optional"/>
-      <xsd:attribute default="T" name="soc66" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="off" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: not read in anymore</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="soc66" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: not read in anymore</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="SCFLoopType">
@@ -1809,7 +2122,11 @@
             <xsd:documentation>Convergence criterion: stop if density distance falls below this value.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="maxTimeToStartIter" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="maxTimeToStartIter" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Maximum wall-clock time (in seconds) allowed before starting an SCF iteration. Used to manage computational resources.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="VacDOSType">
@@ -2037,8 +2354,16 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="f_level" type="xsd:integer" use="optional" default="-1"/>
-      <xsd:attribute name="l_driftForce" type="FleurBool" use="optional" default="F"/>
+      <xsd:attribute name="f_level" type="xsd:integer" use="optional" default="-1">
+         <xsd:annotation>
+            <xsd:documentation>Force calculation level/depth: -1 (automatic), 0 (none), 1-3 (increasing detail).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="l_driftForce" type="FleurBool" use="optional" default="F">
+         <xsd:annotation>
+            <xsd:documentation>Include drift correction in force calculation. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
       <xsd:attribute name="forcealpha" type="FleurDouble" use="optional" default="0">
          <xsd:annotation>
             <xsd:documentation>
@@ -2076,8 +2401,16 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="qfix" type="xsd:integer" use="optional" default="0"/>
-      <xsd:attribute name="force_converged" type="FleurDouble" use="optional" default="0.00001"/>
+      <xsd:attribute name="qfix" type="xsd:integer" use="optional" default="0">
+         <xsd:annotation>
+            <xsd:documentation>Different strategies for fixing the density (second number only after relaxation). 0/1: fix by scaling all density, 2/3: fix by scaling only PW part 4/5: try to do a gaussian interpolation. Default: 0 .</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="force_converged" type="FleurDouble" use="optional" default="0.00001">
+         <xsd:annotation>
+            <xsd:documentation>Force convergence criterion (Hartree/bohr) for declaring relaxation converged. Default: 0.00001.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="LdaUGeneralType">
@@ -2115,29 +2448,93 @@
             </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute default="F" name="l_adjEnpara" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="l_spinoffd" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="l_nonsphDC" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="l_initialGuess" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="l_adjEnpara" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>DEPRECATED: not used anymore</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="l_spinoffd" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Include spin-off-diagonal elements in density matrix. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="l_nonsphDC" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Use non-spherical double-counting correction. Default: false (use spherical).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="l_initialGuess" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Provide initial guess for density matrix for starting density from occupations. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="LdaHIAGeneralType">
       <xsd:attribute name="itmaxHubbard1" type="xsd:nonNegativeInteger" use="required"/>
-      <xsd:attribute default="100.0" name="beta" type="xsd:double" use="optional"/>
-      <xsd:attribute default="0.01" name="minoccDistance" type="xsd:double" use="optional"/>
-      <xsd:attribute default="0.001" name="minmatDistance" type="xsd:double" use="optional"/>
-      <xsd:attribute default="2" name="n_occpm" type="xsd:nonNegativeInteger" use="optional"/>
-      <xsd:attribute default="F" name="dftspinpol" type="FleurBool" use="optional"/>
-      <xsd:attribute default="T" name="fullMatch" type="FleurBool" use="optional"/>
-      <xsd:attribute default="T" name="l_nonsphDC" type="FleurBool" use="optional"/>
-      <xsd:attribute default="T" name="l_correctEtot" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="l_forceHIAiteration" type="FleurBool" use="optional"/>
+      <xsd:attribute default="100.0" name="beta" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Inverse temperature parameter (1/kT) for HIA calculations. Default: 100.0 K⁻¹.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.01" name="minoccDistance" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Minimum distance threshold for occupation matrix elements in HIA. Default: 0.01.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.001" name="minmatDistance" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Minimum distance threshold for density matrix elements in HIA. Default: 0.001.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="2" name="n_occpm" type="xsd:nonNegativeInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Number of occupation parameters to track in HIA. Default: 2.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="dftspinpol" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Use DFT spin-polarized density for HIA. Default: false (use paramagnetic density).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="fullMatch" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Perform full matching of orbital angular momentum in HIA. Default: true.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="l_nonsphDC" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Use non-spherical double-counting correction in HIA. Default: true.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="l_correctEtot" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Correct total energy for HIA contributions. Default: true.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="l_forceHIAiteration" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Force HIA iteration even when density matrix is converged. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="cFCoeffsOutputType">
-      <xsd:attribute name="chargeDensity" type="FleurBool" use="required"/>
-      <xsd:attribute name="potential" type="FleurBool" use="required"/>
-      <xsd:attribute default="F" name="remove4f" type="FleurBool" use="optional"/>
+      <xsd:attribute name="chargeDensity" type="FleurBool" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Write charge density coefficients to output. Required for charge density analysis.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="potential" type="FleurBool" use="required">
+         <xsd:annotation>
+            <xsd:documentation>Write potential coefficients to output. Required for potential analysis and debugging.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="remove4f" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Remove f-orbital (l=3) contributions from output. Default: false (keep all l-channels).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="GFGeneralType">
@@ -2212,46 +2609,158 @@
             </xsd:choice>
          </xsd:sequence>
       </xsd:sequence>
-      <xsd:attribute default="F"    name="l_mperp" type="FleurBool" use="optional"/>
-      <xsd:attribute default="-1.0" name="minCalcDistance" type="xsd:double" use="optional"/>
-      <xsd:attribute default="F"    name="outputSphavg" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F"    name="intFullRadial" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F"    name="l_mperp" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Include perpendicular magnetization components in Green's function calculation. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="-1.0" name="minCalcDistance" type="xsd:double" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Minimum distance cutoff for Green's function calculation (-1.0 = auto). Default: -1.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F"    name="outputSphavg" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Output spherically averaged Green's function. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F"    name="intFullRadial" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Integrate over full radial grid in Green's function calculation. Default: false.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="ERealAxisType">
-      <xsd:attribute default="1300" name="ne" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="-2.0" name="ellow" type="xsd:double"/>
-      <xsd:attribute default="2.0" name="elup" type="xsd:double"/>
-      <xsd:attribute default="0.0" name="smearingEnergy" type="xsd:double"/>
-      <xsd:attribute default="0.0" name="smearingTemperature" type="xsd:double"/>
+      <xsd:attribute default="1300" name="ne" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of energy points on the real axis. Default: 1300.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="-2.0" name="ellow" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Lower energy bound (in eV) for real axis integration. Default: -2.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="2.0" name="elup" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Upper energy bound (in eV) for real axis integration. Default: 2.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.0" name="smearingEnergy" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Broadening parameter (in eV) for Lorentzian or Gaussian smearing. Default: 0.0 (no broadening).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.0" name="smearingTemperature" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Smearing temperature parameter (in K). Used for Fermi-Dirac smearing. Default: 0.0 K.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="EContourRectangleType">
-      <xsd:attribute default="5" name="n1" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="128" name="n2" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="5" name="n3" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="5" name="nmatsub" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="0.005" name="sigma" type="xsd:double"/>
-      <xsd:attribute default="-1.0" name="eb" type="xsd:double"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
+      <xsd:attribute default="5" name="n1" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of points on first segment of contour rectangle. Default: 5.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="128" name="n2" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of points on second (longest) segment of contour rectangle. Default: 128.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="5" name="n3" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of points on third segment of contour rectangle. Default: 5.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="5" name="nmatsub" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of matsubara frequencies for contour rectangle. Default: 5.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.005" name="sigma" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Broadening width for contour rectangle integration. Default: 0.005 eV.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="-1.0" name="eb" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Bottom energy of rectangle contour (-1.0 = auto). Default: -1.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this contour rectangle (for identification). Default: "default".</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="EContourSemicircleType">
-      <xsd:attribute default="128" name="n" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="-1.0" name="eb" type="xsd:double"/>
-      <xsd:attribute default="0.0" name="et" type="xsd:double"/>
-      <xsd:attribute default="1.0" name="alpha" type="xsd:double"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
+      <xsd:attribute default="128" name="n" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of points on the semicircle contour. Default: 128.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="-1.0" name="eb" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Bottom energy of semicircle contour (-1.0 = auto). Default: -1.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.0" name="et" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Top energy of semicircle contour. Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="1.0" name="alpha" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Ellipticity parameter for semicircle contour. Default: 1.0 (circle).</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this semicircle contour (for identification). Default: "default".</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="EContourDOSType">
-      <xsd:attribute default="1300" name="n" type="xsd:nonNegativeInteger"/>
-      <xsd:attribute default="0.0314" name="sigma" type="xsd:double"/>
-      <xsd:attribute default="-1.0" name="eb" type="xsd:double"/>
-      <xsd:attribute default="0.0" name="et" type="xsd:double"/>
-      <xsd:attribute default="T" name="analytical_cont" type="FleurBool"/>
-      <xsd:attribute default="T" name="l_fermi" type="FleurBool"/>
-      <xsd:attribute default="default" name="label" type="xsd:string" use="optional"/>
+      <xsd:attribute default="1300" name="n" type="xsd:nonNegativeInteger">
+         <xsd:annotation>
+            <xsd:documentation>Number of points on DOS contour. Default: 1300.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.0314" name="sigma" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Broadening width for DOS calculation. Default: 0.0314 eV.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="-1.0" name="eb" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Bottom energy of DOS contour (-1.0 = auto). Default: -1.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.0" name="et" type="xsd:double">
+         <xsd:annotation>
+            <xsd:documentation>Top energy of DOS contour. Default: 0.0.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="analytical_cont" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Use analytical continuation for DOS calculation. Default: true.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="l_fermi" type="FleurBool">
+         <xsd:annotation>
+            <xsd:documentation>Include Fermi level in DOS calculation. Default: true.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="default" name="label" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Label for this DOS contour (for identification). Default: "default".</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="RDMFTType">
@@ -3299,14 +3808,29 @@
       </xsd:attribute>
    </xsd:complexType>
 
-   <xsd:complexType name="JuPhonType">
+   <xsd:complexType name="DFPTType">
       <xsd:annotation>
-         <xsd:documentation>JuPhon interface for phonon and electron-phonon calculations using DFPT.</xsd:documentation>
+         <xsd:documentation>dfpt interface for phonon and electron-phonon calculations using DFPT.</xsd:documentation>
       </xsd:annotation>
       <xsd:all>
-         <xsd:element  maxOccurs="1" minOccurs="1" name="qVectors" type="QListType">
+       <xsd:element minOccurs="0" name="phonon" type="PhononType">
             <xsd:annotation>
-               <xsd:documentation>List of phonon q-vectors.</xsd:documentation>
+               <xsd:documentation>Parameters for phonon calculations using DFPT.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element minOccurs="0" name="interpolation" type="DfptInterpolationType">
+            <xsd:annotation>
+               <xsd:documentation>Parameters for phonon calculations using DFPT.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element minOccurs="0" name="efield" type="DFPTEfieldType">
+            <xsd:annotation>
+               <xsd:documentation>Parameters for post-processing of DFPT calculations.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element minOccurs="0" name="postprocess" type="DFPTPostprocessType">
+            <xsd:annotation>
+               <xsd:documentation>Parameters for post-processing of DFPT calculations.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
       </xsd:all>
@@ -3315,47 +3839,14 @@
             <xsd:documentation>Enable DFPT (density functional perturbation theory) calculation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="l_jpCheck" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Enable JuPhon consistency checks.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <!--xsd:attribute name="l_jpTest" type="FleurBool" use="optional"/-->
-      <!--xsd:attribute name="l_potout" type="FleurBool" use="optional"/-->
-      <!--xsd:attribute name="l_eigout" type="FleurBool" use="optional"/-->
-      <xsd:attribute name="eDiffcut" type="FleurDouble" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Energy difference cutoff for state selection.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="fDiffcut" type="FleurDouble" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Occupation difference cutoff for state selection.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="qlim" type="FleurDouble" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Q-vector magnitude limit.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>  
-      <xsd:attribute name="gmaxzLocal" type="FleurDouble" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Local Gmax for z-direction (film calculations).</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>  
-      <xsd:attribute name="l_intp" type="FleurBool" use="optional">
+      <xsd:attribute name="l_interpolate" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Enable interpolation of phonon properties.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="l_band" type="FleurBool" use="optional">
+      <xsd:attribute name="l_postprocess" type="FleurBool" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Calculate phonon band structure.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="l_dos" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Calculate phonon DOS.</xsd:documentation>
+            <xsd:documentation>Enable post-processing of DFPT properties.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
       <xsd:attribute name="l_scf" type="FleurBool" use="optional">
@@ -3363,44 +3854,9 @@
             <xsd:documentation>Enable self-consistent DFPT calculation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="l_elph" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Calculate electron-phonon coupling.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="l_sumrule" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Apply acoustic sum rule correction.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
       <xsd:attribute name="l_rm_qhdf" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Remove existing q.hdf files before calculation.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="startq" type="xsd:positiveInteger" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Starting q-point index for parallel calculations.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="stopq" type="xsd:nonNegativeInteger" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Stopping q-point index for parallel calculations.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="qmode" type="xsd:nonNegativeInteger" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Q-point mode selection.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="i_integration" type="xsd:nonNegativeInteger" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Integration method for electron-phonon coupling.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="smearingGauss" type="FleurDouble" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Gaussian smearing width for integration.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
       <xsd:attribute name="l_phonon" type="FleurBool" use="optional">
@@ -3413,27 +3869,162 @@
             <xsd:documentation>Include (bare) electric field perturbation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="l_efield_scr" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Include screened electric field perturbation.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
       <xsd:attribute name="l_borneffcharge" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Calculate Born effective charges.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="l_polar" type="FleurBool" use="optional">
+      <xsd:attribute name="l_bfield" type="FleurBool" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Calculate Born effective charges.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute name="l_symVacLevel" type="FleurBool" use="optional" default="F">
-         <xsd:annotation>
-            <xsd:documentation>Symmetrize vacuum level for film calculations.</xsd:documentation>
+            <xsd:documentation>Include (bare) electric field perturbation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
+
+   <xsd:complexType name="PhononType">
+      <xsd:annotation>
+            <xsd:documentation>Parameters specifying the phonon DFPT calculation.</xsd:documentation>
+      </xsd:annotation>
+         <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="qVectors" type="QListType">
+               <xsd:annotation>
+                  <xsd:documentation>List of phonon q-vectors.</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+         </xsd:all>
+      <xsd:attribute name="qptsListName" type="xsd:string" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Name of the q-point list to use.</xsd:documentation>
+               </xsd:annotation>
+         </xsd:attribute>
+      <xsd:attribute name="l_sumrule" type="FleurBool" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Apply acoustic sum rule correction.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="startq" type="xsd:positiveInteger" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Starting q-point index for parallel calculations.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="stopq" type="xsd:nonNegativeInteger" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Stopping q-point index for parallel calculations.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+      <xsd:attribute name="gmaxzLocal" type="FleurDouble" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Local Gmax for z-direction (film calculations).</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>  
+         <xsd:attribute name="l_symVacLevel" type="FleurBool" use="optional" default="F">
+            <xsd:annotation>
+               <xsd:documentation>Symmetrize vacuum level for film calculations.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+               <xsd:attribute name="eDiffcut" type="FleurDouble" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Energy difference cutoff for state selection.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="fDiffcut" type="FleurDouble" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Occupation difference cutoff for state selection.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+   </xsd:complexType>
+
+
+   <xsd:complexType name="DFPTEfieldType">
+      <xsd:annotation>
+            <xsd:documentation>Parameters specifying the efield DFPT calculation.</xsd:documentation>
+      </xsd:annotation>
+         <xsd:attribute name="l_efield_scr" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Include screened electric field perturbation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+       <xsd:attribute name="qlim" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Q-vector magnitude limit.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>  
+   </xsd:complexType>
+
+
+<xsd:complexType name="DfptInterpolationType">
+      <xsd:annotation>
+            <xsd:documentation>Parameters specifying the interpolation of DFPT results.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="l_band" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Interpolate phonon band structure.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="l_dos" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Interpolate phonon DOS.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="qptsListName" type="xsd:string" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Name of the q-point list to use.</xsd:documentation>
+               </xsd:annotation>
+         </xsd:attribute>
+      <xsd:attribute name="l_sumrule" type="FleurBool" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Apply acoustic sum rule correction.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="l_WSinterpol" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Wigner Seitz Construction for interpolation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="l_polar" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Calculate long range correction for polar systems in interpolation</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:complexType name="DFPTPostprocessType">
+      <xsd:annotation>
+            <xsd:documentation>Parameters specifying the interpolation of DFPT results.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="l_elph" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Calculate electron-phonon coupling.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="bandWindow" type="BandWindowRestricted" use="optional">
+      <xsd:annotation>
+         <xsd:documentation>
+            Two non-negative integers defining the band window for the electron phonon matrix element.
+         </xsd:documentation>
+      </xsd:annotation>
+   </xsd:attribute>
+    <xsd:attribute name="i_integration" type="xsd:nonNegativeInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Integration method for electron-phonon coupling.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="smearingGauss" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Gaussian smearing width for integration.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:simpleType name="BandWindowType">
+      <xsd:list itemType="xsd:nonNegativeInteger"/>
+   </xsd:simpleType>
+
+   <xsd:simpleType name="BandWindowRestricted">
+      <xsd:restriction base="BandWindowType">
+         <xsd:length value="2"/>
+      </xsd:restriction>
+   </xsd:simpleType>
 
    <xsd:complexType name="OutputType">
       <xsd:annotation>
@@ -3489,9 +4080,9 @@
                <xsd:documentation>Parameters for band unfolding from supercell to primitive cell.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element maxOccurs="1" minOccurs="0" name="juPhon" type="JuPhonType">
+         <xsd:element maxOccurs="1" minOccurs="0" name="dfpt" type="DFPTType">
             <xsd:annotation>
-               <xsd:documentation>Parameters for phonon calculations using DFPT.</xsd:documentation>
+               <xsd:documentation>Parameters for calculations using DFPT.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
       </xsd:all>
