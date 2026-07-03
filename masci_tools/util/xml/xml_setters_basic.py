@@ -29,8 +29,7 @@ def xml_replace_tag(xmltree: XMLLike,
                     xpath: XPathLike,
                     element: str | etree._Element,
                     occurrences: int | Iterable[int] | None = None) -> XMLLike:
-    """
-    Replace XML tags by a given tag on the given XML tree
+    """Replace XML tags under the XPath by a given tag
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be replaced
@@ -79,8 +78,7 @@ def xml_delete_att(xmltree: XMLLike,
                    xpath: XPathLike,
                    name: str,
                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
-    """
-    Deletes an attribute in the XML tree
+    """Deletes an attribute on the tags of the given XPath in the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the attribute to be deleted
@@ -116,8 +114,7 @@ def xml_delete_att(xmltree: XMLLike,
 
 
 def xml_delete_tag(xmltree: XMLLike, xpath: XPathLike, occurrences: int | Iterable[int] | None = None) -> XMLLike:
-    """
-    Deletes a tag in the XML tree.
+    """Deletes a tag under the XPath in the XML tree.
 
     :param xmltree: an xmltree that represents inp.xml
     :param xpath: a path to the tag to be deleted
@@ -198,7 +195,7 @@ def xml_create_tag(xmltree: XMLLike,
                    occurrences: int | Iterable[int] | None = None,
                    correct_order: bool = True,
                    several: bool = True) -> XMLLike:
-    """
+    """Creates a tag under the given XPath
     This method evaluates an xpath expression and creates a tag in a xmltree under the
     returned nodes.
     If there are no nodes under the specified xpath an error is raised.
@@ -329,8 +326,8 @@ def xml_set_attrib_value_no_create(xmltree: XMLLike,
                                    name: str,
                                    value: Any,
                                    occurrences: int | Iterable[int] | None = None) -> XMLLike:
-    """
-    Sets an attribute in a xmltree to a given value. By default the attribute will be set
+    """Sets the value of an attribute under the XPath
+    By default the attribute will be set
     on all nodes returned for the specified xpath.
 
     :param xmltree: an xmltree that represents inp.xml
@@ -382,8 +379,7 @@ def xml_set_text_no_create(xmltree: XMLLike,
                            xpath: XPathLike,
                            text: Any,
                            occurrences: int | Iterable[int] | None = None) -> XMLLike:
-    """
-    Sets the text of a tag in a xmltree to a given value.
+    """Sets the text of a tag under the XPath
     By default the text will be set on all nodes returned for the specified xpath.
 
     :param xmltree: an xmltree that represents inp.xml

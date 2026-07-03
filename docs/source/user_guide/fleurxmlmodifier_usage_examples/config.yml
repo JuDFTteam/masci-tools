@@ -1,0 +1,12 @@
+module-file: ../../../../masci_tools/io/fleurxmlmodifier.py
+class-name: FleurXMLModifier
+output-folder: examples
+exclude-methods:
+  - fromList
+  - add_task_list
+  - task_list
+  - apply_modifications
+  - get_avail_actions
+  - undo
+  - changes
+  - modify_xmlfile

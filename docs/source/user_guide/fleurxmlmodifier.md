@@ -38,65 +38,517 @@ new_xmltree, _ = fm.modify_xmlfile('/path/to/original/inp.xml') #Apply
   last task or all tasks from the list of changes.
 
 (modify-methods)=
+### Modification methods
 
-### Modification registration methods
+::::::{dropdown} Simple changes
+:open:
+:color: info
+:animate: fade-in-slide-down
 
-The registration methods can be separated into two groups. First of all,
-there are XML methods that require deeper knowledge about the structure of an `inp.xml` file.
-All of them require an xpath input and start their method names start with `xml_`:
+:::::{grid} 2
 
-- {py:meth}`FleurXMLModifier.xml_set_attrib_value_no_create()`: Set attributes on the result(s) of the given xpath
-- {py:meth}`FleurXMLModifier.xml_set_text_no_create()`: Set text on the result(s) of the given xpath
-- {py:meth}`FleurXMLModifier.xml_create_tag()`: Insert
-  an xml element in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_delete_tag()`: Delete
-  an xml element in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_delete_att()`: Delete
-  an attribute in the xml tree on the result(s) of the given xpath.
-- {py:meth}`FleurXMLModifier.xml_replace_tag()`: Replace an xml element on the result(s) of the given xpath.
+::::{grid-item-card} **set_inpchanges**
+:text-align: center
+Change the value of multiple text or attribute values at once.
++++
+:::{button-ref} set_inpchanges
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
 
-On the other hand, there are shortcut methods that already know some paths:
+::::{grid-item-card} **shift_value**
+:text-align: center
+Shift or multiply the value of multiple text or attribute values at once.
++++
+:::{button-ref} shift_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
 
-- {py:meth}`FleurXMLModifier.set_species()`: Specific
-  user-friendly method to change species parameters.
-- {py:meth}`FleurXMLModifier.clone_species()`: Method to
-  create a clone of a given species with optional modifications
-- {py:meth}`FleurXMLModifier.set_atomgroup()`:  Specific
-  method to change atom group parameters.
-- {py:meth}`FleurXMLModifier.set_species_label()`: Specific
-  user-friendly method to change a species of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_atomgroup_label()`:  Specific
-  method to change atom group parameters of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.switch_species()`: user-friendly method for switching the atom species of a atom group
-- {py:meth}`FleurXMLModifier.switch_species_label()`: user-friendly method for switching the atom species of a atom group with an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_nkpts()`: user-friendly method for setting the `kPointCount` (**Only for MaX4 and older**)
-- {py:meth}`FleurXMLModifier.set_kpath()`: user-friendly method for setting the path for a bandstructure calculations (**Only for MaX4 and older**)
-- {py:meth}`FleurXMLModifier.set_kpointlist()`: user-friendly method for setting/creating a `kPointlist` from lists
-- {py:meth}`FleurXMLModifier.switch_kpointset()`: user-friendly method for switching the used kpoint set in a calculation (**Only for MaX5 and newer**)
-- {py:meth}`FleurXMLModifier.set_inpchanges()`: Specific
-  user-friendly method for easy changes of attribute key value type.
-- {py:meth}`FleurXMLModifier.shift_value()`: Specific
-  user-friendly method to shift value of an attribute.
-- {py:meth}`FleurXMLModifier.shift_value_species_label()`: Specific
-  user-friendly method to shift value of an attribute of an atom with a certain label.
-- {py:meth}`FleurXMLModifier.set_attrib_value()`: user-friendly method for setting attributes in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_first_attrib_value()`: user-friendly method for setting the first occurrence of an attribute in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.add_number_to_attrib()`: user-friendly method for adding to or multiplying values of attributes in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.add_number_to_first_attrib()`: user-friendly method for adding to or multiplying values of the first occurrence of the attribute in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_text()`: user-friendly method for setting text on xml elements in the xml file by specifying their name
-- {py:meth}`FleurXMLModifier.set_first_text()`: user-friendly method for setting the text on the first occurrence of an xml element in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.set_simple_tag()`: user-friendly method for creating and setting attributes on simple xml elements (only attributes) in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.set_complex_tag()`: user-friendly method for creating complex tags in the xml file by specifying its name
-- {py:meth}`FleurXMLModifier.create_tag()`: User-friendly method for inserting a tag in the right place by specifying it's name
-- {py:meth}`FleurXMLModifier.delete_tag()`: User-friendly method for delete a tag by specifying it's name
-- {py:meth}`FleurXMLModifier.delete_att()`: User-friendly method for deleting an attribute from a tag by specifying it's name
-- {py:meth}`FleurXMLModifier.replace_tag()`: User-friendly method for replacing a tag by another by specifying its name
-- {py:meth}`FleurXMLModifier.set_nmmpmat()`: Specific
-  method for initializing or modifying the density matrix file for a LDA+U calculation (details see below)
-- {py:meth}`FleurXMLModifier.rotate_nmmpmat()`: Specific
-  method for rotating a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space
-- {py:meth}`FleurXMLModifier.align_nmmpmat_to_sqa()`: Specific
-  method for aligning a block/blocks of the density matrix file for a LDA+U calculation (details see below) in real space with the SQA already specified in the `inp.xml`
+::::::
+
+::::::{dropdown} Modifying atom species
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_species**
+:text-align: center
+Change parameters or add new tags in atomic `species` elements.
+For example changing the MT radius or adding DFT+U.
++++
+:::{button-ref} set_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_species_label**
+:text-align: center
+Change parameters or add new tags in atomic `species` of a
+specific atom. The atom is identified by it's label.
++++
+:::{button-ref} set_species_label
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **clone_species**
+:text-align: center
+Duplicate a given species element with a different name.
++++
+:::{button-ref} clone_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+:::::
+::::::
+
+::::::{dropdown} Modifying atom groups
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_atomgroup**
+:text-align: center
+Change parameters or add new elements in `atomGroup` elements,
+i.e. the elements containing the symmetry equivalent atoms.
++++
+:::{button-ref} set_atomgroup
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_atomgroup_label**
+:text-align: center
+Change parameters or add new elements in `atomGroup` elements,
+i.e. the elements containing the symmetry equivalent atoms.
+The group to modify is identified by a given label of an atom.
++++
+:::{button-ref} set_atomgroup_label
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **switch_species**
+:text-align: center
+Change the species of a given atom group.
++++
+:::{button-ref} switch_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **switch_species_label**
+:text-align: center
+Change the species of a atom group containing a given atom.
++++
+:::{button-ref} switch_species
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
+
+::::::{dropdown} Modifying kpoint sets
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **switch_kpointset**
+:text-align: center
+Switch the used kpoint set {bdg-success-line}`MaX 5.0 or newer`
++++
+:::{button-ref} switch_kpointset 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_kpointlist**
+:text-align: center
+Create a k-point list from a list of coordinates and weights.
++++
+:::{button-ref} set_kpointlist 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_nkpts**
+:text-align: center
+Set the number of kpts (`kpointCount`) {bdg-danger-line}`MaX 4.0 or older`
++++
+:::{button-ref} set_nkpts 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_kpath**
+:text-align: center
+Set a explicit path for bandstructure {bdg-danger-line}`MaX 4.0 or older`
++++
+:::{button-ref} set_kpath 
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
+
+::::::{dropdown} Setting generic XML elements and attributes
+:open:
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_attrib_value**
+:text-align: center
+Set abitrary XML attribute values
++++
+:::{button-ref} set_attrib_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_first_attrib_value**
+:text-align: center
+Set abitrary XML attribute values for the
+first occurrence of the given attribute in the XML tree
++++
+:::{button-ref} set_first_attrib_value
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+
+::::{grid-item-card} **set_text**
+:text-align: center
+Set the text of arbitrary XML elements
++++
+:::{button-ref} set_text
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_first_text**
+:text-align: center
+Set the text of arbitrary XML elements for the first
+occurrence of the given element in the XML tree
++++
+:::{button-ref} set_first_text
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **add_number_to_attrib**
+:text-align: center
+Add to or multiply the values of arbitrary XML
+attributes
++++
+:::{button-ref} add_number_to_attrib
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **add_number_to_first_attrib**
+:text-align: center
+Add to or multiply the values of arbitrary XML
+attributes for the first occurrence of the given attribute
+in the XML tree
++++
+:::{button-ref} add_number_to_first_attrib
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_simple_tag**
+:text-align: center
+Create or change arbitrary simple XML elements, i.e. elements
+without child elements
++++
+:::{button-ref} set_simple_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **set_complex_tag**
+:text-align: center
+Create or change an arbitrary complex XML element, i.e. an element
+with child elements.
++++
+:::{button-ref} set_complex_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
+
+::::::{dropdown} Manipulating the DFT+U density matrix
+:color: info
+:animate: fade-in-slide-down
+
+:::::{grid} 2
+
+::::{grid-item-card} **set_nmmpmat**
+:text-align: center
+Initialize the `n_mmp_mat` file with a given density matrix
++++
+:::{button-ref} set_nmmpmat
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **rotate_nmmpmat**
+:text-align: center
+Rotate one or multiple block(s) of the `n_mmp_mat` with euler angles
++++
+:::{button-ref} rotate_nmmpmat
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **align_nmmpmat_to_sqa**
+:text-align: center
+Rotate one or multiple blocks of the `n_mmp_mat` with euler angles to align
+with the spin-quantization axis specified.
++++
+:::{button-ref} align_nmmpmat_to_sqa
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+:::::
+::::::
+
+
+::::::{dropdown} Using explicit XPath expressions for modifications
+:color: warning
+:icon: Alert
+:animate: fade-in-slide-down
+
+These routines should be used with a lot of care, since they have
+much less checks than all other setting functions
+
+:::::{grid} 2
+
+::::{grid-item-card} **xml_create_tag**
+:text-align: center
+Create a XML element with the given name as a child of the
+results of the XPath expression
++++
+:::{button-ref} xml_create_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_delete_tag**
+:text-align: center
+Delete the results of the XPath expression.
++++
+:::{button-ref} xml_delete_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_delete_att**
+:text-align: center
+Delete a give  XML attribute from the results of the XPath expression.
++++
+:::{button-ref} xml_delete_att
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_replace_tag**
+:text-align: center
+Replace the results of the XPath expression with a given XML element.
++++
+:::{button-ref} xml_replace_tag
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_set_attrib_value_no_create**
+:text-align: center
+Set XML attribute values on the results of the XPath expression.
++++
+:::{button-ref} xml_set_attrib_value_no_create
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+::::{grid-item-card} **xml_set_text_no_create**
+:text-align: center
+Set text on the results of the XPath expression.
++++
+:::{button-ref} xml_set_text_no_create
+:ref-type: ref
+:click-parent:
+:expand:
+:color: primary
+:outline:
+Show Examples
+:::
+::::
+
+
+
+:::::
+::::::
+
 
 % The figure below shows a comparison between the use of XML and shortcut methods.
 %

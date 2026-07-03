@@ -40,7 +40,7 @@ def create_tag(xmltree: XMLLike,
                create_parents: bool = False,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
-    """
+    """Create a tag with a given name in the XML tree
     This method creates a tag with a uniquely identified xpath under the nodes of its parent.
     If there are no nodes evaluated the subtags can be created with `create_parents=True`
 
@@ -60,6 +60,53 @@ def create_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.create_tag('mtnocoparams')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.create_tag('lo')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.create_tag('lo', contains='species')
+
+    .. usage-example::
+        :title: Nested creation
+        :description: With ``create_parents=True`` evtl. missing parent tags are also created
+
+        fm.create_tag('diagElements',
+                      create_parents=True,
+                      contains='species',
+                      not_contains='torque')
+
+    .. usage-example::
+        :title: Creation of pre-created XML element
+        :description: Passing a XML element instead of a name will insert this element at the correct position
+
+        fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                      contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.create_tag(etree.Element('lo', n='5', l='0', type='SCLO'),
+                      contains='species',
+                      filters={
+                        'species': {
+                            'name': {'contains': 'Fe'}
+                        }
+                      })
 
     :returns: xmltree with created tags
     """
@@ -100,8 +147,7 @@ def delete_tag(xmltree: XMLLike,
                filters: FilterType | None = None,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
-    """
-    This method deletes a tag with a uniquely identified xpath.
+    """Delete a tag with a given name from the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -115,6 +161,37 @@ def delete_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.delete_tag('expertModes')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.delete_tag('lo')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.delete_tag('lo', contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.delete_tag('lo',
+                      contains='species',
+                      filters={
+                        'species': {
+                            'name': {'contains': 'Fe'}
+                        }
+                      })
 
     :returns: xmltree with deleted tags
     """
@@ -136,8 +213,7 @@ def delete_att(xmltree: XMLLike,
                filters: FilterType | None = None,
                occurrences: int | Iterable[int] | None = None,
                **kwargs: Any) -> XMLLike:
-    """
-    This method deletes a attribute with a uniquely identified xpath.
+    """Delete an attribute with a given name from the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -154,6 +230,38 @@ def delete_att(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.delete_att('mixparam')
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.delete_att('alpha')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.delete_att('alpha', contains='nocoParams', not_contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.delete_att('alpha',
+                      contains='nocoParams',
+                      not_contains='species',
+                      filters={
+                        'atomGroup': {
+                            'species': {'not-contains': 'Fe'}
+                        }
+                      })
 
     :returns: xmltree with deleted attributes
     """
@@ -177,8 +285,7 @@ def replace_tag(xmltree: XMLLike,
                 filters: FilterType | None = None,
                 occurrences: int | Iterable[int] | None = None,
                 **kwargs: Any) -> XMLLike:
-    """
-    This method deletes a tag with a uniquely identified xpath.
+    """Replace a tag with a given name with a different XML element
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -193,6 +300,37 @@ def replace_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.replace_tag('expertmodes', etree.Element('greensFunction'))
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.replace_tag('lo', etree.Element('ldaU', l='3'))
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.replace_tag('lo', etree.Element('ldaU', l='3'), contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.replace_tag('lo',
+                      etree.Element('ldaU', l='3'),
+                      contains='species',
+                      filters={
+                        'species': {
+                            'atomicNumber': {'>': 30}
+                      }})
 
     :returns: xmltree with replaced tags
     """
@@ -216,10 +354,7 @@ def add_number_to_attrib(xmltree: XMLLike,
                          mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                          occurrences: int | Iterable[int] | None = None,
                          **kwargs: Any) -> XMLLike:
-    """
-    Adds a given number to the attribute value in a xmltree specified by the name of the attribute
-    and optional further specification
-    If there are no nodes under the specified xpath an error is raised
+    """Add/Multiply values for multiple occurrences in the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -239,6 +374,37 @@ def add_number_to_attrib(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.add_number_to_attrib('itmax', 10)
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.add_number_to_attrib('radius', 1.05, mode='rel')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.add_number_to_attrib('radius', 1.05, mode='rel', contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.add_number_to_attrib('spinUp',
+                                -1,
+                                contains='species',
+                                filters={
+                                    'species': {
+                                        'atomicNumber': {'>': 30}
+                                }})
 
     :returns: xmltree with shifted attribute
     """
@@ -267,10 +433,7 @@ def add_number_to_first_attrib(xmltree: XMLLike,
                                filters: FilterType | None = None,
                                mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                                **kwargs: Any) -> XMLLike:
-    """
-    Adds a given number to the first occurrence of an attribute value in a xmltree specified by the name of the attribute
-    and optional further specification
-    If there are no nodes under the specified xpath an error is raised
+    """Add/Multiply value for the first occurrences of an attribute in the XML tree
 
     :param xmltree: an xmltree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -289,6 +452,37 @@ def add_number_to_first_attrib(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.add_number_to_first_attrib('itmax', 10)
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.add_number_to_first_attrib('radius', 1.05, mode='rel')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.add_number_to_first_attrib('radius', 1.05, mode='rel', contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.add_number_to_first_attrib('spinUp',
+                                      -1,
+                                      contains='species',
+                                      filters={
+                                          'species': {
+                                              'atomicNumber': {'>': 30}
+                                      }})
 
     :returns: xmltree with shifted attribute
     """
@@ -312,9 +506,8 @@ def set_attrib_value(xmltree: XMLLike,
                      occurrences: int | Iterable[int] | None = None,
                      create: bool = False,
                      **kwargs: Any) -> XMLLike:
-    """
-    Sets an attribute in a xmltree to a given value, specified by its name and further
-    specifications.
+    """Set the value of an attribute possibly occurring multiple times
+
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
     with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -336,6 +529,37 @@ def set_attrib_value(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_attrib_value('itmax', 180)
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_attrib_value('radius', 1.05)
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.set_attrib_value('radius', 1.05, contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.set_attrib_value('spinUp',
+                            1,
+                            contains='species',
+                            filters={
+                                'species': {
+                                    'atomicNumber': {'>': 30}
+                            }})
 
     :returns: xmltree with set attribute
     """
@@ -369,9 +593,8 @@ def set_first_attrib_value(xmltree: XMLLike,
                            filters: FilterType | None = None,
                            create: bool = False,
                            **kwargs: Any) -> XMLLike:
-    """
-    Sets the first occurrence of an attribute in a xmltree to a given value, specified by its name and further
-    specifications.
+    """Set the value of the first occurrence of an attribute
+
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The attribute values are converted automatically according to the types of the attribute
     with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -392,6 +615,37 @@ def set_first_attrib_value(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
         :param exclude: list of str, here specific types of attributes can be excluded
                         valid values are: settable, settable_contains, other
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_first_attrib_value('itmax', 180)
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_first_attrib_value('radius', 1.05)
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.set_first_attrib_value('radius', 1.05, contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.set_first_attrib_value('spinUp',
+                                  1,
+                                  contains='species',
+                                  filters={
+                                      'species': {
+                                          'atomicNumber': {'>': 30}
+                                  }})
 
     :returns: xmltree with set attribute
     """
@@ -415,9 +669,9 @@ def set_text(xmltree: XMLLike,
              occurrences: int | Iterable[int] | None = None,
              create: bool = False,
              **kwargs: Any) -> XMLLike:
-    """
-    Sets the text on tags in a xmltree to a given value, specified by the name of the tag and
-    further specifications. By default the text will be set on all nodes returned for the specified xpath.
+    """Set the value of text of tags in the XML tree possibly occurring mutliple times
+
+    By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
     with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -437,6 +691,44 @@ def set_text(xmltree: XMLLike,
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
 
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_text('kpoint', [[1,2,3], [4,5,6]])
+
+    .. usage-example::
+        :title: Setting one value
+        :description: If only one value for the text is given all elements are set ot the same value
+                      in this case only one list of three coordinates is set
+
+        fm.set_text('kpoint', [4,4,4])
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_text('q', '1 1 1')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.set_text('q', '1 1 1', contains='spinSpiral')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.set_text('valenceConfig',
+                    '(1s1/2)',
+                    contains='species',
+                    filters={
+                        'species': {
+                            './lo/@n': {'>': 4}
+                    }})
+
     :returns: xmltree with set text
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_text
@@ -455,9 +747,9 @@ def set_first_text(xmltree: XMLLike,
                    filters: FilterType | None = None,
                    create: bool = False,
                    **kwargs: Any) -> XMLLike:
-    """
-    Sets the text the first occurrence of a tag in a xmltree to a given value, specified by the name of the tag and
-    further specifications. By default the text will be set on all nodes returned for the specified xpath.
+    """Set the value of text of the first occurrence of a tag in the XML tree
+
+    By default the text will be set on all nodes returned for the specified xpath.
     If there are no nodes under the specified xpath a tag can be created with `create=True`.
     The text values are converted automatically according to the types
     with :py:func:`~masci_tools.util.xml.converters.convert_to_xml()` if they
@@ -475,6 +767,37 @@ def set_first_text(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_first_text('kpoint', [1,2,3])
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_first_text('valenceConfig', '(1s1/2)')
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.set_first_text('valenceConfig', '(1s1/2)', contains='species')
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.set_first_text('valenceConfig',
+                         '(1s1/2)',
+                         contains='species',
+                         filters={
+                             'species': {
+                                 './lo/@n': {'>': 4}
+                         }})
 
     :returns: xmltree with set text
     """
@@ -497,8 +820,9 @@ def set_simple_tag(xmltree: XMLLike,
                    filters: FilterType | None = None,
                    create_parents: bool = False,
                    **kwargs: Any) -> XMLLike:
-    """
-    Sets one or multiple `simple` tag(s) in an xmltree. A simple tag can only hold attributes and has no
+    """Sets one or multiple ``simple`` tag(s) (no subtags/text) in an xmltree.
+
+    A simple tag can only hold attributes and has no
     subtags. The tag is specified by its name and further specification
     If the tag can occur multiple times all existing tags are DELETED and new ones are written.
     If the tag only occurs once it will automatically be created if its missing.
@@ -517,6 +841,47 @@ def set_simple_tag(xmltree: XMLLike,
     Kwargs:
         :param contains: str, this string has to be in the final path
         :param not_contains: str, this string has to NOT be in the final path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_simple_tag('soc', {'theta': 0.1, 'phi': 0.2, 'l_soc': True})
+
+    .. usage-example::
+        :title: Tag selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                 {'l': 1, 'n': 6, 'type': 'SCLO'}])
+
+    .. usage-example::
+        :title: Tag selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+
+        fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                 {'l': 1, 'n': 6, 'type': 'SCLO'}],
+                          contains='species')
+
+    .. usage-example::
+        :title: Nested creation
+        :description: With `create_parents=True` if the parents of the tag are missing they are
+                      created
+
+        fm.set_simple_tag('realAxis', {'ne': 1300, 'ellow': -1.0, 'elup': 1.0}, create_parents=True)
+
+    .. usage-example::
+        :title: Added filters
+        :description: The filters argument allows to be more specific
+
+        fm.set_simple_tag('lo', [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                 {'l': 1, 'n': 6, 'type': 'SCLO'}],
+                          contains='species',
+                          filters={
+                             'species': {
+                                 'atomicNumber': {'>': 30}
+                         }})
 
     :returns: xmltree with set simple tags
     """
@@ -549,7 +914,8 @@ def set_complex_tag(xmltree: XMLLike,
                     filters: FilterType | None = None,
                     create: bool = False,
                     **kwargs: Any) -> XMLLike:
-    """
+    """Setattributes, text and subtags of a given tag in the XML tree
+
     Function to correctly set tags/attributes for a given tag.
     Goes through the attributedict and decides based on the schema_dict, how the corresponding
     key has to be handled.
@@ -592,7 +958,8 @@ def set_species_label(xmltree: XMLLike,
                       atom_label: str,
                       changes: dict[str, Any],
                       create: bool = False) -> XMLLike:
-    """
+    """Set the attributes of a species, given by an atom label occurring in it's atom type
+
     This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_species()`
     method for a certain atom species that corresponds to an atom with a given label
 
@@ -603,6 +970,31 @@ def set_species_label(xmltree: XMLLike,
     :param create: bool, if species does not exist create it and all subtags?
 
     :returns: xml etree of the new inp.xml
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_species_label('222', {'mtSphere' : {'radius' : 2.7}})
+
+    .. usage-example::
+        :title: Adding child elements
+        :description: The `changes` dictionary is not limited to setting attributes
+                      Child elements can also be created. Notice here that if multiple
+                      elements of a given name are allowed all previously existing elements
+                      are deleted and replaced with the ones specified in `changes`
+
+        fm.set_species_label('222', {'ldaU' : {'l' : 3, 'U': 4.0, 'J': 0.5, 'l_amf': True},
+                                     'lo': [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                            {'l': 1, 'n': 6, 'type': 'SCLO'}]})
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` as the first argument applies the changes
+                      to all species
+
+        fm.set_species_label('all', {'mtSphere' : {'radius' : 2.7}})
+
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
 
@@ -633,8 +1025,7 @@ def set_species(xmltree: XMLLike,
                 changes: dict[str, Any],
                 filters: FilterType | None = None,
                 create: bool = False) -> XMLLike:
-    """
-    Method to set parameters of a species tag of the fleur inp.xml file.
+    """Set the attributes of a species, specified by name position, etc.
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -652,18 +1043,57 @@ def set_species(xmltree: XMLLike,
 
     **changes** is a python dictionary containing dictionaries that specify attributes
     to be set inside the certain specie. For example, if one wants to set a MT radius it
-    can be done via::
+    can be done via
 
-        changes = {'mtSphere' : {'radius' : 2.2}}
+    .. usage-example::
 
-    Another example::
+        fm.set_species('Fe-1', {'mtSphere' : {'radius' : 2.7}})
 
-        'changes': {'special': {'socscale': 0.0}}
+    .. usage-example::
+        :title: Adding child elements
+        :description: The `changes` dictionary is not limited to setting attributes
+                      Child elements can also be created. Notice here that if multiple
+                      elements of a given name are allowed all previously existing elements
+                      are deleted and replaced with the ones specified in `changes`
 
-    that switches SOC terms on a sertain specie. ``mtSphere``, ``atomicCutoffs``,
-    ``energyParameters``, ``lo``, ``electronConfig``, ``nocoParams``, ``ldaU`` and
-    ``special`` keys are supported. To find possible
-    keys of the inner dictionary please refer to the FLEUR documentation flapw.de
+        fm.set_species('Fe-1', {'ldaU' : {'l' : 3, 'U': 4.0, 'J': 0.5, 'l_amf': True},
+                                'lo': [{'l': 0, 'n': 6, 'type': 'SCLO'},
+                                       {'l': 1, 'n': 6, 'type': 'SCLO'}]})
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` as the first argument applies the changes
+                      to all species
+
+        fm.set_species('all', {'mtSphere' : {'radius' : 2.7}})
+
+    .. usage-example::
+        :title: Modifying a subset of species
+        :description: Providing `'all-<search string>'` as the first argument applies the changes
+                      to all species which contain the search string in it's name
+
+        fm.set_species('all-Pt', {'mtSphere' : {'radius' : 2.7},
+                                  'lo': {'l': 0, 'n': 6, 'type': 'SCLO'},})
+
+    Example species. All these attributes tags can be modified.
+    Additional keys can for example be found in the FLEUR documentation flapw.de
+
+    .. code-block:: xml
+
+      <species name="Fe-1" element="Fe" atomicNumber="26">
+         <mtSphere radius="2.20000000" gridPoints="787" logIncrement=".01600000"/>
+         <atomicCutoffs lmax="10" lnonsphr="6"/>
+	     <electronConfig>
+            <coreConfig>[Ne]</coreConfig>
+            <valenceConfig>(3s1/2) (3p1/2) (3p3/2) (4s1/2) (3d3/2) (3d5/2)</valenceConfig>
+            <stateOccupation state="(3d3/2)" spinUp="2.00000000" spinDown="1.00000000"/>
+            <stateOccupation state="(3d5/2)" spinUp="3.00000000" spinDown=".00000000"/>
+         </electronConfig>
+         <energyParameters s="4" p="4" d="3" f="4"/>
+         <lo type="SCLO" l="0" n="3" eDeriv="0"/>
+         <lo type="SCLO" l="1" n="3" eDeriv="0"/>
+      </species>
+
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
 
@@ -686,8 +1116,7 @@ def clone_species(xmltree: XMLLike,
                   species_name: str,
                   new_name: str,
                   changes: dict[str, Any] | None = None) -> XMLLike:
-    """
-    Method to create a new species from an existing one with evtl. modifications
+    """Clone (and possibly change) a species in the XML tree
 
     For reference of the changes dictionary look at :py:func:`set_species()`
 
@@ -699,6 +1128,20 @@ def clone_species(xmltree: XMLLike,
     :param changes: a optional python dict specifying what you want to change.
 
     :returns xmltree: xml etree of the new inp.xml
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.clone_species('Fe-1', 'Fe-clone-1')
+
+    .. usage-example::
+        :title: Modifying the cloned species
+        :description: The `changes` dictionary is passed on to ``set_species``
+                      to modify the cloned species
+
+        fm.clone_species('Fe-1', 'Fe-clone-1', {'mtSphere' : {'radius' : 2.7}})
+
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.common_functions import eval_xpath_one
@@ -736,7 +1179,7 @@ def shift_value_species_label(xmltree: XMLLike,
                               number_to_add: Any,
                               mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                               **kwargs: Any) -> XMLLike:
-    """
+    """Add/Multiply numeric attributes in a or multiple atom species
     Shifts the value of an attribute on a species by label
     if atom_label contains 'all' then applies to all species
 
@@ -754,6 +1197,29 @@ def shift_value_species_label(xmltree: XMLLike,
         :param not_contains: str, this string has to NOT be in the final path
 
     :returns: xml etree of the new inp.xml
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.shift_value_species_label('222', 'radius', 1)
+
+    .. usage-example::
+        :title: Relative shift
+        :description: Passing ``mode="rel"`` or ``mode="relative"`` will multiply
+                      the initial attribute value with the provided number instead
+                      of adding them
+
+        fm.shift_value_species_label('222', 'radius', 1.2, mode="relative")
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` as the first argument applies the changes
+                      to all atomgroups
+
+        fm.shift_value_species_label('all', 'lmax', 2)
+
+
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_add_number_to_first_attrib
@@ -793,8 +1259,9 @@ def shift_value_species_label(xmltree: XMLLike,
 
 def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, atom_label: str,
                         changes: dict[str, Any]) -> XMLLike:
-    """
-    This method calls :func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
+    """Set the attributes of a atom group, given by an atom label occuring in it's definition
+
+    This method calls :py:func:`~masci_tools.util.xml.xml_setters_names.set_atomgroup()`
     method for a certain atom species that corresponds to an atom with a given label.
 
     :param xmltree: xml etree of the inp.xml
@@ -809,6 +1276,20 @@ def set_atomgroup_label(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, 
     can be done via::
 
         'changes': {'nocoParams': {'beta': val}}
+
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_atomgroup_label('222', {'nocoParams': {'alpha': 1.57}})
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` as the first argument applies the changes
+                      to all species
+
+        fm.set_atomgroup_label('all', {'nocoParams': {'alpha': 1.57}})
 
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -839,8 +1320,7 @@ def set_atomgroup(xmltree: XMLLike,
                   position: int | Literal['all'] | None = None,
                   species: str | None = None,
                   filters: FilterType | None = None) -> XMLLike:
-    """
-    Method to set parameters of an atom group of the fleur inp.xml file.
+    """Set the attributes of a atom group, specified by species name, position, etc.
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -857,6 +1337,26 @@ def set_atomgroup(xmltree: XMLLike,
     can be done via::
 
         'changes': {'nocoParams': {'beta': val}}
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='Fe-1')
+
+    .. usage-example::
+        :title: Specifying the number of the atromgroup
+        :description: Providing the ``position`` argument will modify the n-th
+                      atomgroup in the ``inp.xml`` file. (Indexing starts at 1)
+
+        fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, position=1)
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` to either ``position`` or ``species```
+                      will modify all atomgroups
+
+        fm.set_atomgroup({'nocoParams': {'alpha': 1.57}}, species='all')
 
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_complex_tag
@@ -889,9 +1389,7 @@ def switch_species_label(xmltree: XMLLike,
                          new_species_name: str,
                          clone: bool = False,
                          changes: dict[str, Any] | None = None) -> XMLLike:
-    """
-    Method to switch the species of an atom group of the fleur inp.xml file based on a label
-    of a contained atom
+    """Change the species of an atom group, identified by the lable of an atom in it's group
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -926,8 +1424,7 @@ def switch_species(xmltree: XMLLike,
                    filters: FilterType | None = None,
                    clone: bool = False,
                    changes: dict[str, Any] | None = None) -> XMLLike:
-    """
-    Method to switch the species of an atom group of the fleur inp.xml file.
+    """Change the species of an atom group, identified by species name, position, etc.
 
     :param xmltree: xml etree of the inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -941,6 +1438,37 @@ def switch_species(xmltree: XMLLike,
                     See :py:class:`~masci_tools.util.xml.xpathbuilder.XPathBuilder` for details
 
     :returns: xml etree of the new inp.xml
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.switch_species('Pt-1', species='Fe-1')
+
+
+    .. usage-example::
+        :title: Specifying the number of the atromgroup
+        :description: Providing the ``position`` argument will modify the n-th
+                      atomgroup in the ``inp.xml`` file. (Indexing starts at 1)
+
+        fm.switch_species('Pt-1', position=1)
+
+    .. usage-example::
+        :title: Create a clone of the old species
+        :description: Specifying a non-existent new species name and ``clone=True``
+                      will create a clone of the old species with that name. Additionally
+                      the ``changes`` argument can then be used to apply changes to the new
+                      clone
+
+        fm.switch_species('Fe-clone-2', species='Fe-1', clone=True, changes={'mtSphere' : {'radius' : 2.7}})
+
+    .. usage-example::
+        :title: Modifying all species
+        :description: Providing `'all'` to either ``position`` or ``species```
+                      will modify the species of all atomgroups
+
+        fm.switch_species('Fe-1', species='all')
+
     """
     from masci_tools.util.schema_dict_util import evaluate_attribute
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_attrib_value
@@ -989,8 +1517,7 @@ def shift_value(xmltree: XMLLike,
                 changes: dict[str, Any],
                 mode: Literal['abs', 'absolute', 'rel', 'relative'] = 'absolute',
                 path_spec: dict[str, Any] | None = None) -> XMLLike:
-    """
-    Shifts numerical values of attributes directly in the inp.xml file.
+    """Add/Multiply values of attributes occurring once in the XML tree
 
     The first occurrence of the attribute is shifted
 
@@ -1007,6 +1534,21 @@ def shift_value(xmltree: XMLLike,
     An example of changes::
 
             changes = {'itmax' : 1, 'dVac': -0.123}
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.shift_value({'itmax' : 5, 'mindistance': 1})
+
+    .. usage-example::
+        :title: Relative shift
+        :description: Passing ``mode="rel"`` or ``mode="relative"`` will multiply
+                      the initial attribute values with the provided number instead
+                      of adding them
+
+        fm.shift_value({'itmax' : 2, 'mindistance': 3}, mode="relative")
+
     """
     from masci_tools.util.case_insensitive_dict import CaseInsensitiveDict
 
@@ -1028,8 +1570,7 @@ def set_inpchanges(xmltree: XMLLike,
                    schema_dict: fleur_schema.SchemaDict,
                    changes: dict[str, Any],
                    path_spec: dict[str, Any] | None = None) -> XMLLike:
-    """
-    This method sets all the attribute and texts provided in the change_dict.
+    """Set the value of attributes/text occurring once in the XML tree
 
     The first occurrence of the attribute/tag is set
 
@@ -1048,6 +1589,28 @@ def set_inpchanges(xmltree: XMLLike,
         }
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_inpchanges({'itmax' : 1, 'kmax': 4.3})
+
+    .. usage-example::
+        :title: Attribute selection not unique
+        :result: Error
+        :description: If no or multiple locations could be possible an error is raised
+
+        fm.set_inpchanges({'itmax' : 1, 'theta': 1.57})
+
+    .. usage-example::
+        :title: Attribute selection
+        :description: Selection can be done by adding conditions on what the XPath should(n't) contain
+                      in the ``path_spec`` argument
+
+        fm.set_inpchanges({'itmax' : 1, 'theta': 1.57},
+                          path_spec={'theta': {'contains': 'soc'}})
+
     """
     from masci_tools.util.xml.xml_setters_xpaths import xml_set_first_attrib_value, xml_set_first_text
     from masci_tools.util.xml.common_functions import split_off_attrib
@@ -1091,16 +1654,6 @@ def set_xcfunctional(xmltree: XMLLike,
     """
     Set the Exchange Correlation potential tag
 
-    Setting a inbuilt XC functional
-    .. code-block:: python
-
-        set_xcfunctional(xmltree, schema_dict, 'vwn')
-
-    Setting a LibXC XC functional
-    .. code-block:: python
-
-        set_xcfunctional(xmltree, schema_dict, {'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
-
     :param xmltree: XML tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
     :param xc_functional: str or dict. If str it is the name of a inbuilt XC functional. If it is a dict it
@@ -1110,6 +1663,20 @@ def set_xcfunctional(xmltree: XMLLike,
     :param libxc: bool if True the functional is a LibXC functional
 
     :returns: an xmltree with modified xcFunctional tag
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_xcfunctional('pbe')
+
+
+    .. usage-example::
+        :title: Setting a LibXC functional
+
+        fm.set_xcfunctional({'exchange': 'lda_x', 'correlation':"lda_c_xalpha"}, libxc=True)
+
+
     """
 
     if not libxc and isinstance(xc_functional, dict):
@@ -1143,9 +1710,10 @@ def set_kpointlist(xmltree: XMLLike,
                    switch: bool = False,
                    overwrite: bool = False,
                    additional_attributes: dict[str, Any] | None = None) -> XMLLike:
-    """
-    Explicitly create a kPointList from the given kpoints and weights. This routine will add the
-    specified kPointList with the given name.
+    """Create a k-point list with the given points and weights
+
+    .. note::
+        If no name is given, a name of the form ``default-<number>`` is generated
 
     .. warning::
         For input versions Max4 and older **all** keyword arguments are not valid (`name`, `kpoint_type`,
@@ -1163,6 +1731,22 @@ def set_kpointlist(xmltree: XMLLike,
     :param overwrite: bool, if True and a kPointlist with the given name already exists it will be overwritten
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                          [1,1], switch=True)
+
+    .. usage-example::
+        :title: MaX 4 compatibility
+        :description: For input files before the MaX 5 release the previous kpoint list will always
+                      be overwritten and the ``switch`` argument has no effect
+        :inputfile: inp_max4.xml
+
+        fm.set_kpointlist([[0,0,0],[0.5,0.5,0.5]],
+                          [1,1])
     """
     from masci_tools.util.xml.builder import FleurElementMaker
     from masci_tools.util.schema_dict_util import evaluate_attribute
@@ -1271,8 +1855,7 @@ def set_kpointlist_max4(xmltree: XMLLike,
 
 @schema_dict_version_dispatch(output_schema=False)
 def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, list_name: str) -> XMLLike:
-    """
-    Switch the used k-point set
+    """Switch the used k-point set
 
     .. warning::
         This method is only supported for input versions after the Max5 release
@@ -1296,8 +1879,7 @@ def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, lis
 
 @switch_kpointset.register(max_version='0.31')
 def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, list_name: str) -> XMLLike:
-    """
-    Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
+    """Switch the used k-point set
 
     .. warning::
         This method is only supported for input versions after the Max5 release
@@ -1314,8 +1896,7 @@ def switch_kpointset_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict
 
 @schema_dict_version_dispatch(output_schema=False)
 def set_nkpts(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int, gamma: bool = False) -> XMLLike:
-    """
-    Sets a k-point mesh directly into inp.xml
+    """Sets a k-point mesh directly specific for inputs of version Max4
 
     .. warning::
         This method is only supported for input versions before the Max5 release
@@ -1327,6 +1908,21 @@ def set_nkpts(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int
                   in the k-point mesh
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+        :inputfile: inp_max4.xml
+
+        fm.set_nkpts(200)
+
+
+    .. usage-example::
+        :title: Include Gamma point
+        :inputfile: inp_max4.xml
+
+        fm.set_nkpts(200, gamma=True)
+
     """
 
     raise NotImplementedError(f"'set_npkts' is not implemented for inputs of version '{schema_dict['inp_version']}'")
@@ -1334,8 +1930,7 @@ def set_nkpts(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int
 
 @set_nkpts.register(max_version='0.31')
 def set_nkpts_max4(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, count: int, gamma: bool = False) -> XMLLike:
-    """
-    Sets a k-point mesh directly into inp.xml specific for inputs of version Max4
+    """Sets a k-point mesh directly specific for inputs of version Max4
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -1368,8 +1963,7 @@ def set_kpath(xmltree: XMLLike,
               kpath: dict[str, Iterable[float]],
               count: int,
               gamma: bool = False) -> XMLLike:
-    """
-    Sets a k-path directly into inp.xml  as a alternative kpoint set with purpose 'bands'
+    """Sets a k-path directly as an alternative kpoint set with purpose 'bands'
 
     .. warning::
         This method is only supported for input versions before the Max5 release
@@ -1382,6 +1976,14 @@ def set_kpath(xmltree: XMLLike,
                   in the k-point mesh
 
     :returns: an xmltree of the inp.xml file with changes.
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+        :inputfile: inp_max4.xml
+
+        fm.set_kpath({'Point': [0, 0, 0], 'Point2': [1, 1, 1]}, 200)
+
     """
 
     raise NotImplementedError(
@@ -1395,8 +1997,7 @@ def set_kpath_max4(xmltree: XMLLike,
                    kpath: dict[str, Iterable[float]],
                    count: int,
                    gamma: bool = False) -> XMLLike:
-    """
-    Sets a k-path directly into inp.xml as a alternative kpoint set with purpose 'bands'
+    """Sets a k-path directly as an alternative kpoint set with purpose 'bands'
 
     :param xmltree: xml tree that represents inp.xml
     :param schema_dict: InputSchemaDict containing all information about the structure of the input
@@ -1458,6 +2059,25 @@ def set_kpointpath(xmltree: XMLLike,
     :param special_points: dict mapping names to coordinates for special points to use
 
     :returns: xmltree with a created kpoint path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointpath(nkpts=50, switch=True)
+
+    .. usage-example::
+        :title: Specifying custom points
+        :description: By default the path is chosen by ASE. By providing path
+                      this can be modified
+
+        fm.set_kpointpath(path='CA',
+                          nkpts=25,
+                          special_points={
+                                'C': [0, 0, 0],
+                                'A': [0, 0, 0.5]
+                          })
+
     """
     from masci_tools.util.xml.xml_getters import get_cell
     from ase.dft.kpoints import bandpath
@@ -1518,6 +2138,13 @@ def set_kpointmesh(xmltree: XMLLike,
     :param map_to_first_bz: bool if True the kpoints are mapped into the [0,1] interval
 
     :returns: xmltree with a created kpoint path
+
+    Usage Examples (fm refers to an instance of :py:class:`~masci_tools.io.fleurxmlmodifier.FleurXMLModifier`)
+
+    .. usage-example::
+
+        fm.set_kpointmesh([4, 4, 1], switch=True)
+
     """
     from masci_tools.util.xml.xml_getters import get_symmetry_information, get_cell
     from spglib import get_stabilized_reciprocal_mesh
