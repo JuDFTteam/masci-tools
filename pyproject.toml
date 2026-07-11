@@ -25,6 +25,7 @@ requires-python = ">=3.7"
 dependencies = [
             'numpy',
             'scipy',
+            'sympy',
             'matplotlib',
             'h5py',
             'pandas',
@@ -122,7 +123,7 @@ module = [
     'lxml.builder',
     'IPython.*',
     'pandas',
-    'scipy',
+    'scipy.*',
     'ase.*',
     'spglib'
 ]

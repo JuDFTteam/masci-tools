@@ -414,20 +414,20 @@ def _read_element_header(hdffile: h5py.File, index: int) -> GreensfElement:
     """
     group_name = _get_greensf_group_name(hdffile)
 
-    element = hdffile.get(f'/{group_name}/element-{index}')
+    element = hdffile[f'/{group_name}/element-{index}'].attrs
 
-    l = element.attrs['l'][0]
-    lp = element.attrs['lp'][0]
-    atomType = element.attrs['atomType'][0]
-    atomTypep = element.attrs['atomTypep'][0]
-    sphavg = element.attrs['l_sphavg'][0] == 1
-    onsite = element.attrs['l_onsite'][0] == 1
-    contour = element.attrs['iContour'][0]
-    kresolved = element.attrs.get('l_kresolved', [0])[0] == 1
-    atomDiff = np.array(element.attrs['atomDiff'])
+    l = element['l'][0]
+    lp = element['lp'][0]
+    atomType = element['atomType'][0]
+    atomTypep = element['atomTypep'][0]
+    sphavg = element['l_sphavg'][0] == 1
+    onsite = element['l_onsite'][0] == 1
+    contour = element['iContour'][0]
+    kresolved = element.get('l_kresolved', [0])[0] == 1
+    atomDiff = np.array(element['atomDiff'])
     atomDiff[abs(atomDiff) < 1e-12] = 0.0
     atomDiff *= BOHR_A
-    nLO = element.attrs['numLOs'][0]
+    nLO = element['numLOs'][0]
 
     return GreensfElement(l, lp, atomType, atomTypep, sphavg, onsite, kresolved, contour, nLO, atomDiff)
 
@@ -474,6 +474,7 @@ def _read_gf_element(file: Any, index: int) -> tuple[GreensfElement, dict[str, A
             recipe = _get_radial_recipe(group_name, index, gf_element.contour, nLO=gf_element.nLO, version=version)
 
         data, attributes = h5reader.read(recipe=recipe)
+        attributes['file_version'] = version
 
     return gf_element, data, attributes
 
@@ -662,6 +663,36 @@ class GreensFunction:
             data[:, :, :, 2, ...] = spin_matrix[:, :, :, 1, 0, ...]
             data[:, :, :, 3, ...] = spin_matrix[:, :, :, 0, 1, ...]
 
+    def average_spindiagonal(self) -> None:
+        """
+        Average out ferromagnetic contributions on the local spin-diagonals
+        """
+
+        alpha, alphap = self._angle_alpha
+        beta, betap = self._angle_beta
+        if not self._local_real_frame:
+            rot_real_space = get_wigner_matrix(self.l, alpha, beta)
+            rotp_real_space = get_wigner_matrix(self.lp, alphap, betap)
+
+            for name, data in self._data.items():
+                data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
+                self._data[name] = data
+
+        for name in self._data.keys():
+            for m in range(2 * self.lmax + 1):
+                self._data[name][:, m, m, 0] = (self._data[name][:, m, m, 0] +
+                                                self._data[name][:, m, m, min(1, self.nspins - 1)]) / 2
+                if self.nspins > 1:
+                    self._data[name][:, m, m, 1] = self._data[name][:, m, m, 0]
+
+        if not self._local_real_frame:
+            rot_real_space = get_wigner_matrix(self.l, alpha, beta, inverse=True)
+            rotp_real_space = get_wigner_matrix(self.lp, alphap, betap, inverse=True)
+
+            for name, data in self._data.items():
+                data = np.einsum('ij,xjk...,km->xim...', rot_real_space.T.conj(), data, rotp_real_space)
+                self._data[name] = data
+
     def to_global_frame(self) -> None:
         """
         Rotate the Green's function into the global real space and spin space frame
@@ -749,15 +780,15 @@ class GreensFunction:
                 if name.startswith('ulo'):
                     r = self.radial_functions['ulo']
                 elif name.startswith('u'):
-                    r = self.radial_functions['u'][self.atomType - 1]
+                    r = self.radial_functions['u'][self.atomType - 1, :, self.l]
                 else:
-                    r = self.radial_functions['d'][self.atomType - 1]
+                    r = self.radial_functions['udot'][self.atomType - 1, :, self.l]
                 if name.endswith('ulo'):
                     rp = self.radial_functions['ulop']
                 elif name.endswith('u'):
-                    rp = self.radial_functions['u'][self.atomTypep - 1]
+                    rp = self.radial_functions['u'][self.atomTypep - 1, :, self.lp]
                 else:
-                    rp = self.radial_functions['d'][self.atomTypep - 1]
+                    rp = self.radial_functions['udot'][self.atomTypep - 1, :, self.lp]
                 if not self.onsite:
                     #The radial functions are stored as r*u(r), meaning
                     #when multiplied they produce the right factor for
@@ -765,6 +796,23 @@ class GreensFunction:
                     #independent so we need to multiply each radial function by r
                     r *= self.radial_functions['rmsh'][self.atomType - 1]
                     rp *= self.radial_functions['rmsh'][self.atomTypep - 1]
+                    if name == 'uloulo':
+                        radial_part = np.einsum('lxsr,pyst->lpxyrt', r, rp)
+                    else:
+                        radial_part = np.einsum('...xsr,...yst->...xyrt', r, rp)
+                elif name == 'uloulo':
+                    radial_part = np.einsum('lxsr,pysr->lpxyr', r, rp)
+                else:
+                    radial_part = np.einsum('...xsr,...ysr->...xyr', r, rp)
+
+                if spin is not None:
+                    spin1, spin2 = self.to_spin_indices(spin)
+                    if self.onsite:
+                        radial_part = radial_part[..., spin1, spin2, :]
+                    else:
+                        radial_part = radial_part[..., spin1, spin2, :, :]
+                radial_part = radial_part.T
+
             else:
                 if spin is not None:
                     spin1, spin2 = self.to_spin_indices(spin)
@@ -784,7 +832,18 @@ class GreensFunction:
             return np.swapaxes(data, -2, -1)
 
         if radial:
-            raise NotImplementedError()
+            if spin is not None:
+                if name == 'uloulo':
+                    return np.einsum('...ij,r...ij->r...ij', data, radial_part)
+                if 'lo' in name:
+                    return np.einsum('...i,r...i->r...i', data, radial_part)
+                return np.einsum('...,r...->r...', data, radial_part)
+
+            if name == 'uloulo':
+                return np.einsum('...ijklm,r...ijkl->r...ijklm', data, radial_part)
+            if 'lo' in name:
+                return np.einsum('...ijkl,r...ijk->r...ijkl', data, radial_part)
+            return np.einsum('...ijl,r...ij->r...ijl', data, radial_part)
 
         if spin is not None:
             if name == 'uloulo':
@@ -882,7 +941,8 @@ class GreensFunction:
                           mp: int | None = None,
                           spin: int | None = None,
                           imag: bool = True,
-                          both_contours: bool = False) -> np.ndarray:
+                          both_contours: bool = False,
+                          radial: bool = False) -> np.ndarray:
         r"""
         Select data with energy dependence
 
@@ -892,6 +952,7 @@ class GreensFunction:
         :param both_contours: bool id True the data is not added for both energy contours
         :param imag: bool if True and both_contours is False the imaginary part:math:`\frac{1}{2i}\left[G\left(z\right)-G\left(z^\ast\right)\right]` is returned
                      otherwise the real part :math:`\frac{1}{2}\left[G\left(z\right)+G\left(z^\ast\right)\right]`
+        :param radial: bool if True the green's function will be returned with radial dependence
 
         :returns: numpy array with the selected data
         """
@@ -908,12 +969,10 @@ class GreensFunction:
         else:
             mp_index = slice(self.lmax - self.l, self.lmax + self.lp + 1, 1)
 
-        kwargs: dict[str, Any] = {
-            'spin': spin,
-        }
+        kwargs: dict[str, Any] = {'spin': spin, 'radial': radial}
         if self.sphavg:
             gf = self.get_coefficient('sphavg', **kwargs)[:, m_index, mp_index, ...]
-        else:
+        elif not radial:
             gf =  self.get_coefficient('uu', **kwargs)[:,m_index,mp_index,...] \
                 + self.get_coefficient('ud', **kwargs)[:,m_index,mp_index,...] \
                 + self.get_coefficient('du', **kwargs)[:,m_index,mp_index,...] \
@@ -922,6 +981,24 @@ class GreensFunction:
                 + np.sum(self.get_coefficient('ulou', **kwargs)[:,m_index,mp_index,...], axis=-1) \
                 + np.sum(self.get_coefficient('dulo', **kwargs)[:,m_index,mp_index,...], axis=-1) \
                 + np.sum(self.get_coefficient('uloulo', **kwargs)[:,m_index,mp_index,...], axis=(-1,-2))
+        elif self.onsite:
+            gf =  self.get_coefficient('uu', **kwargs)[:,:,m_index,mp_index,...] \
+                + self.get_coefficient('ud', **kwargs)[:,:,m_index,mp_index,...] \
+                + self.get_coefficient('du', **kwargs)[:,:,m_index,mp_index,...] \
+                + self.get_coefficient('dd', **kwargs)[:,:,m_index,mp_index,...] \
+                + np.sum(self.get_coefficient('uulo', **kwargs)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('ulou', **kwargs)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', **kwargs)[:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', **kwargs)[:,:,m_index,mp_index,...], axis=(-1,-2))
+        else:
+            gf =  self.get_coefficient('uu', **kwargs)[:,:,:,m_index,mp_index,...] \
+                + self.get_coefficient('ud', **kwargs)[:,:,:,m_index,mp_index,...] \
+                + self.get_coefficient('du', **kwargs)[:,:,:,m_index,mp_index,...] \
+                + self.get_coefficient('dd', **kwargs)[:,:,:,m_index,mp_index,...] \
+                + np.sum(self.get_coefficient('uulo', **kwargs)[:,:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('ulou', **kwargs)[:,:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('dulo', **kwargs)[:,:,:,m_index,mp_index,...], axis=-1) \
+                + np.sum(self.get_coefficient('uloulo', **kwargs)[:,:,:,m_index,mp_index,...], axis=(-1,-2))
 
         if both_contours:
             return gf
