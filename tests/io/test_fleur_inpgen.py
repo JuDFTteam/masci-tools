@@ -13,7 +13,12 @@ def test_write_inpgen_file_defaults_dict(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'
@@ -37,7 +42,12 @@ def test_write_inpgen_file_magmom_str(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si',
@@ -63,7 +73,12 @@ def test_write_inpgen_file_magmom_float(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si',
@@ -89,7 +104,12 @@ def test_write_inpgen_file_magmom_list(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si',
@@ -115,7 +135,12 @@ def test_write_inpgen_file_defaults_dict_filename(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'
@@ -140,7 +165,12 @@ def test_write_inpgen_file_defaults_str(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'
@@ -197,7 +227,12 @@ def test_write_inpgen_file_parameters(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'
@@ -242,7 +277,12 @@ def test_write_inpgen_file_econfig(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'
@@ -289,7 +329,12 @@ def test_write_inpgen_file_soc_qss(file_regression):
 
     param = 5.43
     cell = [[0, param / 2., param / 2.], [param / 2., 0, param / 2.], [param / 2., param / 2., 0]]
-    kinds = [{'symbols': ('Si',), 'weights': (1.0,), 'mass': 28.0855, 'name': 'Si'}]
+    kinds = [{
+        'symbols': ('Si',),
+        'weights': (1.0,),
+        'mass': 28.0855,
+        'name': 'Si'
+    }]
     sites = [{
         'position': (0.0, 0.0, 0.0),
         'kind_name': 'Si'

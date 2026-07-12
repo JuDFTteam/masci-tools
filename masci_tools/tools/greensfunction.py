@@ -1073,7 +1073,7 @@ def listElements(hdffile: FileLike, show: bool = False) -> list[GreensfElement]:
 
 def select_elements_from_file(hdffile: FileLike,
                               show: bool = False,
-                              **selection_params: Any) -> Generator[GreensFunction, None, None]:
+                              **selection_params: Any) -> Generator[GreensFunction]:
     """
     Construct the green's function matching specified criteria from a given ``greensf.hdf`` file
 
@@ -1088,7 +1088,7 @@ def select_elements_from_file(hdffile: FileLike,
     elements = listElements(hdffile, show=show)
     found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction, None, None]:
+    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction]:
         for index in found_elements:
             yield GreensFunction.fromFile(hdffile, index=index + 1)
 
@@ -1097,7 +1097,7 @@ def select_elements_from_file(hdffile: FileLike,
 
 def select_elements(greensfunctions: list[GreensFunction],
                     show: bool = False,
-                    **selection_params: Any) -> Generator[GreensFunction, None, None]:
+                    **selection_params: Any) -> Generator[GreensFunction]:
     """
     Select :py:class:`GreensFunction` objects from a list based on constraints on the
     values of their underlying :py:class:`GreensfElement`
@@ -1112,7 +1112,7 @@ def select_elements(greensfunctions: list[GreensFunction],
     elements = [gf.element for gf in greensfunctions]
     found_elements = select_element_indices(elements, show=show, **selection_params)
 
-    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction, None, None]:
+    def gf_iterator(found_elements: list[int]) -> Generator[GreensFunction]:
         for index in found_elements:
             yield greensfunctions[index]
 
@@ -1152,7 +1152,7 @@ def intersite_shells_from_file(hdffile: FileLike,
                                reference_atom: int,
                                show: bool = False,
                                max_shells: int | None = None
-                               ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+                               ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction]]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a given ``greensf.hdf`` file
@@ -1171,7 +1171,7 @@ def intersite_shells_from_file(hdffile: FileLike,
 
     def shell_iterator(
         shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
-    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction]]:
         for distance, pairs in shells:
             for g1, g2 in pairs:
                 #Plus 1 because the indexing starts at 1 in the hdf file
@@ -1186,7 +1186,7 @@ def intersite_shells(greensfunctions: list[GreensFunction],
                      reference_atom: int,
                      show: bool = False,
                      max_shells: int | None = None
-                     ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+                     ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction]]:
     """
     Construct the green's function pairs to calculate the Jij exchange constants
     for a given reference atom from a list of given :py:class:`GreensFunction`
@@ -1205,7 +1205,7 @@ def intersite_shells(greensfunctions: list[GreensFunction],
 
     def shell_iterator(
         shells: list[tuple[np.floating[Any], list[tuple[int, int]]]]
-    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction], None, None]:
+    ) -> Generator[tuple[np.floating[Any], GreensFunction, GreensFunction]]:
         for distance, pairs in shells:
             for g1, g2 in pairs:
                 yield (distance, greensfunctions[g1], greensfunctions[g2])

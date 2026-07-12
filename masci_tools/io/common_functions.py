@@ -80,7 +80,7 @@ def get_outfile_txt(outfile):
     return tmptxt
 
 
-def skipHeader(seq: Iterable[Any], n: int) -> Generator[Any, None, None]:
+def skipHeader(seq: Iterable[Any], n: int) -> Generator[Any]:
     """Iterate over a sequence skipping the first n elements
 
     Args:
@@ -617,7 +617,7 @@ def find_symmetry_relation(from_pos: VectorType,
     :raises ValueError: If no symmetry relation is found
     """
 
-    def lattice_shifts() -> Generator[np.ndarray, None, None]:
+    def lattice_shifts() -> Generator[np.ndarray]:
         for i in range(-2, 3):
             for j in range(-2, 3):
                 for k in range(-2, 3):

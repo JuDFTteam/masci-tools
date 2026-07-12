@@ -513,7 +513,7 @@ class _EvalContext:
         raise ValueError(f'No nodes found for name {name}')
 
     @contextmanager
-    def nested(self, etree_or_element: XMLLike) -> Generator[_EvalContext, None, None]:
+    def nested(self, etree_or_element: XMLLike) -> Generator[_EvalContext]:
         """
         Create a nested context from the current one
         inheriting the schema_dict, constants and logger only replacing the
@@ -534,7 +534,7 @@ class _EvalContext:
         """
         yield _EvalContext(etree_or_element, self.schema_dict, self.constants, logger=self.logger)
 
-    def iter(self, name: str, **kwargs: Any) -> Generator[_EvalContext, None, None]:
+    def iter(self, name: str, **kwargs: Any) -> Generator[_EvalContext]:
         """
         Finds all elements for the given name and constraints and gives nested
         contexts for these elements to be iterated over,
@@ -572,7 +572,7 @@ class _EvalContext:
 def FleurXMLContext(etree_or_element: XMLLike | etree.XPathElementEvaluator,
                     schema_dict: fleur_schema.InputSchemaDict | fleur_schema.OutputSchemaDict,
                     constants: dict[str, float] | None = None,
-                    logger: logging.Logger | None = None) -> Generator[_EvalContext, None, None]:
+                    logger: logging.Logger | None = None) -> Generator[_EvalContext]:
     """
     Contextmanager to hold the relevant datastructures for evaluating values from XML files
 
