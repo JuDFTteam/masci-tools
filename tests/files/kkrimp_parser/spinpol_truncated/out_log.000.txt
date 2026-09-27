@@ -1,0 +1,683 @@
+  46 -1.73     0.577    -0.577      55.0             0         0         2
+ Thread   4 IE=  17..  20 Total:    4
+  54 -1.15     -1.15      1.15      55.0             0         0         2
+    3    0  349  359  433  470  505
+   40   4.991   349   4.991   6.509  505   1.007  285
+ iatom=           2 matrix index          10          18
+ Born           1  0.000000000000000E+000
+ Born           1  0.000000000000000E+000
+ Born           1  6.858232180147449E-002
+ Born           1  0.000000000000000E+000
+ Born           1  0.000000000000000E+000
+ Born           1  6.858232180147449E-002
+ Born           1  0.000000000000000E+000
+ Born           1  0.000000000000000E+000
+ Born           1  6.798999992876628E-002
+ call RHOVAL, iatom:           7
+ call RHOVAL, iatom:          27
+ call RHOVAL, iatom:          47
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           1  0.000000000000000E+000
+ Born           1  6.894561251572470E-002
+ Born           1  6.852982517388585E-002
+ Born           1  0.000000000000000E+000
+ Born           1  6.793763222452663E-002
+ Born           1  6.737584761655382E-002
+ call RHOVAL, iatom:          10
+ call RHOVAL, iatom:          30
+ call RHOVAL, iatom:          50
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           1  0.123971470873623     
+ Born           1  6.884061732602448E-002
+ Born           1  6.884061732606997E-002
+ Born           1  0.124681981691281     
+ Born           1  6.783307799797671E-002
+ Born           1  6.911990523343130E-002
+ call RHOVAL, iatom:          13
+ call RHOVAL, iatom:          33
+ call RHOVAL, iatom:          53
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           1  0.142046187275084     
+ Born           1  6.868179224052257E-002
+ Born           1  6.992422052643206E-002
+ Born           1  0.124401470118232     
+ Born           1  6.767486681120531E-002
+ Born           1  6.895877319433441E-002
+ call RHOVAL, iatom:          16
+ call RHOVAL, iatom:          36
+ call RHOVAL, iatom:          56
+          TOT  0.48442595  0.48521950    0.0008
+          p =  0.12979854  0.13152833    0.0017
+          TOT  0.51362556  0.51869584    0.0051
+          p =  0.12776509  0.12888111    0.0011
+          TOT  0.51340582  0.51797863    0.0046
+ ATOM          46
+                              spin magnetic moment =     0.005320
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Atom   46 charge in wigner seitz cell =   55.032321
+ Including cutoff of vxc for small density
+      rms-error for atom  1 :v+ + v- =  1.1998D+00  ,  v+ - v- =  1.1269D-02
+      rms-error non spherical contribution for atom   1 :v+ + v- =  1.7622D-01  ,  v+ - v- =  1.7540D-04
+      rms-error for atom  2 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   2 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  3 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   3 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  4 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   4 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  5 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   5 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  6 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   6 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  7 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   7 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  8 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   8 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom  9 :v+ + v- =  5.6549D-01  ,  v+ - v- =  2.3356D-04
+      rms-error non spherical contribution for atom   9 :v+ + v- =  1.6435D-01  ,  v+ - v- =  3.0767D-04
+      rms-error for atom 10 :v+ + v- =  5.1278D-01  ,  v+ - v- =  2.2429D-04
+      rms-error non spherical contribution for atom  10 :v+ + v- =  1.4102D-01  ,  v+ - v- =  1.1664D-04
+      rms-error for atom 11 :v+ + v- =  5.1279D-01  ,  v+ - v- =  2.2450D-04
+      rms-error non spherical contribution for atom  11 :v+ + v- =  1.4028D-01  ,  v+ - v- =  1.2298D-04
+      rms-error for atom 12 :v+ + v- =  5.1279D-01  ,  v+ - v- =  2.2450D-04
+      rms-error non spherical contribution for atom  12 :v+ + v- =  1.4028D-01  ,  v+ - v- =  1.2298D-04
+      rms-error for atom 13 :v+ + v- =  5.1279D-01  ,  v+ - v- =  2.2450D-04
+      rms-error non spherical contribution for atom  13 :v+ + v- =  1.4028D-01  ,  v+ - v- =  1.2298D-04
+      rms-error for atom 14 :v+ + v- =  5.1278D-01  ,  v+ - v- =  2.2429D-04
+      rms-error non spherical contribution for atom  14 :v+ + v- =  1.4102D-01  ,  v+ - v- =  1.1664D-04
+      rms-error for atom 15 :v+ + v- =  5.1279D-01  ,  v+ - v- =  2.2450D-04
+      rms-error non spherical contribution for atom  15 :v+ + v- =  1.4028D-01  ,  v+ - v- =  1.2298D-04
+      rms-error for atom 16 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  16 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 17 :v+ + v- =  3.9868D-01  ,  v+ - v- =  2.1437D-04
+      rms-error non spherical contribution for atom  17 :v+ + v- =  9.7975D-02  ,  v+ - v- =  3.7529D-05
+      rms-error for atom 18 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  18 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 19 :v+ + v- =  3.9868D-01  ,  v+ - v- =  2.1437D-04
+      rms-error non spherical contribution for atom  19 :v+ + v- =  9.7975D-02  ,  v+ - v- =  3.7529D-05
+      rms-error for atom 20 :v+ + v- =  3.9868D-01  ,  v+ - v- =  2.1437D-04
+      rms-error non spherical contribution for atom  20 :v+ + v- =  9.7975D-02  ,  v+ - v- =  3.7529D-05
+      rms-error for atom 21 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  21 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 22 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  22 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 23 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  23 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 24 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  24 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 25 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  25 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 26 :v+ + v- =  3.9868D-01  ,  v+ - v- =  2.1437D-04
+      rms-error non spherical contribution for atom  26 :v+ + v- =  9.7975D-02  ,  v+ - v- =  3.7529D-05
+      rms-error for atom 27 :v+ + v- =  3.9871D-01  ,  v+ - v- =  2.1944D-04
+      rms-error non spherical contribution for atom  27 :v+ + v- =  9.7969D-02  ,  v+ - v- =  3.7812D-05
+      rms-error for atom 28 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  28 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 29 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  29 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 30 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  30 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 31 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  31 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 32 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  32 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 33 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  33 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 34 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  34 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 35 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  35 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 36 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  36 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 37 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  37 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 38 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  38 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 39 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  39 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 40 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  40 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 41 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  41 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 42 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  42 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 43 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  43 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 44 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  44 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 45 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  45 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 46 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  46 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 47 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  47 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 48 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  48 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 49 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8242D-04
+      rms-error non spherical contribution for atom  49 :v+ + v- =  8.4087D-02  ,  v+ - v- =  4.0842D-05
+      rms-error for atom 50 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  50 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 51 :v+ + v- =  3.4984D-01  ,  v+ - v- =  1.8202D-04
+      rms-error non spherical contribution for atom  51 :v+ + v- =  8.4071D-02  ,  v+ - v- =  4.0854D-05
+      rms-error for atom 52 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  52 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 53 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  53 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 54 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  54 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 55 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  55 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 56 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  56 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 57 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  57 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 58 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  58 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      rms-error for atom 59 :v+ + v- =  3.3787D-01  ,  v+ - v- =  1.8190D-04
+      rms-error non spherical contribution for atom  59 :v+ + v- =  8.0545D-02  ,  v+ - v- =  4.2124D-05
+      ITERATION   1 average rms-error : v+ + v- =  4.5166D-01
+ cutting pot. ispin           1 iatom           1 ilm          11 rms
+ cutting pot. ispin           1 iatom           3 ilm          24 rms
+ cutting pot. ispin           1 iatom           6 ilm          16 rms
+ cutting pot. ispin           1 iatom           9 ilm           9 rms
+ cutting pot. ispin           1 iatom          11 ilm          17 rms
+ cutting pot. ispin           1 iatom          14 ilm           4 rms
+ cutting pot. ispin           1 iatom          16 ilm          13 rms
+ cutting pot. ispin           1 iatom          18 ilm          24 rms
+ cutting pot. ispin           1 iatom          21 ilm          13 rms
+ cutting pot. ispin           1 iatom          23 ilm          24 rms
+ cutting pot. ispin           1 iatom          26 ilm          13 rms
+ cutting pot. ispin           1 iatom          28 ilm          23 rms
+ cutting pot. ispin           1 iatom          31 ilm           9 rms
+ cutting pot. ispin           1 iatom          33 ilm          17 rms
+ cutting pot. ispin           1 iatom          36 ilm           3 rms
+ cutting pot. ispin           1 iatom          38 ilm          12 rms
+ cutting pot. ispin           1 iatom          40 ilm          20 rms
+ cutting pot. ispin           1 iatom          43 ilm           7 rms
+ cutting pot. ispin           1 iatom          45 ilm          15 rms
+ cutting pot. ispin           1 iatom          47 ilm          24 rms
+ cutting pot. ispin           1 iatom          50 ilm          10 rms
+ cutting pot. ispin           1 iatom          52 ilm          17 rms
+ cutting pot. ispin           1 iatom          54 ilm          24 rms
+ cutting pot. ispin           1 iatom          57 ilm           7 rms
+ cutting pot. ispin           1 iatom          59 ilm          13 rms
+ cutting pot. ispin           2 iatom           2 ilm          23 rms
+ cutting pot. ispin           2 iatom           5 ilm          15 rms
+ cutting pot. ispin           2 iatom           8 ilm           8 rms
+ cutting pot. ispin           2 iatom          10 ilm          18 rms
+ cutting pot. ispin           2 iatom          13 ilm           5 rms
+ cutting pot. ispin           2 iatom          15 ilm          13 rms
+ cutting pot. ispin           2 iatom          17 ilm          24 rms
+ cutting pot. ispin           2 iatom          20 ilm          13 rms
+ cutting pot. ispin           2 iatom          22 ilm          24 rms
+ cutting pot. ispin           2 iatom          25 ilm          13 rms
+ cutting pot. ispin           2 iatom          27 ilm          24 rms
+ cutting pot. ispin           2 iatom          30 ilm          10 rms
+ cutting pot. ispin           2 iatom          32 ilm          18 rms
+ cutting pot. ispin           2 iatom          35 ilm           5 rms
+ cutting pot. ispin           2 iatom          37 ilm          13 rms
+ cutting pot. ispin           2 iatom          39 ilm          22 rms
+ cutting pot. ispin           2 iatom          42 ilm           8 rms
+ cutting pot. ispin           2 iatom          44 ilm          16 rms
+ cutting pot. ispin           2 iatom          47 ilm           3 rms
+ cutting pot. ispin           2 iatom          49 ilm          11 rms
+ cutting pot. ispin           2 iatom          51 ilm          19 rms
+ cutting pot. ispin           2 iatom          54 ilm           3 rms
+ cutting pot. ispin           2 iatom          56 ilm           9 rms
+ cutting pot. ispin           2 iatom          58 ilm          15 rms
+
+     eff. pot. contribution     : -11704.11478975
+     tot. ex.-cor. contribution :   -372.33204908
+                               4      0.00020100
+     ex.-cor. contribution :   0   -372.34736402  1     -0.00012849
+     tot. coulomb contribution :   6088.69168439
+                               4     -0.00020519
+     coulomb  contribution :   0   6088.69185630  1      0.00002812
+                                   band energy per atom :   -0.0452119545
+     --------------------------------------------------------------------
+                                d =    -0.00131961
+                                d =  -284.07642555
+     single particle energies  spin  up    
+                                d =    -0.00129000
+                                d =  -284.07571809
+     single particle energies  spin down   
+   Total energies atom  49
+
+     eff. pot. contribution     : -11705.46563235
+     tot. ex.-cor. contribution :   -372.35125486
+ Thread  10 IE=  41..  44 Total:    4
+ Born           1  3.478228445786826E-003
+ Born           1  7.823811695785547E-002
+ call RHOVAL, iatom:           1
+ call RHOVAL, iatom:          21
+ call RHOVAL, iatom:          41
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  8.534822997191713E-006
+ Born           2  9.943087324251655E-007
+ Born           2  5.921516742685672E-005
+ Born           1  1.164276300572182E-002
+ Born           1  3.475292386951645E-003
+ Born           1  7.681412734944844E-002
+ call RHOVAL, iatom:           4
+ call RHOVAL, iatom:          24
+ call RHOVAL, iatom:          44
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  8.528955223140816E-006
+ Born           2  9.940579191171394E-007
+ Born           2  6.151341830980779E-005
+ Born           1  1.163489060188337E-002
+ Born           1  3.475084104060534E-003
+ Born           1  7.670378276114379E-002
+ call RHOVAL, iatom:           7
+ call RHOVAL, iatom:          27
+ call RHOVAL, iatom:          47
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  8.504149640823491E-006
+ Born           2  5.894331300999617E-005
+ Born           2  6.133447818990939E-005
+ Born           1  1.161908923707615E-002
+ Born           1  7.653731127164842E-002
+ Born           1  7.790229914888140E-002
+ call RHOVAL, iatom:          10
+ call RHOVAL, iatom:          30
+ call RHOVAL, iatom:          50
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  1.710593674320369E-004
+ Born           2  5.869801153179989E-005
+ Born           2  5.869801129478845E-005
+   ========================== 
+          ns  -0.00031665 -0.00031384    0.0000
+   ========================== 
+          ns  -0.00049862 -0.00050694   -0.0000
+   ========================== 
+ ATOM          35
+  Atom    9 charge in wigner seitz cell =   54.867002
+                              spin magnetic moment =     0.005400
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Atom   59 charge in wigner seitz cell =   54.973998
+      rms-error for atom  1 :v+ + v- =  1.1983D+00  ,  v+ - v- =  1.1164D-02
+      rms-error non spherical contribution for atom   1 :v+ + v- =  1.8155D-01  ,  v+ - v- =  9.7823D-05
+      rms-error for atom  2 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   2 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  3 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   3 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  4 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   4 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  5 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   5 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  6 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   6 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  7 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   7 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  8 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   8 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom  9 :v+ + v- =  5.6590D-01  ,  v+ - v- =  3.1647D-04
+      rms-error non spherical contribution for atom   9 :v+ + v- =  1.4223D-01  ,  v+ - v- =  2.7888D-04
+      rms-error for atom 10 :v+ + v- =  5.1312D-01  ,  v+ - v- =  3.0532D-04
+      rms-error non spherical contribution for atom  10 :v+ + v- =  1.3292D-01  ,  v+ - v- =  1.5284D-04
+      rms-error for atom 11 :v+ + v- =  5.1315D-01  ,  v+ - v- =  3.0579D-04
+      rms-error non spherical contribution for atom  11 :v+ + v- =  1.3366D-01  ,  v+ - v- =  1.6048D-04
+      rms-error for atom 12 :v+ + v- =  5.1315D-01  ,  v+ - v- =  3.0579D-04
+      rms-error non spherical contribution for atom  12 :v+ + v- =  1.3366D-01  ,  v+ - v- =  1.6048D-04
+      rms-error for atom 13 :v+ + v- =  5.1315D-01  ,  v+ - v- =  3.0579D-04
+      rms-error non spherical contribution for atom  13 :v+ + v- =  1.3366D-01  ,  v+ - v- =  1.6048D-04
+      rms-error for atom 14 :v+ + v- =  5.1312D-01  ,  v+ - v- =  3.0532D-04
+      rms-error non spherical contribution for atom  14 :v+ + v- =  1.3292D-01  ,  v+ - v- =  1.5284D-04
+      rms-error for atom 15 :v+ + v- =  5.1315D-01  ,  v+ - v- =  3.0579D-04
+      rms-error non spherical contribution for atom  15 :v+ + v- =  1.3366D-01  ,  v+ - v- =  1.6048D-04
+      rms-error for atom 16 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  16 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 17 :v+ + v- =  3.9909D-01  ,  v+ - v- =  2.2424D-04
+      rms-error non spherical contribution for atom  17 :v+ + v- =  9.5375D-02  ,  v+ - v- =  3.5656D-05
+      rms-error for atom 18 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  18 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 19 :v+ + v- =  3.9909D-01  ,  v+ - v- =  2.2424D-04
+      rms-error non spherical contribution for atom  19 :v+ + v- =  9.5375D-02  ,  v+ - v- =  3.5656D-05
+      rms-error for atom 20 :v+ + v- =  3.9909D-01  ,  v+ - v- =  2.2424D-04
+      rms-error non spherical contribution for atom  20 :v+ + v- =  9.5375D-02  ,  v+ - v- =  3.5656D-05
+      rms-error for atom 21 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  21 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 22 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  22 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 23 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  23 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 24 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  24 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 25 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  25 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 26 :v+ + v- =  3.9909D-01  ,  v+ - v- =  2.2424D-04
+      rms-error non spherical contribution for atom  26 :v+ + v- =  9.5375D-02  ,  v+ - v- =  3.5656D-05
+      rms-error for atom 27 :v+ + v- =  3.9904D-01  ,  v+ - v- =  2.2908D-04
+      rms-error non spherical contribution for atom  27 :v+ + v- =  9.5378D-02  ,  v+ - v- =  3.5844D-05
+      rms-error for atom 28 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  28 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 29 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  29 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 30 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  30 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 31 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  31 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 32 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  32 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 33 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  33 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 34 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  34 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 35 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  35 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 36 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  36 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 37 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  37 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 38 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  38 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 39 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  39 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 40 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  40 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 41 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  41 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 42 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  42 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 43 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  43 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 44 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  44 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 45 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  45 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 46 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  46 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 47 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  47 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 48 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  48 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 49 :v+ + v- =  3.5017D-01  ,  v+ - v- =  1.8890D-04
+      rms-error non spherical contribution for atom  49 :v+ + v- =  8.3107D-02  ,  v+ - v- =  4.3983D-05
+      rms-error for atom 50 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  50 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 51 :v+ + v- =  3.5019D-01  ,  v+ - v- =  1.8840D-04
+      rms-error non spherical contribution for atom  51 :v+ + v- =  8.3128D-02  ,  v+ - v- =  4.3792D-05
+      rms-error for atom 52 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  52 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 53 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  53 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 54 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  54 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 55 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  55 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 56 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  56 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 57 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  57 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 58 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  58 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      rms-error for atom 59 :v+ + v- =  3.3820D-01  ,  v+ - v- =  1.8272D-04
+      rms-error non spherical contribution for atom  59 :v+ + v- =  7.9558D-02  ,  v+ - v- =  4.5685D-05
+      ITERATION   2 average rms-error : v+ + v- =  4.5050D-01
+ cutting pot. ispin           1 iatom           3 ilm           4 rms
+ cutting pot. ispin           1 iatom           5 ilm           6 rms
+ cutting pot. ispin           1 iatom           7 ilm           8 rms
+ cutting pot. ispin           1 iatom           9 ilm          10 rms
+ cutting pot. ispin           1 iatom          11 ilm          13 rms
+ cutting pot. ispin           1 iatom          13 ilm          19 rms
+ cutting pot. ispin           1 iatom          16 ilm           2 rms
+ cutting pot. ispin           1 iatom          18 ilm           4 rms
+ cutting pot. ispin           1 iatom          20 ilm           6 rms
+ cutting pot. ispin           1 iatom          22 ilm           8 rms
+ cutting pot. ispin           1 iatom          24 ilm          10 rms
+ cutting pot. ispin           1 iatom          26 ilm          12 rms
+ cutting pot. ispin           1 iatom          28 ilm          14 rms
+ cutting pot. ispin           1 iatom          30 ilm          18 rms
+ cutting pot. ispin           1 iatom          32 ilm          23 rms
+ cutting pot. ispin           1 iatom          35 ilm           3 rms
+ cutting pot. ispin           1 iatom          37 ilm           7 rms
+ cutting pot. ispin           1 iatom          39 ilm          11 rms
+ cutting pot. ispin           1 iatom          41 ilm          15 rms
+ cutting pot. ispin           1 iatom          43 ilm          19 rms
+ cutting pot. ispin           1 iatom          45 ilm          24 rms
+ cutting pot. ispin           1 iatom          48 ilm           4 rms
+ cutting pot. ispin           1 iatom          50 ilm           8 rms
+ cutting pot. ispin           1 iatom          52 ilm          12 rms
+ cutting pot. ispin           1 iatom          54 ilm          16 rms
+ cutting pot. ispin           1 iatom          56 ilm          20 rms
+ cutting pot. ispin           1 iatom          58 ilm          25 rms
+ cutting pot. ispin           2 iatom           2 ilm           6 rms
+ cutting pot. ispin           2 iatom           4 ilm           8 rms
+ cutting pot. ispin           2 iatom           6 ilm          10 rms
+ cutting pot. ispin           2 iatom           8 ilm          12 rms
+ cutting pot. ispin           2 iatom          10 ilm          14 rms
+ cutting pot. ispin           2 iatom          12 ilm          19 rms
+ cutting pot. ispin           2 iatom          15 ilm           2 rms
+ cutting pot. ispin           2 iatom          17 ilm           6 rms
+ cutting pot. ispin           2 iatom          19 ilm           8 rms
+ cutting pot. ispin           2 iatom          21 ilm          10 rms
+ cutting pot. ispin           2 iatom          23 ilm          12 rms
+ cutting pot. ispin           2 iatom          25 ilm          14 rms
+ cutting pot. ispin           2 iatom          27 ilm          16 rms
+ cutting pot. ispin           2 iatom          29 ilm          19 rms
+ cutting pot. ispin           2 iatom          31 ilm          24 rms
+ cutting pot. ispin           2 iatom          34 ilm           4 rms
+ cutting pot. ispin           2 iatom          36 ilm           8 rms
+ cutting pot. ispin           2 iatom          38 ilm          12 rms
+ cutting pot. ispin           2 iatom          40 ilm          16 rms
+ cutting pot. ispin           2 iatom          42 ilm          20 rms
+ cutting pot. ispin           2 iatom          44 ilm          25 rms
+ cutting pot. ispin           2 iatom          47 ilm           5 rms
+ cutting pot. ispin           2 iatom          49 ilm           9 rms
+ cutting pot. ispin           2 iatom          51 ilm          13 rms
+ cutting pot. ispin           2 iatom          53 ilm          17 rms
+ cutting pot. ispin           2 iatom          55 ilm          22 rms
+ cutting pot. ispin           2 iatom          58 ilm           2 rms
+     single particle energies  spin down   
+   Total energies atom   4
+
+     eff. pot. contribution     : -11702.34944617
+     tot. ex.-cor. contribution :   -372.30558483
+                               4      0.00013281
+     ex.-cor. contribution :   0   -372.32274024  1     -0.00001068
+     tot. coulomb contribution :   6087.04689365
+                               4      0.00014507
+     coulomb  contribution :   0   6087.04633298  1      0.00044143
+                                   band energy per atom :   -0.0412793844
+     --------------------------------------------------------------------
+                                d =    -0.00114967
+                                d =  -284.03196639
+     single particle energies  spin  up    
+                                d =    -0.00112671
+                                d =  -284.03127229
+     single particle energies  spin down   
+   Total energies atom  54
+
+     eff. pot. contribution     : -11704.46205528
+ Born           1  0.142708033652763     
+ Born           1  6.898170388391474E-002
+ Born           1  7.022952292378830E-002
+ call RHOVAL, iatom:          15
+ call RHOVAL, iatom:          35
+ call RHOVAL, iatom:          55
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  0.000000000000000E+000
+ Born           2  4.894493177916152E-005
+ Born           2  5.036376665740067E-005
+ Born           1  0.000000000000000E+000
+ Born           1  6.851175447796502E-002
+ Born           1  7.017603357320067E-002
+ call RHOVAL, iatom:          18
+ call RHOVAL, iatom:          38
+ call RHOVAL, iatom:          58
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  0.000000000000000E+000
+ Born           2  4.815912673798037E-005
+ Born           2  5.027553289189323E-005
+ Born           1  0.000000000000000E+000
+ Born           1  6.840704738610405E-002
+ call RHOVAL, iatom:           1
+ call RHOVAL, iatom:          21
+ call RHOVAL, iatom:          41
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  0.000000000000000E+000
+ Born           2  0.000000000000000E+000
+ Born           2  4.870189214168046E-005
+ Born           1  0.000000000000000E+000
+ Born           1  0.000000000000000E+000
+ Born           1  6.866528875816690E-002
+ call RHOVAL, iatom:           4
+ call RHOVAL, iatom:          24
+ call RHOVAL, iatom:          44
+ call CALCTMAT
+ call CALCTMAT
+ call CALCTMAT
+ Born           2  0.000000000000000E+000
+ Born           2  0.000000000000000E+000
+ Born           2  4.778671160244017E-005
+          p =  0.11767538  0.11618570   -0.0015
+          TOT  0.50417674  0.50929372    0.0051
+          p =  0.12778831  0.12887240    0.0011
+          TOT  0.51371405  0.51866599    0.0050
+          p =  0.12682326  0.12806557    0.0012
+ ATOM          20
+  Atom    4 charge in wigner seitz cell =   54.969711
+                              spin magnetic moment =     0.006065
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Atom   54 charge in wigner seitz cell =   55.031440
+ Including cutoff of vxc for small density
+      rms-error for atom  1 :v+ + v- =  1.2001D+00  ,  v+ - v- =  1.1266D-02
+      rms-error non spherical contribution for atom   1 :v+ + v- =  1.7634D-01  ,  v+ - v- =  1.7451D-04
+      rms-error for atom  2 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   2 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  3 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   3 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  4 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   4 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  5 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   5 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  6 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   6 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  7 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   7 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  8 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   8 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom  9 :v+ + v- =  5.6582D-01  ,  v+ - v- =  2.2724D-04
+      rms-error non spherical contribution for atom   9 :v+ + v- =  1.6440D-01  ,  v+ - v- =  3.0755D-04
+      rms-error for atom 10 :v+ + v- =  5.1310D-01  ,  v+ - v- =  2.1817D-04
+      rms-error non spherical contribution for atom  10 :v+ + v- =  1.4107D-01  ,  v+ - v- =  1.1632D-04
+      rms-error for atom 11 :v+ + v- =  5.1311D-01  ,  v+ - v- =  2.1837D-04
+      rms-error non spherical contribution for atom  11 :v+ + v- =  1.4034D-01  ,  v+ - v- =  1.2248D-04
+      rms-error for atom 12 :v+ + v- =  5.1311D-01  ,  v+ - v- =  2.1837D-04
+      rms-error non spherical contribution for atom  12 :v+ + v- =  1.4034D-01  ,  v+ - v- =  1.2248D-04
+      rms-error for atom 13 :v+ + v- =  5.1311D-01  ,  v+ - v- =  2.1837D-04
+      rms-error non spherical contribution for atom  13 :v+ + v- =  1.4034D-01  ,  v+ - v- =  1.2248D-04
+      rms-error for atom 14 :v+ + v- =  5.1310D-01  ,  v+ - v- =  2.1817D-04
+      rms-error non spherical contribution for atom  14 :v+ + v- =  1.4107D-01  ,  v+ - v- =  1.1632D-04
+      rms-error for atom 15 :v+ + v- =  5.1311D-01  ,  v+ - v- =  2.1837D-04
+      rms-error non spherical contribution for atom  15 :v+ + v- =  1.4034D-01  ,  v+ - v- =  1.2248D-04
+      rms-error for atom 16 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  16 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 17 :v+ + v- =  3.9898D-01  ,  v+ - v- =  2.0919D-04
+      rms-error non spherical contribution for atom  17 :v+ + v- =  9.8038D-02  ,  v+ - v- =  3.6476D-05
+      rms-error for atom 18 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  18 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 19 :v+ + v- =  3.9898D-01  ,  v+ - v- =  2.0919D-04
+      rms-error non spherical contribution for atom  19 :v+ + v- =  9.8038D-02  ,  v+ - v- =  3.6476D-05
+      rms-error for atom 20 :v+ + v- =  3.9898D-01  ,  v+ - v- =  2.0919D-04
+      rms-error non spherical contribution for atom  20 :v+ + v- =  9.8038D-02  ,  v+ - v- =  3.6476D-05
+      rms-error for atom 21 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  21 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 22 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  22 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 23 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  23 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 24 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  24 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 25 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  25 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 26 :v+ + v- =  3.9898D-01  ,  v+ - v- =  2.0919D-04
+      rms-error non spherical contribution for atom  26 :v+ + v- =  9.8038D-02  ,  v+ - v- =  3.6476D-05
+      rms-error for atom 27 :v+ + v- =  3.9901D-01  ,  v+ - v- =  2.1409D-04
+      rms-error non spherical contribution for atom  27 :v+ + v- =  9.8031D-02  ,  v+ - v- =  3.6750D-05
+      rms-error for atom 28 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  28 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 29 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  29 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 30 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  30 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 31 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  31 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 32 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  32 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 33 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  33 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 34 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  34 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 35 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  35 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 36 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  36 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 37 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  37 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 38 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  38 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 39 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  39 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 40 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  40 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 41 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  41 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 42 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  42 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 43 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  43 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 44 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  44 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 45 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  45 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 46 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  46 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 47 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  47 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 48 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  48 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 49 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7783D-04
+      rms-error non spherical contribution for atom  49 :v+ + v- =  8.4147D-02  ,  v+ - v- =  3.9813D-05
+      rms-error for atom 50 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  50 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 51 :v+ + v- =  3.5011D-01  ,  v+ - v- =  1.7743D-04
+      rms-error non spherical contribution for atom  51 :v+ + v- =  8.4131D-02  ,  v+ - v- =  3.9829D-05
+      rms-error for atom 52 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  52 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 53 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  53 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 54 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  54 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 55 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  55 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 56 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  56 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 57 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  57 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 58 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  58 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      rms-error for atom 59 :v+ + v- =  3.3814D-01  ,  v+ - v- =  1.7729D-04
+      rms-error non spherical contribution for atom  59 :v+ + v- =  8.0604D-02  ,  v+ - v- =  4.1057D-05
+      ITERATION   3 average rms-error : v+ + v- =  4.5195D-01
+ cutting pot. ispin           1 iatom           2 ilm          16 rms
+ cutting pot. ispin           1 iatom           5 ilm           9 rms

@@ -13,7 +13,8 @@
 Everything that is needed to parse the output of a voronoi calculation.
 """
 from masci_tools.io.common_functions import (get_corestates_from_potential, get_highest_core_state, search_string,
-                                             get_version_info, get_ef_from_potfile, convert_to_pystd, get_outfile_txt)
+                                             pop_all_matching, get_version_info, get_ef_from_potfile, convert_to_pystd,
+                                             get_outfile_txt)
 from masci_tools.io.parsers.kkrparser_functions import get_core_states
 from masci_tools.io.common_functions import get_Ry2eV
 import numpy as np
@@ -243,36 +244,27 @@ def get_volumes(outfile):
     if itmp >= 0:
         Vtot = float(tmptxt.pop(itmp).split()[-1])
 
-    itmp = 0
     results = []
-    while itmp >= 0:
-        itmp = search_string(' Volume(alat^3)  :', tmptxt)
-        if itmp >= 0:
-            tmpstr = tmptxt.pop(itmp)
-            tmpstr = tmpstr.split()
-            tmpstr = [int(tmpstr[2]), float(tmpstr[5])]
-            results.append(tmpstr)
+    for tmpstr in pop_all_matching(' Volume(alat^3)  :', tmptxt):
+        tmpstr = tmpstr.split()
+        results.append([int(tmpstr[2]), float(tmpstr[5])])
     return Vtot, results
 
 
 def get_cls_info(outfile):
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     Ncls = 0
     Natom = 0
     cls_all = []
     results = []
-    while itmp >= 0:
-        itmp = search_string('CLSGEN_TB: Atom', tmptxt)
-        if itmp >= 0:
-            tmpstr = tmptxt.pop(itmp)
-            tmpstr = tmpstr.split()
-            tmp = [int(tmpstr[2]), int(tmpstr[4]), float(tmpstr[6]), int(tmpstr[8]), int(tmpstr[10])]
-            results.append(tmp)
-            if int(tmpstr[8]) not in cls_all:
-                Ncls += 1
-                cls_all.append(int(tmpstr[8]))
-            Natom += 1
+    for tmpstr in pop_all_matching('CLSGEN_TB: Atom', tmptxt):
+        tmpstr = tmpstr.split()
+        tmp = [int(tmpstr[2]), int(tmpstr[4]), float(tmpstr[6]), int(tmpstr[8]), int(tmpstr[10])]
+        results.append(tmp)
+        if int(tmpstr[8]) not in cls_all:
+            Ncls += 1
+            cls_all.append(int(tmpstr[8]))
+        Natom += 1
     return Ncls, Natom, results
 
 

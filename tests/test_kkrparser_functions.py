@@ -5,6 +5,7 @@
 # pylint: disable=E0602,W0602
 
 import pytest
+import numpy as np
 from masci_tools.io.parsers.kkrparser_functions import parse_kkr_outputfile, check_error_category
 from pathlib import Path
 import os
@@ -239,3 +240,44 @@ class Test_kkr_parser_functions:
         assert success
         assert not msg_list
         data_regression.check(out_dict)
+
+
+def _parse_array_float_pop_loop(outfile, searchstring, splitinfo, replacepair=None):
+    """Reference copy of the old (quadratic) search_string + pop loop of parse_array_float."""
+    from masci_tools.io.common_functions import get_outfile_txt, search_string
+    tmptxt = get_outfile_txt(outfile)
+    res = []
+    itmp = search_string(searchstring, tmptxt)
+    while itmp >= 0:
+        tmpval = tmptxt.pop(itmp)
+        if replacepair is not None:
+            tmpval = tmpval.replace(replacepair[0], replacepair[1])
+        if splitinfo[0] == 1:
+            tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]])
+        else:
+            tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]].split()[splitinfo[3]])
+        res.append(tmpval)
+        itmp = search_string(searchstring, tmptxt)
+    return np.array(res)
+
+
+@pytest.mark.parametrize('logfile', ['test1', 'spinpol_truncated'])
+@pytest.mark.parametrize('args', [
+    ('rms-error for atom', [2, '=', 1, 0], ['D', 'E']),
+    ('rms-error for atom', [2, '=', 2, 0], ['D', 'E']),
+    ('average rms-error', [2, '=', 1, 0], ['D', 'E']),
+    ('v+ - v-', [2, '=', 2, 0], ['D', 'E']),
+])
+def test_parse_array_float_matches_pop_loop(logfile, args):
+    """The single-pass parse_array_float returns exactly what the old pop loop returned."""
+    from masci_tools.io.parsers.kkrparser_functions import parse_array_float
+    path = os.fspath(DIR / Path('files/kkrimp_parser') / logfile / 'out_log.000.txt')
+    try:
+        expected = _parse_array_float_pop_loop(path, *args)
+    except IndexError:
+        # key present but no spin value (NSPIN=1): both versions must raise
+        with pytest.raises(IndexError):
+            parse_array_float(path, *args)
+        return
+    result = parse_array_float(path, *args)
+    assert np.array_equal(result, expected)

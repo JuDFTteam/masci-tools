@@ -14,7 +14,7 @@ Tools for the impurity calculation plugin and its workflows
 """
 import numpy as np
 import traceback
-from masci_tools.io.common_functions import search_string, get_outfile_txt, get_version_info, convert_to_pystd
+from masci_tools.io.common_functions import search_string, pop_all_matching, get_outfile_txt, get_version_info, convert_to_pystd
 from masci_tools.io.parsers.kkrparser_functions import get_rms, find_warnings, get_charges_per_atom, get_core_states
 from masci_tools.io.common_functions import get_Ry2eV
 
@@ -73,13 +73,11 @@ class KkrimpParserFunctions:
         """
         tmptxt = get_outfile_txt(file)
         # get rms and number of iterations
-        itmp, niter, rms = 0, -1, -1
-        while itmp >= 0:
-            itmp = search_string('average rms-error', tmptxt)
-            if itmp >= 0:
-                tmp = tmptxt.pop(itmp).replace('D', 'E').split()
-                niter = int(tmp[1])
-                rms = float(tmp[-1])
+        niter, rms = -1, -1
+        for line in pop_all_matching('average rms-error', tmptxt):
+            tmp = line.replace('D', 'E').split()
+            niter = int(tmp[1])
+            rms = float(tmp[-1])
         # get max number of scf steps
         itmp = search_string('SCFSTEPS', tmptxt)
         if itmp >= 0:
@@ -147,12 +145,7 @@ class KkrimpParserFunctions:
         """
 
         tmptxt = get_outfile_txt(file)
-        itmp = 0
-        spinmom_all = []
-        while itmp >= 0:
-            itmp = search_string('spin magnetic moment =', tmptxt)
-            if itmp >= 0:
-                spinmom_all.append(float(tmptxt.pop(itmp).split()[-1]))
+        spinmom_all = [float(line.split()[-1]) for line in pop_all_matching('spin magnetic moment =', tmptxt)]
         # if no spin
         spinmom = spinmom_all[len(spinmom_all) - natom:]
         if len(spinmom) > 0:  # this means we found something
@@ -183,12 +176,7 @@ class KkrimpParserFunctions:
 
         res = {}
         for isearch in search_keys:
-            tmpval = []
-            itmp = 0
-            while itmp >= 0:
-                itmp = search_string(isearch, tmptxt)
-                if itmp >= 0:
-                    tmpval.append(float(tmptxt.pop(itmp).split()[-1]))
+            tmpval = [float(line.split()[-1]) for line in pop_all_matching(isearch, tmptxt)]
             if len(tmpval) > 0:
                 res[isearch] = tmpval
         # average over iterations
@@ -288,12 +276,7 @@ class KkrimpParserFunctions:
         :returns: Etot (list), values of the total energy in Ry for all iterations
         """
         tmptxt = get_outfile_txt(file)
-        itmp = 0
-        Etot = []
-        while itmp >= 0:
-            itmp = search_string('TOTAL ENERGY', tmptxt)
-            if itmp >= 0:
-                Etot.append(float(tmptxt.pop(itmp).split()[-1]))
+        Etot = [float(line.split()[-1]) for line in pop_all_matching('TOTAL ENERGY', tmptxt)]
         return Etot
 
     def _get_energies_atom(self, file1, file2, natom):

@@ -6,7 +6,7 @@ import numpy as np
 from masci_tools.io.common_functions import (interpolate_dos, get_alat_from_bravais, search_string, angles_to_vec,
                                              vec_to_angles, get_version_info, get_corestates_from_potential,
                                              get_highest_core_state, get_ef_from_potfile, open_general,
-                                             convert_to_pystd)
+                                             convert_to_pystd, pop_all_matching)
 from pathlib import Path
 
 DIR = Path(__file__).parent.resolve()
@@ -48,6 +48,13 @@ class Test_common_functions:
         bravais = np.array([[0.0, 0.5, 0.5], [0.5, 0.0, 0.5], [0.5, 0.5, 0.0]])
         alat = get_alat_from_bravais(bravais)
         assert abs(alat - np.sqrt(2) / 2) < 10**-10
+
+    def test_pop_all_matching(self):
+        txt = ['a key 1\n', 'b\n', 'key 2\n', 'c\n', 'x key 3\n']
+        assert pop_all_matching('key', txt) == ['a key 1\n', 'key 2\n', 'x key 3\n']
+        assert txt == ['b\n', 'c\n']
+        assert pop_all_matching('missing', txt) == []
+        assert txt == ['b\n', 'c\n']
 
     def test_search_string(self):
         with open(DIR / Path('files/kkr/kkr_run_dos_output/output.0.txt'), encoding='utf-8') as f:

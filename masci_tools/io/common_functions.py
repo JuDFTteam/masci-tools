@@ -127,6 +127,18 @@ def search_string(searchkey: str, txt: Iterable[str]) -> int:
     return -1
 
 
+def pop_all_matching(searchkey: str, txt: list[str]) -> list[str]:
+    """
+    Remove every line containing `searchkey` from `txt` (in place) and return them in order.
+
+    Single-pass replacement for looping ``search_string`` + ``txt.pop``, which rescans
+    from the start for every match and is quadratic in the length of `txt`.
+    """
+    matches = [line for line in txt if searchkey in line]
+    txt[:] = [line for line in txt if searchkey not in line]
+    return matches
+
+
 def angles_to_vec(magnitude: list | np.ndarray | float, theta: list | np.ndarray | float,
                   phi: list | np.ndarray | float) -> np.ndarray:
     """
