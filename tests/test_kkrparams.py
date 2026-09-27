@@ -432,6 +432,15 @@ class Test_fill_inputfile:
 
         file_regression.check(file_content)
 
+    def test_kkrimp_fcm_key(self):
+        """FCM (magnetic mixing factor) is a valid KKRimp key and written to config.cfg"""
+        p = kkrparams(params_type='kkrimp', FCM=20.0)
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'config.cfg')
+            with open(Path(td) / 'config.cfg', encoding='utf-8') as file:
+                lines = file.read().splitlines()
+        assert [line.split() for line in lines if line.startswith('FCM')] == [['FCM=', '20.000000000000']]
+
     def test_pot_ns_cutoff_keys(self):
         """Non-spherical potential cutoffs are written to config.cfg (KKRimp) and inputcard (KKRhost)"""
         p = kkrparams(params_type='kkrimp')
