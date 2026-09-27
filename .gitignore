@@ -197,3 +197,6 @@ data/
 *.el
 # # Jetbrains PyCharm Project folder:
 .idea/
+
+# SpecStory chat history
+.specstory/

@@ -16,7 +16,7 @@ parser file where parse_kkr_outputfile is called
 """
 import numpy as np
 from numpy import ndarray, array, loadtxt, shape
-from masci_tools.io.common_functions import (search_string, get_version_info, angles_to_vec,
+from masci_tools.io.common_functions import (search_string, pop_all_matching, get_version_info, angles_to_vec,
                                              get_corestates_from_potential, get_highest_core_state, convert_to_pystd,
                                              get_outfile_txt)
 from masci_tools.io.common_functions import get_Ry2eV
@@ -49,23 +49,19 @@ def parse_array_float(outfile, searchstring, splitinfo, replacepair=None, debug=
 
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     res = []
-    while itmp >= 0:
-        itmp = search_string(searchstring, tmptxt)
-        if debug:
-            print(('in parse_array_float (itmp, searchstring, outfile):', itmp, searchstring, outfile))
-        if itmp >= 0:
-            tmpval = tmptxt.pop(itmp)
-            if replacepair is not None:
-                tmpval = tmpval.replace(replacepair[0], replacepair[1])
-            if splitinfo[0] == 1:
-                tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]])
-            elif splitinfo[0] == 2:
-                tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]].split()[splitinfo[3]])
-            else:
-                raise ValueError('splitinfo[0] has to be either 1 or 2')
-            res.append(tmpval)
+    for tmpval in pop_all_matching(searchstring, tmptxt):
+        if replacepair is not None:
+            tmpval = tmpval.replace(replacepair[0], replacepair[1])
+        if splitinfo[0] == 1:
+            tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]])
+        elif splitinfo[0] == 2:
+            tmpval = float(tmpval.split(splitinfo[1])[splitinfo[2]].split()[splitinfo[3]])
+        else:
+            raise ValueError('splitinfo[0] has to be either 1 or 2')
+        res.append(tmpval)
+    if debug:
+        print(('in parse_array_float (nmatches, searchstring, outfile):', len(res), searchstring, outfile))
     res = array(res)
     return res
 
@@ -151,22 +147,12 @@ def get_Etot(outfile):
 
 def find_warnings(outfile):
     tmptxt = get_outfile_txt(outfile)
-    tmptxt_caps = [txt.upper() for txt in tmptxt]
-    itmp = 0
-    res = []
-    while itmp >= 0:
-        itmp = search_string('WARNING', tmptxt_caps)
-        if itmp >= 0:
-            tmpval = tmptxt_caps.pop(itmp)
-            tmpval = tmptxt.pop(itmp)
-            res.append(tmpval.strip())
+    res = [txt.strip() for txt in tmptxt if 'WARNING' in txt.upper()]
     return array(res)
 
 
 def extract_timings(outfile):
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
-    res = []
     search_keys = [
         'main0',
         'main1a - tbref',
@@ -178,16 +164,14 @@ def extract_timings(outfile):
         'main2',
         'Time in Iteration'
     ]
-    while itmp >= 0:
-        tmpvals = []
-        for isearch in search_keys:
-            itmp = search_string(isearch, tmptxt)
-            if itmp >= 0:
-                tmpval = [isearch, float(tmptxt.pop(itmp).split()[-1])]
-                tmpvals.append(tmpval)
-        if len(tmpvals) > 0:
-            res.append(tmpvals)
-    res = res[0]
+    # first occurrence of each key (later iterations are not used)
+    res = []
+    for isearch in search_keys:
+        itmp = search_string(isearch, tmptxt)
+        if itmp >= 0:
+            res.append([isearch, float(tmptxt.pop(itmp).split()[-1])])
+    if not res:
+        raise IndexError('no timing information found')
     return dict(res)
 
 
@@ -208,13 +192,7 @@ def get_single_particle_energies(outfile_000):
     returns the valence contribution of the single particle energies
     """
     tmptxt = get_outfile_txt(outfile_000)
-    itmp = 0
-    res = []
-    while itmp >= 0:
-        itmp = search_string('band energy per atom', tmptxt)
-        if itmp >= 0:
-            tmpval = float(tmptxt.pop(itmp).split()[-1])
-            res.append(tmpval)
+    res = [float(line.split()[-1]) for line in pop_all_matching('band energy per atom', tmptxt)]
     return array(res)
 
 
@@ -339,13 +317,7 @@ def get_kmeshinfo(outfile_0init, outfile_000):
 
     #next get kmesh_ie from output.000.txt
     tmptxt = get_outfile_txt(outfile_000)
-    kmesh_ie = []
-    itmp = 0
-    while itmp >= 0:
-        itmp = search_string('KMESH =', tmptxt)
-        if itmp >= 0:
-            tmpval = int(tmptxt.pop(itmp).split()[-1])
-            kmesh_ie.append(tmpval)
+    kmesh_ie = [int(line.split()[-1]) for line in pop_all_matching('KMESH =', tmptxt)]
 
     return nkmesh, kmesh_ie
 
@@ -459,17 +431,18 @@ def get_spinmom_per_atom(outfile, natom, nonco_out_file=None):
     Extract spin moment information from outfile and nonco_angles_out (if given)
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     result = []
-    while itmp >= 0:
-        itmp = search_string('m_spin', tmptxt)
-        if itmp >= 0:
-            tmpline = tmptxt.pop(itmp)
-            tmparray = []
-            for iatom in range(natom):
-                tmpline = tmptxt.pop(itmp)
-                tmparray.append(float(tmpline.split()[3]))
-            result.append(tmparray)
+    iline = 0
+    while iline < len(tmptxt):
+        if 'm_spin' in tmptxt[iline]:
+            # header line is followed by one line per atom
+            block = tmptxt[iline + 1:iline + 1 + natom]
+            if len(block) < natom:
+                raise IndexError('pop index out of range')
+            result.append([float(tmpline.split()[3]) for tmpline in block])
+            iline += 1 + natom
+        else:
+            iline += 1
 
     # if the file is there, i.e. NEWSOSOL is used, then extract also direction of spins (angles theta and phi)
     if nonco_out_file is not None and result:
@@ -488,17 +461,18 @@ def get_orbmom(outfile, natom):
     read orbmom info from outfile and return array (iteration, atom)=orbmom
     """
     tmptxt = get_outfile_txt(outfile)
-    itmp = 0
     result = []
-    while itmp >= 0:
-        itmp = search_string('m_spin', tmptxt)
-        if itmp >= 0:
-            tmpline = tmptxt.pop(itmp)
-            tmparray = []
-            for iatom in range(natom):
-                tmpline = tmptxt.pop(itmp)
-                tmparray.append(float(tmpline.split()[4]))
-            result.append(tmparray)
+    iline = 0
+    while iline < len(tmptxt):
+        if 'm_spin' in tmptxt[iline]:
+            # header line is followed by one line per atom
+            block = tmptxt[iline + 1:iline + 1 + natom]
+            if len(block) < natom:
+                raise IndexError('pop index out of range')
+            result.append([float(tmpline.split()[4]) for tmpline in block])
+            iline += 1 + natom
+        else:
+            iline += 1
 
     return array(result)  #, vec, angles
 
