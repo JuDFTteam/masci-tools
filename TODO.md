@@ -4,13 +4,19 @@ What is left to do in masci-tools. Keep this short: open items only, one line of
 
 ## Release 0.15.1
 
-`develop` has two parser fixes since 0.15.0: the linear-time KKR/KKRimp parsing ([#251](https://github.com/JuDFTteam/masci-tools/pull/251)) and the corrected `rms_spin_per_atom` ([#254](https://github.com/JuDFTteam/masci-tools/pull/254)). It also has the `ignore_nan`/`doscalc` arguments of the KKRimp parser. PyPI 0.15.0 lacks those arguments, so 0.15.1 would be the first PyPI release that works with aiida-kkr.
+Since 0.15.0, `develop` has two parser fixes: the linear-time KKR/KKRimp parsing ([#251](https://github.com/JuDFTteam/masci-tools/pull/251)) and the corrected `rms_spin_per_atom` ([#254](https://github.com/JuDFTteam/masci-tools/pull/254)). It also has new kkrparams keys: `POT_NS_CUTOFF`/`POT_NS_WRITE_CUTOFF` ([#255](https://github.com/JuDFTteam/masci-tools/pull/255)) and KKRimp `FCM` ([#257](https://github.com/JuDFTteam/masci-tools/pull/257)). There is also the option `get_dict(drop_none=True)` ([#256](https://github.com/JuDFTteam/masci-tools/pull/256)). All of these are in `CHANGELOG.md`. `develop` further has the `ignore_nan`/`doscalc` arguments of the KKRimp parser. PyPI 0.15.0 lacks those arguments, so 0.15.1 would be the first PyPI release that works with aiida-kkr.
 
 - [ ] **Blocker:** `.github/workflows/cd.yml` publishes to PyPI only after the full CI passes, and CI is red (next section).
 - [ ] On a `release-0.15.1` branch, run `bumpver update --patch`. It updates `masci_tools/__init__.py` and `pyproject.toml` and commits "bump version 0.15.0 -> 0.15.1", as the 0.15.0 release did.
 - [ ] In `CHANGELOG.md`, turn the `## latest` section into `## v.0.15.1` with the compare link `v0.15.0...v0.15.1`, and start a new empty `## latest`.
 - [ ] Merge the release PR, then create a GitHub release with tag `v0.15.1`. This triggers `cd.yml`, which publishes to PyPI.
 - [ ] Afterwards, in aiida-kkr: raise the masci-tools floor in `pyproject.toml` from `>=0.4.8.dev5` to `>=0.15.1`. Its CI could then install from PyPI instead of git `develop`.
+
+## Downstream: aiida-kkr and `get_dict` hashes
+
+With the default `drop_none=False`, every new kkrparams key changes `get_dict()` and the hash of every AiiDA `Dict` built from it. This broke aiida-kkr's cached test calculations after #255; aiida-kkr now pins its CI to masci-tools `c90e5815` (aiida-kkr PR #197).
+
+- [ ] In aiida-kkr (its issue #198): build Dicts with `get_dict(drop_none=True)`, change the two `['IMIX']` lookups to `.get('IMIX')`, and re-export the test archives once, against masci-tools `7b9d423d` or later. Then drop the CI pin.
 
 ## CI is red on `develop`
 
