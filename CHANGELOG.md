@@ -4,6 +4,7 @@
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.15.0...develop)
 
 ### Added
+- `kkrparams.get_dict(drop_none=True)` leaves out keys that are not set. The default (`False`) still returns every known key, unset ones as `None`, so **every new kkrparams keyword changes that dict**, and with it the hash of any AiiDA `Dict` built from it; this breaks AiiDA caching across masci-tools versions (it happened with the keys below). Build such dicts with `drop_none=True` to avoid this
 - `kkrparams`: KKRimp keys `POT_NS_CUTOFF` (non-spherical potential cutoff applied every iteration, already read by KKRimp) and `POT_NS_WRITE_CUTOFF` (non-spherical channels written to the output potential only above this norm, default `QBOUND`), and the KKRhost key `POT_NS_WRITE_CUTOFF`. The KKRhost `POT_NS_CUTOFF` is now written as `%e` instead of fixed-point with 12 decimals, which kept only a few significant digits for small cutoffs and wrote values below `1e-12` as zero
 
 ### Bugfixes

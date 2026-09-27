@@ -128,7 +128,7 @@ class kkrparams:
             p.set_value(key, val, silent=silent)
         return dict(p.get_set_values()), __version__
 
-    def get_dict(self, group=None, subgroup=None):
+    def get_dict(self, group=None, subgroup=None, drop_none=False):
         """
         Returns values dictionary.
 
@@ -144,6 +144,10 @@ class kkrparams:
         - in 'accuracy' group  'Valence energy contour', 'Semicore energy contour',
           'CPA mode', 'Screening clusters', 'Radial solver',
           'Ewald summation', 'LLoyd'
+
+        If `drop_none` is True, keys whose value is not set (None) are left out. This keeps the
+        returned dict (and e.g. the hash of an AiiDA Dict node built from it) unchanged when new
+        keywords are added to kkrparams.
 
         """
         out_dict = self.values
@@ -196,6 +200,9 @@ class kkrparams:
 
             # overwrite out_dict with tmp_dict
             out_dict = tmp_dict
+
+        if drop_none:
+            out_dict = {key: val for key, val in out_dict.items() if val is not None}
 
         return out_dict
 

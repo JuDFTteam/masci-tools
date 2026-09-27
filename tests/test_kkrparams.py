@@ -619,6 +619,11 @@ class Test_other:  # pylint: disable=missing-class-docstring
                               FILES=['', 'shapenew'])
         data_regression.check(p.get_dict())
 
+        set_values = p.get_dict(drop_none=True)
+        assert set_values == {key: val for key, val in p.get_dict().items() if val is not None}
+        assert 'POT_NS_WRITE_CUTOFF' not in set_values
+        assert set(p.get_dict(group='lattice', drop_none=True)) <= set(set_values)
+
         l0 = [
             '<SHAPE>', 'KSHAPE', 'ZPERIODL', '<NRBASIS>', '<NLBASIS>', '<RBASIS>', 'NAEZ', 'CARTESIAN', '<RBRIGHT>',
             '<RBLEFT>', 'INTERFACE', 'BRAVAIS', 'ALATBASIS', 'ZPERIODR', 'USE_INPUT_ALAT'
