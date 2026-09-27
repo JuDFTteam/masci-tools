@@ -3,7 +3,9 @@
 ## latest
 [full changelog](https://github.com/JuDFTteam/masci-tools/compare/v0.15.0...develop)
 
-Nothing here yet
+### Bugfixes
+- KKR/KKRimp parsers: collect repeated keywords in a single pass instead of rescanning the file for every match, which was quadratic in the log length (hours for multi-million-line `out_log.000.txt`). Output is unchanged [[#251]](https://github.com/JuDFTteam/masci-tools/pull/251)
+- KKR/KKRimp parsers: `rms_spin_per_atom` was a copy of `rms_per_atom` (the charge rms). It now holds the spin part (`v+ - v-`) for spin-polarized calculations and is empty otherwise. **This changes parser output**; previously stored values of `rms_spin_per_atom` should not be used
 
 
 ## v.0.15.0

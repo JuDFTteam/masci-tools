@@ -63,20 +63,7 @@ convergence_group:
   - 2.2917e-05
   rms_spin: null
   rms_spin_all_iterations: []
-  rms_spin_per_atom:
-  - 2.8353e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
-  - 2.2917e-05
+  rms_spin_per_atom: []
   rms_unit: unitless
   strmix: 0.05
   total_energy_Ry_all_iterations:

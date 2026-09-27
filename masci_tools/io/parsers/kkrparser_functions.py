@@ -87,8 +87,12 @@ def get_rms(outfile, outfile2, debug=False, is_imp_calc=False):
     rms_charge_atoms = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0], ['D', 'E'])
     if debug:
         print(rms_charge_atoms)
-    rms_spin_atoms = parse_array_float(outfile2, 'rms-error for atom', [2, '=', 1, 0],
-                                       ['D', 'E'])  # only present for NSPIN==2
+    # spin part is the value after the second '=' ('v+ + v- = ...  ,  v+ - v- = ...'), only present for NSPIN==2
+    rms_spin_atoms = array([
+        float(line.replace('D', 'E').split('=')[2].split()[0])
+        for line in get_outfile_txt(outfile2)
+        if 'rms-error for atom' in line and 'v+ - v-' in line
+    ])
     if debug:
         print(rms_spin_atoms)
     niter = len(rms_charge)  # number of iterations

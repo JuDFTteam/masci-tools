@@ -281,3 +281,27 @@ def test_parse_array_float_matches_pop_loop(logfile, args):
         return
     result = parse_array_float(path, *args)
     assert np.array_equal(result, expected)
+
+
+def test_get_rms_spin_per_atom():
+    """rms_spin_per_atom is the value after 'v+ - v- =', not a copy of the charge rms."""
+    from masci_tools.io.parsers.kkrparser_functions import get_rms
+    path = os.fspath(DIR / Path('files/kkrimp_parser/spinpol_truncated/out_log.000.txt'))
+    with open(path, encoding='utf-8') as f:
+        last_atom_lines = [line for line in f if 'rms-error for atom' in line]
+    rms_charge, _, rms_charge_atoms, rms_spin_atoms = get_rms(path, path)
+    natoms = len(last_atom_lines) // len(rms_charge)
+    expected_spin = [float(line.split('=')[2].replace('D', 'E')) for line in last_atom_lines[-natoms:]]
+    expected_charge = [float(line.split('=')[1].split()[0].replace('D', 'E')) for line in last_atom_lines[-natoms:]]
+    assert np.array_equal(rms_spin_atoms, expected_spin)
+    assert np.array_equal(rms_charge_atoms, expected_charge)
+    assert not np.array_equal(rms_spin_atoms, rms_charge_atoms)
+
+
+def test_get_rms_spin_per_atom_nspin1():
+    """Without spin polarization the per-atom lines have no 'v+ - v-' part: empty spin array, charge still parsed."""
+    from masci_tools.io.parsers.kkrparser_functions import get_rms
+    path = os.fspath(DIR / Path('files/kkrimp_parser/test1/out_log.000.txt'))
+    _, _, rms_charge_atoms, rms_spin_atoms = get_rms(path, path)
+    assert len(rms_charge_atoms) > 0
+    assert len(rms_spin_atoms) == 0
