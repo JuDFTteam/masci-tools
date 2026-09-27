@@ -29,6 +29,12 @@
     false,
     "Superconductivity: Starting value of BdG coupling constant in Ry (defaults to 1e-4)"
   ],
+  "FCM": [
+    null,
+    "%f",
+    false,
+    "Self-consistency control: Factor for increased linear mixing of magnetic part of potential compared to non-magnetic part. KKRimp default: 2.0."
+  ],
   "HFIELD": [
     null,
     "%f %i",
