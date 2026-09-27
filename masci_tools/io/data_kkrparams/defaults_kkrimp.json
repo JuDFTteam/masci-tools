@@ -143,6 +143,18 @@
     false,
     "Chemistry, Atom types: Number of spin directions in potential. Values 1 or 2"
   ],
+  "POT_NS_CUTOFF": [
+    null,
+    "%e",
+    false,
+    "Accuracy: non-spherical cutoff for potential at the end of the iteration (defaults to 0.1*qbound if not set)."
+  ],
+  "POT_NS_WRITE_CUTOFF": [
+    null,
+    "%e",
+    false,
+    "Accuracy: non-spherical potential channels (LM>=2) are written to the output potential only if their norm is larger than this value (defaults to qbound if not set). Needs a KKR version that knows this key; older versions ignore it."
+  ],
   "QBOUND": [
     null,
     "%e",

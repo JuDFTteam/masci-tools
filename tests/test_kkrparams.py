@@ -432,6 +432,38 @@ class Test_fill_inputfile:
 
         file_regression.check(file_content)
 
+    def test_pot_ns_cutoff_keys(self):
+        """Non-spherical potential cutoffs are written to config.cfg (KKRimp) and inputcard (KKRhost)"""
+        p = kkrparams(params_type='kkrimp')
+        p.set_multiple_values(QBOUND=1e-2, POT_NS_CUTOFF=1e-3, POT_NS_WRITE_CUTOFF=1e-9)
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'config.cfg')
+            with open(Path(td) / 'config.cfg', encoding='utf-8') as file:
+                lines = file.read().splitlines()
+        assert 'POT_NS_CUTOFF= 1.000000e-03' in lines
+        assert 'POT_NS_WRITE_CUTOFF= 1.000000e-09' in lines
+
+        p = kkrparams(ALATBASIS=1.,
+                      BRAVAIS=[[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                      NAEZ=1,
+                      RBASIS=[[0, 0, 0]],
+                      NSPIN=1,
+                      LMAX=2,
+                      RMAX=7.,
+                      GMAX=65.,
+                      ZATOM=26.,
+                      POT_NS_CUTOFF=1.23456e-8,
+                      POT_NS_WRITE_CUTOFF=1e-9)
+        with tempfile.TemporaryDirectory('w') as td:
+            p.fill_keywords_to_inputfile(output=Path(td) / 'inputcard')
+            with open(Path(td) / 'inputcard', encoding='utf-8') as file:
+                lines = file.read().splitlines()
+            p2 = kkrparams()
+            p2.read_keywords_from_inputcard(inputcard=Path(td) / 'inputcard')
+        assert 'POT_NS_CUTOFF= 1.234560e-08' in lines
+        assert p2.get_value('POT_NS_CUTOFF') == 1.23456e-8
+        assert p2.get_value('POT_NS_WRITE_CUTOFF') == 1e-9
+
 
 class Test_read_inputfile:  # pylint: disable=missing-class-docstring
 
