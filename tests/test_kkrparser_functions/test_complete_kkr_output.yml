@@ -159,12 +159,12 @@ convergence_group:
   - 4.2615e-07
   - 3.4092e-07
   rms_spin_per_atom:
-  - 0.31221
-  - 0.092203
-  - 0.15861
-  - 0.15861
-  - 0.092203
-  - 0.31221
+  - 6.0299e-12
+  - 6.6209e-11
+  - 5.9049e-07
+  - 5.9049e-07
+  - 6.6209e-11
+  - 6.0298e-12
   rms_unit: unitless
   spin_moment_per_atom_all_iterations:
   - - 0.0
