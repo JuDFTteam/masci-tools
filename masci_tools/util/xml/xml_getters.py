@@ -139,7 +139,7 @@ def get_nkpts(xmltree: XMLLike,
     """
     with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
         #Get the name of the current selected kPointSet
-        list_name = root.attribute('listName')
+        list_name = root.attribute('listName', contains='kPointListSelection')
         all_names = set(
             root.attribute('name', tag_name='kPointList', contains='kPointLists', list_return=True, optional=True))
         if list_name not in all_names:
@@ -461,7 +461,7 @@ def get_parameterdata(xmltree: XMLLike,
 
         # &kpt namelist
         if schema_dict.inp_version > (0, 31):
-            list_name = root.attribute('listName')
+            list_name = root.attribute('listName', contains='kPointListSelection')
             all_names = set(
                 root.attribute('name', tag_name='kPointList', contains='kPointLists', list_return=True, optional=True))
             if list_name not in all_names:
@@ -777,7 +777,7 @@ def get_kpointsdata(
     with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
         if only_used:
-            name = root.attribute('listName')
+            name = root.attribute('listName', contains='kPointListSelection')
 
         filters: FilterType = {}
         if name is not None:
@@ -914,7 +914,7 @@ def get_special_kpoints(
     with FleurXMLContext(xmltree, schema_dict, logger=logger) as root:
 
         if only_used:
-            name = root.attribute('listName')
+            name = root.attribute('listName', contains='kPointListSelection')
 
         filters: FilterType = {}
         if name is not None:
