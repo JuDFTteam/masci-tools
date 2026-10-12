@@ -869,6 +869,11 @@
                <xsd:documentation>Settings for printing GGA-related quantities.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
+         <xsd:element maxOccurs="1" minOccurs="0" name="AuxGGA" type="AuxGGAType">
+            <xsd:annotation>
+               <xsd:documentation>Auxiliary GGA functional for computing radial basis functions in MetaGGA calculations. Specify LibXC IDs for the GGA exchange and correlation. Recommended for SCAN: RPBE exchange with PBE correlation, i.e. exchange=117 (XC_GGA_X_RPBE) correlation=130 (XC_GGA_C_PBE).</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
       </xsd:sequence>
       <xsd:attribute name="name" type="XCFunctionalEnum" use="required">
          <xsd:annotation>
@@ -878,6 +883,11 @@
       <xsd:attribute default="F" name="relativisticCorrections" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Enable relativistic corrections to the XC functional.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="BeckeJohnson" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Use Becke-Johnson exchange potential (Eq. 2, Tran et al., J. Phys.: Condens. Matter 19, 196208, 2007). Replaces the standard MetaGGA exchange with v_x^BJ = v_x^BR89 + (1/pi)*sqrt(5/12)*sqrt(2*tau/rho).</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
@@ -989,6 +999,13 @@
             <xsd:documentation>LibXC correlation functional name for total energy evaluation. If not specified, uses the same as correlation.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
+   </xsd:complexType>
+   <xsd:complexType name="AuxGGAType">
+      <xsd:annotation>
+         <xsd:documentation>Auxiliary GGA functional (LibXC IDs) for radial basis functions in MetaGGA calculations.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="exchange"    type="xsd:integer" use="required"/>
+      <xsd:attribute name="correlation" type="xsd:integer" use="required"/>
    </xsd:complexType>
    <xsd:complexType name="XCParamsType">
       <xsd:attribute name="igrd" type="xsd:integer" use="required">
@@ -1116,6 +1133,29 @@
      </xsd:attribute>
    </xsd:complexType>
 
+   <xsd:complexType name="WannierProjType">
+      <xsd:annotation>
+         <xsd:documentation>Wannier projection descriptor attached to a species.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="l" type="xsd:integer" use="required"/>
+      <xsd:attribute name="m" type="xsd:integer" use="required"/>
+      <xsd:attribute name="spin" type="xsd:string" use="optional"/>
+      <xsd:attribute name="theta" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="phi" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="alpha" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="beta" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="gamma" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="rwf" type="xsd:integer" use="optional"/>
+      <xsd:attribute name="zona" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="regio" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="j" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="mj" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="weight" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="shiftX" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="shiftY" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="shiftZ" type="FleurDouble" use="optional"/>
+   </xsd:complexType>
+
 
 
    <xsd:complexType name="SpeciesType">
@@ -1172,6 +1212,11 @@
          <xsd:element maxOccurs="unbounded" minOccurs="0" name="lo" type="LOType">
             <xsd:annotation>
                <xsd:documentation>Local orbital definitions for this species.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="wannierproj" type="WannierProjType">
+            <xsd:annotation>
+               <xsd:documentation>Wannier projections used by wannierlib in library mode.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
       </xsd:sequence>
@@ -1274,11 +1319,6 @@
             <xsd:attribute default=" " name="label" type="xsd:string" use="optional">
                <xsd:annotation>
                   <xsd:documentation>Custom label for this atom (for identification in output). Default is blank space.</xsd:documentation>
-               </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute default="F" name="wannier" type="FleurBool" use="optional">
-               <xsd:annotation>
-                  <xsd:documentation>Include this atom in Wannier function generation (if Wannier calculations are enabled).</xsd:documentation>
                </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="banddos" type="FleurBool" use="optional">
@@ -1469,7 +1509,7 @@
       </xsd:attribute>
       <xsd:attribute name="lmaxAPW" type="xsd:nonNegativeInteger" use="optional">
          <xsd:annotation>
-            <xsd:documentation>If present, enables APW+lo approach. Cutoff defining lmax up to which LAPWs are used if no APW+lo LO is defined.</xsd:documentation>
+            <xsd:documentation>If present, all l above lmaxAPW use APW basis functions (matched in value only). Up to lmaxAPW LAPWs are used, except for l with an APW local orbital.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
@@ -1910,7 +1950,7 @@
       </xsd:annotation>
       <xsd:attribute name="type" type="EParamSelectionEnum" use="required">
          <xsd:annotation>
-            <xsd:documentation>Type of local orbital: SCLO for semicore, HELO for high-energy.</xsd:documentation>
+            <xsd:documentation>Type of local orbital: SCLO for semicore, HELO for high-energy, relLO for a relativistic local orbital (j=l-1/2 branch, requires l=1,2 or 3 and eDeriv=0), APW for the local orbital of APW+lo (a*u+b*udot at the energy parameter of l, zero at the sphere boundary; switches this l to APW, requires eDeriv=0, at most one per l).</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
       <xsd:attribute name="l" type="AngularMomentumNumberType" use="required">
@@ -1946,6 +1986,8 @@
       <xsd:restriction base="xsd:string">
          <xsd:enumeration value="SCLO"/>
          <xsd:enumeration value="HELO"/>
+         <xsd:enumeration value="relLO"/>
+         <xsd:enumeration value="APW"/>
       </xsd:restriction>
    </xsd:simpleType>
 
@@ -2125,6 +2167,11 @@
       <xsd:attribute name="maxTimeToStartIter" type="FleurDouble" use="optional">
          <xsd:annotation>
             <xsd:documentation>Maximum wall-clock time (in seconds) allowed before starting an SCF iteration. Used to manage computational resources.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="sdNocoIR" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Allow the starting density to be non-collinear in the interstitial region: the spin-polarized tails of the atomic densities are rotated from the local spin frames of the atoms into the global frame instead of being averaged over the spins. Only relevant for l_noco=T. If the attribute is not present it is assumed to be F.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
@@ -2806,6 +2853,13 @@
             - Unoccupied bands typically need higher k-density for convergence
          </xsd:documentation>
       </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element maxOccurs="1" minOccurs="0" name="densityMatrix" type="DensityMatrixOutputType">
+            <xsd:annotation>
+               <xsd:documentation>Band- and k-resolved local density matrix of the DOS atoms, written to banddos.hdf.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
       <xsd:attribute name="storeEVData" type="FleurBool" use="optional" default="T">
          <xsd:annotation>
             <xsd:documentation>Store eigenvalue data for DOS post-processing.</xsd:documentation>
@@ -2872,6 +2926,53 @@
          <xsd:annotation>
             <xsd:documentation>Number of energy points in DOS spectrum.</xsd:documentation>
          </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:complexType name="DensityMatrixOutputType">
+      <xsd:annotation>
+         <xsd:documentation>
+            Band-resolved local density matrix output (group "DensityMatrix" in banddos.hdf).
+            For every eigenstate, k-point and selected atom (bandDOS atom selection) the matrix
+            n(m,m') = &lt;l' m' s|rho|l m s'&gt; in the basis of the muffin-tin functions u_l Y_lm is stored,
+            including all radial functions (u, udot, LOs). Traces are also available as
+            ordinary DOS/band weights. See docs/densityMatrixDOS.md.
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="l" use="optional" default="spd">
+         <xsd:annotation>
+            <xsd:documentation>l channels to store, any subset of "spdf".</xsd:documentation>
+         </xsd:annotation>
+         <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+               <xsd:pattern value="[spdf]{1,4}"/>
+            </xsd:restriction>
+         </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="lCross" type="xsd:string" use="optional" default="none">
+         <xsd:annotation>
+            <xsd:documentation>
+               Blocks between different l: "none", "all" (all pairs of the selected l),
+               or a list of pairs such as "sd pd". Only l &lt; l' is stored, the partner block is its hermitian conjugate.
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="symmetrize" use="optional" default="auto">
+         <xsd:annotation>
+            <xsd:documentation>
+               Symmetrize the matrices with the site symmetry and average over equivalent atoms (one matrix per atom type).
+               "auto": symmetrize unless the k-points form a path. "F": store every selected atom unsymmetrized.
+            </xsd:documentation>
+         </xsd:annotation>
+         <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+               <xsd:enumeration value="auto"/>
+               <xsd:enumeration value="T"/>
+               <xsd:enumeration value="t"/>
+               <xsd:enumeration value="F"/>
+               <xsd:enumeration value="f"/>
+            </xsd:restriction>
+         </xsd:simpleType>
       </xsd:attribute>
    </xsd:complexType>
 
@@ -2970,6 +3071,7 @@
       <xsd:restriction base="xsd:string">
          <xsd:enumeration value="mesh"/>
          <xsd:enumeration value="path"/>
+         <xsd:enumeration value="plane"/>
          <xsd:enumeration value="tria-bulk"/>
          <xsd:enumeration value="tria"/>
          <xsd:enumeration value="SPEX-mesh"/> <!-- This is deprecated. Use 'spex-mesh' -->
@@ -3181,6 +3283,36 @@
       <xsd:attribute default="F" name="sympsi" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Enable symmetry check for wavefunctions.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:complexType name="MoessbauerParamsSetupType">
+      <xsd:annotation>
+         <xsd:documentation>Switches for the calculation and reporting of Moessbauer-related parameters at the nuclei.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute default="T" name="electricFieldGradient" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Electric field gradient tensor at the nuclei.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="isomerShift" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Contact charge density (isomer shift) at the nuclei.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="coreHyperfine" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Core-electron hyperfine field and isomer shift, per core shell.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="T" name="valenceHyperfine" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>
+               Valence-electron hyperfine field (contact/dipolar/orbital contributions).
+               The orbital contribution requires spin-orbit coupling to be enabled to be
+               meaningful; without SOC this category is equivalent to being switched off.
+            </xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
@@ -3398,71 +3530,160 @@
       </xsd:attribute>
    </xsd:complexType>
 
-   <xsd:complexType name="WannierBandSelectionType">
+   <xsd:complexType name="WannierlibBandsType">
       <xsd:annotation>
-         <xsd:documentation>Band range selection for Wannier function construction.</xsd:documentation>
+         <xsd:documentation>Band window controls for wannierlib library-mode workflow.</xsd:documentation>
       </xsd:annotation>
-      <xsd:attribute name="minSpinUp" type="xsd:positiveInteger" use="required">
+      <xsd:attribute name="numBands" type="xsd:integer" use="optional" default="0"/>
+      <xsd:attribute name="minBand" type="xsd:integer" use="optional" default="0"/>
+      <xsd:attribute name="maxBand" type="xsd:integer" use="optional" default="0"/>
+   </xsd:complexType>
+
+
+
+   <xsd:complexType name="WannierlibDisentanglementType">
+      <xsd:annotation>
+         <xsd:documentation>Disentanglement controls for wannierlib library-mode workflow.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="disWinMin" type="FleurDouble" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Minimum band index for spin-up channel.</xsd:documentation>
+            <xsd:documentation>Bottom of the outer energy window, in Hartree and absolute. Optional: left out, it is the lowest value the selected bands reach on the wannierization mesh, which is what Wannier90 defaults to when the classic route leaves it out of the .win. Setting it by hand is how states get silently dropped -- a window measured on the SCF mesh, which need not contain Gamma, sits above the true minimum and leaves bands outside it at some k.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="maxSpinUp" type="xsd:positiveInteger" use="required">
+      <xsd:attribute name="disWinMax" type="FleurDouble" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Maximum band index for spin-up channel.</xsd:documentation>
+            <xsd:documentation>Top of the outer energy window, in Hartree and absolute. Optional: left out, it is the highest value the selected bands reach on the wannierization mesh.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="minSpinDown" type="xsd:positiveInteger" use="optional">
+      <xsd:attribute name="disFrozMin" type="FleurDouble" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Minimum band index for spin-down channel (spin-polarized only).</xsd:documentation>
+            <xsd:documentation>Bottom of the frozen window, in Hartree and absolute. Optional: left out, it follows disWinMin, so everything from the bottom of the manifold up to disFrozMax is frozen.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
-      <xsd:attribute name="maxSpinDown" type="xsd:positiveInteger" use="optional">
+      <xsd:attribute name="disFrozMax" type="FleurDouble" use="required"/>
+      <xsd:attribute name="numIter" type="xsd:positiveInteger" use="required"/>
+      <xsd:attribute name="convTol" type="FleurDouble" use="required"/>
+      <xsd:attribute name="mixRatio" type="FleurDouble" use="required"/>
+      <xsd:attribute default="F" name="disFrozProj" type="FleurBool" use="optional"/>
+      <xsd:attribute default="0.01" name="disProjMin" type="FleurDouble" use="optional"/>
+      <xsd:attribute default="0.95" name="disProjMax" type="FleurDouble" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibWannierizationType">
+      <xsd:annotation>
+         <xsd:documentation>MLWF (wannierise) iteration controls for wannierlib library-mode workflow. numIter="0" skips the spread minimisation and keeps the projection gauge: the Wannier functions are then the trial orbitals themselves, orthonormalised. That is a real choice and not a degenerate case - the minimisation converges to maximally localised functions whatever it starts from, so the initial projections only decide the gauge when it is switched off.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="numIter" type="xsd:nonNegativeInteger" use="required"/>
+      <xsd:attribute name="convTol" type="FleurDouble" use="required"/>
+      <xsd:attribute default="F" name="precond" type="FleurBool" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibOperatorType">
+      <xsd:annotation>
+         <xsd:documentation>One Wannier-interpolated operator, projected onto the interpolated bands.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" use="required">
+         <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+               <xsd:enumeration value="hamiltonian"/>
+               <xsd:enumeration value="spin"/>
+               <xsd:enumeration value="orbital"/>
+               <xsd:enumeration value="spin_orbit"/>
+               <xsd:enumeration value="velocity"/>
+               <xsd:enumeration value="eigenstates"/>
+            </xsd:restriction>
+         </xsd:simpleType>
+      </xsd:attribute>
+      <xsd:attribute name="comp" type="xsd:string" use="optional"/>
+      <xsd:attribute name="total" type="FleurBool" use="optional" default="T"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibDomainType">
+      <xsd:annotation>
+         <xsd:documentation>One output domain: interpolate the requested operators on one set of k-points and suffix this domain's output files. Whether that set is a line, a plane or a mesh is a property of the list, not of FLEUR: 'listName' names an existing kPointList (in kpts.xml or any xi:included file) and is required. 'suffix' distinguishes this domain's bands_wann_*.dat files and may be left off for at most one domain. 'npts' optionally subdivides each segment of an ordered list into npts pieces (npts&lt;=1 = list as-is).</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="listName" type="xsd:string" use="required"/>
+      <xsd:attribute name="suffix" type="xsd:string" use="optional"/>
+      <xsd:attribute name="npts" type="xsd:nonNegativeInteger" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibOperatorRType">
+      <xsd:annotation>
+         <xsd:documentation>One real-space Wannier operator matrix O(R), written in the Wannier90/FLEUR standalone format (no band interpolation).</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute name="name" use="required">
+         <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+               <xsd:enumeration value="hamiltonian"/>
+               <xsd:enumeration value="position"/>
+               <xsd:enumeration value="position_pw90"/>
+               <xsd:enumeration value="bmn"/>
+               <xsd:enumeration value="fmn"/>
+               <xsd:enumeration value="cmn"/>
+               <xsd:enumeration value="spin"/>
+               <xsd:enumeration value="orbital"/>
+               <xsd:enumeration value="spin_orbit"/>
+            </xsd:restriction>
+         </xsd:simpleType>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibOperatorsRType">
+      <xsd:annotation>
+         <xsd:documentation>Real-space Wannier operator matrices O(R) (Fourier step 3) in Wannier90/FLEUR standalone format for external transport post-processing (orbitrans/ju_wip): WF1_hr.dat, WF1_r.dat, rspauli.1, anglmomrs.1, wig_vectors. Computed once after wannierization, before interpolation; no band interpolation.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="operator" type="WannierlibOperatorRType"/>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibInterpolationType">
+      <xsd:annotation>
+         <xsd:documentation>Wannier interpolation: the output domains to interpolate on and the operators to interpolate. Declare one &lt;domain&gt; per set of k-points; each writes its own suffixed set of bands_wann_*.dat files.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="domain" type="WannierlibDomainType"/>
+         <xsd:element maxOccurs="unbounded" minOccurs="0" name="operator" type="WannierlibOperatorType"/>
+      </xsd:sequence>
+      <xsd:attribute default="F" name="useWsDistance" type="FleurBool" use="optional"/>
+      <!-- Electron-phonon interpolation (dfpt): which q-list to interpolate onto. Same
+           element, so the two uses share one type rather than colliding on the name.
+           l_intp carries a default because the reader takes it unconditionally once the
+           element is there, so an absent attribute has to arrive as a value. -->
+      <xsd:attribute default="F" name="l_intp" type="FleurBool" use="optional"/>
+      <xsd:attribute name="kptsPath" type="xsd:string" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Maximum band index for spin-down channel (spin-polarized only).</xsd:documentation>
+            <xsd:documentation>Name of the q-point list to use.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
 
-   <xsd:complexType name="WannierOutputType">
+   <xsd:complexType name="WannierlibExportType">
       <xsd:annotation>
-         <xsd:documentation>Wannier function output settings for Wannier90 interface.</xsd:documentation>
+         <xsd:documentation>Hand the matrices the run already holds to a reader outside it. One boolean per artefact, all off by default and independent: they are not alternatives, and asking for one must not turn the others off. What &lt;operators_r&gt; and &lt;interpolation&gt; write is deliberately NOT here - those compute something first and writing it is the last step, while these only copy out. wannier90="T" writes WF&lt;spin&gt;.amn, .mmn and .eig, the three files a standalone wannier90.x needs to repeat the same wannierization; the .mmn of a 512-point mesh with 36 bands is a few hundred megabytes of text, which is why it is opt-in. wannierberri="T" writes WF&lt;spin&gt;_basis.hdf, the plane-wave index list and the eigenvector coefficients over the interstitial, for the symmetry analysis irrep performs and the site-symmetric wannierization WannierBerri builds on it; the interstitial is invariant under the space group, so its characters are exact, and the muffin-tin parts are not needed. Requires a full-zone k-mesh (inpgen -noKsym) and a build with HDF5. gauge="T" writes WF&lt;spin&gt;_gauge.hdf with the two factors Wannier90 returned, u_opt and u_mlwf: every exported operator is the Bloch-basis operator sandwiched between them, and they are the only part of that sandwich which otherwise leaves no trace. blochOperators="T" writes WF&lt;spin&gt;_s0.dat, the spin operator in the Bloch basis BEFORE any gauge is applied - the one ingredient of S(R) that no other file carries, so a disagreement between the operator and the basis its gauge was built for can be seen from outside.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute default="F" name="wannier90" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="wannierberri" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="gauge" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="blochOperators" type="FleurBool" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="WannierlibOutputType">
+      <xsd:annotation>
+         <xsd:documentation>Wannier90 library-mode controls for in-memory wannierization.</xsd:documentation>
       </xsd:annotation>
       <xsd:all>
-         <xsd:element maxOccurs="1" minOccurs="0" name="bandSelection" type="WannierBandSelectionType">
-            <xsd:annotation>
-               <xsd:documentation>Specify band range for Wannier function construction.</xsd:documentation>
-            </xsd:annotation>
-         </xsd:element>
-         <xsd:element maxOccurs="1" minOccurs="0" name="jobList" type="StringVecType">
-            <xsd:annotation>
-               <xsd:documentation>List of Wannier job identifiers.</xsd:documentation>
-            </xsd:annotation>
-         </xsd:element>
+         <xsd:element maxOccurs="1" minOccurs="1" name="bands" type="WannierlibBandsType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="disentanglement" type="WannierlibDisentanglementType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="wannierization" type="WannierlibWannierizationType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="operators_r" type="WannierlibOperatorsRType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="export" type="WannierlibExportType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="interpolation" type="WannierlibInterpolationType"/>
       </xsd:all>
-      <xsd:attribute default="F" name="ms" type="FleurBool" use="optional">
+      <xsd:attribute default="F" name="wannierize" type="FleurBool" use="optional"/>
+      <xsd:attribute default="F" name="plotWF" type="FleurBool" use="optional">
          <xsd:annotation>
-            <xsd:documentation>Enable matrix element output.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute default="F" name="sgwf" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Enable sigma GWF output.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute default="F" name="socgwf" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Enable SOC Wannier function output.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute default="F" name="bsComf" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Enable band structure comfort output.</xsd:documentation>
-         </xsd:annotation>
-      </xsd:attribute>
-      <xsd:attribute default="F" name="atomList" type="FleurBool" use="optional">
-         <xsd:annotation>
-            <xsd:documentation>Output atom list for Wannier projection.</xsd:documentation>
+            <xsd:documentation>Write the Wannier functions on a real-space grid, as XSF files one per function (block A: real part, block B: modulus). Off by default because it costs a second pass over the k-points. The region is one unit cell centred on the origin, on a 40x40x40 grid; how much of each function falls on the edge of that box is reported, so a clipped picture is visible rather than silent. Not available for spinor Wannier functions (noco or SOC).</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
    </xsd:complexType>
@@ -3917,7 +4138,7 @@
                <xsd:documentation>Local Gmax for z-direction (film calculations).</xsd:documentation>
             </xsd:annotation>
          </xsd:attribute>  
-         <xsd:attribute name="l_symVacLevel" type="FleurBool" use="optional" default="F">
+         <xsd:attribute name="l_symVacLevel" type="FleurBool" use="optional">
             <xsd:annotation>
                <xsd:documentation>Symmetrize vacuum level for film calculations.</xsd:documentation>
             </xsd:annotation>
@@ -3976,6 +4197,11 @@
                <xsd:documentation>Apply acoustic sum rule correction.</xsd:documentation>
             </xsd:annotation>
          </xsd:attribute>
+         <xsd:attribute name="l_bornhuang" type="FleurBool" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Project the force constants onto the translational, rotational and Born-Huang invariance conditions.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
          <xsd:attribute name="l_WSinterpol" type="FleurBool" use="optional">
          <xsd:annotation>
             <xsd:documentation>Wigner Seitz Construction for interpolation.</xsd:documentation>
@@ -4014,6 +4240,26 @@
             <xsd:documentation>Gaussian smearing width for integration.</xsd:documentation>
          </xsd:annotation>
       </xsd:attribute>
+       <xsd:attribute name="kMeshName" type="xsd:string" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Name of the k-mesh to interpolate on</xsd:documentation>
+               </xsd:annotation>
+         </xsd:attribute>
+          <xsd:attribute name="qMeshName" type="xsd:string" use="optional">
+               <xsd:annotation>
+                  <xsd:documentation>Name of the q-points to interpolate on.</xsd:documentation>
+               </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="l_write_epw" type="FleurBool" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>Write the real-space electron-phonon quantities as EPW (epwread) restart files.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
+         <xsd:attribute name="epw_prefix" type="xsd:string" use="optional">
+            <xsd:annotation>
+               <xsd:documentation>QE/EPW prefix used for the EPW restart files (e.g. the &lt;prefix&gt;.epmatwp binary).</xsd:documentation>
+            </xsd:annotation>
+         </xsd:attribute>
    </xsd:complexType>
 
    <xsd:simpleType name="BandWindowType">
@@ -4060,14 +4306,35 @@
             </xsd:annotation>
          </xsd:element>
          <xsd:element maxOccurs="1" minOccurs="0" name="specialOutput" type="SpecialOutputType"/>
+         <xsd:element maxOccurs="1" minOccurs="0" name="moessbauerParams" type="MoessbauerParamsSetupType">
+            <xsd:annotation>
+               <xsd:documentation>
+                  Switches for calculating and reporting Moessbauer-related parameters at the
+                  nuclei (electric field gradient, isomer shift, core and valence hyperfine
+                  fields). All categories are on by default. The valenceHyperfine category
+                  only gives meaningful (nonzero orbital) results with spin-orbit coupling
+                  enabled; without SOC it is equivalent to being switched off.
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
          <xsd:element maxOccurs="1" minOccurs="0" name="coreSpectrum" type="CoreSpecOutputType">
             <xsd:annotation>
                <xsd:documentation>Parameters for core-level spectroscopy calculations.</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
-         <xsd:element maxOccurs="1" minOccurs="0" name="wannier" type="WannierOutputType">
+         <xsd:element maxOccurs="1" minOccurs="0" name="xas" type="XASOutputType">
             <xsd:annotation>
-               <xsd:documentation>Parameters for Wannier function generation.</xsd:documentation>
+               <xsd:documentation>Parameters for independent-particle core-level XAS postprocessing.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element maxOccurs="1" minOccurs="0" name="rixs" type="RIXSOutputType">
+            <xsd:annotation>
+               <xsd:documentation>Parameters for guarded independent-particle RIXS postprocessing.</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element maxOccurs="1" minOccurs="0" name="wannierlib" type="WannierlibOutputType">
+            <xsd:annotation>
+               <xsd:documentation>Parameters for Wannier90 library-mode workflow (no file I/O).</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
          <xsd:element maxOccurs="1" minOccurs="0" name="magneticCircularDichroism" type="MagneticCircularDichroismType">
@@ -4113,8 +4380,118 @@
          </xsd:annotation>
       </xsd:attribute>
       <xsd:attribute default="F" name="coreSpec" type="FleurBool" use="optional"/>
-      <xsd:attribute default="F" name="wannier" type="FleurBool" use="optional"/>
       <xsd:attribute default="F" name="eig66" type="FleurBool" use="optional"/>
+   </xsd:complexType>
+
+   <xsd:complexType name="XASOutputType">
+      <xsd:annotation>
+         <xsd:documentation>
+            Minimal input for the independent-particle local muffin-tin XAS
+            postprocessor. This is placed below output because it is a
+            postprocessing calculation from converged eigenvalues, occupations,
+            and muffin-tin wave-function coefficients. Energies and eta are
+            given in Hartree.
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute default="T" name="l_xas" type="FleurBool" use="optional"/>
+      <xsd:attribute name="absorberZ" type="xsd:positiveInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Nuclear charge of the absorbing element. All atom types with this Z are summed.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="L3" name="edge" type="xsd:string" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Core edge. Supported values are K, L2, and L3; combined L23 is not implemented.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="0.03" name="eta" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="eMin" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Optional lower photon-energy grid bound in Hartree; must be given together with eMax.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="eMax" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Optional upper photon-energy grid bound in Hartree. If omitted with eMin, XAS scans the transition range automatically.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="401" name="nEnergy" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute default="x y z" name="polarizations" type="StringVecType" use="optional"/>
+      <xsd:attribute default="xas" name="outputPrefix" type="xsd:string" use="optional"/>
+      <xsd:attribute default="F" name="writeTransitions" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Write rank-local, unbroadened transition tables for diagnostics and RIXS preparation.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+   </xsd:complexType>
+
+   <xsd:complexType name="RIXSOutputType">
+      <xsd:annotation>
+         <xsd:documentation>
+            Guarded independent-particle RIXS. Energies are given
+            in Hartree. Supported spin treatments are scalar jspins=1 without
+            noco/SOC and first-variation noco spinors with jspins=2, with or
+            without first-variation SOC. RIXS requires an explicit full-k list
+            and does not use symmetry-star reconstruction. Collinear
+            spin-polarized scalar RIXS and second-variation SOC are unsupported.
+            The optional finite-Q path is restricted to first-variation noco
+            spinors with jspins=2; omitting momentumTransfer selects the legacy
+            same-k implementation and its existing spin support.
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:attribute default="T" name="l_rixs" type="FleurBool" use="optional"/>
+      <xsd:attribute name="absorberZ" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute name="edge" type="xsd:string" use="optional"/>
+      <xsd:attribute name="omegaIn" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="gammaCore" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="lossMin" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="lossMax" type="FleurDouble" use="optional"/>
+      <xsd:attribute name="nLoss" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute name="etaLoss" type="FleurDouble" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Standard deviation (sigma), in Hartree, of the normalized Gaussian loss broadening.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="x" name="incomingPolarizations" type="StringVecType" use="optional"/>
+      <xsd:attribute default="x" name="outgoingPolarizations" type="StringVecType" use="optional"/>
+      <xsd:attribute default="rixs" name="outputPrefix" type="xsd:string" use="optional"/>
+      <xsd:attribute name="momentumTransfer" type="FleurDouble3DVecType" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>
+               Full photon momentum transfer (H K L) in the reciprocal basis dual to the FLEUR direct-cell basis.
+               The full vector, including reciprocal-lattice components, enters coherent absorber-site phases;
+               only the electronic k-point mapping is reduced modulo reciprocal lattice vectors. If omitted, the
+               legacy direct same-k, incoherent-site RIXS path is used.
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="valenceBandMin" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute name="valenceBandMax" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute name="intermediateBandMin" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute name="intermediateBandMax" type="xsd:positiveInteger" use="optional"/>
+      <xsd:attribute default="F" name="writeContributions" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>Write rank-local valence/intermediate-band contribution tables for RIXS diagnostics.</xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute default="F" name="writeStateCharacter" type="FleurBool" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>
+               Write rank-local HDF5 annotations of the local absorber-site d-spin character of bands in the
+               configured RIXS valence and intermediate windows. These state weights characterize participating
+               bands; they are not an incoherent decomposition of RIXS intensity. This is currently available only
+               for legacy same-k first-variation spinor RIXS and cannot be combined with momentumTransfer.
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
+      <xsd:attribute name="stateLigandZ" type="xsd:positiveInteger" use="optional">
+         <xsd:annotation>
+            <xsd:documentation>
+               Atomic number of candidate ligands used to construct the local structural frame when
+               writeStateCharacter is enabled. All physical atoms in every matching atom group are candidates.
+            </xsd:documentation>
+         </xsd:annotation>
+      </xsd:attribute>
    </xsd:complexType>
 
    <xsd:complexType name="ElectronConfigType">
