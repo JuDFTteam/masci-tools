@@ -1291,7 +1291,7 @@ def switch_kpointset(xmltree: XMLLike, schema_dict: fleur_schema.SchemaDict, lis
         raise ValueError(f'The given kPointList {list_name} does not exist',
                          f'Available kPointLists: {existing_labels}')
 
-    return set_first_attrib_value(xmltree, schema_dict, 'listName', list_name)
+    return set_first_attrib_value(xmltree, schema_dict, 'listName', list_name, contains='kPointListSelection')
 
 
 @switch_kpointset.register(max_version='0.31')
