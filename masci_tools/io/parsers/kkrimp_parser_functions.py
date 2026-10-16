@@ -12,6 +12,7 @@
 """
 Tools for the impurity calculation plugin and its workflows
 """
+import re
 import numpy as np
 import traceback
 from masci_tools.io.common_functions import search_string, pop_all_matching, get_outfile_txt, get_version_info, convert_to_pystd
@@ -76,7 +77,8 @@ class KkrimpParserFunctions:
         niter, rms = -1, -1
         for line in pop_all_matching('average rms-error', tmptxt):
             tmp = line.replace('D', 'E').split()
-            niter = int(tmp[1])
+            # from iteration 1000 on KKRimp writes 'ITERATION1000' without a space
+            niter = int(re.search(r'ITERATION\s*(\d+)', line).group(1))
             rms = float(tmp[-1])
         # get max number of scf steps
         itmp = search_string('SCFSTEPS', tmptxt)
