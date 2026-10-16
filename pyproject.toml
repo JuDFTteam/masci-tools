@@ -63,7 +63,8 @@ docs = [
     #1.19.3 is broken
     'sphinx-autodoc-typehints!=1.19.3',
     'myst-nb',
-    'sphinx-copybutton'
+    'sphinx-copybutton',
+    'sphinx-design'
     ]
 testing = [
     'pytest~=6.0',

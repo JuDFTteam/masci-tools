@@ -1,0 +1,73 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.11.4
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
+<!-- Set up pretty XML representations -->
+```{code-cell} ipython3
+:tags: [remove-cell]
+%xmode Minimal
+%load_ext masci_tools
+```
+({{ reference }})=
+# {{ title }}
+
+{py:meth}`Go to the API reference <masci_tools.io.fleurxmlmodifier.FleurXMLModifier.{{ reference }}()>`
+```{contents} Examples
+:local:
+```
+
+{% for example in examples %}
+## {{ example.title }}
+
+{{ example.description }}
+
+```{code-cell} ipython3
+:tags: [hide-cell]
+:mystnb:
+:  code_prompt_show: "Show loading of initial XML file"
+:  code_prompt_hide: "Hide loading of initial XML file"
+
+from masci_tools.io.fleur_xml import load_inpxml
+from lxml import etree
+
+xmltree, schema_dict = load_inpxml('../files/{{ example.inputfile }}')
+xmltree
+```
+
+```{code-cell} ipython3
+{% if example.error %}:tags: [raises-exception]{% endif %}
+
+from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
+
+fm = FleurXMLModifier()
+{{ example.code }}
+new_xmltree, additional_files = fm.modify_xmlfile(xmltree, validate_changes=False)
+```
+
+{% if not example.error %}
+```{code-cell} ipython3
+:tags: [remove-input, hide-output]
+:mystnb:
+:  code_prompt_show: "Show differences from initial XML file"
+:  code_prompt_hide: "Hide differences from initial XML file"
+from masci_tools.util.ipython import xml_diff
+xml_diff(xmltree, new_xmltree)
+```
+```{code-cell} ipython3
+:tags: [remove-input, hide-output]
+:mystnb:
+:  code_prompt_show: "Show final XML file"
+:  code_prompt_hide: "Hide final XML file"
+new_xmltree
+```
+{% endif %}
+{% endfor %}

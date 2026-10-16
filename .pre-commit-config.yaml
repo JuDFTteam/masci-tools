@@ -96,6 +96,7 @@ repos:
             masci_tools/io/fleurxmlmodifier.py|
             masci_tools/io/common_functions.py|
             masci_tools/util/xml/.*py|
+            masci_tools/util/sphinxext/.*py|
             masci_tools/util/lockable_containers.py|
             masci_tools/util/case_insensitive_dict.py|
             masci_tools/util/schema_dict_util.py|

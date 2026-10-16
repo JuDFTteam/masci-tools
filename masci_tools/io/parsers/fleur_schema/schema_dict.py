@@ -22,9 +22,8 @@ import shutil
 import copy
 from functools import update_wrapper, wraps
 from pathlib import Path
+from collections.abc import Collection
 from typing import Callable, Iterable, TypeVar, Any, cast
-
-from .fleur_schema_parser_functions import TagInfo, convert_str_version_number
 try:
     from typing import Literal, Protocol
 except ImportError:
@@ -39,6 +38,7 @@ from masci_tools.util.case_insensitive_dict import CaseInsensitiveFrozenSet, Cas
 from masci_tools.util.xml.common_functions import abs_to_rel_xpath, clear_xml, split_off_tag, contains_tag, validate_xml
 from .inpschema_todict import create_inpschema_dict, InputSchemaData
 from .outschema_todict import create_outschema_dict, merge_schema_dicts
+from .fleur_schema_parser_functions import TagInfo, convert_str_version_number
 
 PACKAGE_DIRECTORY = Path(__file__).parent.resolve()
 
@@ -123,7 +123,7 @@ def schema_dict_version_dispatch(output_schema: bool = False) -> Callable[[F], S
             matches.append(default_match)
 
             if len(matches) > 2:
-                raise ValueError('Ambiguous possibilities for schema_dict_version_dispatch for version {version}')
+                raise ValueError(f'Ambiguous possibilities for schema_dict_version_dispatch for version {version}')
 
             return matches[0]
 
@@ -225,6 +225,34 @@ def _add_condition(specification: str | Iterable[str] | None, condition: str) ->
     return specification
 
 
+def _ensure_path_uniqueness(paths: Collection[str],
+                            description: str,
+                            path_type: str = '',
+                            **specifications: Any) -> str:
+    """
+    Ensure that the given iterable of paths consists of only one path
+    Otherwise an error is raised that either no or more than one path was found
+
+    :param paths: sized iterable of paths to check
+    :param description: str for the kind of endpoint (tag name, etc.) that was searched (for errors)
+    :param path_type: optional str for the kind of path that was searched (for errors)
+
+    Kwargs are entered in a formatted string in one line of the error messages
+    """
+    if len(paths) == 1:
+        return next(iter(paths))
+
+    path_type = path_type + ' ' if path_type else path_type
+    specification_str = ', '.join([f'{key}: {value}' for key, value in specifications.items()])
+    if len(paths) == 0:
+        raise NoPathFound(f'The {description} has no possible {path_type}paths with the current specification.\n' +
+                          specification_str)
+    raise NoUniquePathFound(
+        f'The {description} has multiple possible {path_type}paths with the current specification.\n'
+        f'{specification_str}\n'
+        f'The following are possible:\n' + '\n'.join([f'    - {path}' for path in paths]))
+
+
 class SchemaDict(LockableDict):
     """
     Base class for schema dictionaries. Is  locked on initialization with :py:meth:`~masci_tools.util.lockable_containers.LockableDict.freeze()`.
@@ -316,6 +344,39 @@ class SchemaDict(LockableDict):
 
         return path_list
 
+    def _find_attrib_via_tag_name(self,
+                                  attrib_name: str,
+                                  tag_name: str,
+                                  tag_func: Callable[..., str],
+                                  *args: Any,
+                                  contains: str | Iterable[str] | None = None,
+                                  not_contains: str | Iterable[str] | None = None,
+                                  **kwargs: Any) -> str:
+        """
+        Find the path to an attribute by first finding the tag on which it sits
+        Then return the concatenated path
+
+        :param attrib_name: name of the attribute
+        :param tag_name: name of the tag
+        :param tag_func: function to use to find the tag path (e.g. self.tag_xpath)
+
+        Args and Kwargs are passed on to the ``tag_func``, ``contains`` and ``not_contains`` kwargs
+        are additionally passed to the :py:meth:`tag_info()` method
+
+        :returns: path to the attribute on the given tag if the attribute is allowed to be on the tag
+        """
+
+        tag_xpath = tag_func(tag_name, *args, contains=contains, not_contains=not_contains, **kwargs)
+
+        tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains, **kwargs)
+
+        if attrib_name not in tag_info['attribs']:
+            raise NoPathFound(f'No attribute {attrib_name} found at tag {tag_name}')
+        original_case = tag_info['attribs'].original_case[attrib_name]
+        if tag_xpath.endswith('/'):
+            return f'{tag_xpath}@{original_case}'
+        return f'{tag_xpath}/@{original_case}'
+
     def tag_xpath(self,
                   name: str,
                   contains: str | Iterable[str] | None = None,
@@ -339,15 +400,7 @@ class SchemaDict(LockableDict):
                                       ' since no tag entries are defined')
 
         paths = self._find_paths(name, self._tag_entries, contains=contains, not_contains=not_contains)
-
-        if len(paths) == 1:
-            return paths[0]
-        if len(paths) == 0:
-            raise NoPathFound(f'The tag {name} has no possible paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}')
-        raise NoUniquePathFound(f'The tag {name} has multiple possible paths with the current specification.\n'
-                                f'contains: {contains}, not_contains: {not_contains} \n'
-                                f'These are possible: {paths}')
+        return _ensure_path_uniqueness(paths, f'tag {name}', contains=contains, not_contains=not_contains)
 
     def relative_tag_xpath(self,
                            name: str,
@@ -382,15 +435,12 @@ class SchemaDict(LockableDict):
         paths = [path for path in paths if contains_tag(path, root_tag)]
 
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
-
-        if len(relative_paths) == 1:
-            return relative_paths.pop()
-        if len(relative_paths) == 0:
-            raise NoPathFound(f'The tag {name} has no possible relative paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        raise NoUniquePathFound(f'The tag {name} has multiple possible relative paths with the current specification.\n'
-                                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-                                f'These are possible: {relative_paths}')
+        return _ensure_path_uniqueness(relative_paths,
+                                       f'tag {name}',
+                                       path_type='relative',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       root_tag=root_tag)
 
     def attrib_xpath(self,
                      name: str,
@@ -423,31 +473,20 @@ class SchemaDict(LockableDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.tag_xpath(tag_name, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(
-                tag_name,
-                contains=contains,
-                not_contains=not_contains,
-            )
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-            original_case = tag_info['attribs'].original_case[name]
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.tag_xpath,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
-
-        if len(paths) == 1:
-            return paths[0]
-        if len(paths) == 0:
-            raise NoPathFound(f'The attrib {name} has no possible paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
-        raise NoUniquePathFound(f'The attrib {name} has multiple possible paths with the current specification.\n'
-                                f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-                                f'These are possible: {paths}')
+        return _ensure_path_uniqueness(paths,
+                                       f'attribute {name}',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       exclude=exclude)
 
     def relative_attrib_xpath(self,
                               name: str,
@@ -485,18 +524,12 @@ class SchemaDict(LockableDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.relative_tag_xpath(tag_name, root_tag, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-
-            original_case = tag_info['attribs'].original_case[name]
-
-            if tag_xpath.endswith('/'):
-                return f'{tag_xpath}@{original_case}'
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.relative_tag_xpath,
+                                                  root_tag,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [entry for entry in self._attrib_entries if all(f'{excl}_attribs' not in entry for excl in exclude)]
 
@@ -508,16 +541,12 @@ class SchemaDict(LockableDict):
         #e.g. bravaisMatrix vs. bravaisMatrixFilm
         paths = [path for path in paths if contains_tag(path, root_tag)]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
-
-        if len(relative_paths) == 1:
-            return relative_paths.pop()
-        if len(relative_paths) == 0:
-            raise NoPathFound(f'The attrib {name} has no possible relative paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        raise NoUniquePathFound(
-            f'The attrib {name} has multiple possible relative paths with the current specification.\n'
-            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-            f'These are possible: {relative_paths}')
+        return _ensure_path_uniqueness(relative_paths,
+                                       f'attribute {name}',
+                                       path_type='relative',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       exclude=exclude)
 
     def tag_info(self,
                  name: str,
@@ -556,8 +585,9 @@ class SchemaDict(LockableDict):
 
             if tag_info is not None and entry != tag_info:
                 raise NoUniquePathFound(f'Differing tag_info for the found with the current specification\n'
-                                        f'contains: {contains}, not_contains: {not_contains}\n'
-                                        f'These are possible:  {paths}')
+                                        f'contains: {contains}, not_contains: {not_contains}, parent: {parent}\n'
+                                        f'The following are possible:\n' +
+                                        '\n'.join([f'    - {path}' for path in paths]))
             tag_info = entry
 
         if tag_info is None:
@@ -899,16 +929,11 @@ class OutputSchemaDict(SchemaDict):
 
         paths = self._find_paths(name, ('iteration_tag_paths',), contains=contains, not_contains=not_contains)
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
-
-        if len(paths) == 1:
-            return paths[0]
-        if len(paths) == 0:
-            raise NoPathFound(f'The tag {name} has no possible iteration paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}')
-        raise NoUniquePathFound(
-            f'The tag {name} has multiple possible iteration paths with the current specification.\n'
-            f'contains: {contains}, not_contains: {not_contains} \n'
-            f'These are possible: {paths}')
+        return _ensure_path_uniqueness(paths,
+                                       f'tag {name}',
+                                       path_type='iteration',
+                                       contains=contains,
+                                       not_contains=not_contains)
 
     def relative_iteration_tag_xpath(self,
                                      name: str,
@@ -947,17 +972,12 @@ class OutputSchemaDict(SchemaDict):
             paths = [path for path in paths if contains_tag(path, root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
-
-        if len(paths) == 1:
-            return relative_paths.pop()
-        if len(paths) == 0:
-            raise NoPathFound(
-                f'The tag {name} has no possible relative iteration paths with the current specification.\n'
-                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        raise NoUniquePathFound(
-            f'The tag {name} has multiple possible relative iteration paths with the current specification.\n'
-            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-            f'These are possible: {relative_paths}')
+        return _ensure_path_uniqueness(relative_paths,
+                                       f'tag {name}',
+                                       path_type='relative iteration',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       root_tag=root_tag)
 
     def iteration_attrib_xpath(self,
                                name: str,
@@ -999,18 +1019,11 @@ class OutputSchemaDict(SchemaDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.iteration_tag_xpath(tag_name, contains=contains, not_contains=not_contains)
-
-            tag_info = self.tag_info(
-                tag_name,
-                contains=contains,
-                not_contains=not_contains,
-            )
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-            original_case = tag_info['attribs'].original_case[name]
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.iteration_tag_xpath,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [
             entry for entry in self._attrib_entries
@@ -1019,16 +1032,12 @@ class OutputSchemaDict(SchemaDict):
 
         paths = self._find_paths(name, entries, contains=contains, not_contains=not_contains)
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
-
-        if len(paths) == 1:
-            return paths[0]
-        if len(paths) == 0:
-            raise NoPathFound(f'The attrib {name} has no possible iteration paths with the current specification.\n'
-                              f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}')
-        raise NoUniquePathFound(
-            f'The attrib {name} has multiple possible iteration paths with the current specification.\n'
-            f'contains: {contains}, not_contains: {not_contains}, exclude {exclude}\n'
-            f'These are possible: {paths}')
+        return _ensure_path_uniqueness(paths,
+                                       f'attribute {name}',
+                                       path_type='iteration',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       exclude=exclude)
 
     def relative_iteration_attrib_xpath(self,
                                         name: str,
@@ -1072,21 +1081,12 @@ class OutputSchemaDict(SchemaDict):
             exclude = []
 
         if tag_name is not None:
-            tag_xpath = self.relative_iteration_tag_xpath(tag_name,
-                                                          root_tag,
-                                                          contains=contains,
-                                                          not_contains=not_contains)
-
-            tag_info = self.tag_info(tag_name, contains=contains, not_contains=not_contains)
-
-            if name not in tag_info['attribs']:
-                raise NoPathFound(f'No attribute {name} found at tag {tag_name}')
-
-            original_case = tag_info['attribs'].original_case[name]
-
-            if tag_xpath.endswith('/'):
-                return f'{tag_xpath}@{original_case}'
-            return f'{tag_xpath}/@{original_case}'
+            return self._find_attrib_via_tag_name(name,
+                                                  tag_name,
+                                                  self.relative_iteration_tag_xpath,
+                                                  root_tag,
+                                                  contains=contains,
+                                                  not_contains=not_contains)
 
         entries = [
             entry for entry in self._attrib_entries
@@ -1103,14 +1103,10 @@ class OutputSchemaDict(SchemaDict):
             paths = [path for path in paths if contains_tag(path, root_tag)]
         paths = [f"{iteration_path}{path.lstrip('.')}" for path in paths]
         relative_paths = {abs_to_rel_xpath(xpath, root_tag) for xpath in paths}
-
-        if len(relative_paths) == 1:
-            return relative_paths.pop()
-        if len(relative_paths) == 0:
-            raise NoPathFound(
-                f'The attrib {name} has no possible relative iteration paths with the current specification.\n'
-                f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag}')
-        raise NoUniquePathFound(
-            f'The attrib {name} has multiple possible relative iteration paths with the current specification.\n'
-            f'contains: {contains}, not_contains: {not_contains}, root_tag {root_tag} \n'
-            f'These are possible: {relative_paths}')
+        return _ensure_path_uniqueness(relative_paths,
+                                       f'attribute {name}',
+                                       path_type='relative iteration',
+                                       contains=contains,
+                                       not_contains=not_contains,
+                                       root_tag=root_tag,
+                                       exclude=exclude)
