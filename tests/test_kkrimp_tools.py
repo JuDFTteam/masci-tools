@@ -134,3 +134,21 @@ class Test_KkrimpParserFunctions:
             'Error parsing output of KKRimp: scfinfo'
         }
         assert o == {'convergence_group': {}}
+
+    def test_get_scfinfo_iteration_1000(self, tmp_path):
+        """From iteration 1000 on KKRimp writes 'ITERATION1000' without a space after the keyword."""
+        out_log = tmp_path / 'out_log.000.txt'
+        out_log.write_text(' IMIX      =            0\n'
+                           'MIXFAC   =             0.050\n'
+                           'FCM      =             2.000\n'
+                           'QBOUND   =              0.100E-06\n'
+                           ' SCFSTEPS =          1000\n'
+                           '      ITERATION 998 average rms-error : v+ + v- =  3.6927D-08\n'
+                           '      ITERATION 999 average rms-error : v+ + v- =  3.7808D-08\n'
+                           '      ITERATION1000 average rms-error : v+ + v- =  4.0196D-08\n')
+        niter, nitermax, converged, nmax_reached, mixinfo = KkrimpParserFunctions()._get_scfinfo(os.fspath(out_log))
+        assert niter == 1000
+        assert nitermax == 1000
+        assert nmax_reached
+        assert converged
+        assert mixinfo == [0, 0.05, 1e-7, 2.0]
